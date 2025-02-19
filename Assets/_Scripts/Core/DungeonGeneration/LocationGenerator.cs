@@ -14,6 +14,8 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private int m_walkLength;
         [SerializeField] private int m_randomWalkIterations;
+        [SerializeField] private int m_xBorderSize;
+        [SerializeField] private int m_yBorderSize;
 
         private void Awake()
         {
@@ -44,12 +46,13 @@ namespace MagmaHeart.Core.Dungeon
         {
             HashSet<Vector2Int> roomFloorPositions = new HashSet<Vector2Int>();
             Vector2Int randomWalkStartPosition = position;
+            RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
 
             for (int i = 0; i < m_randomWalkIterations; ++i)
             {
-                HashSet<Vector2Int> randomWalkPath = m_roomGenerator.GenerateRoom(randomWalkStartPosition);
+                HashSet<Vector2Int> randomWalkPath = m_roomGenerator.GenerateRoom(roomData, randomWalkStartPosition);
                 roomFloorPositions.UnionWith(randomWalkPath);
-                randomWalkStartPosition = roomFloorPositions.ElementAt(Random.Range(0 , roomFloorPositions.Count));
+                randomWalkStartPosition = roomFloorPositions.ElementAt(Random.Range(0, roomFloorPositions.Count));
             }
 
             m_renderer.DrawTiles(roomFloorPositions);

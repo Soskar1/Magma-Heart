@@ -811,6 +811,8 @@ MonoBehaviour:
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_walkLength: 15
   m_randomWalkIterations: 15
+  m_xBorderSize: 10
+  m_yBorderSize: 8
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0
