@@ -26,12 +26,14 @@ namespace MagmaHeart.Core.Dungeon
             GenerateLocation(Vector2Int.zero);
         }
 
+        public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
+
         public void GenerateLocation(in Vector2Int position)
         {
             // Generate spaces for rooms
 
             // For each space generate a room
-            GenerateRoom(Vector2Int.zero);
+            GenerateRoom(position);
 
             // Connect rooms with corridors
 
@@ -52,6 +54,8 @@ namespace MagmaHeart.Core.Dungeon
 
             m_renderer.DrawTiles(roomFloorPositions);
         }
+
+        public void ClearLocation() => m_renderer.Clear();
     }
 }
 

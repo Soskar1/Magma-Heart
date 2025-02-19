@@ -23,5 +23,10 @@ namespace MagmaHeart.Core.Dungeon
                 m_tilemap.SetTile(tilePosition, m_floorTile);
             }
         }
+
+        public void Clear()
+        {
+            m_tilemap.ClearAllTiles();
+        }
     }
 }
