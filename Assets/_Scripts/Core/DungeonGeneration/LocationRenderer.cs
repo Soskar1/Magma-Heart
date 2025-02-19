@@ -4,12 +4,12 @@ using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class DungeonRenderer
+    public class LocationRenderer
     {
         private Tilemap m_tilemap;
         private TileBase m_floorTile;
 
-        public DungeonRenderer(in Tilemap tilemap, in TileBase floorTile)
+        public LocationRenderer(in Tilemap tilemap, in TileBase floorTile)
         {
             m_tilemap = tilemap;
             m_floorTile = floorTile;

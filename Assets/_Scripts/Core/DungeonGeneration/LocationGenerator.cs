@@ -4,10 +4,10 @@ using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class DungeonGenerator : MonoBehaviour
+    public class LocationGenerator : MonoBehaviour
     {
         private RandomWalkRoomGenerator m_roomGenerator;
-        private DungeonRenderer m_renderer;
+        private LocationRenderer m_renderer;
 
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private TileBase m_floorTile;
@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Dungeon
         private void Awake()
         {
             m_roomGenerator = new RandomWalkRoomGenerator(m_walkLength);
-            m_renderer = new DungeonRenderer(m_tilemap, m_floorTile);
+            m_renderer = new LocationRenderer(m_tilemap, m_floorTile);
         }
 
         public void Start()
