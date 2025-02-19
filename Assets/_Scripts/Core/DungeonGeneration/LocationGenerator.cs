@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,6 +13,7 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private int m_walkLength;
+        [SerializeField] private int m_randomWalkIterations;
 
         private void Awake()
         {
@@ -21,13 +23,34 @@ namespace MagmaHeart.Core.Dungeon
 
         public void Start()
         {
-            GenerateRoom(Vector2Int.zero);
+            GenerateLocation(Vector2Int.zero);
         }
 
-        public void GenerateRoom(in Vector2Int position)
+        public void GenerateLocation(in Vector2Int position)
         {
-            HashSet<Vector2Int> path = m_roomGenerator.GenerateRoom(position);
-            m_renderer.DrawTiles(path);
+            // Generate spaces for rooms
+
+            // For each space generate a room
+            GenerateRoom(Vector2Int.zero);
+
+            // Connect rooms with corridors
+
+            // Post processing
+        }
+
+        private void GenerateRoom(in Vector2Int position)
+        {
+            HashSet<Vector2Int> roomFloorPositions = new HashSet<Vector2Int>();
+            Vector2Int randomWalkStartPosition = position;
+
+            for (int i = 0; i < m_randomWalkIterations; ++i)
+            {
+                HashSet<Vector2Int> randomWalkPath = m_roomGenerator.GenerateRoom(randomWalkStartPosition);
+                roomFloorPositions.UnionWith(randomWalkPath);
+                randomWalkStartPosition = roomFloorPositions.ElementAt(Random.Range(0 , roomFloorPositions.Count));
+            }
+
+            m_renderer.DrawTiles(roomFloorPositions);
         }
     }
 }
