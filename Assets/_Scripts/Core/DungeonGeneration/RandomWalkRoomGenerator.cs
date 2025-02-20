@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class RandomWalkRoomGenerator
+    public class RandomWalkRoomGenerator : IRoomGenerator
     {
         private int m_walkLength = 0;
         private List<Vector2Int> m_randomDirections;
@@ -37,17 +37,11 @@ namespace MagmaHeart.Core.Dungeon
         {
             m_randomDirections.Shuffle();
             for (int i = 0; i < m_randomDirections.Count; ++i)
-                if (IsInRoomSpace(roomData, currentPosition + m_randomDirections[i]))
+                if (roomData.IsInRoomSpace(currentPosition + m_randomDirections[i]))
                     return m_randomDirections[i];
 
             Debug.LogWarning("[RandomWalkRoomGenerator] PickRandomDirection does not take the right direction. Returning Vector2Int.zero");
             return Vector2Int.zero;
-        }
-
-        private bool IsInRoomSpace(in RoomData roomData, in Vector2Int position)
-        {
-            return position.x < roomData.RightBorder && position.x > roomData.LeftBorder &&
-                position.y < roomData.UpperBorder && position.y > roomData.BottomBorder;
         }
     }
 }
