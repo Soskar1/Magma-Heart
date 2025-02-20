@@ -26,21 +26,23 @@ namespace MagmaHeart.Core.Dungeon
             Vector2Int currentPosition = startPosition;
             for (int i = 0; i < m_walkLength; ++i)
             {
-                Vector2Int randomDirection = PickRandomDirection();
-                while (!IsInRoomSpace(roomData, currentPosition + randomDirection))
-                {
-                    Debug.Log($"{currentPosition + randomDirection} is out of bounds");
-                    randomDirection = PickRandomDirection();
-                }
-
-                currentPosition += randomDirection;
+                currentPosition += PickRandomDirection(roomData, currentPosition);
                 path.Add(currentPosition);
             }
 
             return path;
         }
 
-        private Vector2Int PickRandomDirection() => m_randomDirections[Random.Range(0, m_randomDirections.Count)];
+        private Vector2Int PickRandomDirection(in RoomData roomData, in Vector2Int currentPosition)
+        {
+            m_randomDirections.Shuffle();
+            for (int i = 0; i < m_randomDirections.Count; ++i)
+                if (IsInRoomSpace(roomData, currentPosition + m_randomDirections[i]))
+                    return m_randomDirections[i];
+
+            Debug.LogWarning("[RandomWalkRoomGenerator] PickRandomDirection does not take the right direction. Returning Vector2Int.zero");
+            return Vector2Int.zero;
+        }
 
         private bool IsInRoomSpace(in RoomData roomData, in Vector2Int position)
         {
