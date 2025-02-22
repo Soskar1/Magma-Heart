@@ -5,6 +5,6 @@ namespace MagmaHeart.Core.Dungeon
 {
     public interface IRoomGenerator
     {
-        public HashSet<Vector2Int> GenerateRoom(in Vector2Int startPosition);
+        public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles);
     }
 }

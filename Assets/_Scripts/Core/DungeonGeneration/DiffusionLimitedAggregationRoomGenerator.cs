@@ -33,10 +33,13 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public HashSet<Vector2Int> GenerateRoom(in Vector2Int startPosition)
+        public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles)
         {
-            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>() { startPosition };
+            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>() { m_roomData.WorldPosition };
             int tilesToPlace = m_tilesToPlace;
+
+            if (generatedTiles != null)
+                tiles = generatedTiles;
 
             while (tilesToPlace > 0)
             {

@@ -18,10 +18,13 @@ namespace MagmaHeart.Core.Dungeon
             m_halfSize = new Vector2Int(xSize / 2, ySize / 2);
         }
 
-        public HashSet<Vector2Int> GenerateRoom(in Vector2Int startPosition)
+        public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles)
         {
-            HashSet<Vector2Int> roomFloor = new HashSet<Vector2Int>() { startPosition };
-            Vector2Int startPoint = startPosition - m_halfSize;
+            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>() { m_roomData.WorldPosition };
+            Vector2Int startPoint = m_roomData.WorldPosition - m_halfSize;
+
+            if (generatedTiles != null)
+                tiles = generatedTiles;
 
             for (int x = 0; x < m_xSize; ++x)
             {
@@ -29,11 +32,11 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     Vector2Int position = startPoint + new Vector2Int(x, y);
                     if (IsInRoomSpace(position))
-                        roomFloor.Add(position);
+                        tiles.Add(position);
                 }
             }
 
-            return roomFloor;
+            return tiles;
         }
 
         private bool IsInRoomSpace(in Vector2Int position)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
@@ -21,11 +22,17 @@ namespace MagmaHeart.Core.Dungeon
             m_roomData = roomData;
         }
 
-        public HashSet<Vector2Int> GenerateRoom(in Vector2Int startPosition)
+        public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles)
         {
-            HashSet<Vector2Int> path = new HashSet<Vector2Int>() { startPosition };
+            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>() { m_roomData.WorldPosition };
+            Vector2Int currentPosition = m_roomData.WorldPosition;
 
-            Vector2Int currentPosition = startPosition;
+            if (generatedTiles != null)
+            {
+                tiles = generatedTiles;
+                currentPosition = generatedTiles.ElementAt(Random.Range(0, generatedTiles.Count));
+            }
+
             for (int i = 0; i < m_randomWalkIterations; ++i)
             {
                 Vector2Int newPosition = currentPosition + m_randomWalk.TakeRandomDirection();
@@ -43,10 +50,10 @@ namespace MagmaHeart.Core.Dungeon
                     newPosition.y = m_roomData.BottomBorder;
 
                 currentPosition = newPosition;
-                path.Add(currentPosition);
+                tiles.Add(currentPosition);
             }
 
-            return path;
+            return tiles;
         }
     }
 }
