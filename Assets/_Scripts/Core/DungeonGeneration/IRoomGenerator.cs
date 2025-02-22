@@ -1,8 +1,7 @@
-using MagmaHeart.Core.Dungeon;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.Dungeon
 {
     public interface IRoomGenerator
     {
