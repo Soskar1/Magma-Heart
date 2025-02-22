@@ -815,6 +815,7 @@ MonoBehaviour:
   m_yBorderSize: 8
   m_xSize: 4
   m_ySize: 4
+  m_tilesToPlace: 15
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0

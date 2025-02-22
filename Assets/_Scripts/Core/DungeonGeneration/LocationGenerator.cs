@@ -19,6 +19,8 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_xSize;
         [SerializeField] private int m_ySize;
 
+        [SerializeField] private int m_tilesToPlace;
+
         private void Awake()
         {
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile);
@@ -32,7 +34,9 @@ namespace MagmaHeart.Core.Dungeon
 
             // For each space generate a room
             RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
-            m_roomGenerator = new BoxedRoomGenerator(roomData, m_xSize, m_ySize);
+            //m_roomGenerator = new BoxedRoomGenerator(roomData, m_xSize, m_ySize);
+            //m_roomGenerator = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
+            m_roomGenerator = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
             GenerateRoom(position);
 
             // Connect rooms with corridors
