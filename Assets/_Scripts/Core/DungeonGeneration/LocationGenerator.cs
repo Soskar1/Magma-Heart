@@ -6,9 +6,7 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class LocationGenerator : MonoBehaviour
     {
-        //private RandomWalkRoomGenerator m_roomGenerator;
         private LocationRenderer m_renderer;
-
         private IRoomGenerator m_roomGenerator;
 
         [SerializeField] private Tilemap m_tilemap;
@@ -23,14 +21,7 @@ namespace MagmaHeart.Core.Dungeon
 
         private void Awake()
         {
-            //m_roomGenerator = new RandomWalkRoomGenerator(m_walkLength);
-            m_roomGenerator = new BoxedRoomGenerator(m_xSize, m_ySize);
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile);
-        }
-
-        public void Start()
-        {
-            GenerateLocation(Vector2Int.zero);
         }
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
@@ -40,6 +31,8 @@ namespace MagmaHeart.Core.Dungeon
             // Generate spaces for rooms
 
             // For each space generate a room
+            RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
+            m_roomGenerator = new BoxedRoomGenerator(roomData, m_xSize, m_ySize);
             GenerateRoom(position);
 
             // Connect rooms with corridors
@@ -47,26 +40,9 @@ namespace MagmaHeart.Core.Dungeon
             // Post processing
         }
 
-        //private void GenerateRoom(in Vector2Int position)
-        //{
-        //    HashSet<Vector2Int> roomFloorPositions = new HashSet<Vector2Int>();
-        //    Vector2Int randomWalkStartPosition = position;
-        //    RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
-
-        //    for (int i = 0; i < m_randomWalkIterations; ++i)
-        //    {
-        //        HashSet<Vector2Int> randomWalkPath = m_roomGenerator.GenerateRoom(roomData, randomWalkStartPosition);
-        //        roomFloorPositions.UnionWith(randomWalkPath);
-        //        randomWalkStartPosition = roomFloorPositions.ElementAt(Random.Range(0, roomFloorPositions.Count));
-        //    }
-
-        //    m_renderer.DrawTiles(roomFloorPositions);
-        //}
-
         private void GenerateRoom(in Vector2Int position)
         {
-            RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
-            HashSet<Vector2Int> roomFloor = m_roomGenerator.GenerateRoom(roomData, position);
+            HashSet<Vector2Int> roomFloor = m_roomGenerator.GenerateRoom(position);
             m_renderer.DrawTiles(roomFloor);
         }
 
