@@ -49,6 +49,7 @@ namespace MagmaHeart.Core.Dungeon
                 generator3.GenerateRoom(
                 generator2.GenerateRoom(
                 generator1.GenerateRoom(null))))));
+
             m_renderer.DrawTiles(generatedTiles);
 
             // Connect rooms with corridors

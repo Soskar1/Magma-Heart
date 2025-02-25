@@ -26,10 +26,14 @@ namespace MagmaHeart.Core.Dungeon
             });
 
             m_startPoints = new List<Vector2Int>() {
+                new Vector2Int(m_roomData.LeftBorder / 2, m_roomData.BottomBorder),
                 new Vector2Int(m_roomData.LeftBorder, m_roomData.BottomBorder),
+                new Vector2Int(m_roomData.LeftBorder, m_roomData.UpperBorder / 2),
                 new Vector2Int(m_roomData.LeftBorder, m_roomData.UpperBorder),
+                new Vector2Int(m_roomData.RightBorder / 2, m_roomData.UpperBorder),
                 new Vector2Int(m_roomData.RightBorder, m_roomData.UpperBorder),
-                new Vector2Int(m_roomData.RightBorder, m_roomData.BottomBorder)
+                new Vector2Int(m_roomData.RightBorder, m_roomData.UpperBorder / 2),
+                new Vector2Int(m_roomData.RightBorder, m_roomData.BottomBorder),
             };
         }
 

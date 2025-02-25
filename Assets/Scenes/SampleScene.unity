@@ -814,7 +814,7 @@ MonoBehaviour:
   m_randomWalkIterations: 5
   m_xSize: 65
   m_ySize: 37
-  m_tilesToPlace: 30
+  m_tilesToPlace: 100
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0

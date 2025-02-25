@@ -57,7 +57,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (generatedTiles.Contains(neighbourTile) && !newTiles.Contains(neighbourTile))
+                    if (generatedTiles.Contains(neighbourTile) && !newTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
 
