@@ -809,13 +809,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tilemap: {fileID: 2021650948}
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
-  m_walkLength: 10
-  m_randomWalkIterations: 10
-  m_xBorderSize: 20
-  m_yBorderSize: 20
-  m_xSize: 4
-  m_ySize: 4
-  m_tilesToPlace: 10
+  m_xBorderSize: 100
+  m_yBorderSize: 100
+  m_randomWalkIterations: 5
+  m_xSize: 65
+  m_ySize: 37
+  m_tilesToPlace: 30
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0

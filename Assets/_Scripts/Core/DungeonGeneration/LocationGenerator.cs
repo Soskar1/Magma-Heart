@@ -10,13 +10,17 @@ namespace MagmaHeart.Core.Dungeon
 
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private TileBase m_floorTile;
-        [SerializeField] private int m_randomWalkIterations;
         [SerializeField] private int m_xBorderSize;
         [SerializeField] private int m_yBorderSize;
 
+        [Header("RandomWalkRoomGenerator")]
+        [SerializeField] private int m_randomWalkIterations;
+        
+        [Header("BoxedRoomGenerator")]
         [SerializeField] private int m_xSize;
         [SerializeField] private int m_ySize;
 
+        [Header("DiffusionLimitedAggregatoinRoomGenerator")]
         [SerializeField] private int m_tilesToPlace;
 
         private void Awake()
@@ -37,7 +41,8 @@ namespace MagmaHeart.Core.Dungeon
             IRoomGenerator generator3 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
             IRoomGenerator generator4 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
             IRoomGenerator generator5 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-            IRoomModifier modifier1 = new UnreachableTileDesctructor(roomData);
+            IRoomModifier modifier1 = new UnreachableTileCapture(roomData);
+            IRoomModifier modifier2 = new UnreachableTileDesctructor(roomData);
             HashSet<Vector2Int> generatedTiles = modifier1.ModifyRoom(
                 generator5.GenerateRoom(
                 generator4.GenerateRoom(
