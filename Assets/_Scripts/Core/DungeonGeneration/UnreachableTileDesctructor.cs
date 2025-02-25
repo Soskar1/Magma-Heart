@@ -20,18 +20,18 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public HashSet<Vector2Int> ModifyRoom(in HashSet<Vector2Int> generatedTiles)
+        public HashSet<Vector2Int> ModifyRoom(in HashSet<Vector2Int> tiles)
         {
-            if (generatedTiles == null)
+            if (tiles == null)
             {
-                Debug.LogWarning("generatedTiles is null. Returning new empty HashSet object");
+                Debug.LogWarning("tiles is null. Returning new empty HashSet object");
                 return new HashSet<Vector2Int>();
             }
 
-            if (generatedTiles.Count == 0)
+            if (tiles.Count == 0)
             {
-                Debug.LogWarning("generatedTiles is empty. Terminating job");
-                return generatedTiles;
+                Debug.LogWarning("tiles is empty. Terminating job");
+                return tiles;
             }
 
             HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
@@ -47,7 +47,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (generatedTiles.Contains(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                    if (tiles.Contains(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
             }

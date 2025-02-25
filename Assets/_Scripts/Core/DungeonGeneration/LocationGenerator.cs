@@ -43,12 +43,14 @@ namespace MagmaHeart.Core.Dungeon
             IRoomGenerator generator5 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
             IRoomModifier modifier1 = new UnreachableTileCapture(roomData);
             IRoomModifier modifier2 = new UnreachableTileDesctructor(roomData);
-            HashSet<Vector2Int> generatedTiles = modifier1.ModifyRoom(
+            IRoomModifier modifier3 = new TileFill(roomData);
+            HashSet<Vector2Int> generatedTiles = modifier3.ModifyRoom(
+                modifier1.ModifyRoom(
                 generator5.GenerateRoom(
                 generator4.GenerateRoom(
                 generator3.GenerateRoom(
                 generator2.GenerateRoom(
-                generator1.GenerateRoom(null))))));
+                generator1.GenerateRoom(null)))))));
 
             m_renderer.DrawTiles(generatedTiles);
 

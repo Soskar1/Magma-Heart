@@ -30,34 +30,33 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public HashSet<Vector2Int> ModifyRoom(in HashSet<Vector2Int> generatedTiles)
+        public HashSet<Vector2Int> ModifyRoom(in HashSet<Vector2Int> tiles)
         {
-            if (generatedTiles == null)
+            if (tiles == null)
             {
-                Debug.LogWarning("generatedTiles is null. Returning new empty HashSet object");
+                Debug.LogWarning("tiles is null. Returning new empty HashSet object");
                 return new HashSet<Vector2Int>();
             }
 
-            if (generatedTiles.Count == 0)
+            if (tiles.Count == 0)
             {
-                Debug.LogWarning("generatedTiles is empty. Terminating job");
-                return generatedTiles;
+                Debug.LogWarning("tiles is empty. Terminating job");
+                return tiles;
             }
 
-            HashSet<Vector2Int> newTiles = new HashSet<Vector2Int>();
             Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
             tilesToVisit.Enqueue(m_roomData.WorldPosition);
 
             while (tilesToVisit.Count > 0)
             {
                 Vector2Int tile = tilesToVisit.Dequeue();
-                newTiles.Add(tile);
+                tiles.Add(tile);
 
                 foreach (Vector2Int direction in m_directionsToVisit)
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (generatedTiles.Contains(neighbourTile) && !newTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                    if (tiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
 
@@ -67,15 +66,15 @@ namespace MagmaHeart.Core.Dungeon
                     Vector2Int xDirectionTile = new Vector2Int(tile.x + direction.x, tile.y);
                     Vector2Int yDirectionTile = new Vector2Int(tile.x, tile.y + direction.y);
 
-                    if (generatedTiles.Contains(tile + direction) && !generatedTiles.Contains(xDirectionTile) && !generatedTiles.Contains(yDirectionTile))
+                    if (tiles.Contains(tile + direction) && !tiles.Contains(xDirectionTile) && !tiles.Contains(yDirectionTile))
                     {
-                        newTiles.Add(xDirectionTile);
-                        newTiles.Add(yDirectionTile);
+                        tiles.Add(xDirectionTile);
+                        tiles.Add(yDirectionTile);
                     }
                 }
             }
 
-            return newTiles;
+            return tiles;
         }
     }
 }
