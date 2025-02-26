@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
@@ -7,10 +6,10 @@ namespace MagmaHeart.Core.Dungeon
     public class UnreachableTileCapture : IRoomModifier
     {
         private readonly RoomData m_roomData;
-        private List<Vector2Int> m_captureDirections;
-        private List<Vector2Int> m_directionsToVisit;
+        private readonly List<Vector2Int> m_captureDirections;
+        private readonly List<Vector2Int> m_directionsToVisit;
 
-        public UnreachableTileCapture(RoomData roomData)
+        public UnreachableTileCapture(in RoomData roomData)
         {
             m_roomData = roomData;
 
@@ -45,20 +44,20 @@ namespace MagmaHeart.Core.Dungeon
                 return tiles;
             }
 
-            HashSet<Vector2Int> newTiles = new HashSet<Vector2Int>();
+            HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
             Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
             tilesToVisit.Enqueue(m_roomData.WorldPosition);
 
             while (tilesToVisit.Count > 0)
             {
                 Vector2Int tile = tilesToVisit.Dequeue();
-                newTiles.Add(tile);
+                visitedTiles.Add(tile);
 
                 foreach (Vector2Int direction in m_directionsToVisit)
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (tiles.Contains(neighbourTile) && !newTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                    if (tiles.Contains(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
 
@@ -70,16 +69,15 @@ namespace MagmaHeart.Core.Dungeon
 
                     if (tiles.Contains(tileToCapture) && !tiles.Contains(xDirectionTile) && !tiles.Contains(yDirectionTile))
                     {
-                        newTiles.Add(xDirectionTile);
-                        newTiles.Add(yDirectionTile);
+                        tiles.Add(xDirectionTile);
+                        tiles.Add(yDirectionTile);
 
-                        if (!tilesToVisit.Contains(tileToCapture) && !newTiles.Contains(tileToCapture))
+                        if (!tilesToVisit.Contains(tileToCapture) && !visitedTiles.Contains(tileToCapture))
                             tilesToVisit.Enqueue(tileToCapture);
                     }
                 }
             }
 
-            tiles.UnionWith(newTiles);
             return tiles;
         }
     }
