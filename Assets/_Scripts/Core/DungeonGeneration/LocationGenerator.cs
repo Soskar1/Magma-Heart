@@ -23,6 +23,9 @@ namespace MagmaHeart.Core.Dungeon
         [Header("DiffusionLimitedAggregatoinRoomGenerator")]
         [SerializeField] private int m_tilesToPlace;
 
+        [Header("TilePropagation")]
+        [SerializeField] private int m_propagationLength;
+
         private void Awake()
         {
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile);
@@ -34,7 +37,6 @@ namespace MagmaHeart.Core.Dungeon
         {
             // Generate spaces for rooms
 
-            // For each space generate a room
             RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
             IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
             IRoomGenerator generator2 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
@@ -44,19 +46,20 @@ namespace MagmaHeart.Core.Dungeon
             IRoomModifier modifier1 = new UnreachableTileCapture(roomData);
             IRoomModifier modifier2 = new UnreachableTileDesctructor(roomData);
             IRoomModifier modifier3 = new TileFill(roomData);
+            IRoomModifier modifier4 = new TilePropagation(roomData, m_propagationLength);
             HashSet<Vector2Int> generatedTiles = modifier3.ModifyRoom(
+                modifier2.ModifyRoom(
+                modifier4.ModifyRoom(
                 modifier1.ModifyRoom(
                 generator5.GenerateRoom(
                 generator4.GenerateRoom(
                 generator3.GenerateRoom(
                 generator2.GenerateRoom(
-                generator1.GenerateRoom(null)))))));
+                generator1.GenerateRoom(null)))))))));
 
             m_renderer.DrawTiles(generatedTiles);
 
             // Connect rooms with corridors
-
-            // Post processing
         }
 
         public void ClearLocation() => m_renderer.Clear();
