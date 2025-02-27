@@ -30,19 +30,12 @@ namespace MagmaHeart.Core.Dungeon
             {
                 for (int y = 0; y < m_ySize; ++y)
                 {
-                    Vector2Int position = startPoint + new Vector2Int(x, y);
-                    if (IsInRoomSpace(position))
-                        tiles.Add(position);
+                    Vector2Int position = m_roomData.ToRoomSpace(startPoint + new Vector2Int(x, y));
+                    tiles.Add(position);
                 }
             }
 
             return tiles;
-        }
-
-        private bool IsInRoomSpace(in Vector2Int position)
-        {
-            return position.x < m_roomData.RightBorder && position.x > m_roomData.LeftBorder &&
-                position.y < m_roomData.UpperBorder && position.y > m_roomData.BottomBorder;
         }
     }
 }

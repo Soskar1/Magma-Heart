@@ -67,6 +67,7 @@ namespace MagmaHeart.Core.Dungeon
                     if (newPosition.y < m_roomData.BottomBorder)
                         newPosition.y = m_roomData.UpperBorder;
 
+
                     if (!tiles.Contains(currentPosition) && tiles.Contains(newPosition))
                         hitTile = true;
                     else

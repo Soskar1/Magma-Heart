@@ -35,20 +35,7 @@ namespace MagmaHeart.Core.Dungeon
 
             for (int i = 0; i < m_randomWalkIterations; ++i)
             {
-                Vector2Int newPosition = currentPosition + m_randomWalk.TakeRandomDirection();
-
-                if (newPosition.x > m_roomData.RightBorder)
-                    newPosition.x = m_roomData.RightBorder;
-                
-                if (newPosition.x < m_roomData.LeftBorder)
-                    newPosition.x = m_roomData.LeftBorder;
-                
-                if (newPosition.y > m_roomData.UpperBorder)
-                    newPosition.y = m_roomData.UpperBorder;
-                
-                if (newPosition.y < m_roomData.BottomBorder)
-                    newPosition.y = m_roomData.BottomBorder;
-
+                Vector2Int newPosition = m_roomData.ToRoomSpace(currentPosition + m_randomWalk.TakeRandomDirection());
                 currentPosition = newPosition;
                 tiles.Add(currentPosition);
             }

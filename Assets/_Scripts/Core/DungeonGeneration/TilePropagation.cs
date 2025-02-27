@@ -47,20 +47,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     for (int i = 1; i <= m_progagationLength; ++i)
                     {
-                        Vector2Int newTile = tile + direction * m_progagationLength;
-
-                        if (newTile.x > m_roomData.RightBorder)
-                            newTile.x = m_roomData.RightBorder;
-
-                        if (newTile.x < m_roomData.LeftBorder)
-                            newTile.x = m_roomData.LeftBorder;
-
-                        if (newTile.y > m_roomData.UpperBorder)
-                            newTile.y = m_roomData.UpperBorder;
-
-                        if (newTile.y < m_roomData.BottomBorder)
-                            newTile.y = m_roomData.BottomBorder;
-
+                        Vector2Int newTile = m_roomData.ToRoomSpace(tile + direction * m_progagationLength);
                         newTiles.Add(newTile);
                     }
                 }

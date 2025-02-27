@@ -18,5 +18,22 @@ namespace MagmaHeart.Core.Dungeon
             BottomBorder = WorldPosition.y - yBorderSize / 2;
             UpperBorder = WorldPosition.y + yBorderSize / 2;
         }
+
+        public Vector2Int ToRoomSpace(Vector2Int position)
+        {
+            if (position.x > RightBorder)
+                position.x = RightBorder;
+
+            if (position.x < LeftBorder)
+                position.x = LeftBorder;
+
+            if (position.y > UpperBorder)
+                position.y = UpperBorder;
+
+            if (position.y < BottomBorder)
+                position.y = BottomBorder;
+
+            return position;
+        }
     }
 }
