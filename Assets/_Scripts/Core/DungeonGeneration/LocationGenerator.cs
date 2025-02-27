@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -64,6 +66,21 @@ namespace MagmaHeart.Core.Dungeon
         }
 
         public void ClearLocation() => m_renderer.Clear();
+
+        public void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+
+            Vector2 upLeft = new Vector2(transform.position.x - m_xBorderSize / 2, transform.position.y + m_yBorderSize / 2);
+            Vector2 upRight = new Vector2(transform.position.x + m_xBorderSize / 2, transform.position.y + m_yBorderSize / 2);
+            Vector2 downRight = new Vector2(transform.position.x + m_xBorderSize / 2, transform.position.y - m_yBorderSize / 2);
+            Vector2 downLeft = new Vector2(transform.position.x - m_xBorderSize / 2, transform.position.y - m_yBorderSize / 2);
+
+            Gizmos.DrawLine(upLeft, upRight);
+            Gizmos.DrawLine(upRight, downRight);
+            Gizmos.DrawLine(downRight, downLeft);
+            Gizmos.DrawLine(downLeft, upLeft);
+        }
     }
 }
 

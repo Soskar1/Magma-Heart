@@ -37,22 +37,11 @@ namespace MagmaHeart.Core.Dungeon
                 return tiles;
             }
 
-            HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
-            Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
-            tilesToVisit.Enqueue(m_roomData.WorldPosition);
+            HashSet<Vector2Int> newTiles = new HashSet<Vector2Int>();
 
-            while (tilesToVisit.Count > 0)
+            foreach (Vector2Int tile in tiles)
             {
-                Vector2Int tile = tilesToVisit.Dequeue();
-                visitedTiles.Add(tile);
-
-                foreach (Vector2Int direction in m_directionsToVisit)
-                {
-                    Vector2Int neighbourTile = tile + direction;
-
-                    if (tiles.Contains(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
-                        tilesToVisit.Enqueue(neighbourTile);
-                }
+                newTiles.Add(tile);
 
                 foreach (Vector2Int direction in m_directionsToVisit)
                 {
@@ -72,16 +61,12 @@ namespace MagmaHeart.Core.Dungeon
                         if (newTile.y < m_roomData.BottomBorder)
                             newTile.y = m_roomData.BottomBorder;
 
-                        if (!tiles.Contains(newTile))
-                        {
-                            tiles.Add(newTile);
-                            visitedTiles.Add(newTile);
-                        }
+                        newTiles.Add(newTile);
                     }
                 }
             }
 
-            return tiles;
+            return newTiles;
         }
     }
 }
