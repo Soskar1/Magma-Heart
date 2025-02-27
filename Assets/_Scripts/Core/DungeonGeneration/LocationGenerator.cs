@@ -10,6 +10,7 @@ namespace MagmaHeart.Core.Dungeon
 
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private TileBase m_floorTile;
+        [SerializeField] private TileBase m_wallTile;
         [SerializeField] private int m_xBorderSize;
         [SerializeField] private int m_yBorderSize;
 
@@ -28,7 +29,7 @@ namespace MagmaHeart.Core.Dungeon
 
         private void Awake()
         {
-            m_renderer = new LocationRenderer(m_tilemap, m_floorTile);
+            m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
         }
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);

@@ -809,6 +809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tilemap: {fileID: 2021650948}
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
+  m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
   m_xBorderSize: 100
   m_yBorderSize: 100
   m_randomWalkIterations: 500
