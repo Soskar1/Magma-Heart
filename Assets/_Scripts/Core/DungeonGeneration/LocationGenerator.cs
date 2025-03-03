@@ -59,27 +59,36 @@ namespace MagmaHeart.Core.Dungeon
                 createdObjects.Add(testObject);
             }
 
-            //RoomData roomData = new RoomData(position, m_xBorderSize, m_yBorderSize);
-            //IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
-            //IRoomGenerator generator2 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
-            //IRoomGenerator generator3 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-            //IRoomGenerator generator4 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
-            //IRoomGenerator generator5 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-            //IRoomModifier modifier1 = new UnreachableTileCapture(roomData);
-            //IRoomModifier modifier2 = new UnreachableTileDesctructor(roomData);
-            //IRoomModifier modifier3 = new TileFill(roomData);
-            //IRoomModifier modifier4 = new TilePropagation(roomData, m_propagationLength);
-            //HashSet<Vector2Int> generatedTiles = modifier3.ModifyRoom(
-            //    modifier2.ModifyRoom(
-            //    modifier4.ModifyRoom(
-            //    modifier1.ModifyRoom(
-            //    generator5.GenerateRoom(
-            //    generator4.GenerateRoom(
-            //    generator3.GenerateRoom(
-            //    generator2.GenerateRoom(
-            //    generator1.GenerateRoom(null)))))))));
+            HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
 
-            //m_renderer.DrawTiles(generatedTiles);
+            foreach (BoundsInt space in spaces)
+            {
+                Vector2Int roomPosition = new Vector2Int((int)space.center.x, (int)space.center.y);
+                RoomData roomData = new RoomData(roomPosition, space.size.x - 5, space.size.y - 5);
+
+                IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
+                IRoomGenerator generator2 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
+                IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
+                IRoomGenerator generator4 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
+                IRoomGenerator generator5 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
+                IRoomModifier modifier1 = new TilePropagation(roomData, m_propagationLength);
+                IRoomModifier modifier2 = new UnreachableTileCapture(roomData);
+                IRoomModifier modifier3 = new TileFill(roomData);
+                IRoomModifier modifier4 = new UnreachableTileDesctructor(roomData);
+
+                generatedTiles.UnionWith(
+                    modifier4.ModifyRoom(
+                    modifier3.ModifyRoom(
+                    modifier2.ModifyRoom(
+                    modifier1.ModifyRoom(
+                    generator5.GenerateRoom(
+                    generator4.GenerateRoom(
+                    generator3.GenerateRoom(
+                    generator2.GenerateRoom(
+                    generator1.GenerateRoom(null))))))))));
+            }
+
+            m_renderer.DrawTiles(generatedTiles);
 
             // Connect rooms with corridors
         }
