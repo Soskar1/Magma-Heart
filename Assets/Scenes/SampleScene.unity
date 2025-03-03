@@ -821,7 +821,7 @@ MonoBehaviour:
   m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
   m_xMinSize: 50
   m_yMinSize: 50
-  m_maxPartitions: 1
+  m_maxPartitions: 5
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0

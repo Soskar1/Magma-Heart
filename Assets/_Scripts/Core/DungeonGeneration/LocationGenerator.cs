@@ -48,12 +48,12 @@ namespace MagmaHeart.Core.Dungeon
                 Destroy(obj);
 
             BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
-            BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x, position.y, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
+            BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
 
             foreach (BoundsInt space in spaces)
             {
-                GameObject testObject = Instantiate(m_spaceVizualizer, space.position, Quaternion.identity);
+                GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
                 testObject.transform.localScale = space.size;
                 testObject.GetComponent<SpriteRenderer>().color = Random.ColorHSV();
                 createdObjects.Add(testObject);
