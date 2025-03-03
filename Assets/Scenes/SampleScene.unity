@@ -811,17 +811,17 @@ MonoBehaviour:
   m_tilemap: {fileID: 2021650948}
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
-  m_xBorderSize: 1000
-  m_yBorderSize: 1000
+  m_xBorderSize: 500
+  m_yBorderSize: 500
   m_randomWalkIterations: 500
   m_xSize: 5
   m_ySize: 3
   m_tilesToPlace: 400
   m_propagationLength: 2
   m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
-  m_xMinSize: 50
-  m_yMinSize: 50
-  m_maxPartitions: 5
+  m_xMinSize: 100
+  m_yMinSize: 100
+  m_maxPartitions: 15
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,7 +1122,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16

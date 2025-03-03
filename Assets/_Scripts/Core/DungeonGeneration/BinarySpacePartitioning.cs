@@ -20,8 +20,8 @@ namespace MagmaHeart.Core.Dungeon
 
         public List<BoundsInt> PerformBinarySpacePartitioning(in BoundsInt spaceToSplit)
         {
-            Predicate<BoundsInt> CanPerformHorizontalPartition = (space) => space.size.x >= m_xMinSize * 2 + 1;
-            Predicate<BoundsInt> CanPerformVerticalPartition = (space) => space.size.y >= m_yMinSize * 2 + 1;
+            Predicate<BoundsInt> CanPerformHorizontalPartition = (space) => space.size.y >= m_yMinSize * 2 + 1;
+            Predicate<BoundsInt> CanPerformVerticalPartition = (space) => space.size.x >= m_xMinSize * 2 + 1;
 
             if (!CanPerformHorizontalPartition(spaceToSplit) && !CanPerformVerticalPartition(spaceToSplit))
             {
