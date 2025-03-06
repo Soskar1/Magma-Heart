@@ -28,11 +28,9 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_propagationLength;
 
         [Header("BinarySpacePartitioning")]
-        [SerializeField] private GameObject m_spaceVizualizer;
         [SerializeField] private int m_xMinSize;
         [SerializeField] private int m_yMinSize;
         [SerializeField] private int m_maxPartitions;
-        private List<GameObject> createdObjects = new List<GameObject>();
 
         private void Awake()
         {
@@ -43,21 +41,9 @@ namespace MagmaHeart.Core.Dungeon
 
         public void GenerateLocation(in Vector2Int position)
         {
-            // Generate spaces for rooms
-            foreach (var obj in createdObjects)
-                Destroy(obj);
-
             BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
-
-            foreach (BoundsInt space in spaces)
-            {
-                GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
-                testObject.transform.localScale = space.size;
-                testObject.GetComponent<SpriteRenderer>().color = Random.ColorHSV();
-                createdObjects.Add(testObject);
-            }
 
             HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
 
