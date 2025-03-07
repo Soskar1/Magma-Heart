@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.Dungeon
             m_region = new HashSet<Vector2Int>();
 
             for (int x = roomData.LeftBorder; x <= roomData.RightBorder; ++x)
-                for (int y = roomData.BottomBorder; y <= roomData.UpperBorder; ++y)
+                for (int y = roomData.BottomBorder; y <= roomData.TopBorder; ++y)
                     m_region.Add(new Vector2Int(x, y));
         }
 
