@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -9,6 +10,7 @@ namespace MagmaHeart.Core.Dungeon
         private readonly RoomData m_roomData;
         private readonly RandomWalk m_randomWalk;
         private readonly int m_randomWalkIterations = 0;
+        private readonly Random m_random;
 
         public RandomWalkRoomGenerator(in RoomData roomData, in int randomWalkIterations)
         {
@@ -20,6 +22,8 @@ namespace MagmaHeart.Core.Dungeon
                 Vector2Int.down
             });
             m_roomData = roomData;
+
+            m_random = new Random();
         }
 
         public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles)
@@ -30,7 +34,7 @@ namespace MagmaHeart.Core.Dungeon
             if (generatedTiles != null)
             {
                 tiles = generatedTiles;
-                currentPosition = generatedTiles.ElementAt(Random.Range(0, generatedTiles.Count));
+                currentPosition = generatedTiles.ElementAt(m_random.Next(generatedTiles.Count));
             }
 
             for (int i = 0; i < m_randomWalkIterations; ++i)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -10,6 +11,7 @@ namespace MagmaHeart.Core.Dungeon
         private readonly RandomWalk m_randomWalk;
         private readonly int m_tilesToPlace;
         private const int START_POINT_OFFSET = 12;
+        private readonly Random m_random;
 
         public DiffusionLimitedAggregatoinRoomGenerator(RoomData roomData, int tilesToPlace)
         {
@@ -25,6 +27,8 @@ namespace MagmaHeart.Core.Dungeon
                 new Vector2Int(-1, -1),
                 new Vector2Int(-1, 1)
             });
+
+            m_random = new Random();
         }
 
         public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles)
@@ -58,7 +62,7 @@ namespace MagmaHeart.Core.Dungeon
                     new Vector2Int(localRightBorder, localBottomBorder),
                 };
 
-                Vector2Int randomWalkStartPoint = startPoints[Random.Range(0, startPoints.Count)];
+                Vector2Int randomWalkStartPoint = startPoints[m_random.Next(startPoints.Count)];
                 Vector2Int currentPosition = randomWalkStartPoint;
                 bool hitTile = false;
 

@@ -1,6 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.Jobs;
+using Unity.Jobs;
+using Unity.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -39,44 +44,49 @@ namespace MagmaHeart.Core.Dungeon
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
 
-        public void GenerateLocation(in Vector2Int position)
+        public async void GenerateLocation(Vector2Int position)
         {
             BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
 
-            HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
-
+            List<Task<HashSet<Vector2Int>>> roomGenerationTasks = new List<Task<HashSet<Vector2Int>>>();
             foreach (BoundsInt space in spaces)
             {
                 Vector2Int roomPosition = new Vector2Int((int)space.center.x, (int)space.center.y);
                 RoomData roomData = new RoomData(roomPosition, space.size.x - 5, space.size.y - 5);
-
-                IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
-                IRoomGenerator generator2 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-                IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
-                IRoomGenerator generator4 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-                IRoomGenerator generator5 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
-                IRoomModifier modifier1 = new TilePropagation(roomData, m_propagationLength);
-                IRoomModifier modifier2 = new UnreachableTileCapture(roomData);
-                IRoomModifier modifier3 = new TileFill(roomData);
-                IRoomModifier modifier4 = new UnreachableTileDesctructor(roomData);
-
-                generatedTiles.UnionWith(
-                    modifier4.ModifyRoom(
-                    modifier3.ModifyRoom(
-                    modifier2.ModifyRoom(
-                    modifier1.ModifyRoom(
-                    generator5.GenerateRoom(
-                    generator4.GenerateRoom(
-                    generator3.GenerateRoom(
-                    generator2.GenerateRoom(
-                    generator1.GenerateRoom(null))))))))));
+                roomGenerationTasks.Add(GenerateRoomAsync(roomData));
             }
 
-            m_renderer.DrawTiles(generatedTiles);
+            HashSet<Vector2Int>[] generatedTiles = await Task.WhenAll(roomGenerationTasks);
+
+            StartCoroutine(m_renderer.DrawTiles(generatedTiles));
 
             // Connect rooms with corridors
+        }
+
+        private async Task<HashSet<Vector2Int>> GenerateRoomAsync(RoomData roomData)
+        {
+            IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
+            IRoomGenerator generator2 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
+            IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
+            IRoomGenerator generator4 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
+            IRoomGenerator generator5 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
+            IRoomModifier modifier1 = new TilePropagation(roomData, m_propagationLength);
+            IRoomModifier modifier2 = new UnreachableTileCapture(roomData);
+            IRoomModifier modifier3 = new TileFill(roomData);
+            IRoomModifier modifier4 = new UnreachableTileDesctructor(roomData);
+
+            return await Task.Run(() => {
+                return modifier4.ModifyRoom(
+                modifier3.ModifyRoom(
+                modifier2.ModifyRoom(
+                modifier1.ModifyRoom(
+                generator5.GenerateRoom(
+                generator4.GenerateRoom(
+                generator3.GenerateRoom(
+                generator2.GenerateRoom(
+                generator1.GenerateRoom(null))))))))); });
         }
 
         public void ClearLocation() => m_renderer.Clear();

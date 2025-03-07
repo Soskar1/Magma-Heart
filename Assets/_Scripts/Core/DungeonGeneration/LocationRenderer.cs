@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -17,21 +18,27 @@ namespace MagmaHeart.Core.Dungeon
             m_wallTile = wallTile;
         }
 
-        public void DrawTiles(in HashSet<Vector2Int> floorPositions)
+        public IEnumerator DrawTiles(HashSet<Vector2Int>[] rooms)
         {
-            foreach (Vector2Int floorPosition in floorPositions)
+            foreach (HashSet<Vector2Int> room in rooms)
             {
-                Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)floorPosition);
-
-                if (!floorPositions.Contains(floorPosition + Vector2Int.up) || !floorPositions.Contains(floorPosition + Vector2Int.right) ||
-                    !floorPositions.Contains(floorPosition + Vector2Int.down) || !floorPositions.Contains(floorPosition + Vector2Int.left) ||
-                    !floorPositions.Contains(floorPosition + new Vector2Int(1, 1)) || !floorPositions.Contains(floorPosition + new Vector2Int(1, -1)) ||
-                    !floorPositions.Contains(floorPosition + new Vector2Int(-1, -1)) || !floorPositions.Contains(floorPosition + new Vector2Int(-1, 1))) {
-                    m_tilemap.SetTile(tilePosition, m_wallTile);
-                } else
+                foreach (Vector2Int tile in room)
                 {
-                    m_tilemap.SetTile(tilePosition, m_floorTile);
+                    Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)tile);
+
+                    if (!room.Contains(tile + Vector2Int.up) || !room.Contains(tile + Vector2Int.right) ||
+                        !room.Contains(tile + Vector2Int.down) || !room.Contains(tile + Vector2Int.left) ||
+                        !room.Contains(tile + new Vector2Int(1, 1)) || !room.Contains(tile + new Vector2Int(1, -1)) ||
+                        !room.Contains(tile + new Vector2Int(-1, -1)) || !room.Contains(tile + new Vector2Int(-1, 1))) {
+                        m_tilemap.SetTile(tilePosition, m_wallTile);
+                    }
+                    else
+                    {
+                        m_tilemap.SetTile(tilePosition, m_floorTile);
+                    }
                 }
+
+                yield return new WaitForEndOfFrame();
             }
         }
 
