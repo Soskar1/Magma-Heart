@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.Dungeon
             m_wallTile = wallTile;
         }
 
-        public IEnumerator DrawTiles(HashSet<Vector2Int>[] rooms)
+        public IEnumerator DrawTiles(List<HashSet<Vector2Int>> rooms)
         {
             foreach (HashSet<Vector2Int> room in rooms)
             {

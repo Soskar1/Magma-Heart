@@ -49,23 +49,24 @@ namespace MagmaHeart.Core.Dungeon
             BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
+            List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
 
-            List<Task<HashSet<Vector2Int>>> roomGenerationTasks = new List<Task<HashSet<Vector2Int>>>();
-            foreach (BoundsInt space in spaces)
+            await Task.Run(() =>
             {
-                Vector2Int roomPosition = new Vector2Int((int)space.center.x, (int)space.center.y);
-                RoomData roomData = new RoomData(roomPosition, space.size.x - 5, space.size.y - 5);
-                roomGenerationTasks.Add(GenerateRoomAsync(roomData));
-            }
-
-            HashSet<Vector2Int>[] generatedTiles = await Task.WhenAll(roomGenerationTasks);
+                foreach (BoundsInt space in spaces)
+                {
+                    Vector2Int roomPosition = new Vector2Int((int)space.center.x, (int)space.center.y);
+                    RoomData roomData = new RoomData(roomPosition, space.size.x - 5, space.size.y - 5);
+                    generatedTiles.Add(GenerateRoom(roomData));
+                }
+            });
 
             StartCoroutine(m_renderer.DrawTiles(generatedTiles));
 
             // Connect rooms with corridors
         }
 
-        private async Task<HashSet<Vector2Int>> GenerateRoomAsync(RoomData roomData)
+        private HashSet<Vector2Int> GenerateRoom(RoomData roomData)
         {
             IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
             IRoomGenerator generator2 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
@@ -77,8 +78,7 @@ namespace MagmaHeart.Core.Dungeon
             IRoomModifier modifier3 = new TileFill(roomData);
             IRoomModifier modifier4 = new UnreachableTileDesctructor(roomData);
 
-            return await Task.Run(() => {
-                return modifier4.ModifyRoom(
+            return modifier4.ModifyRoom(
                 modifier3.ModifyRoom(
                 modifier2.ModifyRoom(
                 modifier1.ModifyRoom(
@@ -86,7 +86,7 @@ namespace MagmaHeart.Core.Dungeon
                 generator4.GenerateRoom(
                 generator3.GenerateRoom(
                 generator2.GenerateRoom(
-                generator1.GenerateRoom(null))))))))); });
+                generator1.GenerateRoom(null)))))))));
         }
 
         public void ClearLocation() => m_renderer.Clear();
