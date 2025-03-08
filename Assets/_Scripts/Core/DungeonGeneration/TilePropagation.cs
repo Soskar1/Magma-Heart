@@ -47,7 +47,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     for (int i = 1; i <= m_progagationLength; ++i)
                     {
-                        Vector2Int newTile = m_roomData.ToRoomSpace(tile + direction * m_progagationLength);
+                        Vector2Int newTile = m_roomData.ToRoomSpace(tile + direction * i);
                         newTiles.Add(newTile);
                     }
                 }
