@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.Jobs;
-using Unity.Jobs;
-using Unity.Collections;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Dungeon
@@ -33,9 +29,12 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_propagationLength;
 
         [Header("BinarySpacePartitioning")]
+        [SerializeField] private bool m_debug;
         [SerializeField] private int m_xMinSize;
         [SerializeField] private int m_yMinSize;
         [SerializeField] private int m_maxPartitions;
+        [SerializeField] private GameObject m_spaceVizualizer;
+        private List<GameObject> createdObjects = new List<GameObject>();
 
         private void Awake()
         {
@@ -51,12 +50,25 @@ namespace MagmaHeart.Core.Dungeon
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
 
+            if (m_debug)
+            {
+                foreach (var obj in createdObjects)
+                    Destroy(obj);
+
+                foreach (BoundsInt space in spaces)
+                {
+                    GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
+                    testObject.transform.localScale = space.size;
+                    testObject.GetComponent<SpriteRenderer>().color = Random.ColorHSV();
+                    createdObjects.Add(testObject);
+                }
+            }
+
             await Task.Run(() =>
             {
                 foreach (BoundsInt space in spaces)
                 {
-                    Vector2Int roomPosition = new Vector2Int((int)space.center.x, (int)space.center.y);
-                    RoomData roomData = new RoomData(roomPosition, space.size.x - 5, space.size.y - 5);
+                    RoomData roomData = new RoomData(space);
                     generatedTiles.Add(GenerateRoom(roomData));
                 }
             });

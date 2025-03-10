@@ -813,15 +813,16 @@ MonoBehaviour:
   m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
   m_xBorderSize: 400
   m_yBorderSize: 400
-  m_randomWalkIterations: 500
+  m_randomWalkIterations: 400
   m_xSize: 5
   m_ySize: 3
   m_tilesToPlace: 100
   m_propagationLength: 2
-  m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
+  m_debug: 0
   m_xMinSize: 75
   m_yMinSize: 75
   m_maxPartitions: 50
+  m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0
