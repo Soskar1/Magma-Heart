@@ -36,6 +36,10 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private GameObject m_spaceVizualizer;
         private List<GameObject> createdObjects = new List<GameObject>();
 
+        [Header("Room space")]
+        [SerializeField] private int m_xBorderOffset;
+        [SerializeField] private int m_yBorderOffset;
+
         private void Awake()
         {
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
@@ -68,7 +72,7 @@ namespace MagmaHeart.Core.Dungeon
             {
                 foreach (BoundsInt space in spaces)
                 {
-                    RoomData roomData = new RoomData(space);
+                    RoomData roomData = new RoomData(space, m_xBorderOffset, m_yBorderOffset);
                     generatedTiles.Add(GenerateRoom(roomData));
                 }
             });
