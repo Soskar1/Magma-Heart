@@ -818,10 +818,10 @@ MonoBehaviour:
   m_ySize: 3
   m_tilesToPlace: 100
   m_propagationLength: 2
-  m_debug: 1
+  m_debug: 0
   m_xMinSize: 75
   m_yMinSize: 75
-  m_maxPartitions: 3
+  m_maxPartitions: 50
   m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
   m_xBorderOffset: 5
   m_yBorderOffset: 5
