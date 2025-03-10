@@ -19,13 +19,13 @@ namespace MagmaHeart.Core.Dungeon
 
     public class LocationGraph
     {
-        private readonly List<RoomData> m_nodes;
-        private readonly Dictionary<RoomData, List<RoomConnectionEdge>> m_edges;
+        public List<RoomData> Nodes { get; private set; }
+        public Dictionary<RoomData, List<RoomConnectionEdge>> Edges { get; private set; }
 
         public LocationGraph(in List<RoomData> nodes, in Dictionary<RoomData, List<RoomConnectionEdge>> edges)
         {
-            m_nodes = nodes;
-            m_edges = edges;
+            Nodes = nodes;
+            Edges = edges;
         }
     }
 }

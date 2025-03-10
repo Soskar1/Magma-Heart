@@ -29,16 +29,21 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_propagationLength;
 
         [Header("BinarySpacePartitioning")]
-        [SerializeField] private bool m_debug;
+        [SerializeField] private bool m_bspDebug;
         [SerializeField] private int m_xMinSize;
         [SerializeField] private int m_yMinSize;
         [SerializeField] private int m_maxPartitions;
         [SerializeField] private GameObject m_spaceVizualizer;
-        private List<GameObject> m_createdObjects = new List<GameObject>();
 
         [Header("Room space")]
         [SerializeField] private int m_xBorderOffset;
         [SerializeField] private int m_yBorderOffset;
+
+        [Header("Location graph")]
+        [SerializeField] private bool m_locationGraphDebug;
+        [SerializeField] private GameObject m_roomNodeDebug;
+        [SerializeField] private GameObject m_roomEdgeDebug;
+        private List<GameObject> m_debugElements = new List<GameObject>();
 
         private void Awake()
         {
@@ -55,17 +60,18 @@ namespace MagmaHeart.Core.Dungeon
             List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
             List<RoomData> roomDatas = new List<RoomData>();
 
-            if (m_debug)
-            {
-                foreach (var obj in m_createdObjects)
+            if (m_debugElements.Count > 0)
+                foreach (var obj in m_debugElements)
                     Destroy(obj);
 
+            if (m_bspDebug)
+            {
                 foreach (BoundsInt space in spaces)
                 {
                     GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
                     testObject.transform.localScale = space.size;
                     testObject.GetComponent<SpriteRenderer>().color = Random.ColorHSV();
-                    m_createdObjects.Add(testObject);
+                    m_debugElements.Add(testObject);
                 }
             }
 
@@ -82,6 +88,25 @@ namespace MagmaHeart.Core.Dungeon
             // Connect rooms with corridors
             LocationGraphCreator graphCreator = new LocationGraphCreator(roomDatas);
             LocationGraph graph = graphCreator.CreateGraph();
+
+            if (m_locationGraphDebug)
+            {
+                foreach (RoomData room in graph.Nodes)
+                {
+                    GameObject nodeDebugInstance = Instantiate(m_roomNodeDebug, room.RoomSpace.center, Quaternion.identity);
+                    m_debugElements.Add(nodeDebugInstance);
+
+                    foreach (RoomConnectionEdge edge in graph.Edges[room])
+                    {
+                        GameObject edgeDebugInstance = Instantiate(m_roomEdgeDebug, Vector3.zero, Quaternion.identity);
+                        m_debugElements.Add(edgeDebugInstance);
+
+                        LineRenderer[] edgeRenderers = edgeDebugInstance.GetComponentsInChildren<LineRenderer>();
+                        foreach (LineRenderer edgeRenderer in edgeRenderers)
+                            edgeRenderer.SetPositions(new Vector3[2] {edge.First.RoomSpace.center, edge.Second.RoomSpace.center});
+                    }
+                }
+            }
 
             StartCoroutine(m_renderer.DrawTiles(generatedTiles));
         }
