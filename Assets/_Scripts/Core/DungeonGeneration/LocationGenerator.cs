@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_yMinSize;
         [SerializeField] private int m_maxPartitions;
         [SerializeField] private GameObject m_spaceVizualizer;
-        private List<GameObject> createdObjects = new List<GameObject>();
+        private List<GameObject> m_createdObjects = new List<GameObject>();
 
         [Header("Room space")]
         [SerializeField] private int m_xBorderOffset;
@@ -54,9 +54,11 @@ namespace MagmaHeart.Core.Dungeon
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
 
+            LocationGraph graph = new LocationGraph();
+
             if (m_debug)
             {
-                foreach (var obj in createdObjects)
+                foreach (var obj in m_createdObjects)
                     Destroy(obj);
 
                 foreach (BoundsInt space in spaces)
@@ -64,7 +66,7 @@ namespace MagmaHeart.Core.Dungeon
                     GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
                     testObject.transform.localScale = space.size;
                     testObject.GetComponent<SpriteRenderer>().color = Random.ColorHSV();
-                    createdObjects.Add(testObject);
+                    m_createdObjects.Add(testObject);
                 }
             }
 
@@ -73,13 +75,14 @@ namespace MagmaHeart.Core.Dungeon
                 foreach (BoundsInt space in spaces)
                 {
                     RoomData roomData = new RoomData(space, m_xBorderOffset, m_yBorderOffset);
+                    graph.AddRoomNode(roomData);
                     generatedTiles.Add(GenerateRoom(roomData));
                 }
             });
 
-            StartCoroutine(m_renderer.DrawTiles(generatedTiles));
-
             // Connect rooms with corridors
+
+            StartCoroutine(m_renderer.DrawTiles(generatedTiles));
         }
 
         private HashSet<Vector2Int> GenerateRoom(RoomData roomData)
