@@ -53,8 +53,7 @@ namespace MagmaHeart.Core.Dungeon
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
-
-            LocationGraph graph = new LocationGraph();
+            List<RoomData> roomDatas = new List<RoomData>();
 
             if (m_debug)
             {
@@ -75,12 +74,14 @@ namespace MagmaHeart.Core.Dungeon
                 foreach (BoundsInt space in spaces)
                 {
                     RoomData roomData = new RoomData(space, m_xBorderOffset, m_yBorderOffset);
-                    graph.AddRoomNode(roomData);
+                    roomDatas.Add(roomData);
                     generatedTiles.Add(GenerateRoom(roomData));
                 }
             });
 
             // Connect rooms with corridors
+            LocationGraphCreator graphCreator = new LocationGraphCreator(roomDatas);
+            LocationGraph graph = graphCreator.CreateGraph();
 
             StartCoroutine(m_renderer.DrawTiles(generatedTiles));
         }

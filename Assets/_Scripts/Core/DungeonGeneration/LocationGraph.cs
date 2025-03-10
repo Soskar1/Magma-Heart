@@ -3,41 +3,29 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
+    public class RoomConnectionEdge
+    {
+        public float Cost { get; private set; }
+        public RoomData First { get; private set; }
+        public RoomData Second { get; private set; }
+
+        public RoomConnectionEdge(in RoomData first, in RoomData second)
+        {
+            First = first;
+            Second = second;
+            Cost = Vector2Int.Distance(first.WorldPosition, second.WorldPosition);
+        }
+    }
+
     public class LocationGraph
     {
-        private readonly List<RoomData> m_rooms;
-        private readonly Dictionary<RoomData, List<RoomData>> m_roomNeighbours;
+        private readonly List<RoomData> m_nodes;
+        private readonly Dictionary<RoomData, List<RoomConnectionEdge>> m_edges;
 
-        public LocationGraph()
+        public LocationGraph(in List<RoomData> nodes, in Dictionary<RoomData, List<RoomConnectionEdge>> edges)
         {
-            m_rooms = new List<RoomData>();
-            m_roomNeighbours = new Dictionary<RoomData, List<RoomData>>();
-        }
-
-        public void AddRoomNode(in RoomData roomData)
-        {
-            AddNeighboursIfExists(roomData);
-            m_rooms.Add(roomData);
-        }
-
-        private void AddNeighboursIfExists(in RoomData roomToAnalyze)
-        {
-            List<RoomData> neighbourRooms = new List<RoomData>();
-            BoundsInt roomSpace = roomToAnalyze.RoomSpace;
-
-            foreach (RoomData otherRoom in m_rooms)
-            {
-                BoundsInt otherRoomSpace = otherRoom.RoomSpace;
-
-                if ((Mathf.Max(roomSpace.xMin, otherRoomSpace.xMin) < Mathf.Min(roomSpace.xMax, otherRoomSpace.xMax) && (roomSpace.yMax == otherRoomSpace.yMin || otherRoomSpace.yMax == roomSpace.yMin)) ||
-                    (Mathf.Max(roomSpace.yMin, otherRoomSpace.yMin) < Mathf.Min(roomSpace.yMax, otherRoomSpace.yMax) && (roomSpace.xMax == otherRoomSpace.xMin || otherRoomSpace.xMax == roomSpace.xMin)))
-                {
-                    m_roomNeighbours[otherRoom].Add(roomToAnalyze);
-                    neighbourRooms.Add(otherRoom);
-                }
-            }
-
-            m_roomNeighbours.Add(roomToAnalyze, neighbourRooms);
+            m_nodes = nodes;
+            m_edges = edges;
         }
     }
 }
