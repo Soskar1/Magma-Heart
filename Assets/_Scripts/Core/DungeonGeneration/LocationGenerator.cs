@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Threading.Tasks;
 using System.Linq;
-using Unity.VisualScripting;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -48,9 +47,31 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private GameObject m_roomEdgeDebug;
         private List<GameObject> m_debugElements = new List<GameObject>();
 
+        private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
+        private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
+
         private void Awake()
         {
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
+
+            IRoomGenerator generator1 = new BoxedRoomGenerator(m_xSize, m_ySize); 
+            IRoomGenerator generator2 = new RandomWalkRoomGenerator(m_randomWalkIterations);
+            IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(m_tilesToPlace);
+            IRoomModifier modifier1 = new TilePropagation(m_propagationLength);
+            IRoomModifier modifier2 = new UnreachableTileCapture();
+            IRoomModifier modifier3 = new TileFill();
+            IRoomModifier modifier4 = new UnreachableTileDesctructor();
+
+            m_generators.Add(generator1);
+            m_generators.Add(generator2);
+            m_generators.Add(generator3);
+            m_generators.Add(generator2);
+            m_generators.Add(generator3);
+
+            m_modifiers.Add(modifier1);
+            m_modifiers.Add(modifier2);
+            m_modifiers.Add(modifier3);
+            m_modifiers.Add(modifier4);
         }
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
@@ -60,7 +81,6 @@ namespace MagmaHeart.Core.Dungeon
             BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
-            List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
             HashSet<RoomData> roomDatas = new HashSet<RoomData>();
 
             if (m_debugElements.Count > 0)
@@ -82,13 +102,12 @@ namespace MagmaHeart.Core.Dungeon
             {
                 foreach (BoundsInt space in spaces)
                 {
-                    RoomData roomData = new RoomData(space, m_xBorderOffset, m_yBorderOffset);
+                    RoomData roomData = GenerateRoom(space);
                     roomDatas.Add(roomData);
-                    generatedTiles.Add(GenerateRoom(roomData));
                 }
             });
 
-            // Connect rooms with corridors
+            // LocationGraph
             LocationGraphCreator graphCreator = new LocationGraphCreator(roomDatas);
             LocationGraph graph = graphCreator.CreateGraph();
 
@@ -120,7 +139,16 @@ namespace MagmaHeart.Core.Dungeon
             if (m_mstTreeDebug)
                 GraphDebug(mstGraph);
 
-            StartCoroutine(m_renderer.DrawTiles(generatedTiles));
+            // Connect rooms with corridors
+            // foreach (RoomConnectionEdge edge in mstGraph.Edges)
+            // {
+            //     RoomData first = edge.First;
+            //     RoomData second = edge.Second;
+
+            //     Vector2Int direction = first.WorldPosition - second.WorldPosition;
+            // }
+
+            StartCoroutine(m_renderer.DrawTiles(roomDatas));
         }
 
         private void GraphDebug(in LocationGraph graph)
@@ -142,27 +170,17 @@ namespace MagmaHeart.Core.Dungeon
             }
         }
 
-        private HashSet<Vector2Int> GenerateRoom(RoomData roomData)
+        private RoomData GenerateRoom(in BoundsInt space)
         {
-            IRoomGenerator generator1 = new BoxedRoomGenerator(roomData, m_xSize, m_ySize); 
-            IRoomGenerator generator2 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-            IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
-            IRoomGenerator generator4 = new RandomWalkRoomGenerator(roomData, m_randomWalkIterations);
-            IRoomGenerator generator5 = new DiffusionLimitedAggregatoinRoomGenerator(roomData, m_tilesToPlace);
-            IRoomModifier modifier1 = new TilePropagation(roomData, m_propagationLength);
-            IRoomModifier modifier2 = new UnreachableTileCapture(roomData);
-            IRoomModifier modifier3 = new TileFill(roomData);
-            IRoomModifier modifier4 = new UnreachableTileDesctructor(roomData);
+            RoomData roomData = new RoomData(space, m_xBorderOffset, m_yBorderOffset);
 
-            return modifier4.ModifyRoom(
-                modifier3.ModifyRoom(
-                modifier2.ModifyRoom(
-                modifier1.ModifyRoom(
-                generator5.GenerateRoom(
-                generator4.GenerateRoom(
-                generator3.GenerateRoom(
-                generator2.GenerateRoom(
-                generator1.GenerateRoom(null)))))))));
+            foreach (IRoomGenerator generator in m_generators)
+                generator.GenerateRoom(roomData);
+
+            foreach (IRoomModifier modifier in m_modifiers)
+                modifier.ModifyRoom(roomData);
+
+            return roomData;
         }
 
         public void ClearLocation() => m_renderer.Clear();

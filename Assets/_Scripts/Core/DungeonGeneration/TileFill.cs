@@ -7,9 +7,8 @@ namespace MagmaHeart.Core.Dungeon
     public class TileFill : IRoomModifier
     {
         private readonly List<Vector2Int> m_directionsToVisit;
-        private readonly HashSet<Vector2Int> m_region;
 
-        public TileFill(RoomData roomData)
+        public TileFill()
         {
             m_directionsToVisit = new List<Vector2Int>()
             {
@@ -18,52 +17,40 @@ namespace MagmaHeart.Core.Dungeon
                 Vector2Int.up,
                 Vector2Int.down
             };
+        }
 
-            m_region = new HashSet<Vector2Int>();
+        public void ModifyRoom(in RoomData roomData)
+        {
+            HashSet<Vector2Int> emptyTiles = new HashSet<Vector2Int>();
 
             for (int x = roomData.LeftBorder; x <= roomData.RightBorder; ++x)
                 for (int y = roomData.BottomBorder; y <= roomData.TopBorder; ++y)
-                    m_region.Add(new Vector2Int(x, y));
-        }
+                    emptyTiles.Add(new Vector2Int(x, y));
 
-        public HashSet<Vector2Int> ModifyRoom(in HashSet<Vector2Int> tiles)
-        {
-            if (tiles == null)
-            {
-                Debug.LogWarning("tiles is null. Returning new empty HashSet object");
-                return new HashSet<Vector2Int>();
-            }
-
-            if (tiles.Count == 0)
-            {
-                Debug.LogWarning("tiles is empty. Terminating job");
-                return tiles;
-            }
-
-            HashSet<Vector2Int> emptyTiles = new HashSet<Vector2Int>(m_region);
-            emptyTiles.ExceptWith(tiles);
+            emptyTiles.ExceptWith(roomData.GetTilesCopy());
 
             while (emptyTiles.Count > 0)
             {
                 Vector2Int start = emptyTiles.First();
                 bool touchesBorder = false;
 
-                HashSet<Vector2Int> emptySpace = new HashSet<Vector2Int>();
+                HashSet<Vector2Int> filledSpace = new HashSet<Vector2Int>();
                 Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
                 tilesToVisit.Enqueue(start);
 
                 while (tilesToVisit.Count > 0)
                 {
                     Vector2Int tile = tilesToVisit.Dequeue();
-                    emptySpace.Add(tile);
+                    filledSpace.Add(tile);
 
                     foreach (Vector2Int direction in m_directionsToVisit)
                     {
                         Vector2Int neighbourTile = tile + direction;
 
-                        if (m_region.Contains(neighbourTile))
+                        if (neighbourTile.x >= roomData.LeftBorder && neighbourTile.x <= roomData.RightBorder &&
+                            neighbourTile.y >= roomData.BottomBorder && neighbourTile.y <= roomData.TopBorder)
                         {
-                            if (!tiles.Contains(neighbourTile) && !emptySpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                            if (!roomData.ContainsTile(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                                 tilesToVisit.Enqueue(neighbourTile);
                         }
                         else
@@ -74,12 +61,10 @@ namespace MagmaHeart.Core.Dungeon
                 }
 
                 if (!touchesBorder)
-                    tiles.UnionWith(emptySpace);
+                    roomData.AddTiles(filledSpace);
 
-                emptyTiles.ExceptWith(emptySpace);
+                emptyTiles.ExceptWith(filledSpace);
             }
-
-            return tiles;
         }
     }
 }

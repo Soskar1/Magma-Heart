@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = System.Random;
 
@@ -7,15 +6,13 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class DiffusionLimitedAggregatoinRoomGenerator : IRoomGenerator
     {
-        private readonly RoomData m_roomData;
         private readonly RandomWalk m_randomWalk;
         private readonly int m_tilesToPlace;
         private const int START_POINT_OFFSET = 12;
         private readonly Random m_random;
 
-        public DiffusionLimitedAggregatoinRoomGenerator(RoomData roomData, int tilesToPlace)
+        public DiffusionLimitedAggregatoinRoomGenerator(int tilesToPlace)
         {
-            m_roomData = roomData;
             m_tilesToPlace = tilesToPlace;
             m_randomWalk = new RandomWalk(new List<Vector2Int>() {
                 Vector2Int.left,
@@ -31,23 +28,19 @@ namespace MagmaHeart.Core.Dungeon
             m_random = new Random();
         }
 
-        public HashSet<Vector2Int> GenerateRoom(in HashSet<Vector2Int> generatedTiles)
+        public void GenerateRoom(in RoomData roomData)
         {
-            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>() { m_roomData.WorldPosition };
             int tilesToPlace = m_tilesToPlace;
 
-            if (generatedTiles != null)
-                tiles = generatedTiles;
+            int localLeftBorder = roomData.LeftMostTile.x - START_POINT_OFFSET;
+            int localRightBorder = roomData.RightMostTile.x + START_POINT_OFFSET;
+            int localBottomBorder = roomData.BottomMostTile.y - START_POINT_OFFSET;
+            int localTopBorder = roomData.TopMostTile.y + START_POINT_OFFSET;
 
-            int localLeftBorder = generatedTiles.Min(vec => vec.x) - START_POINT_OFFSET;
-            int localRightBorder = generatedTiles.Max(vec => vec.x) + START_POINT_OFFSET;
-            int localBottomBorder = generatedTiles.Min(vec => vec.y) - START_POINT_OFFSET;
-            int localTopBorder = generatedTiles.Max(vec => vec.y) + START_POINT_OFFSET;
-
-            localLeftBorder = Mathf.Max(localLeftBorder, m_roomData.LeftBorder);
-            localRightBorder = Mathf.Min(localRightBorder, m_roomData.RightBorder);
-            localBottomBorder = Mathf.Max(localBottomBorder, m_roomData.BottomBorder);
-            localTopBorder = Mathf.Min(localTopBorder, m_roomData.TopBorder);
+            localLeftBorder = Mathf.Max(localLeftBorder, roomData.LeftBorder);
+            localRightBorder = Mathf.Min(localRightBorder, roomData.RightBorder);
+            localBottomBorder = Mathf.Max(localBottomBorder, roomData.BottomBorder);
+            localTopBorder = Mathf.Min(localTopBorder, roomData.TopBorder);
 
             while (tilesToPlace > 0)
             {
@@ -82,27 +75,25 @@ namespace MagmaHeart.Core.Dungeon
                     if (newPosition.y < localBottomBorder)
                         newPosition.y = localTopBorder;
 
-                    if (!tiles.Contains(currentPosition) && tiles.Contains(newPosition))
+                    if (!roomData.ContainsTile(currentPosition) && roomData.ContainsTile(newPosition))
                         hitTile = true;
                     else
                         currentPosition = newPosition;
                 }
 
-                tiles.Add(currentPosition);
+                roomData.AddTile(currentPosition);
                 --tilesToPlace;
 
                 if (currentPosition.x - START_POINT_OFFSET < localLeftBorder)
-                    localLeftBorder = Mathf.Max(currentPosition.x - START_POINT_OFFSET, m_roomData.LeftBorder);
+                    localLeftBorder = Mathf.Max(currentPosition.x - START_POINT_OFFSET, roomData.LeftBorder);
                 else if (currentPosition.x + START_POINT_OFFSET > localRightBorder)
-                    localRightBorder = Mathf.Min(currentPosition.x + START_POINT_OFFSET, m_roomData.RightBorder);
+                    localRightBorder = Mathf.Min(currentPosition.x + START_POINT_OFFSET, roomData.RightBorder);
                 
                 if (currentPosition.y - START_POINT_OFFSET < localBottomBorder)
-                    localBottomBorder = Mathf.Max(currentPosition.y - START_POINT_OFFSET, m_roomData.BottomBorder);
+                    localBottomBorder = Mathf.Max(currentPosition.y - START_POINT_OFFSET, roomData.BottomBorder);
                 else if (currentPosition.y + START_POINT_OFFSET > localTopBorder)
-                    localTopBorder = Mathf.Min(currentPosition.y + START_POINT_OFFSET, m_roomData.TopBorder);
+                    localTopBorder = Mathf.Min(currentPosition.y + START_POINT_OFFSET, roomData.TopBorder);
             }
-
-            return tiles;
         }
     }
 }

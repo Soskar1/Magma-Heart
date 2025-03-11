@@ -5,12 +5,10 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class UnreachableTileDesctructor : IRoomModifier
     {
-        private readonly RoomData m_roomData;
         private List<Vector2Int> m_directionsToVisit;
 
-        public UnreachableTileDesctructor(RoomData roomData)
+        public UnreachableTileDesctructor()
         {
-            m_roomData = roomData;
             m_directionsToVisit = new List<Vector2Int>()
             {
                 Vector2Int.right,
@@ -20,23 +18,11 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public HashSet<Vector2Int> ModifyRoom(in HashSet<Vector2Int> tiles)
+        public void ModifyRoom(in RoomData roomData)
         {
-            if (tiles == null)
-            {
-                Debug.LogWarning("tiles is null. Returning new empty HashSet object");
-                return new HashSet<Vector2Int>();
-            }
-
-            if (tiles.Count == 0)
-            {
-                Debug.LogWarning("tiles is empty. Terminating job");
-                return tiles;
-            }
-
             HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
             Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
-            tilesToVisit.Enqueue(m_roomData.WorldPosition);
+            tilesToVisit.Enqueue(roomData.WorldPosition);
 
             while (tilesToVisit.Count > 0)
             {
@@ -47,12 +33,12 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (tiles.Contains(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                    if (roomData.ContainsTile(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
             }
 
-            return visitedTiles;
+            roomData.SetTiles(visitedTiles);
         }
     }
 }
