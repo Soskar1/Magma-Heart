@@ -55,42 +55,42 @@ namespace MagmaHeart.Core.Dungeon
 
         public void AddNode(in RoomData node)
         {
-            if (!m_nodes.Contains(node))
-                m_nodes.Add(node);
+            if (!Nodes.Contains(node))
+                Nodes.Add(node);
         }
 
         public void AddEdge(in RoomData first, in RoomData second)
         {
-            if (!m_nodes.Contains(first))
+            if (!Nodes.Contains(first))
             {
                 Debug.LogWarning($"[LocationGraph.AddEdge] Graph does not contain {first} room node. Adding it to graph");
-                m_nodes.Add(first);
+                Nodes.Add(first);
             }
 
-            if (!m_nodes.Contains(second))
+            if (!Nodes.Contains(second))
             {
                 Debug.LogWarning($"[LocationGraph.AddEdge] Graph does not contain {second} room node. Adding it to graph");
-                m_nodes.Add(second);
+                Nodes.Add(second);
             }
 
             RoomConnectionEdge newEdge = new RoomConnectionEdge(first, second);
 
-            if (!m_edges[first].Any(edge => edge.Equals(newEdge)))
+            if (!Edges[first].Any(edge => edge.Equals(newEdge)))
             {
-                m_edges[first].Add(newEdge);
-                m_edges[second].Add(newEdge);
+                Edges[first].Add(newEdge);
+                Edges[second].Add(newEdge);
             }
         }
 
         public void RemoveEdge(in RoomData first, in RoomData second)
         {
-            if (!m_nodes.Contains(first))
+            if (!Nodes.Contains(first))
             {
                 Debug.LogWarning($"[LocationGraph.RemoveEdge] Graph does not contain {first} room node. Returning");
                 return;
             }
 
-            if (!m_nodes.Contains(second))
+            if (!Nodes.Contains(second))
             {
                 Debug.LogWarning($"[LocationGraph.RemoveEdge] Graph does not contain {second} room node. Returning");
                 return;
@@ -98,8 +98,8 @@ namespace MagmaHeart.Core.Dungeon
 
             RoomConnectionEdge edgeToRemove = new RoomConnectionEdge(first, second);
 
-            m_edges[first].RemoveAll(edge => edge.Equals(edgeToRemove));
-            m_edges[second].RemoveAll(edge => edge.Equals(edgeToRemove));
+            Edges[first].RemoveAll(edge => edge.Equals(edgeToRemove));
+            Edges[second].RemoveAll(edge => edge.Equals(edgeToRemove));
         }
     }
 }
