@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Threading.Tasks;
+using System.Linq;
+using Unity.VisualScripting;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -41,6 +43,7 @@ namespace MagmaHeart.Core.Dungeon
 
         [Header("Location graph")]
         [SerializeField] private bool m_locationGraphDebug;
+        [SerializeField] private bool m_mstTreeDebug;
         [SerializeField] private GameObject m_roomNodeDebug;
         [SerializeField] private GameObject m_roomEdgeDebug;
         private List<GameObject> m_debugElements = new List<GameObject>();
@@ -58,7 +61,7 @@ namespace MagmaHeart.Core.Dungeon
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             List<HashSet<Vector2Int>> generatedTiles = new List<HashSet<Vector2Int>>();
-            List<RoomData> roomDatas = new List<RoomData>();
+            HashSet<RoomData> roomDatas = new HashSet<RoomData>();
 
             if (m_debugElements.Count > 0)
                 foreach (var obj in m_debugElements)
@@ -90,25 +93,53 @@ namespace MagmaHeart.Core.Dungeon
             LocationGraph graph = graphCreator.CreateGraph();
 
             if (m_locationGraphDebug)
+                GraphDebug(graph);
+
+            // MST
+            LocationGraph mstGraph = new LocationGraph();
+            RoomData startNode = roomDatas.ElementAt(Random.Range(0, roomDatas.Count));
+            mstGraph.TryAddNode(startNode);
+
+            while (mstGraph.NodeCount < graph.NodeCount)
             {
-                foreach (RoomData room in graph.Nodes)
-                {
-                    GameObject nodeDebugInstance = Instantiate(m_roomNodeDebug, room.RoomSpace.center, Quaternion.identity);
-                    m_debugElements.Add(nodeDebugInstance);
+                HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
 
-                    foreach (RoomConnectionEdge edge in graph.Edges[room])
-                    {
-                        GameObject edgeDebugInstance = Instantiate(m_roomEdgeDebug, Vector3.zero, Quaternion.identity);
-                        m_debugElements.Add(edgeDebugInstance);
+                foreach (RoomData roomData in mstGraph.Nodes)
+                    edges.UnionWith(graph.EdgesFromRoom[roomData]);
 
-                        LineRenderer[] edgeRenderers = edgeDebugInstance.GetComponentsInChildren<LineRenderer>();
-                        foreach (LineRenderer edgeRenderer in edgeRenderers)
-                            edgeRenderer.SetPositions(new Vector3[2] {edge.First.RoomSpace.center, edge.Second.RoomSpace.center});
-                    }
-                }
+                edges.ExceptWith(mstGraph.Edges);
+
+                RoomConnectionEdge minEdge = edges.First();
+                foreach (RoomConnectionEdge edge in edges)
+                    if (edge.Cost < minEdge.Cost && !mstGraph.ContainsEdge(edge) && (!mstGraph.Nodes.Contains(edge.First) || !mstGraph.Nodes.Contains(edge.Second)))
+                        minEdge = edge;
+
+                mstGraph.TryAddEdge(minEdge);
             }
 
+            if (m_mstTreeDebug)
+                GraphDebug(mstGraph);
+
             StartCoroutine(m_renderer.DrawTiles(generatedTiles));
+        }
+
+        private void GraphDebug(in LocationGraph graph)
+        {
+            foreach (RoomData room in graph.Nodes)
+            {
+                GameObject nodeDebugInstance = Instantiate(m_roomNodeDebug, room.RoomSpace.center, Quaternion.identity);
+                m_debugElements.Add(nodeDebugInstance);
+
+                foreach (RoomConnectionEdge edge in graph.Edges)
+                {
+                    GameObject edgeDebugInstance = Instantiate(m_roomEdgeDebug, Vector3.zero, Quaternion.identity);
+                    m_debugElements.Add(edgeDebugInstance);
+
+                    LineRenderer[] edgeRenderers = edgeDebugInstance.GetComponentsInChildren<LineRenderer>();
+                    foreach (LineRenderer edgeRenderer in edgeRenderers)
+                        edgeRenderer.SetPositions(new Vector3[2] { edge.First.RoomSpace.center, edge.Second.RoomSpace.center });
+                }
+            }
         }
 
         private HashSet<Vector2Int> GenerateRoom(RoomData roomData)

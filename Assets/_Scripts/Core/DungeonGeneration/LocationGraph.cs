@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -44,62 +45,52 @@ namespace MagmaHeart.Core.Dungeon
 
     public class LocationGraph
     {
-        public List<RoomData> Nodes { get; private set; }
-        public Dictionary<RoomData, List<RoomConnectionEdge>> Edges { get; private set; }
+        public HashSet<RoomData> Nodes { get; private set; }
+        public HashSet<RoomConnectionEdge> Edges { get; private set; }
+        public Dictionary<RoomData, HashSet<RoomConnectionEdge>> EdgesFromRoom { get; private set; }
+        public int NodeCount => Nodes.Count;
 
-        public LocationGraph(in List<RoomData> nodes, in Dictionary<RoomData, List<RoomConnectionEdge>> edges)
+        public LocationGraph()
+        {
+            Nodes = new HashSet<RoomData>();
+            Edges = new HashSet<RoomConnectionEdge>();
+            EdgesFromRoom = new Dictionary<RoomData, HashSet<RoomConnectionEdge>>();
+        }
+
+        public LocationGraph(in HashSet<RoomData> nodes, in HashSet<RoomConnectionEdge> edges)
         {
             Nodes = nodes;
             Edges = edges;
+            EdgesFromRoom = new Dictionary<RoomData, HashSet<RoomConnectionEdge>>();
+
+            foreach (RoomData node in Nodes)
+                EdgesFromRoom.Add(node, new HashSet<RoomConnectionEdge>());
+
+            foreach (RoomConnectionEdge edge in Edges)
+            {
+                EdgesFromRoom[edge.First].Add(edge);
+                EdgesFromRoom[edge.Second].Add(edge);
+            }
         }
 
-        public void AddNode(in RoomData node)
+        public void TryAddNode(in RoomData node)
         {
-            if (!Nodes.Contains(node))
-                Nodes.Add(node);
+            Nodes.Add(node);
+            EdgesFromRoom.TryAdd(node, new HashSet<RoomConnectionEdge>());
         }
 
-        public void AddEdge(in RoomData first, in RoomData second)
+        public void TryAddEdge(in RoomConnectionEdge edge)
         {
-            if (!Nodes.Contains(first))
+            if (!Edges.Contains(edge))
             {
-                Debug.LogWarning($"[LocationGraph.AddEdge] Graph does not contain {first} room node. Adding it to graph");
-                Nodes.Add(first);
-            }
+                TryAddNode(edge.First);
+                TryAddNode(edge.Second);
 
-            if (!Nodes.Contains(second))
-            {
-                Debug.LogWarning($"[LocationGraph.AddEdge] Graph does not contain {second} room node. Adding it to graph");
-                Nodes.Add(second);
-            }
-
-            RoomConnectionEdge newEdge = new RoomConnectionEdge(first, second);
-
-            if (!Edges[first].Any(edge => edge.Equals(newEdge)))
-            {
-                Edges[first].Add(newEdge);
-                Edges[second].Add(newEdge);
+                Edges.Add(edge);
+                EdgesFromRoom[edge.First].Add(edge);
+                EdgesFromRoom[edge.Second].Add(edge);
             }
         }
-
-        public void RemoveEdge(in RoomData first, in RoomData second)
-        {
-            if (!Nodes.Contains(first))
-            {
-                Debug.LogWarning($"[LocationGraph.RemoveEdge] Graph does not contain {first} room node. Returning");
-                return;
-            }
-
-            if (!Nodes.Contains(second))
-            {
-                Debug.LogWarning($"[LocationGraph.RemoveEdge] Graph does not contain {second} room node. Returning");
-                return;
-            }
-
-            RoomConnectionEdge edgeToRemove = new RoomConnectionEdge(first, second);
-
-            Edges[first].RemoveAll(edge => edge.Equals(edgeToRemove));
-            Edges[second].RemoveAll(edge => edge.Equals(edgeToRemove));
-        }
+        public bool ContainsEdge(in RoomConnectionEdge edge) => Edges.Contains(edge);
     }
 }

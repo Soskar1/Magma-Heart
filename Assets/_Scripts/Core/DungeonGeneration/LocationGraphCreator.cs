@@ -5,26 +5,23 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class LocationGraphCreator
     {
-        private readonly List<RoomData> m_rooms;
+        private readonly HashSet<RoomData> m_rooms;
 
-        public LocationGraphCreator(List<RoomData> rooms) => m_rooms = rooms;
+        public LocationGraphCreator(HashSet<RoomData> rooms) => m_rooms = rooms;
 
         public LocationGraph CreateGraph()
         {
-            Dictionary<RoomData, List<RoomConnectionEdge>> edges = new Dictionary<RoomData, List<RoomConnectionEdge>>();
+            HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
 
             foreach (RoomData roomData in m_rooms)
-            {
-                List<RoomConnectionEdge> edgesToNeighbours = CreateEdges(roomData);
-                edges.Add(roomData, edgesToNeighbours);
-            }
+                edges.UnionWith(CreateEdges(roomData));
 
             return new LocationGraph(m_rooms, edges);
         }
 
-        private List<RoomConnectionEdge> CreateEdges(in RoomData roomData)
+        private HashSet<RoomConnectionEdge> CreateEdges(in RoomData roomData)
         {
-            List<RoomConnectionEdge> edges = new List<RoomConnectionEdge>();
+            HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
             BoundsInt roomSpace = roomData.RoomSpace;
 
             foreach (RoomData otherRoom in m_rooms)
