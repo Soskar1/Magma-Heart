@@ -45,8 +45,11 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private bool m_mstTreeDebug;
         [SerializeField] private GameObject m_roomNodeDebug;
         [SerializeField] private GameObject m_roomEdgeDebug;
-        private List<GameObject> m_debugElements = new List<GameObject>();
+        
+        [Header("Corridor generator")]
+        [SerializeField] private int m_corridorSize;
 
+        private List<GameObject> m_debugElements = new List<GameObject>();
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
         private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
 
@@ -126,8 +129,7 @@ namespace MagmaHeart.Core.Dungeon
                 GraphDebug(mstGraph);
 
             await Task.Run(() => {
-                // Connect rooms with corridors
-                CorridorGenerator corridorGenerator = new CorridorGenerator();
+                CorridorGenerator corridorGenerator = new CorridorGenerator(m_corridorSize);
                 foreach (RoomConnectionEdge edge in mstGraph.Edges)
                 {
                     HashSet<Vector2Int> corridorTiles = corridorGenerator.GenerateCorridor(edge.First, edge.Second);

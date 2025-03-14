@@ -5,6 +5,18 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class CorridorGenerator
     {
+        private List<Vector2Int> m_tilesToGrab;
+
+        public CorridorGenerator(in int corridorSize)
+        {
+            m_tilesToGrab = new List<Vector2Int>();
+
+            for (int x = -corridorSize; x <= corridorSize; x++)
+                for (int y = -corridorSize; y <= corridorSize; y++)
+                    if (x * x + y * y <= corridorSize * corridorSize)
+                        m_tilesToGrab.Add(new Vector2Int(x, y));
+        }
+
         public HashSet<Vector2Int> GenerateCorridor(in RoomData room1, in RoomData room2)
         {
             HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
@@ -16,9 +28,11 @@ namespace MagmaHeart.Core.Dungeon
             Vector2Int currentTile = entryPoint2;
             Vector2 currentPosition = entryPoint2;
 
-            while ((currentTile - entryPoint1).magnitude > 1.25f)
+            while ((currentTile - entryPoint1).magnitude > 1.0f)
             {
-                generatedTiles.Add(currentTile);
+                foreach (Vector2Int localPos in m_tilesToGrab)
+                    generatedTiles.Add(currentTile + localPos);
+
                 currentPosition += direction.normalized;
                 currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
             }
