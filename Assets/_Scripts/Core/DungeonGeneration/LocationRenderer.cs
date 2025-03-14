@@ -19,22 +19,17 @@ namespace MagmaHeart.Core.Dungeon
             m_wallTile = wallTile;
         }
 
-        public IEnumerator DrawTiles(HashSet<RoomData> roomDatas, HashSet<Vector2Int> corridors)
+        public IEnumerator DrawTiles(HashSet<Vector2Int> generatedTiles)
         {
-            HashSet<Vector2Int> locationTiles = corridors;
-
-            foreach (RoomData roomData in roomDatas)
-                locationTiles.UnionWith(roomData.GetTilesCopy());
-
             int renderedTiles = 0;
-            foreach (Vector2Int tile in locationTiles)
+            foreach (Vector2Int tile in generatedTiles)
             {
                 Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)tile);
 
-                if (!locationTiles.Contains(tile + Vector2Int.up) || !locationTiles.Contains(tile + Vector2Int.right) ||
-                    !locationTiles.Contains(tile + Vector2Int.down) || !locationTiles.Contains(tile + Vector2Int.left) ||
-                    !locationTiles.Contains(tile + new Vector2Int(1, 1)) || !locationTiles.Contains(tile + new Vector2Int(1, -1)) ||
-                    !locationTiles.Contains(tile + new Vector2Int(-1, -1)) || !locationTiles.Contains(tile + new Vector2Int(-1, 1))) {
+                if (!generatedTiles.Contains(tile + Vector2Int.up) || !generatedTiles.Contains(tile + Vector2Int.right) ||
+                    !generatedTiles.Contains(tile + Vector2Int.down) || !generatedTiles.Contains(tile + Vector2Int.left) ||
+                    !generatedTiles.Contains(tile + new Vector2Int(1, 1)) || !generatedTiles.Contains(tile + new Vector2Int(1, -1)) ||
+                    !generatedTiles.Contains(tile + new Vector2Int(-1, -1)) || !generatedTiles.Contains(tile + new Vector2Int(-1, 1))) {
                     m_tilemap.SetTile(tilePosition, m_wallTile);
                 }
                 else

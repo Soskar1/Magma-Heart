@@ -84,7 +84,7 @@ namespace MagmaHeart.Core.Dungeon
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             HashSet<RoomData> roomDatas = new HashSet<RoomData>();
-            HashSet<Vector2Int> corridorTiles = new HashSet<Vector2Int>();
+            HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
 
             if (m_debugElements.Count > 0)
                 foreach (var obj in m_debugElements)
@@ -107,6 +107,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     RoomData roomData = GenerateRoom(space);
                     roomDatas.Add(roomData);
+                    generatedTiles.UnionWith(roomData.GetTilesCopy());
                 }
             });
 
@@ -171,13 +172,13 @@ namespace MagmaHeart.Core.Dungeon
 
                 while ((currentTile - entryPoint1).magnitude > 2.0)
                 {
-                    corridorTiles.Add(currentTile);
+                    generatedTiles.Add(currentTile);
                     currentPosition += direction.normalized;
                     currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
                 }
             }
 
-            StartCoroutine(m_renderer.DrawTiles(roomDatas, corridorTiles));
+            StartCoroutine(m_renderer.DrawTiles(generatedTiles));
         }
 
         private Vector2Int CreateEntryPoint(in RoomData roomData, in Vector2 direction)
