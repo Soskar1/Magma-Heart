@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -10,6 +8,13 @@ namespace MagmaHeart.Core.Dungeon
         public float Cost { get; private set; }
         public RoomData First { get; private set; }
         public RoomData Second { get; private set; }
+
+        public RoomConnectionEdge()
+        {
+            First = null;
+            Second = null;
+            Cost = Mathf.Infinity;
+        }
 
         public RoomConnectionEdge(in RoomData first, in RoomData second)
         {

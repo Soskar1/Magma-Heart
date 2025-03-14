@@ -128,12 +128,15 @@ namespace MagmaHeart.Core.Dungeon
 
                 edges.ExceptWith(mstGraph.Edges);
 
-                RoomConnectionEdge minEdge = edges.First();
+                RoomConnectionEdge minEdge = new RoomConnectionEdge();
                 foreach (RoomConnectionEdge edge in edges)
-                    if (edge.Cost < minEdge.Cost && !mstGraph.ContainsEdge(edge) && (!mstGraph.Nodes.Contains(edge.First) || !mstGraph.Nodes.Contains(edge.Second)))
+                    if (edge.Cost < minEdge.Cost && !mstGraph.ContainsEdge(edge) &&
+                        ((!mstGraph.Nodes.Contains(edge.First) && mstGraph.Nodes.Contains(edge.Second)) ||
+                        (!mstGraph.Nodes.Contains(edge.Second) && mstGraph.Nodes.Contains(edge.First))))
                         minEdge = edge;
-
-                mstGraph.TryAddEdge(minEdge);
+                
+                if (minEdge.Cost != Mathf.Infinity)
+                    mstGraph.TryAddEdge(minEdge);
             }
 
             if (m_mstTreeDebug)
