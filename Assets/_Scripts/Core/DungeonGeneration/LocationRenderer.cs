@@ -10,6 +10,7 @@ namespace MagmaHeart.Core.Dungeon
         private readonly Tilemap m_tilemap;
         private readonly TileBase m_floorTile;
         private readonly TileBase m_wallTile;
+        private readonly int m_tilesPerFrame = 128;
 
         public LocationRenderer(in Tilemap tilemap, in TileBase floorTile, in TileBase wallTile)
         {
@@ -18,29 +19,33 @@ namespace MagmaHeart.Core.Dungeon
             m_wallTile = wallTile;
         }
 
-        public IEnumerator DrawTiles(HashSet<RoomData> roomDatas)
+        public IEnumerator DrawTiles(HashSet<RoomData> roomDatas, HashSet<Vector2Int> corridors)
         {
+            HashSet<Vector2Int> locationTiles = corridors;
+
             foreach (RoomData roomData in roomDatas)
+                locationTiles.UnionWith(roomData.GetTilesCopy());
+
+            int renderedTiles = 0;
+            foreach (Vector2Int tile in locationTiles)
             {
-                HashSet<Vector2Int> tiles = roomData.GetTilesCopy();
+                Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)tile);
 
-                foreach (Vector2Int tile in tiles)
+                if (!locationTiles.Contains(tile + Vector2Int.up) || !locationTiles.Contains(tile + Vector2Int.right) ||
+                    !locationTiles.Contains(tile + Vector2Int.down) || !locationTiles.Contains(tile + Vector2Int.left) ||
+                    !locationTiles.Contains(tile + new Vector2Int(1, 1)) || !locationTiles.Contains(tile + new Vector2Int(1, -1)) ||
+                    !locationTiles.Contains(tile + new Vector2Int(-1, -1)) || !locationTiles.Contains(tile + new Vector2Int(-1, 1))) {
+                    m_tilemap.SetTile(tilePosition, m_wallTile);
+                }
+                else
                 {
-                    Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)tile);
-
-                    if (!roomData.ContainsTile(tile + Vector2Int.up) || !roomData.ContainsTile(tile + Vector2Int.right) ||
-                        !roomData.ContainsTile(tile + Vector2Int.down) || !roomData.ContainsTile(tile + Vector2Int.left) ||
-                        !roomData.ContainsTile(tile + new Vector2Int(1, 1)) || !roomData.ContainsTile(tile + new Vector2Int(1, -1)) ||
-                        !roomData.ContainsTile(tile + new Vector2Int(-1, -1)) || !roomData.ContainsTile(tile + new Vector2Int(-1, 1))) {
-                        m_tilemap.SetTile(tilePosition, m_wallTile);
-                    }
-                    else
-                    {
-                        m_tilemap.SetTile(tilePosition, m_floorTile);
-                    }
+                    m_tilemap.SetTile(tilePosition, m_floorTile);
                 }
 
-                yield return new WaitForEndOfFrame();
+                ++renderedTiles;
+
+                if (renderedTiles % m_tilesPerFrame == 0)
+                    yield return new WaitForEndOfFrame();
             }
         }
 
