@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.Dungeon
         private readonly Tilemap m_tilemap;
         private readonly TileBase m_floorTile;
         private readonly TileBase m_wallTile;
-        private readonly int m_tilesPerFrame = 128;
+        private readonly int m_tilesPerFrame = 256;
 
         public LocationRenderer(in Tilemap tilemap, in TileBase floorTile, in TileBase wallTile)
         {

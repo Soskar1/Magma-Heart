@@ -43,10 +43,8 @@ namespace MagmaHeart.Core.Dungeon
         [Header("Location graph")]
         [SerializeField] private bool m_locationGraphDebug;
         [SerializeField] private bool m_mstTreeDebug;
-        [SerializeField] private bool m_corridorDebug;
         [SerializeField] private GameObject m_roomNodeDebug;
         [SerializeField] private GameObject m_roomEdgeDebug;
-        [SerializeField] private GameObject m_corridorEntryPointDebug;
         private List<GameObject> m_debugElements = new List<GameObject>();
 
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
@@ -83,6 +81,7 @@ namespace MagmaHeart.Core.Dungeon
             BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
+            
             HashSet<RoomData> roomDatas = new HashSet<RoomData>();
             HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
 
@@ -119,85 +118,24 @@ namespace MagmaHeart.Core.Dungeon
                 GraphDebug(graph);
 
             // MST
-            LocationGraph mstGraph = new LocationGraph();
+            MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
             RoomData startNode = roomDatas.ElementAt(Random.Range(0, roomDatas.Count));
-            mstGraph.TryAddNode(startNode);
-
-            while (mstGraph.NodeCount < graph.NodeCount)
-            {
-                HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
-
-                foreach (RoomData roomData in mstGraph.Nodes)
-                    edges.UnionWith(graph.EdgesFromRoom[roomData]);
-
-                edges.ExceptWith(mstGraph.Edges);
-
-                RoomConnectionEdge minEdge = new RoomConnectionEdge();
-                foreach (RoomConnectionEdge edge in edges)
-                    if (edge.Cost < minEdge.Cost && !mstGraph.ContainsEdge(edge) &&
-                        ((!mstGraph.Nodes.Contains(edge.First) && mstGraph.Nodes.Contains(edge.Second)) ||
-                        (!mstGraph.Nodes.Contains(edge.Second) && mstGraph.Nodes.Contains(edge.First))))
-                        minEdge = edge;
-                
-                if (minEdge.Cost != Mathf.Infinity)
-                    mstGraph.TryAddEdge(minEdge);
-            }
+            LocationGraph mstGraph = mstCreator.ExtractMinimalSpanningTree(graph, startNode);
 
             if (m_mstTreeDebug)
                 GraphDebug(mstGraph);
 
-            // Connect rooms with corridors
-            foreach (RoomConnectionEdge edge in mstGraph.Edges)
-            {
-                RoomData first = edge.First;
-                RoomData second = edge.Second;
-
-                Vector2 direction = first.WorldPosition - second.WorldPosition;
-
-                Vector2Int entryPoint1 = CreateEntryPoint(first, -direction.normalized);
-                Vector2Int entryPoint2 = CreateEntryPoint(second, direction.normalized);
-
-                if (m_corridorDebug)
+            await Task.Run(() => {
+                // Connect rooms with corridors
+                CorridorGenerator corridorGenerator = new CorridorGenerator();
+                foreach (RoomConnectionEdge edge in mstGraph.Edges)
                 {
-                    GameObject corridorEntryPoint1 = Instantiate(m_corridorEntryPointDebug, new Vector3(entryPoint1.x, entryPoint1.y), Quaternion.identity);
-                    GameObject corridorEntryPoint2 = Instantiate(m_corridorEntryPointDebug, new Vector3(entryPoint2.x, entryPoint2.y), Quaternion.identity);
-
-                    m_debugElements.Add(corridorEntryPoint1);
-                    m_debugElements.Add(corridorEntryPoint2);
+                    HashSet<Vector2Int> corridorTiles = corridorGenerator.GenerateCorridor(edge.First, edge.Second);
+                    generatedTiles.UnionWith(corridorTiles);
                 }
-
-                // Join entry points
-                Vector2Int currentTile = entryPoint2;
-                Vector2 currentPosition = entryPoint2;
-
-                while ((currentTile - entryPoint1).magnitude > 2.0)
-                {
-                    generatedTiles.Add(currentTile);
-                    currentPosition += direction.normalized;
-                    currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
-                }
-            }
+            });
 
             StartCoroutine(m_renderer.DrawTiles(generatedTiles));
-        }
-
-        private Vector2Int CreateEntryPoint(in RoomData roomData, in Vector2 direction)
-        {
-            Vector2Int currentTile = roomData.WorldPosition;
-            Vector2Int lastVisitedTile = currentTile;
-            Vector2 currentPosition = roomData.WorldPosition;
-
-            while (currentPosition.x > roomData.LeftMostTile.x && currentPosition.x < roomData.RightMostTile.x &&
-                currentPosition.y > roomData.BottomMostTile.y && currentPosition.y < roomData.TopMostTile.y)
-            {
-                if (roomData.ContainsTile(currentTile))
-                    lastVisitedTile = currentTile;
-
-                currentPosition += direction;
-                currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
-            }
-
-            return lastVisitedTile;
         }
 
         private void GraphDebug(in LocationGraph graph)
