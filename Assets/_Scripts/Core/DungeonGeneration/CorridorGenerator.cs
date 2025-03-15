@@ -6,6 +6,7 @@ namespace MagmaHeart.Core.Dungeon
     public class CorridorGenerator
     {
         private List<Vector2Int> m_tilesToGrab;
+        private const int OFFSET = 4;
 
         public CorridorGenerator(in int corridorSize)
         {
@@ -61,7 +62,8 @@ namespace MagmaHeart.Core.Dungeon
                 currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
             }
 
-            return lastVisitedTile;
+            currentPosition = (Vector2)lastVisitedTile - direction * OFFSET;
+            return new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
         }
     }
 }
