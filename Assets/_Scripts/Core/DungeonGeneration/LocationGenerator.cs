@@ -48,6 +48,9 @@ namespace MagmaHeart.Core.Dungeon
         
         [Header("Corridor generator")]
         [SerializeField] private int m_corridorSize;
+        [SerializeField] private int m_pointsPerSegment;
+        [SerializeField] private List<GameObject> m_curvePoints;
+        [SerializeField] private GameObject m_curveDebug;
 
         private List<GameObject> m_debugElements = new List<GameObject>();
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
@@ -136,6 +139,19 @@ namespace MagmaHeart.Core.Dungeon
                     generatedTiles.UnionWith(corridorTiles);
                 }
             });
+
+            List<Vector2> curve = new List<Vector2>();
+            foreach (var obj in m_curvePoints)
+                curve.Add(obj.transform.position);
+
+            CurveGenerator curveGenerator = new CurveGenerator();
+            curve = curveGenerator.GenerateSmoothCurve(curve, m_pointsPerSegment);
+
+            foreach (var v in curve)
+            {
+                var debug = Instantiate(m_curveDebug, v, Quaternion.identity);
+                m_debugElements.Add(debug);
+            }
 
             StartCoroutine(m_renderer.DrawTiles(generatedTiles));
         }
