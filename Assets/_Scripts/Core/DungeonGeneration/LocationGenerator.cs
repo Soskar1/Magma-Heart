@@ -146,16 +146,16 @@ namespace MagmaHeart.Core.Dungeon
             {
                 GameObject nodeDebugInstance = Instantiate(m_roomNodeDebug, room.RoomSpace.center, Quaternion.identity);
                 m_debugElements.Add(nodeDebugInstance);
+            }
 
-                foreach (RoomConnectionEdge edge in graph.Edges)
-                {
-                    GameObject edgeDebugInstance = Instantiate(m_roomEdgeDebug, Vector3.zero, Quaternion.identity);
-                    m_debugElements.Add(edgeDebugInstance);
+            foreach (RoomConnectionEdge edge in graph.Edges)
+            {
+                GameObject edgeDebugInstance = Instantiate(m_roomEdgeDebug, Vector3.zero, Quaternion.identity);
+                m_debugElements.Add(edgeDebugInstance);
 
-                    LineRenderer[] edgeRenderers = edgeDebugInstance.GetComponentsInChildren<LineRenderer>();
-                    foreach (LineRenderer edgeRenderer in edgeRenderers)
-                        edgeRenderer.SetPositions(new Vector3[2] { edge.First.RoomSpace.center, edge.Second.RoomSpace.center });
-                }
+                LineRenderer[] edgeRenderers = edgeDebugInstance.GetComponentsInChildren<LineRenderer>();
+                foreach (LineRenderer edgeRenderer in edgeRenderers)
+                    edgeRenderer.SetPositions(new Vector3[2] { edge.First.RoomSpace.center, edge.Second.RoomSpace.center });
             }
         }
 

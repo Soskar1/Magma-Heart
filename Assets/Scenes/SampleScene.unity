@@ -826,7 +826,7 @@ MonoBehaviour:
   m_xBorderOffset: 5
   m_yBorderOffset: 5
   m_locationGraphDebug: 0
-  m_mstTreeDebug: 0
+  m_mstTreeDebug: 1
   m_roomNodeDebug: {fileID: 8088245913244531588, guid: 321ae127b960ae447877a8f6637be67d, type: 3}
   m_roomEdgeDebug: {fileID: 7518519895155951508, guid: 0be0476e43e7b4e44b1e3ce03c06bde3, type: 3}
   m_corridorSize: 3
