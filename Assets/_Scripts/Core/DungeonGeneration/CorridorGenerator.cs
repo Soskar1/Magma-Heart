@@ -27,14 +27,19 @@ namespace MagmaHeart.Core.Dungeon
 
             Vector2Int currentTile = entryPoint2;
             Vector2 currentPosition = entryPoint2;
+            float currentMagnitude = (currentTile - entryPoint1).magnitude;
+            float previousMagnitude = currentMagnitude;
 
-            while ((currentTile - entryPoint1).magnitude > 1.0f)
+            while (currentMagnitude <= previousMagnitude)
             {
                 foreach (Vector2Int localPos in m_tilesToGrab)
                     generatedTiles.Add(currentTile + localPos);
 
                 currentPosition += direction.normalized;
                 currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
+
+                previousMagnitude = currentMagnitude;
+                currentMagnitude = (currentTile - entryPoint1).magnitude;
             }
 
             return generatedTiles;
