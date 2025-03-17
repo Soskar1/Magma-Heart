@@ -9,10 +9,10 @@ namespace MagmaHeart.Core.Dungeon
         private readonly List<Vector2Int> m_directions;
         private readonly Random m_random;
 
-        public RandomWalk(in List<Vector2Int> directions)
+        public RandomWalk(in Random random, in List<Vector2Int> directions)
         {
             m_directions = directions;
-            m_random = new Random();
+            m_random = random;
         }
 
         public Vector2Int TakeRandomDirection() => m_directions[m_random.Next(m_directions.Count)];

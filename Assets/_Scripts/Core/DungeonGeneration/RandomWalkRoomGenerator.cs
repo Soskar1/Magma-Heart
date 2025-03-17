@@ -10,17 +10,17 @@ namespace MagmaHeart.Core.Dungeon
         private readonly int m_randomWalkIterations = 0;
         private readonly Random m_random;
 
-        public RandomWalkRoomGenerator(in int randomWalkIterations)
+        public RandomWalkRoomGenerator(in Random random, in int randomWalkIterations)
         {
             m_randomWalkIterations = randomWalkIterations;
-            m_randomWalk = new RandomWalk(new List<Vector2Int>() {
+            m_randomWalk = new RandomWalk(random, new List<Vector2Int>() {
                 Vector2Int.left,
                 Vector2Int.right,
                 Vector2Int.up,
                 Vector2Int.down
             });
 
-            m_random = new Random();
+            m_random = random;
         }
 
         public void GenerateRoom(in RoomData roomData)

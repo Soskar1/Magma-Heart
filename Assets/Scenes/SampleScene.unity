@@ -813,6 +813,8 @@ MonoBehaviour:
   m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
   m_xBorderSize: 400
   m_yBorderSize: 400
+  m_useSeed: 1
+  m_seed: 35789
   m_randomWalkIterations: 200
   m_xSize: 20
   m_ySize: 20
@@ -830,7 +832,6 @@ MonoBehaviour:
   m_roomNodeDebug: {fileID: 8088245913244531588, guid: 321ae127b960ae447877a8f6637be67d, type: 3}
   m_roomEdgeDebug: {fileID: 7518519895155951508, guid: 0be0476e43e7b4e44b1e3ce03c06bde3, type: 3}
   m_corridorSize: 3
-  m_test: {fileID: 8088245913244531588, guid: 454448d2ac186894f901db4da3105823, type: 3}
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0

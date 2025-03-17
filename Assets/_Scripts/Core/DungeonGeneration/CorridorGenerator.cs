@@ -12,11 +12,11 @@ namespace MagmaHeart.Core.Dungeon
         private const int INITIAL_POINTS = 10;
         private readonly Random m_random;
 
-        public CorridorGenerator(in int corridorSize)
+        public CorridorGenerator(in Random random, in int corridorSize)
         {
             m_curveGenerator = new CurveGenerator();
             m_tilesToGrab = new List<Vector2Int>();
-            m_random = new Random();
+            m_random = random;
 
             for (int x = -corridorSize; x <= corridorSize; x++)
                 for (int y = -corridorSize; y <= corridorSize; y++)

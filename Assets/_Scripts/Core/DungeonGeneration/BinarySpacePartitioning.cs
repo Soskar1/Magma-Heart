@@ -1,21 +1,23 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = System.Random;
 
 namespace MagmaHeart.Core.Dungeon
 {
     public class BinarySpacePartitioning
     {
+        private readonly Random m_random;
         private readonly int m_xMinSize;
         private readonly int m_yMinSize;
         private readonly int m_maxPartitions;
 
-        public BinarySpacePartitioning(in int xMinSize, in int yMinSize, in int maxPartitions)
+        public BinarySpacePartitioning(in Random random, in int xMinSize, in int yMinSize, in int maxPartitions)
         {
             m_xMinSize = xMinSize;
             m_yMinSize = yMinSize;
             m_maxPartitions = maxPartitions;
+            m_random = random;
         }
 
         public List<BoundsInt> PerformBinarySpacePartitioning(in BoundsInt spaceToSplit)
@@ -39,7 +41,7 @@ namespace MagmaHeart.Core.Dungeon
                 BoundsInt space = spaceQueue.Dequeue();
                 (BoundsInt space1, BoundsInt space2) spaceTuple = (new BoundsInt(), new BoundsInt());
 
-                float random = Random.Range(0.0f, 1.0f);
+                double random = m_random.NextDouble();
 
                 if (random < 0.5f)
                 {
@@ -82,7 +84,7 @@ namespace MagmaHeart.Core.Dungeon
 
         private (BoundsInt, BoundsInt) SplitSpaceHorizontally(in BoundsInt spaceToSplit)
         {
-            int ySplitPoint = Random.Range(spaceToSplit.yMin + m_yMinSize, spaceToSplit.yMax - m_yMinSize);
+            int ySplitPoint = m_random.Next(spaceToSplit.yMin + m_yMinSize, spaceToSplit.yMax - m_yMinSize);
 
             BoundsInt space1 = new BoundsInt(spaceToSplit.position, new Vector3Int(spaceToSplit.size.x, ySplitPoint - spaceToSplit.yMin, spaceToSplit.size.z));
             BoundsInt space2 = new BoundsInt(new Vector3Int(spaceToSplit.position.x, space1.yMax, spaceToSplit.position.z), new Vector3Int(spaceToSplit.size.x, spaceToSplit.size.y - space1.size.y, spaceToSplit.size.z));
@@ -92,7 +94,7 @@ namespace MagmaHeart.Core.Dungeon
 
         private (BoundsInt, BoundsInt) SplitSpaceVertically(in BoundsInt spaceToSplit)
         {
-            int xSplitPoint = Random.Range(spaceToSplit.xMin + m_xMinSize, spaceToSplit.xMax - m_xMinSize);
+            int xSplitPoint = m_random.Next(spaceToSplit.xMin + m_xMinSize, spaceToSplit.xMax - m_xMinSize);
 
             BoundsInt space1 = new BoundsInt(spaceToSplit.position, new Vector3Int(xSplitPoint - spaceToSplit.xMin, spaceToSplit.size.y, spaceToSplit.size.z));
             BoundsInt space2 = new BoundsInt(new Vector3Int(space1.xMax, spaceToSplit.position.y, spaceToSplit.position.z), new Vector3Int(spaceToSplit.size.x - space1.size.x, spaceToSplit.size.y, spaceToSplit.size.z));

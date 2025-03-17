@@ -11,10 +11,10 @@ namespace MagmaHeart.Core.Dungeon
         private const int START_POINT_OFFSET = 12;
         private readonly Random m_random;
 
-        public DiffusionLimitedAggregatoinRoomGenerator(int tilesToPlace)
+        public DiffusionLimitedAggregatoinRoomGenerator(in Random random, in int tilesToPlace)
         {
             m_tilesToPlace = tilesToPlace;
-            m_randomWalk = new RandomWalk(new List<Vector2Int>() {
+            m_randomWalk = new RandomWalk(random, new List<Vector2Int>() {
                 Vector2Int.left,
                 Vector2Int.right,
                 Vector2Int.up,
@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Dungeon
                 new Vector2Int(-1, 1)
             });
 
-            m_random = new Random();
+            m_random = random;
         }
 
         public void GenerateRoom(in RoomData roomData)

@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Threading.Tasks;
 using System.Linq;
+using Random = System.Random;
+using System;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -15,6 +17,10 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private TileBase m_wallTile;
         [SerializeField] private int m_xBorderSize;
         [SerializeField] private int m_yBorderSize;
+
+        [SerializeField] private bool m_useSeed;
+        [SerializeField] private int m_seed;
+        private Random m_random;
 
         [Header("RandomWalkRoomGenerator")]
         [SerializeField] private int m_randomWalkIterations;
@@ -55,11 +61,16 @@ namespace MagmaHeart.Core.Dungeon
 
         private void Awake()
         {
+            if (!m_useSeed)
+                m_seed = Environment.TickCount;
+
+            m_random = new Random(m_seed);
+
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
 
             IRoomGenerator generator1 = new BoxedRoomGenerator(m_xSize, m_ySize); 
-            IRoomGenerator generator2 = new RandomWalkRoomGenerator(m_randomWalkIterations);
-            IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(m_tilesToPlace);
+            IRoomGenerator generator2 = new RandomWalkRoomGenerator(m_random, m_randomWalkIterations);
+            IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(m_random, m_tilesToPlace);
             IRoomModifier modifier1 = new TilePropagation(m_propagationLength);
             IRoomModifier modifier2 = new UnreachableTileCapture();
             IRoomModifier modifier3 = new TileFill();
@@ -81,7 +92,7 @@ namespace MagmaHeart.Core.Dungeon
 
         public async void GenerateLocation(Vector2Int position)
         {
-            BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_xMinSize, m_yMinSize, m_maxPartitions);
+            BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_random, m_xMinSize, m_yMinSize, m_maxPartitions);
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
             List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             
@@ -98,7 +109,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
                     testObject.transform.localScale = space.size;
-                    testObject.GetComponent<SpriteRenderer>().color = Random.ColorHSV();
+                    testObject.GetComponent<SpriteRenderer>().color = UnityEngine.Random.ColorHSV();
                     m_debugElements.Add(testObject);
                 }
             }
@@ -122,14 +133,14 @@ namespace MagmaHeart.Core.Dungeon
 
             // MST
             MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
-            RoomData startNode = roomDatas.ElementAt(Random.Range(0, roomDatas.Count));
+            RoomData startNode = roomDatas.ElementAt(m_random.Next(roomDatas.Count));
             LocationGraph mstGraph = mstCreator.ExtractMinimalSpanningTree(graph, startNode);
 
             if (m_mstTreeDebug)
                 GraphDebug(mstGraph);
 
            await Task.Run(() => {
-                CorridorGenerator corridorGenerator = new CorridorGenerator(m_corridorSize);
+                CorridorGenerator corridorGenerator = new CorridorGenerator(m_random, m_corridorSize);
                 foreach (RoomConnectionEdge edge in mstGraph.Edges)
                 {
                     HashSet<Vector2Int> corridorTiles = corridorGenerator.GenerateCorridor(edge.First, edge.Second);
