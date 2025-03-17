@@ -9,7 +9,7 @@ namespace MagmaHeart.Core.Dungeon
         {
             List<Vector2> curve = new List<Vector2>();
 
-            for (int i = 0; i < points.Count - 1; i++)
+            for (int i = 0; i < points.Count - 1; ++i)
             {
                 Vector2 p0 = (i == 0) ? points[i] : points[i - 1];
                 Vector2 p1 = points[i];
@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.Dungeon
         {
             List<Vector2> curvePoints = new List<Vector2>();
 
-            for (int i = 0; i <= numPoints; i++)
+            for (int i = 0; i <= numPoints; ++i)
             {
                 float t = i / (float)numPoints;
                 Vector2 point = CubicBezierPoint(p0, p1, p2, p3, t);
@@ -45,7 +45,5 @@ namespace MagmaHeart.Core.Dungeon
                 (3 * u * t * t) * p2 +
                 (t * t * t) * p3;
         }
-
-        
     }
 }
