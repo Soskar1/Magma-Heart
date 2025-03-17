@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="LocationGenerator">
+  <xs:complexType>
+    <xs:element name="Space"/>
+      <xs:complexType>
+        <xs:attribute name="XSize" type="xs:int" use="required">
+        <xs:attribute name="YSize" type="xs:int" use="required">
+      </xs:complexType>
+    <xs:element name="SpacePartitioning"/>
+      <xs:complexType>
+        <xs:attribute name="MaxPartitions" type="xs:int" use="required">
+        <xs:attribute name="XMinSize" type="xs:int" use="required">
+        <xs:attribute name="YMinSize" type="xs:int" use="required">
+      </xs:complexType>
+    <xs:element name="RoomGenerators" type="xs:string"/>
+      <xs:complexType>
+        <xs:element name="Boxed"/>
+          <xs:complexType>
+            <xs:attribute name="XSize" type="xs:int" use="required">
+            <xs:attribute name="YSize" type="xs:int" use="required">
+          </xs:complexType>
+        <xs:element name="RandomWalk"/>
+          <xs:complexType>
+            <xs:attribute name="Iterations" type="xs:int" use="required">
+          </xs:complexType>
+        <xs:element name="DiffusionLimitedAggregation"/>
+          <xs:complexType>
+            <xs:attribute name="TilesToPlace" type="xs:int" use="required">
+          </xs:complexType>
+      </xs:complexType>
+    <xs:element name="RoomModifiers" type="xs:string"/>
+      <xs:complexType>
+        <xs:element name="TileFill"/>
+        <xs:element name="TilePropagation"/>
+          <xs:complexType>
+            <xs:attribute name="Length" type="xs:int" use="required">
+          </xs:complexType>
+        <xs:element name="UnreachableTileCapture"/>
+        <xs:element name="UnreachableTileDestructor"/>
+      </xs:complexType>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>
