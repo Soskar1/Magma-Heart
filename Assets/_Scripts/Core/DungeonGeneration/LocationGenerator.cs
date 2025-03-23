@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.Dungeon
         private BinarySpacePartitioning m_spacePartitioning;
 
         private Vector2Int m_locationSpaceSize;
+        private Vector2Int m_roomBorderOffsets;
 
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
         private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
@@ -32,10 +33,6 @@ namespace MagmaHeart.Core.Dungeon
         [Header("BinarySpacePartitioning")]
         [SerializeField] private bool m_bspDebug;
         [SerializeField] private GameObject m_spaceVizualizer;
-
-        [Header("Room space")]
-        [SerializeField] private int m_xBorderOffset;
-        [SerializeField] private int m_yBorderOffset;
 
         [Header("Location graph")]
         [SerializeField] private bool m_locationGraphDebug;
@@ -60,6 +57,7 @@ namespace MagmaHeart.Core.Dungeon
             m_generators = data.generators;
             m_modifiers = data.modifiers;
             m_locationSpaceSize = data.locationSpaceSize;
+            m_roomBorderOffsets = data.roomBorderOffsets;
             m_spacePartitioning = data.partitioning;
         }
 
@@ -147,7 +145,7 @@ namespace MagmaHeart.Core.Dungeon
 
         private RoomData GenerateRoom(in BoundsInt space)
         {
-            RoomData roomData = new RoomData(space, m_xBorderOffset, m_yBorderOffset);
+            RoomData roomData = new RoomData(space, m_roomBorderOffsets);
 
             foreach (IRoomGenerator generator in m_generators)
                 generator.GenerateRoom(roomData);

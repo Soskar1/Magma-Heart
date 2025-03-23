@@ -21,14 +21,14 @@ namespace MagmaHeart.Core.Dungeon
         public Vector2Int TopMostTile { get; private set; }
         public Vector2Int BottomMostTile { get; private set; }
 
-        public RoomData(in BoundsInt roomSpace, in int xBorderOffset, in int yBorderOffset)
+        public RoomData(in BoundsInt roomSpace, in Vector2Int borderOffsets)
         {
             m_roomSpace = roomSpace;
             WorldPosition = new Vector2Int((int)roomSpace.center.x, (int)roomSpace.center.y);
-            RightBorder = m_roomSpace.xMax - 1 - xBorderOffset;
-            TopBorder = m_roomSpace.yMax - 1 - yBorderOffset;
-            LeftBorder = m_roomSpace.xMin + xBorderOffset;
-            BottomBorder = m_roomSpace.yMin + yBorderOffset;
+            RightBorder = m_roomSpace.xMax - 1 - borderOffsets.x;
+            TopBorder = m_roomSpace.yMax - 1 - borderOffsets.y;
+            LeftBorder = m_roomSpace.xMin + borderOffsets.x;
+            BottomBorder = m_roomSpace.yMin + borderOffsets.y;
 
             m_tiles = new HashSet<Vector2Int>() { WorldPosition };
             LeftMostTile = WorldPosition;

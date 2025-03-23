@@ -9,6 +9,7 @@ namespace MagmaHeart.Core.Dungeon
     public struct LocationGeneratorData
     {
         public Vector2Int locationSpaceSize;
+        public Vector2Int roomBorderOffsets;
         public BinarySpacePartitioning partitioning;
         public List<IRoomGenerator> generators;
         public List<IRoomModifier> modifiers;
@@ -18,6 +19,8 @@ namespace MagmaHeart.Core.Dungeon
     {
         private XmlDocument m_document;
         private Random m_random;
+
+        private const string LOCATION_GENERATOR_XPATH = "//LocationGenerator";
 
         public LocationGeneratorDeserializer(string pathToXml, Random random)
         {
@@ -37,19 +40,24 @@ namespace MagmaHeart.Core.Dungeon
                 return new LocationGeneratorData();
             }
 
-            XmlAttributeCollection spaceElementAttributes = root.SelectSingleNode("//LocationGenerator/LocationSpace").Attributes;
-            int xSize = Int32.Parse(spaceElementAttributes["XSize"].Value);
-            int ySize = Int32.Parse(spaceElementAttributes["YSize"].Value);
+            XmlAttributeCollection locationSpaceElementAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/LocationSpace").Attributes;
+            int xSize = Int32.Parse(locationSpaceElementAttributes["XSize"].Value);
+            int ySize = Int32.Parse(locationSpaceElementAttributes["YSize"].Value);
             data.locationSpaceSize = new Vector2Int(xSize, ySize);
 
-            XmlAttributeCollection spacePartitioningAttributes = root.SelectSingleNode("//LocationGenerator/SpacePartitioning").Attributes;
+            XmlAttributeCollection roomSpaceElementAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomSpace").Attributes;
+            int xBorderOffset = Int32.Parse(roomSpaceElementAttributes["XBorderOffset"].Value);
+            int yBorderOffset = Int32.Parse(roomSpaceElementAttributes["YBorderOffset"].Value);
+            data.roomBorderOffsets = new Vector2Int(xBorderOffset, yBorderOffset);
+
+            XmlAttributeCollection spacePartitioningAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/SpacePartitioning").Attributes;
             int maxPartitions = Int32.Parse(spacePartitioningAttributes["MaxPartitions"].Value);
             int roomXMinSize = Int32.Parse(spacePartitioningAttributes["RoomXMinSize"].Value);
             int roomYMinSize = Int32.Parse(spacePartitioningAttributes["RoomYMinSize"].Value);
             data.partitioning = new BinarySpacePartitioning(m_random, roomXMinSize, roomYMinSize, maxPartitions);
 
             List<IRoomGenerator> generators = new List<IRoomGenerator>();
-            XmlNode roomGenerators = root.SelectSingleNode("//LocationGenerator/RoomGenerators");
+            XmlNode roomGenerators = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomGenerators");
             if (roomGenerators != null)
             {
                 foreach (XmlNode roomGenerator in roomGenerators.ChildNodes)
@@ -61,7 +69,7 @@ namespace MagmaHeart.Core.Dungeon
             data.generators = generators;
 
             List<IRoomModifier> modifiers = new List<IRoomModifier>();
-            XmlNode roomModifiers = root.SelectSingleNode("//LocationGenerator/RoomModifiers");
+            XmlNode roomModifiers = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomModifiers");
             if (roomModifiers != null)
             {
                 foreach (XmlNode roomModifier in roomModifiers.ChildNodes)
