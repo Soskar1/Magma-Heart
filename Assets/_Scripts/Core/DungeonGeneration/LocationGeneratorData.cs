@@ -25,8 +25,10 @@ namespace MagmaHeart.Core.Dungeon
 
         private const string LOCATION_GENERATOR_XPATH = "//LocationGenerator";
 
-        public LocationGeneratorDeserializer(string pathToXml, Random random)
+        public LocationGeneratorDeserializer(string xmlFileName, Random random)
         {
+            string pathToXml = $"Assets\\Data\\{xmlFileName}.xml";
+
             m_document = new XmlDocument();
             m_document.Load(pathToXml);
             m_random = random;

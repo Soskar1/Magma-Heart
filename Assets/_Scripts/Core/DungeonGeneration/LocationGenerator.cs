@@ -21,6 +21,8 @@ namespace MagmaHeart.Core.Dungeon
         private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
         private List<GameObject> m_debugElements = new List<GameObject>();
 
+        [SerializeField] private TextAsset m_locationGeneratorXmlFile;
+
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private TileBase m_wallTile;
@@ -28,8 +30,6 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private bool m_useSeed;
         [SerializeField] private int m_seed;
         private Random m_random;
-
-        [SerializeField] private string m_locationGeneratorPath;
 
         [Header("BinarySpacePartitioning")]
         [SerializeField] private bool m_bspDebug;
@@ -50,7 +50,7 @@ namespace MagmaHeart.Core.Dungeon
 
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
 
-            LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorPath, m_random);
+            LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorXmlFile.name, m_random);
             LocationGeneratorData data = deserializer.Deserialize();
             m_generators = data.generators;
             m_modifiers = data.modifiers;

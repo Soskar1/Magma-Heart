@@ -808,31 +808,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b5b049757706e4289c44713afb4c4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_locationGeneratorXmlFile: {fileID: 4900000, guid: 70bf2016c47641748b61dc2eaa7bdbc0, type: 3}
   m_tilemap: {fileID: 2021650948}
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
-  m_xBorderSize: 400
-  m_yBorderSize: 400
   m_useSeed: 0
   m_seed: 35789
-  m_locationGeneratorPath: D:/Projects/Unity/Magma Heart/Assets/Data/Test.LocationGenerator.xml
-  m_randomWalkIterations: 200
-  m_xSize: 20
-  m_ySize: 20
-  m_tilesToPlace: 100
-  m_propagationLength: 3
   m_bspDebug: 1
-  m_xMinSize: 60
-  m_yMinSize: 60
-  m_maxPartitions: 20
   m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
-  m_xBorderOffset: 5
-  m_yBorderOffset: 5
   m_locationGraphDebug: 0
   m_mstTreeDebug: 0
   m_roomNodeDebug: {fileID: 8088245913244531588, guid: 321ae127b960ae447877a8f6637be67d, type: 3}
   m_roomEdgeDebug: {fileID: 7518519895155951508, guid: 0be0476e43e7b4e44b1e3ce03c06bde3, type: 3}
-  m_corridorSize: 3
 --- !u!1 &1620816530
 GameObject:
   m_ObjectHideFlags: 0
