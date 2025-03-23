@@ -1,0 +1,70 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace MagmaHeart.Core.Dungeon
+{
+    public class TileFill : IRoomModifier
+    {
+        private readonly List<Vector2Int> m_directionsToVisit;
+
+        public TileFill()
+        {
+            m_directionsToVisit = new List<Vector2Int>()
+            {
+                Vector2Int.right,
+                Vector2Int.left,
+                Vector2Int.up,
+                Vector2Int.down
+            };
+        }
+
+        public void ModifyRoom(in RoomData roomData)
+        {
+            HashSet<Vector2Int> emptyTiles = new HashSet<Vector2Int>();
+
+            for (int x = roomData.LeftBorder; x <= roomData.RightBorder; ++x)
+                for (int y = roomData.BottomBorder; y <= roomData.TopBorder; ++y)
+                    emptyTiles.Add(new Vector2Int(x, y));
+
+            emptyTiles.ExceptWith(roomData.GetTilesCopy());
+
+            while (emptyTiles.Count > 0)
+            {
+                Vector2Int start = emptyTiles.First();
+                bool touchesBorder = false;
+
+                HashSet<Vector2Int> filledSpace = new HashSet<Vector2Int>();
+                Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
+                tilesToVisit.Enqueue(start);
+
+                while (tilesToVisit.Count > 0)
+                {
+                    Vector2Int tile = tilesToVisit.Dequeue();
+                    filledSpace.Add(tile);
+
+                    foreach (Vector2Int direction in m_directionsToVisit)
+                    {
+                        Vector2Int neighbourTile = tile + direction;
+
+                        if (neighbourTile.x >= roomData.LeftBorder && neighbourTile.x <= roomData.RightBorder &&
+                            neighbourTile.y >= roomData.BottomBorder && neighbourTile.y <= roomData.TopBorder)
+                        {
+                            if (!roomData.ContainsTile(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                                tilesToVisit.Enqueue(neighbourTile);
+                        }
+                        else
+                        {
+                            touchesBorder = true;
+                        }
+                    }
+                }
+
+                if (!touchesBorder)
+                    roomData.AddTiles(filledSpace);
+
+                emptyTiles.ExceptWith(filledSpace);
+            }
+        }
+    }
+}

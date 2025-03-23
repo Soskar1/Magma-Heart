@@ -1,0 +1,21 @@
+<?xml version ="1.0"?>
+<LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LocationGenerator.xsd">
+	<LocationSpace XSize="400" YSize="400"/>
+	<RoomSpace XBorderOffset="5" YBorderOffset="5"/>
+	<SpacePartitioning MaxPartitions="20" RoomXMinSize="60" RoomYMinSize="60"/>
+	
+	<RoomGenerators>
+		<Boxed XSize="20" YSize="20"/>
+		<RandomWalk Iterations="200"/>
+		<DiffusionLimitedAggregation TilesToPlace="100"/>
+	</RoomGenerators>
+	
+	<RoomModifiers>
+		<TilePropagation Length="3"/>
+		<UnreachableTileCapture/>
+		<TileFill/>
+		<UnreachableTileDestructor/>
+	</RoomModifiers>
+
+	<CorridorGenerator CorridorSize="3"/>
+</LocationGenerator>
