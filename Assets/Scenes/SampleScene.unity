@@ -815,7 +815,7 @@ MonoBehaviour:
   m_yBorderSize: 400
   m_useSeed: 0
   m_seed: 35789
-  m_locationGeneratorPath: '"D:\Projects\Unity\Magma Heart\Assets\Data\Test.LocationGenerator.xml"'
+  m_locationGeneratorPath: D:/Projects/Unity/Magma Heart/Assets/Data/Test.LocationGenerator.xml
   m_randomWalkIterations: 200
   m_xSize: 20
   m_ySize: 20

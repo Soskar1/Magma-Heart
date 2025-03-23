@@ -11,12 +11,17 @@ namespace MagmaHeart.Core.Dungeon
     public class LocationGenerator : MonoBehaviour
     {
         private LocationRenderer m_renderer;
+        private BinarySpacePartitioning m_spacePartitioning;
+
+        private Vector2Int m_locationSpaceSize;
+
+        private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
+        private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
+        private List<GameObject> m_debugElements = new List<GameObject>();
 
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private TileBase m_wallTile;
-        [SerializeField] private int m_xBorderSize;
-        [SerializeField] private int m_yBorderSize;
 
         [SerializeField] private bool m_useSeed;
         [SerializeField] private int m_seed;
@@ -24,24 +29,8 @@ namespace MagmaHeart.Core.Dungeon
 
         [SerializeField] private string m_locationGeneratorPath;
 
-        [Header("RandomWalkRoomGenerator")]
-        [SerializeField] private int m_randomWalkIterations;
-        
-        [Header("BoxedRoomGenerator")]
-        [SerializeField] private int m_xSize;
-        [SerializeField] private int m_ySize;
-
-        [Header("DiffusionLimitedAggregatoinRoomGenerator")]
-        [SerializeField] private int m_tilesToPlace;
-
-        [Header("TilePropagation")]
-        [SerializeField] private int m_propagationLength;
-
         [Header("BinarySpacePartitioning")]
         [SerializeField] private bool m_bspDebug;
-        [SerializeField] private int m_xMinSize;
-        [SerializeField] private int m_yMinSize;
-        [SerializeField] private int m_maxPartitions;
         [SerializeField] private GameObject m_spaceVizualizer;
 
         [Header("Room space")]
@@ -57,10 +46,6 @@ namespace MagmaHeart.Core.Dungeon
         [Header("Corridor generator")]
         [SerializeField] private int m_corridorSize;
 
-        private List<GameObject> m_debugElements = new List<GameObject>();
-        private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
-        private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
-
         private void Awake()
         {
             if (!m_useSeed)
@@ -70,36 +55,21 @@ namespace MagmaHeart.Core.Dungeon
 
             m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
 
-            IRoomGenerator generator1 = new BoxedRoomGenerator(m_xSize, m_ySize); 
-            IRoomGenerator generator2 = new RandomWalkRoomGenerator(m_random, m_randomWalkIterations);
-            IRoomGenerator generator3 = new DiffusionLimitedAggregatoinRoomGenerator(m_random, m_tilesToPlace);
-            IRoomModifier modifier1 = new TilePropagation(m_propagationLength);
-            IRoomModifier modifier2 = new UnreachableTileCapture();
-            IRoomModifier modifier3 = new TileFill();
-            IRoomModifier modifier4 = new UnreachableTileDestructor();
-
-            m_generators.Add(generator1);
-            m_generators.Add(generator2);
-            m_generators.Add(generator3);
-            m_generators.Add(generator2);
-            m_generators.Add(generator3);
-
-            m_modifiers.Add(modifier1);
-            m_modifiers.Add(modifier2);
-            m_modifiers.Add(modifier3);
-            m_modifiers.Add(modifier4);
-
             LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorPath, m_random);
             LocationGeneratorData data = deserializer.Deserialize();
+            m_generators = data.generators;
+            m_modifiers = data.modifiers;
+            m_locationSpaceSize = data.locationSpaceSize;
+            m_spacePartitioning = data.partitioning;
         }
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
 
         public async void GenerateLocation(Vector2Int position)
         {
-            BinarySpacePartitioning spacePartitioning = new BinarySpacePartitioning(m_random, m_xMinSize, m_yMinSize, m_maxPartitions);
-            BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_xBorderSize / 2, position.y - m_yBorderSize / 2, 0), new Vector3Int(m_xBorderSize, m_yBorderSize, 0));
-            List<BoundsInt> spaces = spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
+            BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_locationSpaceSize.x / 2, position.y - m_locationSpaceSize.y / 2, 0),
+                new Vector3Int(m_locationSpaceSize.x, m_locationSpaceSize.y, 0));
+            List<BoundsInt> spaces = m_spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             
             HashSet<RoomData> roomDatas = new HashSet<RoomData>();
             HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
@@ -189,21 +159,6 @@ namespace MagmaHeart.Core.Dungeon
         }
 
         public void ClearLocation() => m_renderer.Clear();
-
-        public void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-
-            Vector2 upLeft = new Vector2(transform.position.x - m_xBorderSize / 2, transform.position.y + m_yBorderSize / 2);
-            Vector2 upRight = new Vector2(transform.position.x + m_xBorderSize / 2, transform.position.y + m_yBorderSize / 2);
-            Vector2 downRight = new Vector2(transform.position.x + m_xBorderSize / 2, transform.position.y - m_yBorderSize / 2);
-            Vector2 downLeft = new Vector2(transform.position.x - m_xBorderSize / 2, transform.position.y - m_yBorderSize / 2);
-
-            Gizmos.DrawLine(upLeft, upRight);
-            Gizmos.DrawLine(upRight, downRight);
-            Gizmos.DrawLine(downRight, downLeft);
-            Gizmos.DrawLine(downLeft, upLeft);
-        }
     }
 }
 
