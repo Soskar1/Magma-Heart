@@ -12,6 +12,7 @@ namespace MagmaHeart.Core.Dungeon
     {
         private LocationRenderer m_renderer;
         private BinarySpacePartitioning m_spacePartitioning;
+        private CorridorGenerator m_corridorGenerator;
 
         private Vector2Int m_locationSpaceSize;
         private Vector2Int m_roomBorderOffsets;
@@ -39,9 +40,6 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private bool m_mstTreeDebug;
         [SerializeField] private GameObject m_roomNodeDebug;
         [SerializeField] private GameObject m_roomEdgeDebug;
-        
-        [Header("Corridor generator")]
-        [SerializeField] private int m_corridorSize;
 
         private void Awake()
         {
@@ -59,6 +57,7 @@ namespace MagmaHeart.Core.Dungeon
             m_locationSpaceSize = data.locationSpaceSize;
             m_roomBorderOffsets = data.roomBorderOffsets;
             m_spacePartitioning = data.partitioning;
+            m_corridorGenerator = data.corridorGenerator;
         }
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
@@ -113,10 +112,9 @@ namespace MagmaHeart.Core.Dungeon
                 GraphDebug(mstGraph);
 
            await Task.Run(() => {
-                CorridorGenerator corridorGenerator = new CorridorGenerator(m_random, m_corridorSize);
                 foreach (RoomConnectionEdge edge in mstGraph.Edges)
                 {
-                    HashSet<Vector2Int> corridorTiles = corridorGenerator.GenerateCorridor(edge.First, edge.Second);
+                    HashSet<Vector2Int> corridorTiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
                     generatedTiles.UnionWith(corridorTiles);
                 }
            });

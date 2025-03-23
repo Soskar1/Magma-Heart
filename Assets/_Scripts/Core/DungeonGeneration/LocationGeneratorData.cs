@@ -10,7 +10,10 @@ namespace MagmaHeart.Core.Dungeon
     {
         public Vector2Int locationSpaceSize;
         public Vector2Int roomBorderOffsets;
+
         public BinarySpacePartitioning partitioning;
+        public CorridorGenerator corridorGenerator;
+        
         public List<IRoomGenerator> generators;
         public List<IRoomModifier> modifiers;
     }
@@ -79,6 +82,10 @@ namespace MagmaHeart.Core.Dungeon
                 }
             }
             data.modifiers = modifiers;
+
+            XmlAttributeCollection corridorGeneratorAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/CorridorGenerator").Attributes;
+            int corridorSize = Int32.Parse(corridorGeneratorAttributes["CorridorSize"].Value);
+            data.corridorGenerator = new CorridorGenerator(m_random, corridorSize);
 
             return data;
         }

@@ -59,6 +59,11 @@
 						</xs:choice>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="CorridorGenerator">
+					<xs:complexType>
+						<xs:attribute name="CorridorSize" type="xs:int" use="required"/>
+					</xs:complexType>
+				</xs:element>
 			</xs:all>
 		</xs:complexType>
 	</xs:element>

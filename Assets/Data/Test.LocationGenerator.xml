@@ -16,4 +16,6 @@
 		<TileFill/>
 		<UnreachableTileDestructor/>
 	</RoomModifiers>
+
+	<CorridorGenerator CorridorSize="3"/>
 </LocationGenerator>
