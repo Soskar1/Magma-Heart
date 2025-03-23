@@ -37,7 +37,7 @@ namespace MagmaHeart.Core.Dungeon
                 return new LocationGeneratorData();
             }
 
-            XmlAttributeCollection spaceElementAttributes = root.SelectSingleNode("//LocationGenerator/Space").Attributes;
+            XmlAttributeCollection spaceElementAttributes = root.SelectSingleNode("//LocationGenerator/LocationSpace").Attributes;
             int xSize = Int32.Parse(spaceElementAttributes["XSize"].Value);
             int ySize = Int32.Parse(spaceElementAttributes["YSize"].Value);
             data.locationSpaceSize = new Vector2Int(xSize, ySize);

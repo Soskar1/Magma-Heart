@@ -1,6 +1,6 @@
 <?xml version ="1.0"?>
 <LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LocationGenerator.xsd">
-	<Space XSize="400" YSize="400"/>
+	<LocationSpace XSize="400" YSize="400"/>
 	<SpacePartitioning MaxPartitions="20" RoomXMinSize="60" RoomYMinSize="60"/>
 	
 	<RoomGenerators>

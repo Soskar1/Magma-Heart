@@ -4,7 +4,7 @@
 	<xs:element name="LocationGenerator">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Space" maxOccurs="1">
+				<xs:element name="LocationSpace" maxOccurs="1">
 					<xs:complexType>
 						<xs:attribute name="XSize" type="xs:int" use="required"/>
 						<xs:attribute name="YSize" type="xs:int" use="required"/>
