@@ -813,7 +813,7 @@ MonoBehaviour:
   m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
   m_xBorderSize: 400
   m_yBorderSize: 400
-  m_useSeed: 1
+  m_useSeed: 0
   m_seed: 35789
   m_randomWalkIterations: 200
   m_xSize: 20
@@ -823,7 +823,7 @@ MonoBehaviour:
   m_bspDebug: 1
   m_xMinSize: 60
   m_yMinSize: 60
-  m_maxPartitions: 1
+  m_maxPartitions: 20
   m_spaceVizualizer: {fileID: 2609537099163304022, guid: 0b0ddfba94fbb27438f9f73d25e8fd0d, type: 3}
   m_xBorderOffset: 5
   m_yBorderOffset: 5
