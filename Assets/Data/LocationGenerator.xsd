@@ -4,20 +4,20 @@
 	<xs:element name="LocationGenerator">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Space">
+				<xs:element name="Space" maxOccurs="1">
 					<xs:complexType>
 						<xs:attribute name="XSize" type="xs:int" use="required"/>
 						<xs:attribute name="YSize" type="xs:int" use="required"/>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="SpacePartitioning">
+				<xs:element name="SpacePartitioning" maxOccurs="1">
 					<xs:complexType>
 						<xs:attribute name="MaxPartitions" type="xs:int" use="required"/>
 						<xs:attribute name="RoomXMinSize" type="xs:int" use="required"/>
 						<xs:attribute name="RoomYMinSize" type="xs:int" use="required"/>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="RoomGenerators" minOccurs="0">
+				<xs:element name="RoomGenerators" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:all>
 							<xs:element name="Boxed" minOccurs="0">
@@ -39,7 +39,7 @@
 						</xs:all>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="RoomModifiers" minOccurs="0">
+				<xs:element name="RoomModifiers" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:all>
 							<xs:element name="TileFill" minOccurs="0"/>

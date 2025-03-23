@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class UnreachableTileDesctructor : IRoomModifier
+    public class UnreachableTileDestructor : IRoomModifier
     {
         private List<Vector2Int> m_directionsToVisit;
 
-        public UnreachableTileDesctructor()
+        public UnreachableTileDestructor()
         {
             m_directionsToVisit = new List<Vector2Int>()
             {

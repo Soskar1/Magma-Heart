@@ -22,6 +22,8 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_seed;
         private Random m_random;
 
+        [SerializeField] private string m_locationGeneratorPath;
+
         [Header("RandomWalkRoomGenerator")]
         [SerializeField] private int m_randomWalkIterations;
         
@@ -74,7 +76,7 @@ namespace MagmaHeart.Core.Dungeon
             IRoomModifier modifier1 = new TilePropagation(m_propagationLength);
             IRoomModifier modifier2 = new UnreachableTileCapture();
             IRoomModifier modifier3 = new TileFill();
-            IRoomModifier modifier4 = new UnreachableTileDesctructor();
+            IRoomModifier modifier4 = new UnreachableTileDestructor();
 
             m_generators.Add(generator1);
             m_generators.Add(generator2);
@@ -86,6 +88,9 @@ namespace MagmaHeart.Core.Dungeon
             m_modifiers.Add(modifier2);
             m_modifiers.Add(modifier3);
             m_modifiers.Add(modifier4);
+
+            LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorPath, m_random);
+            LocationGeneratorData data = deserializer.Deserialize();
         }
 
         public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
