@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class RigidbodyMovement : MonoBehaviour

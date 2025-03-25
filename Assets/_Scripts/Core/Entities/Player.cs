@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(RigidbodyMovement))]
     [RequireComponent(typeof(Animator))]
@@ -17,7 +18,17 @@ namespace MagmaHeart.Core
             m_animator = GetComponent<Animator>();
         }
 
-        private void Start() => m_userInput.Enable();
+        private void Start()
+        {
+            m_userInput.Controls.Player.Attack.performed += Attack;
+            m_userInput.Enable();
+        }
+
+        private void OnDisable()
+        {
+            m_userInput.Controls.Player.Attack.performed -= Attack;
+            m_userInput.Disable();
+        }
 
         public void Update()
         {
@@ -30,6 +41,11 @@ namespace MagmaHeart.Core
         public void FixedUpdate()
         {
             m_movement.Move(m_userInput.Movement);
-        }                
+        }
+
+        public void Attack(InputAction.CallbackContext context)
+        {
+            m_animator.SetTrigger("Attack");
+        }
     }
 }

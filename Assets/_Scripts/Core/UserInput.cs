@@ -4,15 +4,12 @@ namespace MagmaHeart.Core
 {
     public class UserInput
     {
-        private Controls m_controls;
-        public Vector2 Movement => m_controls.Player.Move.ReadValue<Vector2>();
+        public Controls Controls { get; private set;}
+        public Vector2 Movement => Controls.Player.Move.ReadValue<Vector2>();
 
-        public UserInput()
-        {
-            m_controls = new Controls();
-        }
+        public UserInput() => Controls = new Controls();
 
-        public void Enable() => m_controls.Enable();
-        public void Disable() => m_controls.Disable();
+        public void Enable() => Controls.Enable();
+        public void Disable() => Controls.Disable();
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities;
 using UnityEngine;
 
 namespace MagmaHeart.Core
