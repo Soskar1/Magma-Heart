@@ -10,6 +10,7 @@ namespace MagmaHeart.Core.Entities
         private UserInput m_userInput;
         private RigidbodyMovement m_movement;
         private Animator m_animator;
+        [SerializeField] private bool m_facingRight;
 
         private void Awake() 
         {
@@ -36,6 +37,12 @@ namespace MagmaHeart.Core.Entities
                 m_animator.SetBool("IsRunning", true);
             else
                 m_animator.SetBool("IsRunning", false);
+            
+            if ((m_userInput.Movement.x > 0 && !m_facingRight) || (m_userInput.Movement.x < 0 && m_facingRight))
+            {
+                transform.Rotate(new Vector3(0, 180, 0));
+                m_facingRight = !m_facingRight;
+            }
         }
 
         public void FixedUpdate()
