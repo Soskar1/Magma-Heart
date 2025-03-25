@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Threading.Tasks;
 using System.Linq;
 using Random = System.Random;
@@ -10,7 +9,6 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class LocationGenerator : MonoBehaviour
     {
-        private LocationRenderer m_renderer;
         private BinarySpacePartitioning m_spacePartitioning;
         private CorridorGenerator m_corridorGenerator;
 
@@ -22,10 +20,6 @@ namespace MagmaHeart.Core.Dungeon
         private List<GameObject> m_debugElements = new List<GameObject>();
 
         [SerializeField] private TextAsset m_locationGeneratorXmlFile;
-
-        [SerializeField] private Tilemap m_tilemap;
-        [SerializeField] private TileBase m_floorTile;
-        [SerializeField] private TileBase m_wallTile;
 
         [SerializeField] private bool m_useSeed;
         [SerializeField] private int m_seed;
@@ -48,8 +42,6 @@ namespace MagmaHeart.Core.Dungeon
 
             m_random = new Random(m_seed);
 
-            m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
-
             LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorXmlFile.name, m_random);
             LocationGeneratorData data = deserializer.Deserialize();
             m_generators = data.generators;
@@ -60,16 +52,13 @@ namespace MagmaHeart.Core.Dungeon
             m_corridorGenerator = data.corridorGenerator;
         }
 
-        public void GenerateLocation() => GenerateLocation(Vector2Int.zero);
-
-        public async void GenerateLocation(Vector2Int position)
+        public async Task<Location> GenerateLocation(Vector2Int position)
         {
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_locationSpaceSize.x / 2, position.y - m_locationSpaceSize.y / 2, 0),
                 new Vector3Int(m_locationSpaceSize.x, m_locationSpaceSize.y, 0));
             List<BoundsInt> spaces = m_spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
             
             HashSet<RoomData> roomDatas = new HashSet<RoomData>();
-            HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
 
             if (m_debugElements.Count > 0)
                 foreach (var obj in m_debugElements)
@@ -92,7 +81,6 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     RoomData roomData = GenerateRoom(space);
                     roomDatas.Add(roomData);
-                    generatedTiles.UnionWith(roomData.GetTilesCopy());
                 }
             });
 
@@ -111,15 +99,16 @@ namespace MagmaHeart.Core.Dungeon
             if (m_mstTreeDebug)
                 GraphDebug(mstGraph);
 
-           await Task.Run(() => {
+            HashSet<Vector2Int> corridorTiles = new HashSet<Vector2Int>();
+            await Task.Run(() => {
                 foreach (RoomConnectionEdge edge in mstGraph.Edges)
                 {
-                    HashSet<Vector2Int> corridorTiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
-                    generatedTiles.UnionWith(corridorTiles);
+                    HashSet<Vector2Int> tiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
+                    corridorTiles.UnionWith(tiles);
                 }
-           });
+            });
 
-            StartCoroutine(m_renderer.DrawTiles(generatedTiles));
+            return new Location(roomDatas.ToList(), corridorTiles);
         }
 
         private void GraphDebug(in LocationGraph graph)
@@ -153,8 +142,6 @@ namespace MagmaHeart.Core.Dungeon
 
             return roomData;
         }
-
-        public void ClearLocation() => m_renderer.Clear();
     }
 }
 

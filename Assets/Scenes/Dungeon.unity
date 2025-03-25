@@ -165,6 +165,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_player: {fileID: 761985753998396683, guid: fe8a4301ead5fd746b070fe73b6cf6c6, type: 3}
   m_locationGenerator: {fileID: 2060185615}
+  m_tilemap: {fileID: 1912713220}
+  m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
+  m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
 --- !u!1 &1250782126
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,9 +366,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_locationGeneratorXmlFile: {fileID: 4900000, guid: 70bf2016c47641748b61dc2eaa7bdbc0, type: 3}
-  m_tilemap: {fileID: 1912713220}
-  m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
-  m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
   m_useSeed: 0
   m_seed: 0
   m_bspDebug: 0

@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MagmaHeart.Core.Dungeon;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core
 {
-    public class DungeonBootstrap : MonoBehaviour
+    public class LocationGeneratorTest : MonoBehaviour
     {
-        [SerializeField] private Player m_player;
         [SerializeField] private LocationGenerator m_locationGenerator;
 
         [SerializeField] private Tilemap m_tilemap;
@@ -18,10 +16,9 @@ namespace MagmaHeart.Core
 
         private void Awake() => m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
 
-        private void Start() => BootScene();
-
-        private async void BootScene()
+        public async void Generate()
         {
+            m_renderer.Clear();
             Location location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
 
             HashSet<Vector2Int> tiles = new HashSet<Vector2Int>();
@@ -31,8 +28,6 @@ namespace MagmaHeart.Core
                 tiles.UnionWith(roomData.GetTilesCopy());
 
             StartCoroutine(m_renderer.DrawTiles(tiles));
-
-            Instantiate(m_player, transform.position, Quaternion.identity);
         }
     }
 }
