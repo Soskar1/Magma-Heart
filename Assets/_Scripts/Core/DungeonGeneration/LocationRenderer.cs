@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace MagmaHeart.Core.Dungeon
         private readonly TileBase m_floorTile;
         private readonly TileBase m_wallTile;
         private readonly int m_tilesPerFrame = 256;
+
+        public Action RenderedAllTiles;
 
         public LocationRenderer(in Tilemap tilemap, in TileBase floorTile, in TileBase wallTile)
         {
@@ -42,6 +45,8 @@ namespace MagmaHeart.Core.Dungeon
                 if (renderedTiles % m_tilesPerFrame == 0)
                     yield return new WaitForEndOfFrame();
             }
+
+            RenderedAllTiles?.Invoke();
         }
 
         public void Clear()
