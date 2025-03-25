@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core
 {
@@ -9,19 +8,11 @@ namespace MagmaHeart.Core
     {
         [SerializeField] private Player m_player;
         [SerializeField] private LocationGenerator m_locationGenerator;
-
-        [SerializeField] private Tilemap m_tilemap;
-        [SerializeField] private TileBase m_floorTile;
-        [SerializeField] private TileBase m_wallTile;
-        private LocationRenderer m_renderer;
+        [SerializeField] private LocationRenderer m_renderer;
 
         private Location m_location;
 
-        private void Awake()
-        {
-            m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
-            m_renderer.RenderedAllTiles += SpawnPlayer;
-        }
+        private void Awake() => m_renderer.RenderedAllTiles += SpawnPlayer;
 
         private void Start() => BootScene();
 

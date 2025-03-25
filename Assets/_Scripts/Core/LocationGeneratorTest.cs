@@ -8,13 +8,7 @@ namespace MagmaHeart.Core
     public class LocationGeneratorTest : MonoBehaviour
     {
         [SerializeField] private LocationGenerator m_locationGenerator;
-
-        [SerializeField] private Tilemap m_tilemap;
-        [SerializeField] private TileBase m_floorTile;
-        [SerializeField] private TileBase m_wallTile;
-        private LocationRenderer m_renderer;
-
-        private void Awake() => m_renderer = new LocationRenderer(m_tilemap, m_floorTile, m_wallTile);
+        [SerializeField] private LocationRenderer m_renderer;
 
         public async void Generate()
         {
