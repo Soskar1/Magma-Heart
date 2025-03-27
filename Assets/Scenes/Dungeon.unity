@@ -325,7 +325,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1b2f813e6936a489bf89fc4883584a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_player: {fileID: 761985753998396683, guid: fe8a4301ead5fd746b070fe73b6cf6c6, type: 3}
+  m_player: {fileID: 162168588079540761, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_camera: {fileID: 4795547985218310682, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
   m_locationGenerator: {fileID: 2060185615}
   m_renderer: {fileID: 2060185617}
 --- !u!1 &1250782126
