@@ -5,12 +5,14 @@ namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(RigidbodyMovement))]
     [RequireComponent(typeof(Animator))]
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IHittable
     {
+        [SerializeField] private float m_maxHealth;
+        [SerializeField] private bool m_facingRight;
         private UserInput m_userInput;
         private RigidbodyMovement m_movement;
         private Animator m_animator;
-        [SerializeField] private bool m_facingRight;
+        private Health m_health;
 
         private bool m_isAttacking = false;
 
@@ -24,6 +26,7 @@ namespace MagmaHeart.Core.Entities
             m_userInput = new UserInput();
             m_movement = GetComponent<RigidbodyMovement>();
             m_animator = GetComponent<Animator>();
+            m_health = new Health(m_maxHealth);
 
             m_currentAnimationState = m_idleAnimationID;
         }
@@ -85,5 +88,7 @@ namespace MagmaHeart.Core.Entities
         {
             m_isAttacking = true;
         }
+
+        public void Hit(in float damage) => m_health.TakeDamage(damage);
     }
 }
