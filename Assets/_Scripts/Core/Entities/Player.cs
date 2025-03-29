@@ -13,6 +13,7 @@ namespace MagmaHeart.Core.Entities
         private RigidbodyMovement m_movement;
         private Animator m_animator;
         private Health m_health;
+        private Facing m_facing;
 
         private bool m_isAttacking = false;
 
@@ -27,6 +28,7 @@ namespace MagmaHeart.Core.Entities
             m_movement = GetComponent<RigidbodyMovement>();
             m_animator = GetComponent<Animator>();
             m_health = new Health(m_maxHealth);
+            m_facing = new Facing(transform, m_facingRight);
 
             m_currentAnimationState = m_idleAnimationID;
         }
@@ -45,11 +47,7 @@ namespace MagmaHeart.Core.Entities
 
         public void Update()
         {
-            if ((m_userInput.Movement.x > 0 && !m_facingRight) || (m_userInput.Movement.x < 0 && m_facingRight))
-            {
-                transform.Rotate(new Vector3(0, 180, 0));
-                m_facingRight = !m_facingRight;
-            }
+            m_facing.TryUpdateFacing(m_userInput.Movement.x);
 
             PlayAnimations();
         }

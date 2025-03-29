@@ -16,26 +16,39 @@ namespace MagmaHeart.Core.Entities
         private RigidbodyMovement m_movement;
         private Rigidbody2D m_rigidbody;
         
-        private Animator m_animator;
-        private readonly int m_idleAnimationID = Animator.StringToHash("Idle");
-        private readonly int m_walkAnimationID = Animator.StringToHash("Walk");
-        private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
-        private int m_currentAnimationState;
+        private AnimationPlayer m_animationPlayer;
 
         [SerializeField] private bool m_facingRight;
         [SerializeField] private float m_triggerAttackDistance;
         private Player m_playerToChase;
+        private Facing m_facing;
         private bool m_isAttacking;
 
         private void Awake()
         {
-            m_animator = GetComponent<Animator>();
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_health = new Health(m_maxHealth);
             m_fieldOfView = new FieldOfView(m_fieldOfViewRadius, m_amountOfRaycasts, transform);
             m_movement = GetComponent<RigidbodyMovement>();
+            m_facing = new Facing(transform, m_facingRight);
 
-            m_currentAnimationState = m_idleAnimationID;
+            Animator animator = GetComponent<Animator>();
+            int m_idleAnimationID = Animator.StringToHash("Idle");
+            int m_walkAnimationID = Animator.StringToHash("Walk");
+            int m_attackAnimationID = Animator.StringToHash("Attack");
+
+            m_animationPlayer = new AnimationPlayer(animator, m_idleAnimationID, () => {
+                if (m_isAttacking && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+                    m_isAttacking = false;
+
+                if (m_isAttacking)
+                    return m_attackAnimationID;
+
+                if (m_playerToChase != null)
+                    return m_walkAnimationID;
+
+                return m_idleAnimationID;
+            });
         }
 
         private void Start()
@@ -54,7 +67,7 @@ namespace MagmaHeart.Core.Entities
                 m_rigidbody.linearVelocity = Vector2.zero;
             }
 
-            PlayAnimations();
+            m_animationPlayer.PlayAnimations();
         }
 
         private void FixedUpdate()
@@ -66,39 +79,10 @@ namespace MagmaHeart.Core.Entities
             {
                 Vector2 directionToMove = (m_playerToChase.transform.position - transform.position).normalized;
 
-                if (directionToMove.x < 0 && m_facingRight || directionToMove.x > 0 && !m_facingRight)
-                {
-                    transform.Rotate(new Vector3(0, 180, 0));
-                    m_facingRight = !m_facingRight;
-                }
+                m_facing.TryUpdateFacing(directionToMove.x);
 
                 m_movement.Move(directionToMove);
             }
-        }
-
-        private void PlayAnimations()
-        {
-            int stateToPlay = GetAnimationState();
-
-            if (stateToPlay == m_currentAnimationState)
-                return;
-
-            m_animator.CrossFade(stateToPlay, 0);
-            m_currentAnimationState = stateToPlay;
-        }
-
-        private int GetAnimationState()
-        {
-            if (m_isAttacking && m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && m_currentAnimationState == m_attackAnimationID)
-                m_isAttacking = false;
-
-            if (m_isAttacking)
-                return m_attackAnimationID;
-
-            if (m_playerToChase != null)
-                return m_walkAnimationID;
-
-            return m_idleAnimationID;
         }
 
         public void Hit(in float damage) => m_health.TakeDamage(damage);
