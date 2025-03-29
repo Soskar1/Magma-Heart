@@ -18,18 +18,18 @@ namespace MagmaHeart.Core.Entities
             m_pivot = pivot;
         }
 
-        public List<Transform> FindEntitiesInFieldOfView()
+        public Player FindPlayer()
         {
-            List<Transform> entities = new List<Transform>();
+            Player player = null;
             RaycastHit2D[] hits = Physics2D.RaycastAll(m_pivot.transform.position, m_currentRaycastDirection, m_radius);
 
             foreach (RaycastHit2D hit in hits)
-                if (hit.collider.GetComponent<IHittable>() != null)
-                    entities.Add(hit.transform);
+                if (hit.collider.TryGetComponent(out Player foundPlayer))
+                    player = foundPlayer;
 
             m_currentRaycastDirection = m_currentRaycastDirection.Rotate(m_rotZ);
 
-            return entities;
+            return player;
         }
     }
 }
