@@ -1,24 +1,25 @@
-using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core
 {
-    public class AnimationPlayer
+    public abstract class AnimationPlayer
     {
         private Animator m_animator;
         private int m_currentAnimationState;
-        private Func<int, int> m_animationStateGetter;
 
-        public AnimationPlayer(in Animator animator, in int startAnimationState, in Func<int, int> animationStateGetter)
+        public Animator Animator => m_animator;
+        public int CurrentAnimationState => m_currentAnimationState;
+
+        public AnimationPlayer(in Animator animator)
         {
             m_animator = animator;
-            m_currentAnimationState = startAnimationState;
-            m_animationStateGetter = animationStateGetter;
         }
+
+        public void SetAnimationState(int animationState) => m_currentAnimationState = animationState;
 
         public void PlayAnimations()
         {
-            int stateToPlay = m_animationStateGetter(m_currentAnimationState);
+            int stateToPlay = GetAnimationState();
 
             if (stateToPlay == m_currentAnimationState)
                 return;
@@ -26,5 +27,7 @@ namespace MagmaHeart.Core
             m_animator.CrossFade(stateToPlay, 0);
             m_currentAnimationState = stateToPlay;
         }
+
+        public abstract int GetAnimationState();
     }
 }

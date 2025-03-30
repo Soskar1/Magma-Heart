@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -12,13 +13,14 @@ namespace MagmaHeart.Core.Entities
         private Health m_health;
         private Facing m_facing;
 
-        private bool m_isAttacking = false;
         private AnimationPlayer m_animationPlayer;
+        private Vector2 m_currentMovementDirection;
 
+        private Action m_onAttack;
         public Health Health => m_health;
         public Vector2 Position => transform.position;
-
-        private Vector2 m_currentMovementDirection;
+        public Vector2 CurrentMovementDirection => m_currentMovementDirection;
+        public Action OnAttack { get => m_onAttack; set => m_onAttack = value; }
 
         private void Awake() 
         {
@@ -28,23 +30,8 @@ namespace MagmaHeart.Core.Entities
 
             m_currentMovementDirection = new Vector2();
 
-            int idleAnimationID = Animator.StringToHash("Idle");
-            int runAnimationID = Animator.StringToHash("Run");
-            int attackAnimationID = Animator.StringToHash("Attack");
-
             Animator animator = GetComponent<Animator>();
-            m_animationPlayer = new AnimationPlayer(animator, idleAnimationID, (currentAnimationState) => {
-                if (m_isAttacking && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && currentAnimationState == attackAnimationID)
-                    m_isAttacking = false;
-
-                if (m_isAttacking)
-                    return attackAnimationID;
-                
-                if (Mathf.Abs(m_currentMovementDirection.magnitude) > 0)
-                    return runAnimationID;
-                
-                return idleAnimationID;
-            });
+            m_animationPlayer = new WarriorAnimationPlayer(animator, this);
         }
 
         private void Update()
@@ -59,6 +46,6 @@ namespace MagmaHeart.Core.Entities
 
         public void ApplyMovement(Vector2 direction) => m_currentMovementDirection = direction;
         
-        public void Attack() => m_isAttacking = true;
+        public void Attack() => OnAttack?.Invoke();
     }
 }

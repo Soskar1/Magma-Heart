@@ -33,6 +33,7 @@ namespace MagmaHeart.Core.Entities
             if (Vector2.Distance(transform.position, m_entityToChase.Position) < m_triggerAttackDistance)
             {
                 m_entityToControl.Attack();
+                m_entityToControl.ApplyMovement(Vector2.zero);
                 m_rigidbody.linearVelocity = Vector2.zero;
             }
             else

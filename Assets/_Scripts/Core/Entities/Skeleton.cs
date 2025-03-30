@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -9,42 +10,29 @@ namespace MagmaHeart.Core.Entities
         private Health m_health;
 
         private RigidbodyMovement m_movement;
-        private Rigidbody2D m_rigidbody;
         
         private AnimationPlayer m_animationPlayer;
         
         private Facing m_facing;
-        private bool m_isAttacking;
 
-        public Health Health => m_health;
-        public Vector2 Position => transform.position;
+        private Action m_onAttack;
 
         private Vector2 m_currentMovementDirection;
+        public Health Health => m_health;
+        public Vector2 Position => transform.position;
+        public Vector2 CurrentMovementDirection => m_currentMovementDirection;
+        public Action OnAttack { get => m_onAttack; set => m_onAttack = value; }
+
+
 
         private void Awake()
         {
-            m_rigidbody = GetComponent<Rigidbody2D>();
             m_health = new Health(m_maxHealth);
             m_movement = GetComponent<RigidbodyMovement>();
             m_facing = new Facing(transform, m_facingRight);
 
             Animator animator = GetComponent<Animator>();
-            int idleAnimationID = Animator.StringToHash("Idle");
-            int walkAnimationID = Animator.StringToHash("Walk");
-            int attackAnimationID = Animator.StringToHash("Attack");
-
-            m_animationPlayer = new AnimationPlayer(animator, idleAnimationID, (currentAnimationState) => {
-                if (m_isAttacking && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && currentAnimationState == attackAnimationID)
-                    m_isAttacking = false;
-
-                if (m_isAttacking)
-                    return attackAnimationID;
-
-                if (m_rigidbody.linearVelocity.magnitude > 0)
-                    return walkAnimationID;
-
-                return idleAnimationID;
-            });
+            m_animationPlayer = new SkeletonAnimationPlayer(animator, this);
         }
 
         private void Update()
@@ -61,6 +49,6 @@ namespace MagmaHeart.Core.Entities
         public void Hit(in float damage) => m_health.TakeDamage(damage);
 
         public void ApplyMovement(Vector2 direction) => m_currentMovementDirection = direction;
-        public void Attack() => m_isAttacking = true;
+        public void Attack() => OnAttack?.Invoke();
     }
 }

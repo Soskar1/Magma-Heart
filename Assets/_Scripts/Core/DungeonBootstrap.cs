@@ -7,7 +7,7 @@ namespace MagmaHeart.Core
 {
     public class DungeonBootstrap : MonoBehaviour
     {
-        [SerializeField] private Player m_player;
+        [SerializeField] private PlayerBehaviour m_player;
         [SerializeField] private CameraMovement m_camera;
         [SerializeField] private LocationGenerator m_locationGenerator;
         [SerializeField] private LocationRenderer m_renderer;
@@ -34,7 +34,7 @@ namespace MagmaHeart.Core
         private void SpawnPlayer()
         {
             RoomData roomData = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            Player playerInstance = Instantiate(m_player, (Vector2)roomData.WorldPosition, Quaternion.identity);
+            PlayerBehaviour playerInstance = Instantiate(m_player, (Vector2)roomData.WorldPosition, Quaternion.identity);
             m_renderer.RenderedAllTiles -= SpawnPlayer;
 
             CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(roomData.WorldPosition.x, roomData.WorldPosition.y, -10), Quaternion.identity);

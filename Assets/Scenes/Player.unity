@@ -7136,11 +7136,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 230714f8488e8724b82e2a8216774cba, type: 3}
+--- !u!1 &833979889 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1936468212120715525, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_PrefabInstance: {fileID: 5299387157169322074}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1019353374 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3383836243793586766, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
   m_PrefabInstance: {fileID: 5299387157169322074}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1019353380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833979889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ffd4816dee68042b9f3f728d4ba873, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1183329362
 GameObject:
   m_ObjectHideFlags: 0
@@ -7155,6 +7172,7 @@ GameObject:
   - component: {fileID: 1183329367}
   - component: {fileID: 1183329366}
   - component: {fileID: 1183329368}
+  - component: {fileID: 1183329369}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -7264,10 +7282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_maxHealth: 2
-  m_fieldOfViewRadius: 5
-  m_amountOfRaycasts: 32
   m_facingRight: 1
-  m_triggerAttackDistance: 1
 --- !u!95 &1183329367
 Animator:
   serializedVersion: 7
@@ -7306,6 +7321,21 @@ MonoBehaviour:
   m_acceleration: 10
   m_decceleration: 10
   m_velocityPower: 0.8
+--- !u!114 &1183329369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183329362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1910f8f24e4f98a488892ea1e5c97b07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_triggerAttackDistance: 1
+  m_searchRadius: 5
+  m_amountOfRaycasts: 32
 --- !u!1 &1637979289
 GameObject:
   m_ObjectHideFlags: 0
@@ -7525,7 +7555,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1936468212120715525, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1019353380}
   m_SourcePrefab: {fileID: 100100000, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
