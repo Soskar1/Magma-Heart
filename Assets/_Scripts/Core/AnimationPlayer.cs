@@ -7,9 +7,9 @@ namespace MagmaHeart.Core
     {
         private Animator m_animator;
         private int m_currentAnimationState;
-        private Func<int> m_animationStateGetter;
+        private Func<int, int> m_animationStateGetter;
 
-        public AnimationPlayer(in Animator animator, in int startAnimationState, in Func<int> animationStateGetter)
+        public AnimationPlayer(in Animator animator, in int startAnimationState, in Func<int, int> animationStateGetter)
         {
             m_animator = animator;
             m_currentAnimationState = startAnimationState;
@@ -18,7 +18,7 @@ namespace MagmaHeart.Core
 
         public void PlayAnimations()
         {
-            int stateToPlay = m_animationStateGetter();
+            int stateToPlay = m_animationStateGetter(m_currentAnimationState);
 
             if (stateToPlay == m_currentAnimationState)
                 return;
