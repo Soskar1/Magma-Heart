@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core
@@ -5,6 +6,7 @@ namespace MagmaHeart.Core
     [RequireComponent(typeof(Animator))]
     public abstract class AnimationPlayer : MonoBehaviour
     {
+        public Action<string> OnAnimationEnded;
         private Animator m_animator;
         private int m_currentAnimationState;
 
@@ -27,5 +29,7 @@ namespace MagmaHeart.Core
         }
 
         public abstract int GetAnimationState();
+
+        public float GetAnimationPlayTime() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 }

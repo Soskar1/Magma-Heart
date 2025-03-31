@@ -7651,6 +7651,7 @@ MonoBehaviour:
   m_triggerAttackDistance: 1
   m_searchRadius: 5
   m_amountOfRaycasts: 32
+  m_takeDamageAnimationName: TakeDamage
 --- !u!114 &1183329370
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,25 +4,31 @@ namespace MagmaHeart.Core.Entities
 {
     public class EnemyBehaviour : MonoBehaviour
     {
+        [Header("Field Of View")]
         [SerializeField] private float m_triggerAttackDistance;
         [SerializeField] private float m_searchRadius;
         [SerializeField] private int m_amountOfRaycasts;
         private FieldOfView m_fieldOfView;
 
+        [Header("Animation Events")]
+        [SerializeField] private string m_takeDamageAnimationName;
+
         private Entity m_entity;
         private IAttacker m_entityAttack;
         private IMovable m_entityMovement;
+        private IAnimatable m_entityAnimations;
 
         private Entity m_entityToChase;
         private Rigidbody2D m_rigidbody;
 
-        private bool m_isAttacking;
+        private bool m_canMove = true;
 
         private void Awake()
         {
             m_entity = GetComponent<Entity>();
             m_entityAttack = m_entity as IAttacker;
             m_entityMovement = m_entity as IMovable;
+            m_entityAnimations = m_entity as IAnimatable;
 
             if (m_entityAttack == null)
                 Debug.LogError($"Entity {transform.name} does not support IAttacker interface");
@@ -30,13 +36,27 @@ namespace MagmaHeart.Core.Entities
             if (m_entityMovement == null)
                 Debug.LogError($"Entity {transform.name} does not support IMovable interface");
 
+            if (m_entityAnimations == null)
+                Debug.LogError($"Entity {transform.name} does not support IAnimatable interface");
+
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_entityToChase = null;
             m_fieldOfView = new FieldOfView(m_searchRadius, m_amountOfRaycasts, transform);
         }
 
-        private void OnEnable() => m_entityAttack.OnAttackEnded += DisableAttackingState;
-        private void OnDisable() => m_entityAttack.OnAttackEnded -= DisableAttackingState;
+        private void OnEnable()
+        {
+            m_entity.Health.OnTakeDamage += DisableMovement;
+            m_entityAttack.OnAttackEnded += EnableMovement;
+            m_entityAnimations.AnimationPlayer.OnAnimationEnded += ProcessAnimationOnEndEvents;
+        }
+
+        private void OnDisable()
+        {
+            m_entity.Health.OnTakeDamage -= DisableMovement;
+            m_entityAttack.OnAttackEnded -= EnableMovement;
+            m_entityAnimations.AnimationPlayer.OnAnimationEnded -= ProcessAnimationOnEndEvents;
+        }
 
         private void Update()
         {
@@ -52,19 +72,24 @@ namespace MagmaHeart.Core.Entities
                 m_entityAttack.Attack();
                 m_entityMovement.SetMovementDirection(Vector2.zero);
                 m_rigidbody.linearVelocity = Vector2.zero;
-                m_isAttacking = true;
+                m_canMove = false;
             }
-            else
+
+            if (m_canMove)
             {
-                if (!m_isAttacking)
-                {
-                    Vector2 directionToMove = (m_entityToChase.Position - m_entity.Position).normalized;
-                    m_entityMovement.SetMovementDirection(directionToMove);
-                }
+                Vector2 directionToMove = (m_entityToChase.Position - m_entity.Position).normalized;
+                m_entityMovement.SetMovementDirection(directionToMove);
             }
         }
 
-        private void DisableAttackingState() => m_isAttacking = false;
+        private void EnableMovement() => m_canMove = true;
+        private void DisableMovement() => m_canMove = false;
+
+        private void ProcessAnimationOnEndEvents(string endedAnimationName)
+        {
+            if (endedAnimationName == m_takeDamageAnimationName)
+                EnableMovement();
+        }
 
         private void OnDrawGizmos()
         {

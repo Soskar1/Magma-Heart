@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class Skeleton : Entity, IMovable, IAttacker
+    public class Skeleton : Entity, IMovable, IAttacker, IAnimatable
     {
         private RigidbodyMovement m_movement;
         private Facing m_facing;
@@ -15,7 +15,8 @@ namespace MagmaHeart.Core.Entities
         public Action OnAttackStarted { get => m_onAttackStarted; set => m_onAttackStarted = value; }
         public Action OnAttackEnded { get => m_onAttackEnded; set => m_onAttackEnded = value; }
         public Vector2 CurrentMovementDirection { get; private set; }
-        
+
+        public AnimationPlayer AnimationPlayer => m_animationPlayer;
 
         public override void Awake()
         {
