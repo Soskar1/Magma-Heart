@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -18,14 +17,14 @@ namespace MagmaHeart.Core.Entities
             m_pivot = pivot;
         }
 
-        public IEntity FindPlayer()
+        public Entity FindPlayer()
         {
-            IEntity player = null;
+            Entity player = null;
             RaycastHit2D[] hits = Physics2D.RaycastAll(m_pivot.transform.position, m_currentRaycastDirection, m_radius);
 
             foreach (RaycastHit2D hit in hits)
                 if (hit.collider.TryGetComponent(out PlayerBehaviour foundPlayer))
-                    player = foundPlayer.GetComponent<IEntity>();
+                    player = foundPlayer.GetComponent<Entity>();
 
             m_currentRaycastDirection = m_currentRaycastDirection.Rotate(m_rotZ);
 

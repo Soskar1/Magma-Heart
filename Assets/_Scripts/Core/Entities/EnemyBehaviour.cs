@@ -9,13 +9,13 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private int m_amountOfRaycasts;
         private FieldOfView m_fieldOfView;
 
-        private IEntity m_entityToControl;
-        private IEntity m_entityToChase;
+        private Entity m_entityToControl;
+        private Entity m_entityToChase;
         private Rigidbody2D m_rigidbody;
 
         private void Awake()
         {
-            m_entityToControl = GetComponent<IEntity>();
+            m_entityToControl = GetComponent<Entity>();
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_entityToChase = null;
             m_fieldOfView = new FieldOfView(m_searchRadius, m_amountOfRaycasts, transform);

@@ -6,12 +6,12 @@ namespace MagmaHeart.Core.Entities
     public class PlayerBehaviour : MonoBehaviour
     {
         private UserInput m_userInput;
-        private IEntity m_entityToControl;
+        private Entity m_entityToControl;
 
         public void Awake()
         {
             m_userInput = new UserInput();
-            m_entityToControl = GetComponent<IEntity>();
+            m_entityToControl = GetComponent<Entity>();
         }
 
         private void Start()

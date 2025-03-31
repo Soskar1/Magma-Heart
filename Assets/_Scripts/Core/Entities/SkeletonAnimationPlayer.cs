@@ -4,17 +4,21 @@ namespace MagmaHeart.Core.Entities
 {
     public class SkeletonAnimationPlayer : AnimationPlayer
     {
-        private readonly IEntity m_entityToAnimate;
+        private Entity m_entityToAnimate;
         private readonly int m_idleAnimationID = Animator.StringToHash("Idle");
         private readonly int m_walkAnimationID = Animator.StringToHash("Walk");
         private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
 
         private bool m_triggerAttackAnimation = false;
 
-        public SkeletonAnimationPlayer(in Animator animator, IEntity entity) : base(animator)
+        public override void Awake()
         {
-            m_entityToAnimate = entity;
+            base.Awake();
+            m_entityToAnimate = GetComponent<Entity>();
+        }
 
+        public void Start()
+        {
             SetAnimationState(m_idleAnimationID);
             m_entityToAnimate.OnAttack += TriggerAttackAnimation;
         }

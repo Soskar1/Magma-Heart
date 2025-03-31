@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace MagmaHeart.Core
 {
-    public abstract class AnimationPlayer
+    [RequireComponent(typeof(Animator))]
+    public abstract class AnimationPlayer : MonoBehaviour
     {
         private Animator m_animator;
         private int m_currentAnimationState;
@@ -10,10 +11,7 @@ namespace MagmaHeart.Core
         public Animator Animator => m_animator;
         public int CurrentAnimationState => m_currentAnimationState;
 
-        public AnimationPlayer(in Animator animator)
-        {
-            m_animator = animator;
-        }
+        public virtual void Awake() => m_animator = GetComponent<Animator>();
 
         public void SetAnimationState(int animationState) => m_currentAnimationState = animationState;
 

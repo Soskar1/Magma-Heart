@@ -3,49 +3,49 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    [RequireComponent(typeof(RigidbodyMovement))]
-    [RequireComponent(typeof(Animator))]
-    public class Warrior : MonoBehaviour, IEntity
+    public class Entity : MonoBehaviour
     {
         [SerializeField] private float m_maxHealth;
         [SerializeField] private bool m_facingRight;
-        private RigidbodyMovement m_movement;
         private Health m_health;
-        private Facing m_facing;
+
+        private RigidbodyMovement m_movement;
 
         private AnimationPlayer m_animationPlayer;
-        private Vector2 m_currentMovementDirection;
+
+        private Facing m_facing;
 
         private Action m_onAttack;
+
+        private Vector2 m_currentMovementDirection;
         public Health Health => m_health;
         public Vector2 Position => transform.position;
         public Vector2 CurrentMovementDirection => m_currentMovementDirection;
         public Action OnAttack { get => m_onAttack; set => m_onAttack = value; }
 
-        private void Awake() 
+        private void Awake()
         {
-            m_movement = GetComponent<RigidbodyMovement>();
             m_health = new Health(m_maxHealth);
+            m_movement = GetComponent<RigidbodyMovement>();
             m_facing = new Facing(transform, m_facingRight);
 
-            m_currentMovementDirection = new Vector2();
-
-            Animator animator = GetComponent<Animator>();
-            m_animationPlayer = new WarriorAnimationPlayer(animator, this);
+            m_animationPlayer = GetComponent<AnimationPlayer>();
         }
 
         private void Update()
         {
-            m_facing.TryUpdateFacing(m_currentMovementDirection.x);
             m_animationPlayer.PlayAnimations();
         }
 
-        private void FixedUpdate() => m_movement.Move(m_currentMovementDirection);
+        private void FixedUpdate()
+        {
+            m_facing.TryUpdateFacing(m_currentMovementDirection.x);
+            m_movement.Move(m_currentMovementDirection);
+        }
 
         public void Hit(in float damage) => m_health.TakeDamage(damage);
 
         public void ApplyMovement(Vector2 direction) => m_currentMovementDirection = direction;
-        
         public void Attack() => OnAttack?.Invoke();
     }
 }
