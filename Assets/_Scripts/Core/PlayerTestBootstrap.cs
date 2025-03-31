@@ -14,6 +14,7 @@ namespace MagmaHeart.Core
         public void Awake()
         {
             Entity entityInstance = Instantiate(m_entityToSpawn, m_spawnPoint.position, Quaternion.identity);
+            entityInstance.Initialize();
             m_healthBar.Initialize(entityInstance);
             m_cameraMovement.ObjectToTrack = entityInstance.transform;
         }

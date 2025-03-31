@@ -9,7 +9,7 @@ namespace MagmaHeart.Core.Entities
 
         public Health Health => m_health;
 
-        public virtual void Awake() => m_health = new Health(m_maxHealth);
+        public virtual void Initialize() => m_health = new Health(m_maxHealth);
 
         public void Hit(in float damage) => m_health.TakeDamage(damage);
     }

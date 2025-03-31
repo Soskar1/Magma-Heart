@@ -16,9 +16,9 @@ namespace MagmaHeart.Core.Entities
         public Action OnAttackEnded { get => m_onAttackEnded; set => m_onAttackEnded = value; }
         public Vector2 CurrentMovementDirection { get; private set; }
 
-        public override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
+            base.Initialize();
             m_movement = GetComponent<RigidbodyMovement>();
             m_facing = GetComponent<Facing>();
             m_animationPlayer = GetComponent<WarriorAnimationPlayer>();

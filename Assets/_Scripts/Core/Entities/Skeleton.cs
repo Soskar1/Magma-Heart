@@ -18,9 +18,9 @@ namespace MagmaHeart.Core.Entities
 
         public AnimationPlayer AnimationPlayer => m_animationPlayer;
 
-        public override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
+            base.Initialize();
             m_movement = GetComponent<RigidbodyMovement>();
             m_facing = GetComponent<Facing>();
             m_animationPlayer = GetComponent<SkeletonAnimationPlayer>();

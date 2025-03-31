@@ -42,6 +42,8 @@ namespace MagmaHeart.Core.Entities
             if (m_entityAnimations == null)
                 Debug.LogError($"Entity {transform.name} does not support IAnimatable interface");
 
+            m_entity.Initialize();
+
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_entityToChase = null;
             m_fieldOfView = new FieldOfView(m_searchRadius, m_amountOfRaycasts, transform);
@@ -51,8 +53,13 @@ namespace MagmaHeart.Core.Entities
         {
             m_entity.Health.OnTakeDamage += DisableMovement;
             m_entity.Health.OnTakeDamage += DisableAttack;
+            m_entity.Health.OnDeath += Freeze;
 
+            m_entityAttack.OnAttackStarted += DisableMovement;
+            m_entityAttack.OnAttackStarted += DisableAttack;
+            m_entityAttack.OnAttackStarted += Stop;
             m_entityAttack.OnAttackEnded += EnableMovement;
+
             m_entityAnimations.AnimationPlayer.OnAnimationEnded += ProcessAnimationOnEndEvents;
         }
 
@@ -60,8 +67,13 @@ namespace MagmaHeart.Core.Entities
         {
             m_entity.Health.OnTakeDamage -= DisableMovement;
             m_entity.Health.OnTakeDamage -= DisableAttack;
+            m_entity.Health.OnDeath -= Freeze;
 
+            m_entityAttack.OnAttackStarted -= DisableMovement;
+            m_entityAttack.OnAttackStarted -= DisableAttack;
+            m_entityAttack.OnAttackStarted -= Freeze;
             m_entityAttack.OnAttackEnded -= EnableMovement;
+
             m_entityAnimations.AnimationPlayer.OnAnimationEnded -= ProcessAnimationOnEndEvents;
         }
 
@@ -78,13 +90,7 @@ namespace MagmaHeart.Core.Entities
                 return;
 
             if (Vector2.Distance(transform.position, m_entityToChase.transform.position) < m_triggerAttackDistance)
-            {
                 m_entityAttack.Attack();
-                m_entityMovement.Move(Vector2.zero);
-                m_rigidbody.linearVelocity = Vector2.zero;
-                m_canMove = false;
-                m_canAttack = false;
-            }
         }
 
         public void FixedUpdate()
@@ -101,14 +107,16 @@ namespace MagmaHeart.Core.Entities
 
         private void EnableMovement() => m_canMove = true;
         private void DisableMovement() => m_canMove = false;
-
         private void EnableAttack() => m_canAttack = true;
         private void DisableAttack() => m_canAttack = false;
+        private void Stop() => m_rigidbody.linearVelocity = Vector2.zero;
+        private void Freeze() => m_rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
 
         private void DisableEntity()
         {
             m_entity.enabled = false;
             enabled = false;
+            GetComponent<Collider2D>().enabled = false;
         }
 
         private void ProcessAnimationOnEndEvents(string endedAnimationName)
