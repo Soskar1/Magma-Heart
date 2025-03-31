@@ -13,6 +13,7 @@ namespace MagmaHeart.Core.Entities
         [Header("Animation Events")]
         [SerializeField] private string m_takeDamageAnimationName;
         [SerializeField] private string m_deathAnimationName;
+        [SerializeField] private string m_attackAnimationName;
 
         private Entity m_entity;
         private IAttacker m_entityAttack;
@@ -23,6 +24,7 @@ namespace MagmaHeart.Core.Entities
         private Rigidbody2D m_rigidbody;
 
         private bool m_canMove = true;
+        private bool m_canAttack = true;
 
         private void Awake()
         {
@@ -48,9 +50,7 @@ namespace MagmaHeart.Core.Entities
         private void OnEnable()
         {
             m_entity.Health.OnTakeDamage += DisableMovement;
-            
-            m_entity.Health.OnDeath += DisableMovement;
-            m_entity.Health.OnDeath += DisableMovement;
+            m_entity.Health.OnTakeDamage += DisableAttack;
 
             m_entityAttack.OnAttackEnded += EnableMovement;
             m_entityAnimations.AnimationPlayer.OnAnimationEnded += ProcessAnimationOnEndEvents;
@@ -59,9 +59,7 @@ namespace MagmaHeart.Core.Entities
         private void OnDisable()
         {
             m_entity.Health.OnTakeDamage -= DisableMovement;
-            
-            m_entity.Health.OnDeath -= DisableMovement;
-            m_entity.Health.OnDeath -= DisableMovement;
+            m_entity.Health.OnTakeDamage -= DisableAttack;
 
             m_entityAttack.OnAttackEnded -= EnableMovement;
             m_entityAnimations.AnimationPlayer.OnAnimationEnded -= ProcessAnimationOnEndEvents;
@@ -76,23 +74,37 @@ namespace MagmaHeart.Core.Entities
                     return;
             }
 
-            if (Vector2.Distance(transform.position, m_entityToChase.Position) < m_triggerAttackDistance)
+            if (!m_canAttack)
+                return;
+
+            if (Vector2.Distance(transform.position, m_entityToChase.transform.position) < m_triggerAttackDistance)
             {
                 m_entityAttack.Attack();
-                m_entityMovement.SetMovementDirection(Vector2.zero);
+                m_entityMovement.Move(Vector2.zero);
                 m_rigidbody.linearVelocity = Vector2.zero;
                 m_canMove = false;
+                m_canAttack = false;
             }
+        }
 
-            if (m_canMove)
-            {
-                Vector2 directionToMove = (m_entityToChase.Position - m_entity.Position).normalized;
-                m_entityMovement.SetMovementDirection(directionToMove);
-            }
+        public void FixedUpdate()
+        {
+            if (m_entityToChase == null)
+                return;
+
+            if (!m_canMove)
+                return;
+
+            Vector2 directionToMove = (m_entityToChase.transform.position - m_entity.transform.position).normalized;
+            m_entityMovement.Move(directionToMove);
         }
 
         private void EnableMovement() => m_canMove = true;
         private void DisableMovement() => m_canMove = false;
+
+        private void EnableAttack() => m_canAttack = true;
+        private void DisableAttack() => m_canAttack = false;
+
         private void DisableEntity()
         {
             m_entity.enabled = false;
@@ -101,10 +113,19 @@ namespace MagmaHeart.Core.Entities
 
         private void ProcessAnimationOnEndEvents(string endedAnimationName)
         {
-            if (endedAnimationName == m_takeDamageAnimationName)
+            if (endedAnimationName == m_attackAnimationName)
+            {
+                EnableAttack();
+            }
+            else if (endedAnimationName == m_takeDamageAnimationName)
+            {
                 EnableMovement();
+                EnableAttack();
+            }
             else if (endedAnimationName == m_deathAnimationName)
+            {
                 DisableEntity();
+            }
         }
 
         private void OnDrawGizmos()

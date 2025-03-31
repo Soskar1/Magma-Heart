@@ -7,10 +7,11 @@ namespace MagmaHeart.Core.Entities
         private Skeleton m_skeleton;
         private readonly string m_takeDamageAnimationName = "TakeDamage";
         private readonly string m_deathAnimationName = "Death";
+        private readonly string m_attackAnimationName = "Attack";
 
         private readonly int m_idleAnimationID = Animator.StringToHash("Idle");
         private readonly int m_walkAnimationID = Animator.StringToHash("Walk");
-        private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
+        private int m_attackAnimationID;
         private int m_takeDamageAnimationID;
         private int m_deathAnimationID;
 
@@ -24,6 +25,7 @@ namespace MagmaHeart.Core.Entities
             m_skeleton = GetComponent<Skeleton>();
             m_takeDamageAnimationID = Animator.StringToHash(m_takeDamageAnimationName);
             m_deathAnimationID = Animator.StringToHash(m_deathAnimationName);
+            m_attackAnimationID = Animator.StringToHash(m_attackAnimationName);
         }
 
         private void OnEnable()
@@ -67,8 +69,11 @@ namespace MagmaHeart.Core.Entities
 
             if (m_triggerAttackAnimation && DoesCurrentAnimationEnded() && CurrentAnimationState == m_attackAnimationID)
             {
-                m_skeleton.OnAttackEnded?.Invoke();
                 m_triggerAttackAnimation = false;
+
+                m_skeleton.OnAttackEnded?.Invoke();
+                OnAnimationEnded?.Invoke(m_attackAnimationName);
+                
                 m_skeleton.OnAttackStarted += TriggerAttackAnimation;
             }
 

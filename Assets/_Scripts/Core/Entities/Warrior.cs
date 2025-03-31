@@ -16,7 +16,6 @@ namespace MagmaHeart.Core.Entities
         public Action OnAttackEnded { get => m_onAttackEnded; set => m_onAttackEnded = value; }
         public Vector2 CurrentMovementDirection { get; private set; }
 
-
         public override void Awake()
         {
             base.Awake();
@@ -25,18 +24,14 @@ namespace MagmaHeart.Core.Entities
             m_animationPlayer = GetComponent<WarriorAnimationPlayer>();
         }
 
-        public void Update()
-        {
-            m_facing.TryUpdateFacing(CurrentMovementDirection.x);
-            m_animationPlayer.PlayAnimations();
-        }
+        public void Update() => m_animationPlayer.PlayAnimations();
 
-        public void FixedUpdate()
+        public void Move(Vector2 direction)
         {
-            m_movement.Move(CurrentMovementDirection);
+            CurrentMovementDirection = direction;
+            m_facing.TryUpdateFacing(direction.x);
+            m_movement.Move(direction);
         }
-
-        public void SetMovementDirection(Vector2 direction) => CurrentMovementDirection = direction;
 
         public void Attack() => m_onAttackStarted?.Invoke();
     }

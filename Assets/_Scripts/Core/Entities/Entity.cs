@@ -8,7 +8,6 @@ namespace MagmaHeart.Core.Entities
         private Health m_health;
 
         public Health Health => m_health;
-        public Vector2 Position => transform.position;
 
         public virtual void Awake() => m_health = new Health(m_maxHealth);
 

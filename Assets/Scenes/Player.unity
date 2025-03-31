@@ -7501,6 +7501,7 @@ GameObject:
   - component: {fileID: 1183329370}
   - component: {fileID: 1183329371}
   - component: {fileID: 1183329372}
+  - component: {fileID: 1183329373}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -7653,6 +7654,7 @@ MonoBehaviour:
   m_amountOfRaycasts: 32
   m_takeDamageAnimationName: TakeDamage
   m_deathAnimationName: Death
+  m_attackAnimationName: Attack
 --- !u!114 &1183329370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7691,6 +7693,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_facingRight: 1
+--- !u!114 &1183329373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183329362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678a910145cffc646b73b4194741c361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1335741859
 GameObject:
   m_ObjectHideFlags: 0
@@ -7949,6 +7963,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_damage: 1
+  m_knockbackForce: 0
 --- !u!61 &2130412318
 BoxCollider2D:
   m_ObjectHideFlags: 0

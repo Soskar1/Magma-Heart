@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.Entities
             m_userInput.Disable();
         }
 
-        public void Update() => m_entityMovement.SetMovementDirection(m_userInput.Movement);
+        public void FixedUpdate() => m_entityMovement.Move(m_userInput.Movement);
 
         public void Attack(InputAction.CallbackContext context) => m_entityAttack.Attack();
     }
