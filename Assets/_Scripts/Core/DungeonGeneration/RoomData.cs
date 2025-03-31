@@ -37,6 +37,8 @@ namespace MagmaHeart.Core.Dungeon
             BottomMostTile = WorldPosition;
         }
 
+        public RoomData(in BoundsInt roomSpace) : this(roomSpace, Vector2Int.zero) { }
+
         public Vector2Int ToRoomSpace(Vector2Int position)
         {
             if (position.x > RightBorder)
