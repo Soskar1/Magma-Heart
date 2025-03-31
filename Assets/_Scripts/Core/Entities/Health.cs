@@ -10,6 +10,9 @@ namespace MagmaHeart.Core.Entities
         public Action OnTakeDamage;
         public Action OnDeath;
 
+        public float CurrentHealth => m_currentHealth;
+        public float MaxHealth => m_maxHealth;
+
         public Health(float maxHealth)
         {
             m_maxHealth = maxHealth;
