@@ -7374,7 +7374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_spawnPoint: {fileID: 822654936}
-  m_entityToSpawn: {fileID: 2491329864368524525, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_entityToSpawn: {fileID: 6965426808393464807, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
   m_healthBar: {fileID: 2104924028}
   m_cameraMovement: {fileID: 759046548}
 --- !u!1 &791258865
@@ -7500,6 +7500,7 @@ GameObject:
   - component: {fileID: 1183329369}
   - component: {fileID: 1183329370}
   - component: {fileID: 1183329371}
+  - component: {fileID: 1183329372}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -7516,7 +7517,7 @@ Transform:
   m_GameObject: {fileID: 1183329362}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.48, y: -3.71, z: 0}
+  m_LocalPosition: {x: 3.9, y: -1.04, z: 0}
   m_LocalScale: {x: 1.6, y: 1.6, z: 1.6}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -7671,10 +7672,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1183329362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2d701dc63d61d0428abaa77619e41b0, type: 3}
+  m_Script: {fileID: 11500000, guid: 1147518cb6fc1d94a9cd28d525eef5db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHealth: 3
+  m_maxHealth: 5
+--- !u!114 &1183329372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183329362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80965cc650b633f4f984e30963471d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_facingRight: 1
 --- !u!1 &1335741859
 GameObject:

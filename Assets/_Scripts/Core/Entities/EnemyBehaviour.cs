@@ -9,17 +9,34 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private int m_amountOfRaycasts;
         private FieldOfView m_fieldOfView;
 
-        private Entity m_entityToControl;
+        private Entity m_entity;
+        private IAttacker m_entityAttack;
+        private IMovable m_entityMovement;
+
         private Entity m_entityToChase;
         private Rigidbody2D m_rigidbody;
 
+        private bool m_isAttacking;
+
         private void Awake()
         {
-            m_entityToControl = GetComponent<Entity>();
+            m_entity = GetComponent<Entity>();
+            m_entityAttack = m_entity as IAttacker;
+            m_entityMovement = m_entity as IMovable;
+
+            if (m_entityAttack == null)
+                Debug.LogError($"Entity {transform.name} does not support IAttacker interface");
+
+            if (m_entityMovement == null)
+                Debug.LogError($"Entity {transform.name} does not support IMovable interface");
+
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_entityToChase = null;
             m_fieldOfView = new FieldOfView(m_searchRadius, m_amountOfRaycasts, transform);
         }
+
+        private void OnEnable() => m_entityAttack.OnAttackEnded += DisableAttackingState;
+        private void OnDisable() => m_entityAttack.OnAttackEnded -= DisableAttackingState;
 
         private void Update()
         {
@@ -32,16 +49,22 @@ namespace MagmaHeart.Core.Entities
 
             if (Vector2.Distance(transform.position, m_entityToChase.Position) < m_triggerAttackDistance)
             {
-                m_entityToControl.Attack();
-                m_entityToControl.ApplyMovement(Vector2.zero);
+                m_entityAttack.Attack();
+                m_entityMovement.SetMovementDirection(Vector2.zero);
                 m_rigidbody.linearVelocity = Vector2.zero;
+                m_isAttacking = true;
             }
             else
             {
-                Vector2 directionToMove = (m_entityToChase.Position - m_entityToControl.Position).normalized;
-                m_entityToControl.ApplyMovement(directionToMove);
+                if (!m_isAttacking)
+                {
+                    Vector2 directionToMove = (m_entityToChase.Position - m_entity.Position).normalized;
+                    m_entityMovement.SetMovementDirection(directionToMove);
+                }
             }
         }
+
+        private void DisableAttackingState() => m_isAttacking = false;
 
         private void OnDrawGizmos()
         {

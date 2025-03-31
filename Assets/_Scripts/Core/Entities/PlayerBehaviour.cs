@@ -6,15 +6,24 @@ namespace MagmaHeart.Core.Entities
     public class PlayerBehaviour : MonoBehaviour
     {
         private UserInput m_userInput;
-        private Entity m_entityToControl;
+        private IAttacker m_entityAttack;
+        private IMovable m_entityMovement;
 
         public void Awake()
         {
             m_userInput = new UserInput();
-            m_entityToControl = GetComponent<Entity>();
+            Entity entity = GetComponent<Entity>();
+            m_entityAttack = entity as IAttacker;
+            m_entityMovement = entity as IMovable;
+
+            if (m_entityAttack == null)
+                Debug.LogError($"Entity {transform.name} does not support IAttacker interface");
+
+            if (m_entityMovement == null)
+                Debug.LogError($"Entity {transform.name} does not support IMovable interface");
         }
 
-        private void Start()
+        private void OnEnable()
         {
             m_userInput.Controls.Player.Attack.performed += Attack;
             m_userInput.Enable();
@@ -26,8 +35,8 @@ namespace MagmaHeart.Core.Entities
             m_userInput.Disable();
         }
 
-        public void Update() => m_entityToControl.ApplyMovement(m_userInput.Movement);
+        public void Update() => m_entityMovement.SetMovementDirection(m_userInput.Movement);
 
-        public void Attack(InputAction.CallbackContext context) => m_entityToControl.Attack();
+        public void Attack(InputAction.CallbackContext context) => m_entityAttack.Attack();
     }
 }

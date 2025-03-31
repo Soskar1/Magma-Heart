@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 6923697098451377377}
   - component: {fileID: 5902962640327027025}
   - component: {fileID: 3376912670719294966}
-  - component: {fileID: 2491329864368524525}
+  - component: {fileID: 6965426808393464807}
+  - component: {fileID: 6310924248195134273}
   m_Layer: 0
   m_Name: Warrior
   m_TagString: Untagged
@@ -175,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a9289526cc31741b91f5d7c9222bd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2491329864368524525
+--- !u!114 &6965426808393464807
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,10 +185,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1936468212120715525}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2d701dc63d61d0428abaa77619e41b0, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f032d0bc3d0aab4c87120e6f4f6e99e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHealth: 3
+  m_maxHealth: 10
+--- !u!114 &6310924248195134273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936468212120715525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80965cc650b633f4f984e30963471d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_facingRight: 1
 --- !u!1 &5311638528704602955
 GameObject:
