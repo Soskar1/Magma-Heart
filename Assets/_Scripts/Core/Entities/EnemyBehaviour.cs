@@ -12,6 +12,7 @@ namespace MagmaHeart.Core.Entities
 
         [Header("Animation Events")]
         [SerializeField] private string m_takeDamageAnimationName;
+        [SerializeField] private string m_deathAnimationName;
 
         private Entity m_entity;
         private IAttacker m_entityAttack;
@@ -47,6 +48,10 @@ namespace MagmaHeart.Core.Entities
         private void OnEnable()
         {
             m_entity.Health.OnTakeDamage += DisableMovement;
+            
+            m_entity.Health.OnDeath += DisableMovement;
+            m_entity.Health.OnDeath += DisableMovement;
+
             m_entityAttack.OnAttackEnded += EnableMovement;
             m_entityAnimations.AnimationPlayer.OnAnimationEnded += ProcessAnimationOnEndEvents;
         }
@@ -54,6 +59,10 @@ namespace MagmaHeart.Core.Entities
         private void OnDisable()
         {
             m_entity.Health.OnTakeDamage -= DisableMovement;
+            
+            m_entity.Health.OnDeath -= DisableMovement;
+            m_entity.Health.OnDeath -= DisableMovement;
+
             m_entityAttack.OnAttackEnded -= EnableMovement;
             m_entityAnimations.AnimationPlayer.OnAnimationEnded -= ProcessAnimationOnEndEvents;
         }
@@ -84,11 +93,18 @@ namespace MagmaHeart.Core.Entities
 
         private void EnableMovement() => m_canMove = true;
         private void DisableMovement() => m_canMove = false;
+        private void DisableEntity()
+        {
+            m_entity.enabled = false;
+            enabled = false;
+        }
 
         private void ProcessAnimationOnEndEvents(string endedAnimationName)
         {
             if (endedAnimationName == m_takeDamageAnimationName)
                 EnableMovement();
+            else if (endedAnimationName == m_deathAnimationName)
+                DisableEntity();
         }
 
         private void OnDrawGizmos()

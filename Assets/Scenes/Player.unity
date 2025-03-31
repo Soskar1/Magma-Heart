@@ -7652,6 +7652,7 @@ MonoBehaviour:
   m_searchRadius: 5
   m_amountOfRaycasts: 32
   m_takeDamageAnimationName: TakeDamage
+  m_deathAnimationName: Death
 --- !u!114 &1183329370
 MonoBehaviour:
   m_ObjectHideFlags: 0

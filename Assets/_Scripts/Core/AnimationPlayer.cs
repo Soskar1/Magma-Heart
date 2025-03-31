@@ -30,6 +30,6 @@ namespace MagmaHeart.Core
 
         public abstract int GetAnimationState();
 
-        public float GetAnimationPlayTime() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        public bool DoesCurrentAnimationEnded() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
     }
 }
