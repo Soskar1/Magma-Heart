@@ -9,6 +9,10 @@ namespace MagmaHeart.Core.Tests
     {
         [SerializeField] private Transform m_spawnPoint;
         [SerializeField] private Entity m_entityToSpawn;
+
+        [SerializeField] private EnemyBehaviour m_enemyToSpawn;
+        [SerializeField] private Transform m_enemySpawnPoint;
+        
         [SerializeField] private HealthBar m_healthBar;
         [SerializeField] private CameraMovement m_cameraMovement;
         [SerializeField] private LocationGenerator m_locationGenerator;
@@ -25,6 +29,9 @@ namespace MagmaHeart.Core.Tests
             entityInstance.Initialize();
             m_healthBar.Initialize(entityInstance);
             m_cameraMovement.ObjectToTrack = entityInstance.transform;
+
+            EnemyBehaviour enemyInstance = Instantiate(m_enemyToSpawn, m_enemySpawnPoint.position, Quaternion.identity);
+            enemyInstance.Initialize(entityInstance, location.Rooms[0]);
         }
     }
 }

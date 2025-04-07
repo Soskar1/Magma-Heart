@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Entities
         private RoomData m_roomData;
         private List<Vector2Int> m_directionsToVisit;
 
-        public AStarNavigation()
+        public AStarNavigation(RoomData roomData)
         {
             m_directionsToVisit = new List<Vector2Int>()
             {
@@ -35,6 +35,8 @@ namespace MagmaHeart.Core.Entities
                 Vector2Int.right,
                 Vector2Int.left
             };
+
+            m_roomData = roomData;
         }
 
         public List<Vector2Int> ConstructPath(Vector2Int start, Vector2Int target)
@@ -58,12 +60,13 @@ namespace MagmaHeart.Core.Entities
                 if (currentNode.position == target)
                 {
                     List<Vector2Int> path = new List<Vector2Int>() { target };
-                    while (currentNode != startNode)
+                    while (currentNode.parent != null)
                     {
                         path.Add(currentNode.position);
                         currentNode = currentNode.parent;
                     }
 
+                    path.Reverse();
                     return path;
                 }
 
@@ -74,7 +77,6 @@ namespace MagmaHeart.Core.Entities
                     if (tile != null && tile.TileType == TileType.Floor && !visited.Contains(neighbourTilePosition))
                     {
                         AStarNode neighbourNode = new AStarNode(neighbourTilePosition, target);
-                        nodesToVisit.Add(neighbourNode);
 
                         float costToNeighbour = currentNode.distanceToStartNode + 1;
 

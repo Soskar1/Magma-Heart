@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using MagmaHeart.Core.Dungeon;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Entities
 {
@@ -8,7 +11,6 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private float m_triggerAttackDistance;
         [SerializeField] private float m_searchRadius;
         [SerializeField] private int m_amountOfRaycasts;
-        private FieldOfView m_fieldOfView;
 
         [Header("Animation Events")]
         [SerializeField] private string m_takeDamageAnimationName;
@@ -26,8 +28,11 @@ namespace MagmaHeart.Core.Entities
         private bool m_canMove = true;
         private bool m_canAttack = true;
 
+        private AStarNavigation m_navigation;
+
         private void Awake()
         {
+            m_rigidbody = GetComponent<Rigidbody2D>();
             m_entity = GetComponent<Entity>();
             m_entityAttack = m_entity as IAttacker;
             m_entityMovement = m_entity as IMovable;
@@ -43,10 +48,12 @@ namespace MagmaHeart.Core.Entities
                 Debug.LogError($"Entity {transform.name} does not support IAnimatable interface");
 
             m_entity.Initialize();
+        }
 
-            m_rigidbody = GetComponent<Rigidbody2D>();
-            m_entityToChase = null;
-            m_fieldOfView = new FieldOfView(m_searchRadius, m_amountOfRaycasts, transform);
+        public void Initialize(Entity entityToChase, RoomData roomData)
+        {
+            m_entityToChase = entityToChase;
+            m_navigation = new AStarNavigation(roomData);
         }
 
         private void OnEnable()
@@ -80,11 +87,7 @@ namespace MagmaHeart.Core.Entities
         private void Update()
         {
             if (m_entityToChase == null)
-            {
-                m_entityToChase = m_fieldOfView.FindPlayer();
-                if (m_entityToChase == null)
-                    return;
-            }
+                return;
 
             if (!m_canAttack)
                 return;
@@ -101,8 +104,16 @@ namespace MagmaHeart.Core.Entities
             if (!m_canMove)
                 return;
 
-            Vector2 directionToMove = (m_entityToChase.transform.position - m_entity.transform.position).normalized;
-            m_entityMovement.Move(directionToMove);
+            if (m_navigation == null)
+                return;
+
+            Debug.Log($"start {transform.position.ToVector2Int()}, end {m_entityToChase.transform.position.ToVector2Int()}");
+            List<Vector2Int> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int());
+            //if (path != null)
+            //{
+            //    Vector2 directionToMove = path[1] - path[0];
+            //    m_entityMovement.Move(directionToMove.normalized);
+            //}
         }
 
         private void EnableMovement() => m_canMove = true;
@@ -133,18 +144,6 @@ namespace MagmaHeart.Core.Entities
             else if (endedAnimationName == m_deathAnimationName)
             {
                 DisableEntity();
-            }
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-            Vector2 raycast = Vector2.right;
-
-            for (int i = 0; i < m_amountOfRaycasts; ++i)
-            {
-                Gizmos.DrawLine(transform.position, (Vector2)transform.position + raycast * m_searchRadius);
-                raycast = raycast.Rotate(360.0f /  m_amountOfRaycasts);
             }
         }
     }
