@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Random = System.Random;
 using System;
+using UnityEditor;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -108,7 +109,17 @@ namespace MagmaHeart.Core.Dungeon
                 }
             });
 
-            return new Location(roomDatas.ToList(), corridorTiles);
+            HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
+            foreach (RoomData roomData in roomDatas)
+                tilePositions.UnionWith(roomData.GetTilePositions());
+
+            HashSet<Vector2Int> corridorTilePositions = corridorTiles.Select(tile => tile.Position).ToHashSet();
+            tilePositions.UnionWith(corridorTilePositions);
+
+            LocationWallGenerator wallGenerator = new LocationWallGenerator();
+            HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
+
+            return new Location(roomDatas.ToList(), corridorTiles, wallTiles);
         }
 
         private void GraphDebug(in LocationGraph graph)

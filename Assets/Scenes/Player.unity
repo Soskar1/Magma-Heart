@@ -352,6 +352,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7286387826017923729, guid: 230714f8488e8724b82e2a8216774cba, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -387,7 +391,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 760750396}
-  - component: {fileID: 760750397}
+  - component: {fileID: 760750400}
   - component: {fileID: 760750399}
   - component: {fileID: 760750398}
   m_Layer: 0
@@ -413,22 +417,6 @@ Transform:
   - {fileID: 822654936}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &760750397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 760750395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fec4c4287ab5e948af5e7a212d33bf2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_spawnPoint: {fileID: 822654936}
-  m_entityToSpawn: {fileID: 6965426808393464807, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
-  m_healthBar: {fileID: 2104924028}
-  m_cameraMovement: {fileID: 759046548}
 --- !u!114 &760750398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,10 +443,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 760750395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f245bec708c8ee4ab2a04653a0a7f1b, type: 3}
+  m_Script: {fileID: 11500000, guid: 7558b7f0ca370b44591fa5fee1aba077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_roomSize: {x: 50, y: 50}
+  m_roomSize: {x: 25, y: 25}
+--- !u!114 &760750400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760750395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38cd13f80a3e61e49a1d46b736afacbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_spawnPoint: {fileID: 822654936}
+  m_entityToSpawn: {fileID: 6965426808393464807, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_healthBar: {fileID: 2104924028}
+  m_cameraMovement: {fileID: 759046548}
 --- !u!1 &791258865
 GameObject:
   m_ObjectHideFlags: 0

@@ -40,6 +40,7 @@ namespace MagmaHeart.Core.Dungeon
         public void Clear()
         {
             m_floors.ClearAllTiles();
+            m_walls.ClearAllTiles();
         }
     }
 }

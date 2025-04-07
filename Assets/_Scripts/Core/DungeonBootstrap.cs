@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
@@ -21,14 +20,7 @@ namespace MagmaHeart.Core
         private async void BootScene()
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-
-            HashSet<DungeonTile> tiles = new HashSet<DungeonTile>();
-            tiles.UnionWith(m_location.CorridorTiles);
-
-            foreach (RoomData roomData in m_location.Rooms)
-                tiles.UnionWith(roomData.GetTiles());
-
-            StartCoroutine(m_renderer.DrawTiles(tiles));
+            StartCoroutine(m_renderer.DrawTiles(m_location.Tiles));
         }
 
         private void SpawnPlayer()

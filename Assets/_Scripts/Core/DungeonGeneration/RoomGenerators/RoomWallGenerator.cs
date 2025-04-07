@@ -4,14 +4,14 @@ using Random = System.Random;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class WallGenerator : IRoomGenerator
+    public class RoomWallGenerator : IRoomGenerator
     {
         private readonly RandomWalk m_randomWalk;
         private readonly Random m_random;
         private readonly int m_wallThickness;
         private readonly int m_maxWallLength;
 
-        public WallGenerator(in Random random, in int wallThickness, in int maxWallLength)
+        public RoomWallGenerator(in Random random, in int wallThickness, in int maxWallLength)
         {
             m_randomWalk = new RandomWalk(random, new List<Vector2Int>() {
                 Vector2Int.left,
