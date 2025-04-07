@@ -17,7 +17,6 @@ namespace MagmaHeart.Core.Dungeon
         private Vector2Int m_roomBorderOffsets;
 
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
-        private List<IRoomModifier> m_modifiers = new List<IRoomModifier>();
         private List<GameObject> m_debugElements = new List<GameObject>();
 
         [SerializeField] private TextAsset m_locationGeneratorXmlFile;
@@ -46,7 +45,6 @@ namespace MagmaHeart.Core.Dungeon
             LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorXmlFile.name, m_random);
             LocationGeneratorData data = deserializer.Deserialize();
             m_generators = data.generators;
-            m_modifiers = data.modifiers;
             m_locationSpaceSize = data.locationSpaceSize;
             m_roomBorderOffsets = data.roomBorderOffsets;
             m_spacePartitioning = data.partitioning;
@@ -57,8 +55,13 @@ namespace MagmaHeart.Core.Dungeon
         {
             BoundsInt locationSpace = new BoundsInt(new Vector3Int(position.x - m_locationSpaceSize.x / 2, position.y - m_locationSpaceSize.y / 2, 0),
                 new Vector3Int(m_locationSpaceSize.x, m_locationSpaceSize.y, 0));
-            List<BoundsInt> spaces = m_spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
+            List<BoundsInt> spaces = new List<BoundsInt>();
             
+            if (m_spacePartitioning != null)
+                spaces = m_spacePartitioning.PerformBinarySpacePartitioning(locationSpace);
+            else
+                spaces.Add(locationSpace);
+
             HashSet<RoomData> roomDatas = new HashSet<RoomData>();
 
             if (m_debugElements.Count > 0)
@@ -101,13 +104,16 @@ namespace MagmaHeart.Core.Dungeon
                 GraphDebug(mstGraph);
 
             HashSet<DungeonTile> corridorTiles = new HashSet<DungeonTile>();
-            await Task.Run(() => {
-                foreach (RoomConnectionEdge edge in mstGraph.Edges)
-                {
-                    HashSet<DungeonTile> tiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
-                    corridorTiles.UnionWith(tiles);
-                }
-            });
+            if (m_corridorGenerator != null)
+            {
+                await Task.Run(() => {
+                    foreach (RoomConnectionEdge edge in mstGraph.Edges)
+                    {
+                        HashSet<DungeonTile> tiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
+                        corridorTiles.UnionWith(tiles);
+                    }
+                });
+            }
 
             HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
             foreach (RoomData roomData in roomDatas)
@@ -147,9 +153,6 @@ namespace MagmaHeart.Core.Dungeon
 
             foreach (IRoomGenerator generator in m_generators)
                 generator.GenerateRoom(roomData);
-
-            foreach (IRoomModifier modifier in m_modifiers)
-                modifier.ModifyRoom(roomData);
 
             return roomData;
         }

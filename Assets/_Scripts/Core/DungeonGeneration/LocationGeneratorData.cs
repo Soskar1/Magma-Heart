@@ -15,7 +15,6 @@ namespace MagmaHeart.Core.Dungeon
         public CorridorGenerator corridorGenerator;
         
         public List<IRoomGenerator> generators;
-        public List<IRoomModifier> modifiers;
     }
 
     public class LocationGeneratorDeserializer
@@ -55,11 +54,14 @@ namespace MagmaHeart.Core.Dungeon
             int yBorderOffset = Int32.Parse(roomSpaceElementAttributes["YBorderOffset"].Value);
             data.roomBorderOffsets = new Vector2Int(xBorderOffset, yBorderOffset);
 
-            XmlAttributeCollection spacePartitioningAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/SpacePartitioning").Attributes;
-            int maxPartitions = Int32.Parse(spacePartitioningAttributes["MaxPartitions"].Value);
-            int roomXMinSize = Int32.Parse(spacePartitioningAttributes["RoomXMinSize"].Value);
-            int roomYMinSize = Int32.Parse(spacePartitioningAttributes["RoomYMinSize"].Value);
-            data.partitioning = new BinarySpacePartitioning(m_random, roomXMinSize, roomYMinSize, maxPartitions);
+            XmlNode spacePartitioningNode = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/SpacePartitioning");
+            if (spacePartitioningNode != null) {
+                XmlAttributeCollection attributes = spacePartitioningNode.Attributes;
+                int maxPartitions = Int32.Parse(attributes["MaxPartitions"].Value);
+                int roomXMinSize = Int32.Parse(attributes["RoomXMinSize"].Value);
+                int roomYMinSize = Int32.Parse(attributes["RoomYMinSize"].Value);
+                data.partitioning = new BinarySpacePartitioning(m_random, roomXMinSize, roomYMinSize, maxPartitions);
+            }
 
             List<IRoomGenerator> generators = new List<IRoomGenerator>();
             XmlNode roomGenerators = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomGenerators");
@@ -73,21 +75,11 @@ namespace MagmaHeart.Core.Dungeon
             }
             data.generators = generators;
 
-            List<IRoomModifier> modifiers = new List<IRoomModifier>();
-            XmlNode roomModifiers = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomModifiers");
-            if (roomModifiers != null)
-            {
-                foreach (XmlNode roomModifier in roomModifiers.ChildNodes)
-                {
-                    IRoomModifier modifier = DeserializeRoomModifier(roomModifier);
-                    modifiers.Add(modifier);
-                }
+            XmlNode corridorGeneratorNode = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/CorridorGenerator");
+            if (corridorGeneratorNode != null) {
+                int corridorSize = Int32.Parse(corridorGeneratorNode.Attributes["CorridorSize"].Value);
+                data.corridorGenerator = new CorridorGenerator(m_random, corridorSize);
             }
-            data.modifiers = modifiers;
-
-            XmlAttributeCollection corridorGeneratorAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/CorridorGenerator").Attributes;
-            int corridorSize = Int32.Parse(corridorGeneratorAttributes["CorridorSize"].Value);
-            data.corridorGenerator = new CorridorGenerator(m_random, corridorSize);
 
             return data;
         }
@@ -97,9 +89,9 @@ namespace MagmaHeart.Core.Dungeon
             switch (node.Name)
             {
                 case "Boxed":
-                    XmlAttributeCollection attributes = node.Attributes;
-                    int xSize = Int32.Parse(attributes["XSize"].Value);
-                    int ySize = Int32.Parse(attributes["YSize"].Value);
+                    XmlAttributeCollection boxedRoomAttributes = node.Attributes;
+                    int xSize = Int32.Parse(boxedRoomAttributes["XSize"].Value);
+                    int ySize = Int32.Parse(boxedRoomAttributes["YSize"].Value);
                     return new BoxedRoomGenerator(xSize, ySize);
                 case "RandomWalk":
                     int iterations = Int32.Parse(node.Attributes["Iterations"].Value);
@@ -107,16 +99,11 @@ namespace MagmaHeart.Core.Dungeon
                 case "DiffusionLimitedAggregation":
                     int tilesToPlace = Int32.Parse(node.Attributes["TilesToPlace"].Value);
                     return new DiffusionLimitedAggregatoinRoomGenerator(m_random, tilesToPlace);
-                default:
-                    Debug.LogWarning($"{node.Name} not found. Returning null");
-                    return null;
-            }
-        }
-
-        private IRoomModifier DeserializeRoomModifier(XmlNode node)
-        {
-            switch (node.Name)
-            {
+                case "WallGenerator":
+                    XmlAttributeCollection wallGeneratorAttributes = node.Attributes;
+                    int maxWallLength = Int32.Parse(wallGeneratorAttributes["MaxWallLength"].Value);
+                    int amountOfWalls = Int32.Parse(wallGeneratorAttributes["AmountOfWalls"].Value);
+                    return new RoomWallGenerator(m_random, amountOfWalls, maxWallLength);
                 case "TilePropagation":
                     int length = Int32.Parse(node.Attributes["Length"].Value);
                     return new TilePropagation(length);

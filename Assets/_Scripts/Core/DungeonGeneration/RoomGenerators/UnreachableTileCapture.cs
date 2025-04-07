@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class UnreachableTileCapture : IRoomModifier
+    public class UnreachableTileCapture : IRoomGenerator
     {
         private readonly List<Vector2Int> m_captureDirections;
         private readonly List<Vector2Int> m_directionsToVisit;
@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public void ModifyRoom(in RoomData roomData)
+        public void GenerateRoom(in RoomData roomData)
         {
             HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
             Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();

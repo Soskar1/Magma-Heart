@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class TileFill : IRoomModifier
+    public class TileFill : IRoomGenerator
     {
         private readonly List<Vector2Int> m_directionsToVisit;
 
@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public void ModifyRoom(in RoomData roomData)
+        public void GenerateRoom(in RoomData roomData)
         {
             HashSet<Vector2Int> emptyTiles = new HashSet<Vector2Int>();
 

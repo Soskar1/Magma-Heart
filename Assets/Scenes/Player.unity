@@ -392,7 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 760750396}
   - component: {fileID: 760750400}
-  - component: {fileID: 760750399}
+  - component: {fileID: 760750401}
   - component: {fileID: 760750398}
   m_Layer: 0
   m_Name: Bootstrap
@@ -434,19 +434,6 @@ MonoBehaviour:
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
   m_tilesPerFrame: 256
---- !u!114 &760750399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 760750395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7558b7f0ca370b44591fa5fee1aba077, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_roomSize: {x: 25, y: 25}
 --- !u!114 &760750400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,6 +450,28 @@ MonoBehaviour:
   m_entityToSpawn: {fileID: 6965426808393464807, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
   m_healthBar: {fileID: 2104924028}
   m_cameraMovement: {fileID: 759046548}
+  m_locationGenerator: {fileID: 760750401}
+--- !u!114 &760750401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760750395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b5b049757706e4289c44713afb4c4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_locationGeneratorXmlFile: {fileID: 4900000, guid: 1b4ee90a8ba63eb4bb67ff8487016232, type: 3}
+  m_useSeed: 0
+  m_seed: 0
+  m_bspDebug: 0
+  m_spaceVizualizer: {fileID: 0}
+  m_locationGraphDebug: 0
+  m_mstTreeDebug: 0
+  m_roomNodeDebug: {fileID: 0}
+  m_roomEdgeDebug: {fileID: 0}
 --- !u!1 &791258865
 GameObject:
   m_ObjectHideFlags: 0

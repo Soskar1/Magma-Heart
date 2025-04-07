@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class TilePropagation : IRoomModifier
+    public class TilePropagation : IRoomGenerator
     {
         private readonly List<Vector2Int> m_directionsToVisit;
         private readonly int m_progagationLength;
@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Dungeon
             m_progagationLength = propagationLength;
         }
 
-        public void ModifyRoom(in RoomData roomData)
+        public void GenerateRoom(in RoomData roomData)
         {
             HashSet<Vector2Int> tilesToVisit = roomData.GetTilePositions();
 

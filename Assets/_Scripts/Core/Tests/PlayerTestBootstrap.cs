@@ -11,15 +11,14 @@ namespace MagmaHeart.Core.Tests
         [SerializeField] private Entity m_entityToSpawn;
         [SerializeField] private HealthBar m_healthBar;
         [SerializeField] private CameraMovement m_cameraMovement;
-        private TestLocationGenerator m_locationGenerator;
+        [SerializeField] private LocationGenerator m_locationGenerator;
         private LocationRenderer m_locationRenderer;
         
-        public void Awake()
-        {
-            m_locationGenerator = GetComponent<TestLocationGenerator>();
-            m_locationRenderer = GetComponent<LocationRenderer>();
+        public void Awake() => m_locationRenderer = GetComponent<LocationRenderer>();
 
-            Location location = m_locationGenerator.GenerateLocation();
+        public async void Start()
+        {
+            Location location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
             StartCoroutine(m_locationRenderer.DrawTiles(location.Tiles));
 
             Entity entityInstance = Instantiate(m_entityToSpawn, m_spawnPoint.position, Quaternion.identity);

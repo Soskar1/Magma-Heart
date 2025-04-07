@@ -8,10 +8,10 @@ namespace MagmaHeart.Core.Dungeon
     {
         private readonly RandomWalk m_randomWalk;
         private readonly Random m_random;
-        private readonly int m_wallThickness;
         private readonly int m_maxWallLength;
+        private readonly int m_amountOfWalls;
 
-        public RoomWallGenerator(in Random random, in int wallThickness, in int maxWallLength)
+        public RoomWallGenerator(in Random random, in int amountOfWalls, in int maxWallLength)
         {
             m_randomWalk = new RandomWalk(random, new List<Vector2Int>() {
                 Vector2Int.left,
@@ -21,21 +21,23 @@ namespace MagmaHeart.Core.Dungeon
             });
 
             m_random = random;
-            m_wallThickness = wallThickness;
             m_maxWallLength = maxWallLength;
+            m_amountOfWalls = amountOfWalls;
         }
 
         public void GenerateRoom(in RoomData roomData)
         {
-            //Vector2Int currentPosition = roomData.GetTileAtIndex(m_random.Next(roomData.TileCount));
-            //Vector2Int wallDirection = m_randomWalk.TakeRandomDirection();
+            for (int wall = 0; wall < m_amountOfWalls; ++wall)
+            {
+                Vector2Int currentPosition = roomData.GetTilePositionAtIndex(m_random.Next(roomData.TileCount));
+                Vector2Int wallDirection = m_randomWalk.TakeRandomDirection();
 
-            //for (int i = 0; i < m_maxWallLength; ++i)
-            //{
-            //    Vector2Int newPosition = roomData.ToRoomSpace(currentPosition + wallDirection);
-            //    currentPosition = newPosition;
-            //    roomData.AddTile(currentPosition);
-            //}
+                for (int i = 0; i < m_maxWallLength; ++i)
+                {
+                    Vector2Int wallPosition = currentPosition + wallDirection * i;
+                    roomData.AddTile(wallPosition, TileType.Wall);
+                }
+            }
         }
     }
 }

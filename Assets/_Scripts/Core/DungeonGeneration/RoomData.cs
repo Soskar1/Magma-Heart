@@ -62,11 +62,16 @@ namespace MagmaHeart.Core.Dungeon
         public void AddTile(Vector2Int tilePosition, TileType tileType) 
         {
             tilePosition = ToRoomSpace(tilePosition);
-
-            if (m_tiles.ContainsKey(tilePosition) && m_tiles[tilePosition].TileType == tileType)
-                return;
-
             DungeonTile dungeonTile = new DungeonTile(tilePosition, tileType);
+
+            if (m_tiles.ContainsKey(tilePosition))
+            {
+                if (m_tiles[tilePosition].TileType != tileType)
+                    m_tiles[tilePosition].TileType = dungeonTile.TileType;
+
+                return;
+            }
+
             m_tiles.Add(tilePosition, dungeonTile);
 
             if (tilePosition.x < LeftMostTile.x)

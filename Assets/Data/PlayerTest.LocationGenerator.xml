@@ -1,0 +1,10 @@
+<?xml version ="1.0"?>
+<LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LocationGenerator.xsd">
+	<LocationSpace XSize="50" YSize="50"/>
+	<RoomSpace XBorderOffset="0" YBorderOffset="0"/>
+
+	<RoomGenerators>
+		<Boxed XSize="30" YSize="30"/>
+		<WallGenerator AmountOfWalls="1" MaxWallLength="5"/>
+	</RoomGenerators>
+</LocationGenerator>
