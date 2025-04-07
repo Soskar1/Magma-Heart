@@ -21,10 +21,17 @@ namespace MagmaHeart.Core.Entities
                 distanceToStartNode = 0;
                 distanceToTargetNode = Vector2Int.Distance(position, targetPosition);
             }
+
+            public override bool Equals(object obj) {
+                return obj is AStarNode node && node.position == position;
+            }
+
+            public override int GetHashCode() => position.GetHashCode();
         }
 
         private RoomData m_roomData;
         private List<Vector2Int> m_directionsToVisit;
+        public int iterations = 0;
 
         public AStarNavigation(RoomData roomData)
         {
@@ -41,13 +48,14 @@ namespace MagmaHeart.Core.Entities
 
         public List<Vector2Int> ConstructPath(Vector2Int start, Vector2Int target)
         {
-            List<Vector2Int> visited = new List<Vector2Int>();
+            HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
 
             AStarNode startNode = new AStarNode(start, target);
             List<AStarNode> nodesToVisit = new List<AStarNode>() { startNode };
 
             while (nodesToVisit.Count > 0)
             {
+                ++iterations;
                 AStarNode currentNode = nodesToVisit[0];
 
                 foreach (AStarNode node in nodesToVisit)
@@ -59,7 +67,7 @@ namespace MagmaHeart.Core.Entities
 
                 if (currentNode.position == target)
                 {
-                    List<Vector2Int> path = new List<Vector2Int>() { target };
+                    List<Vector2Int> path = new List<Vector2Int>();
                     while (currentNode.parent != null)
                     {
                         path.Add(currentNode.position);

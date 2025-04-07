@@ -107,8 +107,8 @@ namespace MagmaHeart.Core.Entities
             if (m_navigation == null)
                 return;
 
-            Debug.Log($"start {transform.position.ToVector2Int()}, end {m_entityToChase.transform.position.ToVector2Int()}");
-            List<Vector2Int> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int());
+            // Debug.Log($"start {transform.position.ToVector2Int()}, end {m_entityToChase.transform.position.ToVector2Int()}");
+            // List<Vector2Int> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int());
             //if (path != null)
             //{
             //    Vector2 directionToMove = path[1] - path[0];
