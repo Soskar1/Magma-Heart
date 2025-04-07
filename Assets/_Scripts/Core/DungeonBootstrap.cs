@@ -22,11 +22,11 @@ namespace MagmaHeart.Core
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
 
-            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>();
+            HashSet<DungeonTile> tiles = new HashSet<DungeonTile>();
             tiles.UnionWith(m_location.CorridorTiles);
 
             foreach (RoomData roomData in m_location.Rooms)
-                tiles.UnionWith(roomData.GetTilesCopy());
+                tiles.UnionWith(roomData.GetTiles());
 
             StartCoroutine(m_renderer.DrawTiles(tiles));
         }

@@ -99,11 +99,11 @@ namespace MagmaHeart.Core.Dungeon
             if (m_mstTreeDebug)
                 GraphDebug(mstGraph);
 
-            HashSet<Vector2Int> corridorTiles = new HashSet<Vector2Int>();
+            HashSet<DungeonTile> corridorTiles = new HashSet<DungeonTile>();
             await Task.Run(() => {
                 foreach (RoomConnectionEdge edge in mstGraph.Edges)
                 {
-                    HashSet<Vector2Int> tiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
+                    HashSet<DungeonTile> tiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
                     corridorTiles.UnionWith(tiles);
                 }
             });

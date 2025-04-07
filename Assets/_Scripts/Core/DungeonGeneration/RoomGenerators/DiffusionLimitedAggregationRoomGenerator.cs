@@ -75,13 +75,13 @@ namespace MagmaHeart.Core.Dungeon
                     if (newPosition.y < localBottomBorder)
                         newPosition.y = localTopBorder;
 
-                    if (!roomData.ContainsTile(currentPosition) && roomData.ContainsTile(newPosition))
+                    if (!roomData.ContainsTileAtPosition(currentPosition) && roomData.ContainsTileAtPosition(newPosition))
                         hitTile = true;
                     else
                         currentPosition = newPosition;
                 }
 
-                roomData.AddTile(currentPosition);
+                roomData.AddTile(currentPosition, TileType.Floor);
                 --tilesToPlace;
 
                 if (currentPosition.x - START_POINT_OFFSET < localLeftBorder)

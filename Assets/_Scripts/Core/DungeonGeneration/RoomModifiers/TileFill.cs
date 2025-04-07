@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.Dungeon
                 for (int y = roomData.BottomBorder; y <= roomData.TopBorder; ++y)
                     emptyTiles.Add(new Vector2Int(x, y));
 
-            emptyTiles.ExceptWith(roomData.GetTilesCopy());
+            emptyTiles.ExceptWith(roomData.GetTilePositions());
 
             while (emptyTiles.Count > 0)
             {
@@ -50,7 +50,7 @@ namespace MagmaHeart.Core.Dungeon
                         if (neighbourTile.x >= roomData.LeftBorder && neighbourTile.x <= roomData.RightBorder &&
                             neighbourTile.y >= roomData.BottomBorder && neighbourTile.y <= roomData.TopBorder)
                         {
-                            if (!roomData.ContainsTile(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                            if (!roomData.ContainsTileAtPosition(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                                 tilesToVisit.Enqueue(neighbourTile);
                         }
                         else
@@ -61,7 +61,7 @@ namespace MagmaHeart.Core.Dungeon
                 }
 
                 if (!touchesBorder)
-                    roomData.AddTiles(filledSpace);
+                    roomData.AddTiles(filledSpace, TileType.Floor);
 
                 emptyTiles.ExceptWith(filledSpace);
             }

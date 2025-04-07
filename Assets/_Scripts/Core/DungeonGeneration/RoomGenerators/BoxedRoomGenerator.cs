@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Dungeon
 
             for (int x = 0; x < m_xSize; ++x)
                 for (int y = 0; y < m_ySize; ++y)
-                    roomData.AddTile(startPoint + new Vector2Int(x, y));
+                    roomData.AddTile(startPoint + new Vector2Int(x, y), TileType.Floor);
         }
     }
 }

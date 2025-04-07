@@ -20,7 +20,7 @@ namespace MagmaHeart.Core
             m_locationRenderer = GetComponent<LocationRenderer>();
 
             RoomData roomData = m_testRoomGenerator.CreateRoom();
-            StartCoroutine(m_locationRenderer.DrawTiles(roomData.GetTilesCopy()));
+            StartCoroutine(m_locationRenderer.DrawTiles(roomData.GetTiles()));
 
             Entity entityInstance = Instantiate(m_entityToSpawn, m_spawnPoint.position, Quaternion.identity);
             entityInstance.Initialize();

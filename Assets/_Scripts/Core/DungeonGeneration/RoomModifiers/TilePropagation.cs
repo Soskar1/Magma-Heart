@@ -23,12 +23,12 @@ namespace MagmaHeart.Core.Dungeon
 
         public void ModifyRoom(in RoomData roomData)
         {
-            HashSet<Vector2Int> tilesToVisit = roomData.GetTilesCopy();
+            HashSet<Vector2Int> tilesToVisit = roomData.GetTilePositions();
 
             foreach (Vector2Int tile in tilesToVisit)
                 foreach (Vector2Int direction in m_directionsToVisit)
                     for (int i = 1; i <= m_progagationLength; ++i)
-                        roomData.AddTile(tile + direction * i);
+                        roomData.AddTile(tile + direction * i, TileType.Floor);
         }
     }
 }

@@ -28,13 +28,13 @@ namespace MagmaHeart.Core.Dungeon
             Vector2Int currentPosition = roomData.WorldPosition;
 
             if (roomData.TileCount > 1)
-                currentPosition = roomData.GetTileAtIndex(m_random.Next(roomData.TileCount));
+                currentPosition = roomData.GetTilePositionAtIndex(m_random.Next(roomData.TileCount));
 
             for (int i = 0; i < m_randomWalkIterations; ++i)
             {
                 Vector2Int newPosition = roomData.ToRoomSpace(currentPosition + m_randomWalk.TakeRandomDirection());
                 currentPosition = newPosition;
-                roomData.AddTile(currentPosition);
+                roomData.AddTile(currentPosition, TileType.Floor);
             }
         }
     }

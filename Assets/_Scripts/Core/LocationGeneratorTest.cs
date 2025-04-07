@@ -1,7 +1,6 @@
 using MagmaHeart.Core.Dungeon;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core
 {
@@ -15,11 +14,11 @@ namespace MagmaHeart.Core
             m_renderer.Clear();
             Location location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
 
-            HashSet<Vector2Int> tiles = new HashSet<Vector2Int>();
+            HashSet<DungeonTile> tiles = new HashSet<DungeonTile>();
             tiles.UnionWith(location.CorridorTiles);
 
             foreach (RoomData roomData in location.Rooms)
-                tiles.UnionWith(roomData.GetTilesCopy());
+                tiles.UnionWith(roomData.GetTiles());
 
             StartCoroutine(m_renderer.DrawTiles(tiles));
         }

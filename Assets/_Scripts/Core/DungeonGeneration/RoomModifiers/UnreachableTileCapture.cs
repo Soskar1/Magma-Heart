@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (roomData.ContainsTile(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                    if (roomData.ContainsTileAtPosition(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
 
@@ -52,10 +52,10 @@ namespace MagmaHeart.Core.Dungeon
                     Vector2Int xDirectionTile = new Vector2Int(tile.x + direction.x, tile.y);
                     Vector2Int yDirectionTile = new Vector2Int(tile.x, tile.y + direction.y);
 
-                    if (roomData.ContainsTile(tileToCapture) && !roomData.ContainsTile(xDirectionTile) && !roomData.ContainsTile(yDirectionTile))
+                    if (roomData.ContainsTileAtPosition(tileToCapture) && !roomData.ContainsTileAtPosition(xDirectionTile) && !roomData.ContainsTileAtPosition(yDirectionTile))
                     {
-                        roomData.AddTile(xDirectionTile);
-                        roomData.AddTile(yDirectionTile);
+                        roomData.AddTile(xDirectionTile, TileType.Floor);
+                        roomData.AddTile(yDirectionTile, TileType.Floor);
 
                         if (!tilesToVisit.Contains(tileToCapture) && !visitedTiles.Contains(tileToCapture))
                             tilesToVisit.Enqueue(tileToCapture);

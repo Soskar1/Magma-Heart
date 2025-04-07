@@ -20,21 +20,22 @@ namespace MagmaHeart.Core.Dungeon
 
         public void ModifyRoom(in RoomData roomData)
         {
-            HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
+            Dictionary<Vector2Int, DungeonTile> visitedTiles = new Dictionary<Vector2Int, DungeonTile>();
             Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
             tilesToVisit.Enqueue(roomData.WorldPosition);
 
             while (tilesToVisit.Count > 0)
             {
-                Vector2Int tile = tilesToVisit.Dequeue();
-                visitedTiles.Add(tile);
+                Vector2Int tilePosition = tilesToVisit.Dequeue();
+                DungeonTile tile = roomData.GetTile(tilePosition);
+                visitedTiles.Add(tilePosition, tile);
 
                 foreach (Vector2Int direction in m_directionsToVisit)
                 {
-                    Vector2Int neighbourTile = tile + direction;
+                    Vector2Int neighbourTilePosition = tilePosition + direction;
 
-                    if (roomData.ContainsTile(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
-                        tilesToVisit.Enqueue(neighbourTile);
+                    if (roomData.ContainsTileAtPosition(neighbourTilePosition) && !visitedTiles.ContainsKey(neighbourTilePosition) && !tilesToVisit.Contains(neighbourTilePosition))
+                        tilesToVisit.Enqueue(neighbourTilePosition);
                 }
             }
 
