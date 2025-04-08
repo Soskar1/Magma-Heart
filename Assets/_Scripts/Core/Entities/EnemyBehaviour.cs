@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private float m_pathUpdateInterval;
         [SerializeField] private float m_minDistanceToPathPoint;
         private AStarNavigation m_navigation;
-        private List<Vector2Int> m_currentPath;
+        private List<Vector2> m_currentPath;
         private int m_currentTargetPoint;
         private float m_timer = 0;
 
@@ -99,7 +99,7 @@ namespace MagmaHeart.Core.Entities
             m_timer += Time.deltaTime;
             if (m_timer > m_pathUpdateInterval)
             {
-                List<Vector2Int> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int()); ;
+                List<Vector2> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int()); ;
 
                 if (path != null)
                 {
@@ -127,7 +127,7 @@ namespace MagmaHeart.Core.Entities
             if (m_navigation == null || m_currentPath == null)
                 return;
 
-            if (m_currentTargetPoint + 1 < m_currentPath.Count && Vector2Int.Distance(m_currentPath[m_currentTargetPoint], transform.position.ToVector2Int()) < m_minDistanceToPathPoint)
+            if (m_currentTargetPoint + 1 < m_currentPath.Count && Vector2.Distance(m_currentPath[m_currentTargetPoint], transform.position) < m_minDistanceToPathPoint)
                 ++m_currentTargetPoint;
 
             if (m_currentTargetPoint < m_currentPath.Count)
@@ -173,7 +173,7 @@ namespace MagmaHeart.Core.Entities
             Gizmos.color = Color.green;
             if (m_currentPath != null)
                 for (int i = 0; i < m_currentPath.Count - 1; ++i)
-                    Gizmos.DrawLine(m_currentPath[i].ToVector3(), m_currentPath[i + 1].ToVector3());
+                    Gizmos.DrawLine(m_currentPath[i], m_currentPath[i + 1]);
         }
     }
 }

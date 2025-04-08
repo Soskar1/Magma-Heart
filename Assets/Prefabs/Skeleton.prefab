@@ -176,7 +176,7 @@ MonoBehaviour:
   m_deathAnimationName: Death
   m_attackAnimationName: Attack
   m_pathUpdateInterval: 0.3
-  m_minDistanceToPathPoint: 1.5
+  m_minDistanceToPathPoint: 0.85
 --- !u!114 &5999371809422306011
 MonoBehaviour:
   m_ObjectHideFlags: 0
