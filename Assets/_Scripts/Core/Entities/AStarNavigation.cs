@@ -8,30 +8,29 @@ namespace MagmaHeart.Core.Entities
     {
         private class AStarNode
         {
-            public AStarNode parent;
-            public Vector2Int position;
+            public AStarNode Parent { get; set; }
+            public Vector2Int Position { get; private set; }
 
-            public float distanceToStartNode;
-            public float distanceToTargetNode;
-            public float Heuristic => distanceToStartNode + distanceToTargetNode;
+            public float DistanceToStartNode { get; set; }
+            public float DistanceToTargetNode { get; private set; }
+            public float Heuristic => DistanceToStartNode + DistanceToTargetNode;
 
             public AStarNode(Vector2Int position, Vector2Int targetPosition)
             {
-                this.position = position;
-                distanceToStartNode = 0;
-                distanceToTargetNode = Vector2Int.Distance(position, targetPosition);
+                Position = position;
+                DistanceToStartNode = 0;
+                DistanceToTargetNode = Mathf.Abs(position.x - targetPosition.x) + Mathf.Abs(position.y - targetPosition.y);
             }
 
             public override bool Equals(object obj) {
-                return obj is AStarNode node && node.position == position;
+                return obj is AStarNode node && node.Position == Position;
             }
 
-            public override int GetHashCode() => position.GetHashCode();
+            public override int GetHashCode() => Position.GetHashCode();
         }
 
         private RoomData m_roomData;
         private List<Vector2Int> m_directionsToVisit;
-        public int iterations = 0;
 
         public AStarNavigation(RoomData roomData)
         {
@@ -55,23 +54,22 @@ namespace MagmaHeart.Core.Entities
 
             while (nodesToVisit.Count > 0)
             {
-                ++iterations;
                 AStarNode currentNode = nodesToVisit[0];
 
                 foreach (AStarNode node in nodesToVisit)
-                    if (node.Heuristic < currentNode.Heuristic || (node.Heuristic == currentNode.Heuristic && node.distanceToTargetNode < currentNode.distanceToTargetNode))
+                    if (node.Heuristic < currentNode.Heuristic || (node.Heuristic == currentNode.Heuristic && node.DistanceToTargetNode < currentNode.DistanceToTargetNode))
                         currentNode = node;
 
-                visited.Add(currentNode.position);
+                visited.Add(currentNode.Position);
                 nodesToVisit.Remove(currentNode);
 
-                if (currentNode.position == target)
+                if (currentNode.Position == target)
                 {
                     List<Vector2Int> path = new List<Vector2Int>();
-                    while (currentNode.parent != null)
+                    while (currentNode.Parent != null)
                     {
-                        path.Add(currentNode.position);
-                        currentNode = currentNode.parent;
+                        path.Add(currentNode.Position);
+                        currentNode = currentNode.Parent;
                     }
 
                     path.Reverse();
@@ -80,18 +78,18 @@ namespace MagmaHeart.Core.Entities
 
                 foreach (Vector2Int direction in m_directionsToVisit)
                 {
-                    Vector2Int neighbourTilePosition = currentNode.position + direction;
+                    Vector2Int neighbourTilePosition = currentNode.Position + direction;
                     DungeonTile tile = m_roomData.GetTile(neighbourTilePosition);
                     if (tile != null && tile.TileType == TileType.Floor && !visited.Contains(neighbourTilePosition))
                     {
                         AStarNode neighbourNode = new AStarNode(neighbourTilePosition, target);
 
-                        float costToNeighbour = currentNode.distanceToStartNode + 1;
+                        float costToNeighbour = currentNode.DistanceToStartNode + 1;
 
-                        if (!nodesToVisit.Contains(neighbourNode) || costToNeighbour < neighbourNode.distanceToStartNode)
+                        if (!nodesToVisit.Contains(neighbourNode) || costToNeighbour < neighbourNode.DistanceToStartNode)
                         {
-                            neighbourNode.distanceToStartNode = costToNeighbour;
-                            neighbourNode.parent = currentNode;
+                            neighbourNode.DistanceToStartNode = costToNeighbour;
+                            neighbourNode.Parent = currentNode;
 
                             if (!nodesToVisit.Contains(neighbourNode))
                                 nodesToVisit.Add(neighbourNode);

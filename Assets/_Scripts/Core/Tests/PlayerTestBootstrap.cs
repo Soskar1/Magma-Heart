@@ -56,7 +56,6 @@ namespace MagmaHeart.Core.Tests
             }
             stopwatch.Stop();
             Debug.Log($"Elapsed time {stopwatch.ElapsedMilliseconds}ms");
-            Debug.Log($"Iterations: {m_navigation.iterations}");
             Debug.Log("======");
         }
     }
