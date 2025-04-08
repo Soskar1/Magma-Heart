@@ -28,7 +28,12 @@ namespace MagmaHeart.Core.Entities
         private bool m_canMove = true;
         private bool m_canAttack = true;
 
+        [SerializeField] private float m_pathUpdateInterval;
+        [SerializeField] private float m_minDistanceToPathPoint;
         private AStarNavigation m_navigation;
+        private List<Vector2Int> m_currentPath;
+        private int m_currentTargetPoint;
+        private float m_timer = 0;
 
         private void Awake()
         {
@@ -48,6 +53,8 @@ namespace MagmaHeart.Core.Entities
                 Debug.LogError($"Entity {transform.name} does not support IAnimatable interface");
 
             m_entity.Initialize();
+            m_timer = m_pathUpdateInterval;
+            m_currentTargetPoint = 0;
         }
 
         public void Initialize(Entity entityToChase, RoomData roomData)
@@ -89,6 +96,19 @@ namespace MagmaHeart.Core.Entities
             if (m_entityToChase == null)
                 return;
 
+            m_timer += Time.deltaTime;
+            if (m_timer > m_pathUpdateInterval)
+            {
+                List<Vector2Int> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int()); ;
+
+                if (path != null)
+                {
+                    m_currentTargetPoint = 0;
+                    m_currentPath = path;
+                    m_timer = 0;
+                }
+            }
+
             if (!m_canAttack)
                 return;
 
@@ -104,13 +124,15 @@ namespace MagmaHeart.Core.Entities
             if (!m_canMove)
                 return;
 
-            if (m_navigation == null)
+            if (m_navigation == null || m_currentPath == null)
                 return;
 
-            List<Vector2Int> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int());
-            if (path != null && path.Count > 1)
+            if (m_currentTargetPoint + 1 < m_currentPath.Count && Vector2Int.Distance(m_currentPath[m_currentTargetPoint], transform.position.ToVector2Int()) < m_minDistanceToPathPoint)
+                ++m_currentTargetPoint;
+
+            if (m_currentTargetPoint < m_currentPath.Count)
             {
-                Vector2 directionToMove = path[1] - path[0];
+                Vector2 directionToMove = m_currentPath[m_currentTargetPoint] - transform.position.ToVector2Int();
                 m_entityMovement.Move(directionToMove.normalized);
             }
         }
@@ -144,6 +166,14 @@ namespace MagmaHeart.Core.Entities
             {
                 DisableEntity();
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            if (m_currentPath != null)
+                for (int i = 0; i < m_currentPath.Count - 1; ++i)
+                    Gizmos.DrawLine(m_currentPath[i].ToVector3(), m_currentPath[i + 1].ToVector3());
         }
     }
 }

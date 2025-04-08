@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3356246050649832894}
   - component: {fileID: 641999948317098109}
-  - component: {fileID: 81519569821116298}
+  - component: {fileID: 6212352094362086594}
   - component: {fileID: 2843127704840105070}
   - component: {fileID: 1103457519853527251}
   - component: {fileID: 1613401151495278322}
@@ -58,7 +58,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ab988c9dc190df647bd8974f82b02b98, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -69,8 +69,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &81519569821116298
-BoxCollider2D:
+--- !u!70 &6212352094362086594
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -79,7 +79,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ab988c9dc190df647bd8974f82b02b98, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -103,18 +103,9 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.040351383, y: -0.06638577}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.22046216, y: 0.25142455}
-  m_EdgeRadius: 0
+  m_Offset: {x: -0.026092082, y: -0.019134875}
+  m_Size: {x: 0.18341571, y: 0.3494376}
+  m_Direction: 0
 --- !u!95 &2843127704840105070
 Animator:
   serializedVersion: 7
@@ -184,6 +175,8 @@ MonoBehaviour:
   m_takeDamageAnimationName: TakeDamage
   m_deathAnimationName: Death
   m_attackAnimationName: Attack
+  m_pathUpdateInterval: 0.3
+  m_minDistanceToPathPoint: 1.5
 --- !u!114 &5999371809422306011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,7 +382,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.28014103, y: 0.109323084}
+  m_Offset: {x: 0.013889074, y: 0.085118294}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -399,5 +392,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.5927704, y: 0.96720326}
+  m_Size: {x: 1.3027796, y: 1.3049035}
   m_EdgeRadius: 0
