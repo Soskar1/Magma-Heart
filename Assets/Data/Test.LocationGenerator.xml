@@ -12,7 +12,6 @@
 		<UnreachableTileCapture/>
 		<TileFill/>
 		<UnreachableTileDestructor/>
-		<WallGenerator AmountOfWalls="1" MaxWallLength="5"/>
 	</RoomGenerators>
 
 	<CorridorGenerator CorridorSize="3"/>

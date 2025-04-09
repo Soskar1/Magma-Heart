@@ -5,6 +5,5 @@
 
 	<RoomGenerators>
 		<Boxed XSize="30" YSize="30"/>
-		<WallGenerator AmountOfWalls="3" MaxWallLength="8"/>
 	</RoomGenerators>
 </LocationGenerator>

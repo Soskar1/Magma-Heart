@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Entities
 {
@@ -28,13 +26,6 @@ namespace MagmaHeart.Core.Entities
         private bool m_canMove = true;
         private bool m_canAttack = true;
 
-        [SerializeField] private float m_pathUpdateInterval;
-        [SerializeField] private float m_minDistanceToPathPoint;
-        private AStarNavigation m_navigation;
-        private List<Vector2> m_currentPath;
-        private int m_currentTargetPoint;
-        private float m_timer = 0;
-
         private void Awake()
         {
             m_rigidbody = GetComponent<Rigidbody2D>();
@@ -53,15 +44,9 @@ namespace MagmaHeart.Core.Entities
                 Debug.LogError($"Entity {transform.name} does not support IAnimatable interface");
 
             m_entity.Initialize();
-            m_timer = m_pathUpdateInterval;
-            m_currentTargetPoint = 0;
         }
 
-        public void Initialize(Entity entityToChase, RoomData roomData)
-        {
-            m_entityToChase = entityToChase;
-            m_navigation = new AStarNavigation(roomData);
-        }
+        public void Initialize(Entity entityToChase, RoomData roomData) => m_entityToChase = entityToChase;
 
         private void OnEnable()
         {
@@ -96,19 +81,6 @@ namespace MagmaHeart.Core.Entities
             if (m_entityToChase == null)
                 return;
 
-            m_timer += Time.deltaTime;
-            if (m_timer > m_pathUpdateInterval)
-            {
-                List<Vector2> path = m_navigation.ConstructPath(transform.position.ToVector2Int(), m_entityToChase.transform.position.ToVector2Int()); ;
-
-                if (path != null)
-                {
-                    m_currentTargetPoint = 0;
-                    m_currentPath = path;
-                    m_timer = 0;
-                }
-            }
-
             if (!m_canAttack)
                 return;
 
@@ -124,17 +96,8 @@ namespace MagmaHeart.Core.Entities
             if (!m_canMove)
                 return;
 
-            if (m_navigation == null || m_currentPath == null)
-                return;
-
-            if (m_currentTargetPoint + 1 < m_currentPath.Count && Vector2.Distance(m_currentPath[m_currentTargetPoint], transform.position) < m_minDistanceToPathPoint)
-                ++m_currentTargetPoint;
-
-            if (m_currentTargetPoint < m_currentPath.Count)
-            {
-                Vector2 directionToMove = m_currentPath[m_currentTargetPoint] - transform.position.ToVector2Int();
-                m_entityMovement.Move(directionToMove.normalized);
-            }
+            Vector2 directionToMove = m_entityToChase.transform.position - transform.position;
+            m_entityMovement.Move(directionToMove.normalized);
         }
 
         private void EnableMovement() => m_canMove = true;
@@ -166,14 +129,6 @@ namespace MagmaHeart.Core.Entities
             {
                 DisableEntity();
             }
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            if (m_currentPath != null)
-                for (int i = 0; i < m_currentPath.Count - 1; ++i)
-                    Gizmos.DrawLine(m_currentPath[i], m_currentPath[i + 1]);
         }
     }
 }
