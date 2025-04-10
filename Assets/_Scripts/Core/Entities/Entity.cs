@@ -5,17 +5,15 @@ namespace MagmaHeart.Core.Entities
     public class Entity : MonoBehaviour
     {
         [SerializeField] private float m_maxHealth;
-        private Health m_health;
 
-        public Health Health => m_health;
-
+        public Health Health { get; private set; }
         public IMovable Movement { get; private set; }
         public IMeleeAttacker MeleeAttack { get; private set; }
         public AnimationPlayer Animation { get; private set; }
 
         public void Initialize()
         {
-            m_health = new Health(m_maxHealth);
+            Health = new Health(m_maxHealth);
             Movement = GetComponent<IMovable>();
             MeleeAttack = GetComponent<IMeleeAttacker>();
             Animation = GetComponent<AnimationPlayer>();
@@ -32,8 +30,10 @@ namespace MagmaHeart.Core.Entities
             Animation.Initialize();
         }
 
+        public void Reset() => Health.Reset();
+
         public void Enable() => Animation.Enable();
         public void Disable() => Animation.Disable();
-        public void Hit(in float damage) => m_health.TakeDamage(damage);
+        public void Hit(in float damage) => Health.TakeDamage(damage);
     }
 }

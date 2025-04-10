@@ -1,9 +1,9 @@
-using MagmaHeart.Core.Dungeon;
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class EnemyMeleeBehaviour : MonoBehaviour
+    public class EnemyMeleeBehaviour : MonoBehaviour, IPoolable
     {
         [SerializeField] private float m_triggerAttackDistance;
 
@@ -12,37 +12,42 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private string m_deathAnimationName;
         [SerializeField] private string m_attackAnimationName;
 
-        private Entity m_entity;
         private IMeleeAttacker m_attack;
         private IMovable m_movement;
         private AnimationPlayer m_animation;
 
         private Entity m_entityToChase;
         private Rigidbody2D m_rigidbody;
+        private Collider2D m_collider;
 
         private bool m_canMove = true;
         private bool m_canAttack = true;
 
         public Collider2D AttackHitCollider => m_attack.HitCollider;
+        public Entity ControllingEntity { get; private set; }
+        public Collider2D Collider => m_collider;
 
-        public void Initialize(Entity entityToChase, RoomData roomData)
+        public Action<EnemyMeleeBehaviour> OnDisable;
+
+        public void Initialize(Entity entityToChase)
         {
             m_rigidbody = GetComponent<Rigidbody2D>();
-            m_entity = GetComponent<Entity>();
+            m_collider = GetComponent<Collider2D>();
+            ControllingEntity = GetComponent<Entity>();
             m_entityToChase = entityToChase;
             
-            m_entity.Initialize();
-            m_attack = m_entity.MeleeAttack;
-            m_movement = m_entity.Movement;
-            m_animation = m_entity.Animation;
+            ControllingEntity.Initialize();
+            m_attack = ControllingEntity.MeleeAttack;
+            m_movement = ControllingEntity.Movement;
+            m_animation = ControllingEntity.Animation;
         }
 
         public void Enable()
         {
-            m_entity.Health.OnTakeDamage += DisableMovement;
-            m_entity.Health.OnTakeDamage += DisableAttack;
-            m_entity.Health.OnTakeDamage += Unfreeze;
-            m_entity.Health.OnDeath += Freeze;
+            ControllingEntity.Health.OnTakeDamage += DisableMovement;
+            ControllingEntity.Health.OnTakeDamage += DisableAttack;
+            ControllingEntity.Health.OnTakeDamage += Unfreeze;
+            ControllingEntity.Health.OnDeath += Freeze;
 
             m_attack.OnAttackStarted += DisableMovement;
             m_attack.OnAttackStarted += DisableAttack;
@@ -53,15 +58,15 @@ namespace MagmaHeart.Core.Entities
             m_attack.OnAttackEnded += Unfreeze;
 
             m_animation.OnAnimationEnded += ProcessAnimationOnEndEvents;
-            m_entity.Enable();
+            ControllingEntity.Enable();
         }
 
         public void Disable()
         {
-            m_entity.Health.OnTakeDamage -= DisableMovement;
-            m_entity.Health.OnTakeDamage -= DisableAttack;
-            m_entity.Health.OnTakeDamage -= Unfreeze;
-            m_entity.Health.OnDeath -= Freeze;
+            ControllingEntity.Health.OnTakeDamage -= DisableMovement;
+            ControllingEntity.Health.OnTakeDamage -= DisableAttack;
+            ControllingEntity.Health.OnTakeDamage -= Unfreeze;
+            ControllingEntity.Health.OnDeath -= Freeze;
 
             m_attack.OnAttackStarted -= DisableMovement;
             m_attack.OnAttackStarted -= DisableAttack;
@@ -72,7 +77,25 @@ namespace MagmaHeart.Core.Entities
             m_attack.OnAttackEnded -= Unfreeze;
 
             m_animation.OnAnimationEnded -= ProcessAnimationOnEndEvents;
-            m_entity.Disable();
+            ControllingEntity.Disable();
+        }
+
+        public void OnSpawn()
+        {
+            enabled = true;
+            m_collider.enabled = true;
+            ControllingEntity.Reset();
+            EnableMovement();
+            EnableAttack();
+            Unfreeze();
+            Enable();
+        }
+
+        public void OnReturnToPool()
+        {
+            Disable();
+            enabled = false;
+            m_collider.enabled = false;
         }
 
         private void Update()
@@ -109,13 +132,6 @@ namespace MagmaHeart.Core.Entities
         private void Freeze() => m_rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
         private void Unfreeze() => m_rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-        private void DisableEntity()
-        {
-            Disable();
-            enabled = false;
-            GetComponent<Collider2D>().enabled = false;
-        }
-
         private void ProcessAnimationOnEndEvents(string endedAnimationName)
         {
             if (endedAnimationName == m_attackAnimationName)
@@ -129,7 +145,7 @@ namespace MagmaHeart.Core.Entities
             }
             else if (endedAnimationName == m_deathAnimationName)
             {
-                DisableEntity();
+                OnDisable?.Invoke(this);
             }
         }
     }

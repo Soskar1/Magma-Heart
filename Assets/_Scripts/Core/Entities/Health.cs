@@ -19,6 +19,8 @@ namespace MagmaHeart.Core.Entities
             m_currentHealth = maxHealth;
         }
 
+        public void Reset() => m_currentHealth = m_maxHealth;
+
         public void TakeDamage(in float damage)
         {
             m_currentHealth -= damage;
