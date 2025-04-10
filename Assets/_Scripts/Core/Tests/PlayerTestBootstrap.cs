@@ -10,12 +10,8 @@ namespace MagmaHeart.Core.Tests
     public class PlayerTestBootstrap : MonoBehaviour
     {
         [SerializeField] private Transform m_spawnPoint;
-        [SerializeField] private PlayerBehaviour m_entityToSpawn;
+        [SerializeField] private PlayerBehaviour m_player;
 
-        [SerializeField] private EnemyMeleeBehaviour m_enemyToSpawn;
-        [SerializeField] private Transform m_enemySpawnPoint;
-        [SerializeField] private Transform m_secondEnemySpawnPoint;
-        
         [SerializeField] private HealthBar m_healthBar;
         [SerializeField] private CameraMovement m_cameraMovement;
         [SerializeField] private LocationGenerator m_locationGenerator;
@@ -26,6 +22,9 @@ namespace MagmaHeart.Core.Tests
         [SerializeField] private Transform m_start;
         [SerializeField] private Transform m_end;
         private AStarNavigation m_navigation;
+
+        [Header("Spawner")]
+        [SerializeField] private Spawner m_spawner;
         
         public void Awake() => m_locationRenderer = GetComponent<LocationRenderer>();
 
@@ -34,24 +33,14 @@ namespace MagmaHeart.Core.Tests
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
             StartCoroutine(m_locationRenderer.DrawTiles(m_location.Tiles));
 
-            PlayerBehaviour playerInstance = Instantiate(m_entityToSpawn, m_spawnPoint.position, Quaternion.identity);
+            PlayerBehaviour playerInstance = Instantiate(m_player, m_spawnPoint.position, Quaternion.identity);
             playerInstance.Initialize();
             m_healthBar.Initialize(playerInstance.ControllingEntity);
             m_cameraMovement.ObjectToTrack = playerInstance.transform;
             playerInstance.Enable();
 
-            EnemyMeleeBehaviour enemyInstance = Instantiate(m_enemyToSpawn, m_enemySpawnPoint.position, Quaternion.identity);
-            enemyInstance.Initialize(playerInstance.ControllingEntity, m_location.Rooms[0]);
-            enemyInstance.Enable();
-
-            EnemyMeleeBehaviour enemyInstance2 = Instantiate(m_enemyToSpawn, m_secondEnemySpawnPoint.position, Quaternion.identity);
-            enemyInstance2.Initialize(playerInstance.ControllingEntity, m_location.Rooms[0]);
-            enemyInstance2.Enable();
-
-            Collider2D enemy1Collider = enemyInstance.GetComponent<Collider2D>();
-            Collider2D enemy2Collider = enemyInstance2.GetComponent<Collider2D>();
-            Physics2D.IgnoreCollision(enemy1Collider, enemyInstance2.AttackHitCollider);
-            Physics2D.IgnoreCollision(enemyInstance.AttackHitCollider, enemy2Collider);
+            m_spawner.Initialize(playerInstance.ControllingEntity);
+            m_spawner.SetRoomData(m_location.Rooms[0]);
 
             m_navigation = new AStarNavigation(m_location.Rooms[0]);
         }
@@ -71,5 +60,7 @@ namespace MagmaHeart.Core.Tests
             Debug.Log($"Elapsed time {stopwatch.ElapsedMilliseconds}ms");
             Debug.Log("======");
         }
+
+        public void SpawnerTest() => m_spawner.SpawnWave();
     }
 }

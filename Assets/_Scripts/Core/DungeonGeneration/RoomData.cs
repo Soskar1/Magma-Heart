@@ -117,8 +117,6 @@ namespace MagmaHeart.Core.Dungeon
 
         public bool ContainsTileAtPosition(Vector2Int tileToFind) => m_tiles.ContainsKey(tileToFind);
  
-        public Dictionary<Vector2Int, DungeonTile> GetTilesCopy() => new Dictionary<Vector2Int, DungeonTile>(m_tiles);
-
         public HashSet<Vector2Int> GetTilePositions() => m_tiles.Keys.ToHashSet();
 
         public HashSet<DungeonTile> GetTiles() => m_tiles.Values.ToHashSet();
