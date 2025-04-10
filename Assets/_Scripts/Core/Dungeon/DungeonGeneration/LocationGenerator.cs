@@ -62,7 +62,7 @@ namespace MagmaHeart.Core.Dungeon
             else
                 spaces.Add(locationSpace);
 
-            HashSet<RoomData> roomDatas = new HashSet<RoomData>();
+            HashSet<RoomTileData> RoomTileDatas = new HashSet<RoomTileData>();
 
             if (m_debugElements.Count > 0)
                 foreach (var obj in m_debugElements)
@@ -83,13 +83,13 @@ namespace MagmaHeart.Core.Dungeon
             {
                 foreach (BoundsInt space in spaces)
                 {
-                    RoomData roomData = GenerateRoom(space);
-                    roomDatas.Add(roomData);
+                    RoomTileData RoomTileData = GenerateRoom(space);
+                    RoomTileDatas.Add(RoomTileData);
                 }
             });
 
             // LocationGraph
-            LocationGraphCreator graphCreator = new LocationGraphCreator(roomDatas);
+            LocationGraphCreator graphCreator = new LocationGraphCreator(RoomTileDatas);
             LocationGraph graph = graphCreator.CreateGraph();
 
             if (m_locationGraphDebug)
@@ -97,7 +97,7 @@ namespace MagmaHeart.Core.Dungeon
 
             // MST
             MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
-            RoomData startNode = roomDatas.ElementAt(m_random.Next(roomDatas.Count));
+            RoomTileData startNode = RoomTileDatas.ElementAt(m_random.Next(RoomTileDatas.Count));
             LocationGraph mstGraph = mstCreator.ExtractMinimalSpanningTree(graph, startNode);
 
             if (m_mstTreeDebug)
@@ -116,8 +116,8 @@ namespace MagmaHeart.Core.Dungeon
             }
 
             HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
-            foreach (RoomData roomData in roomDatas)
-                tilePositions.UnionWith(roomData.GetTilePositions());
+            foreach (RoomTileData RoomTileData in RoomTileDatas)
+                tilePositions.UnionWith(RoomTileData.GetTilePositions());
 
             HashSet<Vector2Int> corridorTilePositions = corridorTiles.Select(tile => tile.Position).ToHashSet();
             tilePositions.UnionWith(corridorTilePositions);
@@ -125,12 +125,12 @@ namespace MagmaHeart.Core.Dungeon
             LocationWallGenerator wallGenerator = new LocationWallGenerator();
             HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
 
-            return new Location(roomDatas.ToList(), corridorTiles, wallTiles);
+            return new Location(RoomTileDatas.ToList(), corridorTiles, wallTiles);
         }
 
         private void GraphDebug(in LocationGraph graph)
         {
-            foreach (RoomData room in graph.Nodes)
+            foreach (RoomTileData room in graph.Nodes)
             {
                 GameObject nodeDebugInstance = Instantiate(m_roomNodeDebug, room.RoomSpace.center, Quaternion.identity);
                 m_debugElements.Add(nodeDebugInstance);
@@ -147,14 +147,14 @@ namespace MagmaHeart.Core.Dungeon
             }
         }
 
-        private RoomData GenerateRoom(in BoundsInt space)
+        private RoomTileData GenerateRoom(in BoundsInt space)
         {
-            RoomData roomData = new RoomData(space, m_roomBorderOffsets);
+            RoomTileData RoomTileData = new RoomTileData(space, m_roomBorderOffsets);
 
             foreach (IRoomGenerator generator in m_generators)
-                generator.GenerateRoom(roomData);
+                generator.GenerateRoom(RoomTileData);
 
-            return roomData;
+            return RoomTileData;
         }
     }
 }

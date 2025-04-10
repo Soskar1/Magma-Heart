@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.Dungeon
                         m_tilesToGrab.Add(new Vector2Int(x, y));
         }
 
-        public HashSet<DungeonTile> GenerateCorridor(in RoomData room1, in RoomData room2)
+        public HashSet<DungeonTile> GenerateCorridor(in RoomTileData room1, in RoomTileData room2)
         {
             HashSet<DungeonTile> generatedTiles = new HashSet<DungeonTile>();
             Vector2 direction = ((Vector2)(room1.WorldPosition - room2.WorldPosition)).normalized;
@@ -54,16 +54,16 @@ namespace MagmaHeart.Core.Dungeon
             return generatedTiles;
         }
 
-        private Vector2Int CreateEntryPoint(in RoomData roomData, in Vector2 direction)
+        private Vector2Int CreateEntryPoint(in RoomTileData RoomTileData, in Vector2 direction)
         {
-            Vector2Int currentTile = roomData.WorldPosition;
+            Vector2Int currentTile = RoomTileData.WorldPosition;
             Vector2Int lastVisitedTile = currentTile;
-            Vector2 currentPosition = roomData.WorldPosition;
+            Vector2 currentPosition = RoomTileData.WorldPosition;
 
-            while (currentPosition.x > roomData.LeftMostTile.x && currentPosition.x < roomData.RightMostTile.x &&
-                currentPosition.y > roomData.BottomMostTile.y && currentPosition.y < roomData.TopMostTile.y)
+            while (currentPosition.x > RoomTileData.LeftMostTile.x && currentPosition.x < RoomTileData.RightMostTile.x &&
+                currentPosition.y > RoomTileData.BottomMostTile.y && currentPosition.y < RoomTileData.TopMostTile.y)
             {
-                if (roomData.ContainsTileAtPosition(currentTile))
+                if (RoomTileData.ContainsTileAtPosition(currentTile))
                     lastVisitedTile = currentTile;
 
                 currentPosition += direction;

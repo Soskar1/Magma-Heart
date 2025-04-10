@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class RoomData
+    public class RoomTileData
     {
         private Dictionary<Vector2Int, DungeonTile> m_tiles;
         private readonly BoundsInt m_roomSpace;
@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Dungeon
         public Vector2Int TopMostTile { get; private set; }
         public Vector2Int BottomMostTile { get; private set; }
 
-        public RoomData(in BoundsInt roomSpace, in Vector2Int borderOffsets)
+        public RoomTileData(in BoundsInt roomSpace, in Vector2Int borderOffsets)
         {
             m_roomSpace = roomSpace;
             WorldPosition = new Vector2Int((int)roomSpace.center.x, (int)roomSpace.center.y);
@@ -40,7 +40,7 @@ namespace MagmaHeart.Core.Dungeon
             BottomMostTile = WorldPosition;
         }
 
-        public RoomData(in BoundsInt roomSpace) : this(roomSpace, Vector2Int.zero) { }
+        public RoomTileData(in BoundsInt roomSpace) : this(roomSpace, Vector2Int.zero) { }
 
         public Vector2Int ToRoomSpace(Vector2Int position)
         {

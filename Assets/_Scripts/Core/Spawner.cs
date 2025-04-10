@@ -11,7 +11,7 @@ namespace MagmaHeart.Core
         [SerializeField] private int m_amountOfEnemies;
         [SerializeField] private float m_minDistanceFromPlayer;
 
-        private RoomData m_roomData;
+        private RoomTileData m_RoomTileData;
         private Entity m_player;
 
         private ObjectPool<EnemyMeleeBehaviour> m_enemyPool;
@@ -38,7 +38,7 @@ namespace MagmaHeart.Core
             });
         }
 
-        public void SetRoomData(RoomData roomData) => m_roomData = roomData;
+        public void SetRoomTileData(RoomTileData RoomTileData) => m_RoomTileData = RoomTileData;
 
         public void SpawnWave()
         {
@@ -46,7 +46,7 @@ namespace MagmaHeart.Core
             {
                 DungeonTile dungeonTile = null;
                 while (dungeonTile == null || dungeonTile.TileType == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer)
-                    dungeonTile = m_roomData.GetTileAtIndex(Random.Range(0, m_roomData.TileCount - 1));
+                    dungeonTile = m_RoomTileData.GetTileAtIndex(Random.Range(0, m_RoomTileData.TileCount - 1));
 
                 EnemyMeleeBehaviour enemyInstance = m_enemyPool.Get();
                 enemyInstance.transform.position = dungeonTile.Position.ToVector3();

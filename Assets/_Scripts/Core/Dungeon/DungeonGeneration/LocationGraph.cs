@@ -6,8 +6,8 @@ namespace MagmaHeart.Core.Dungeon
     public class RoomConnectionEdge
     {
         public float Cost { get; private set; }
-        public RoomData First { get; private set; }
-        public RoomData Second { get; private set; }
+        public RoomTileData First { get; private set; }
+        public RoomTileData Second { get; private set; }
 
         public RoomConnectionEdge()
         {
@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Dungeon
             Cost = Mathf.Infinity;
         }
 
-        public RoomConnectionEdge(in RoomData first, in RoomData second)
+        public RoomConnectionEdge(in RoomTileData first, in RoomTileData second)
         {
             First = first;
             Second = second;
@@ -50,25 +50,25 @@ namespace MagmaHeart.Core.Dungeon
 
     public class LocationGraph
     {
-        public HashSet<RoomData> Nodes { get; private set; }
+        public HashSet<RoomTileData> Nodes { get; private set; }
         public HashSet<RoomConnectionEdge> Edges { get; private set; }
-        public Dictionary<RoomData, HashSet<RoomConnectionEdge>> EdgesFromRoom { get; private set; }
+        public Dictionary<RoomTileData, HashSet<RoomConnectionEdge>> EdgesFromRoom { get; private set; }
         public int NodeCount => Nodes.Count;
 
         public LocationGraph()
         {
-            Nodes = new HashSet<RoomData>();
+            Nodes = new HashSet<RoomTileData>();
             Edges = new HashSet<RoomConnectionEdge>();
-            EdgesFromRoom = new Dictionary<RoomData, HashSet<RoomConnectionEdge>>();
+            EdgesFromRoom = new Dictionary<RoomTileData, HashSet<RoomConnectionEdge>>();
         }
 
-        public LocationGraph(in HashSet<RoomData> nodes, in HashSet<RoomConnectionEdge> edges)
+        public LocationGraph(in HashSet<RoomTileData> nodes, in HashSet<RoomConnectionEdge> edges)
         {
             Nodes = nodes;
             Edges = edges;
-            EdgesFromRoom = new Dictionary<RoomData, HashSet<RoomConnectionEdge>>();
+            EdgesFromRoom = new Dictionary<RoomTileData, HashSet<RoomConnectionEdge>>();
 
-            foreach (RoomData node in Nodes)
+            foreach (RoomTileData node in Nodes)
                 EdgesFromRoom.Add(node, new HashSet<RoomConnectionEdge>());
 
             foreach (RoomConnectionEdge edge in Edges)
@@ -78,7 +78,7 @@ namespace MagmaHeart.Core.Dungeon
             }
         }
 
-        public void TryAddNode(in RoomData node)
+        public void TryAddNode(in RoomTileData node)
         {
             Nodes.Add(node);
             EdgesFromRoom.TryAdd(node, new HashSet<RoomConnectionEdge>());
