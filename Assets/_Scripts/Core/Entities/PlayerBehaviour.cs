@@ -6,37 +6,43 @@ namespace MagmaHeart.Core.Entities
     public class PlayerBehaviour : MonoBehaviour
     {
         private UserInput m_userInput;
-        private IAttacker m_entityAttack;
-        private IMovable m_entityMovement;
+        private IMeleeAttacker m_attack;
+        private IMovable m_movement;
+        private AnimationPlayer m_animation;
 
-        public void Awake()
+        public Entity ControllingEntity { get; private set; }
+
+        public void Initialize()
         {
             m_userInput = new UserInput();
+
             Entity entity = GetComponent<Entity>();
-            m_entityAttack = entity as IAttacker;
-            m_entityMovement = entity as IMovable;
+            entity.Initialize();
+            m_attack = entity.MeleeAttack;
+            m_movement = entity.Movement;
+            m_animation = entity.Animation;
 
-            if (m_entityAttack == null)
-                Debug.LogError($"Entity {transform.name} does not support IAttacker interface");
-
-            if (m_entityMovement == null)
-                Debug.LogError($"Entity {transform.name} does not support IMovable interface");
+            ControllingEntity = entity;
         }
 
-        private void OnEnable()
+        public void Enable()
         {
             m_userInput.Controls.Player.Attack.performed += Attack;
             m_userInput.Enable();
+            ControllingEntity.Enable();
         }
 
-        private void OnDisable()
+        public void Disable()
         {
             m_userInput.Controls.Player.Attack.performed -= Attack;
             m_userInput.Disable();
+            ControllingEntity.Disable();
         }
 
-        public void FixedUpdate() => m_entityMovement.Move(m_userInput.Movement);
+        public void Update() => m_animation.PlayAnimations();
 
-        public void Attack(InputAction.CallbackContext context) => m_entityAttack.Attack();
+        public void FixedUpdate() => m_movement.Move(m_userInput.Movement);
+
+        public void Attack(InputAction.CallbackContext context) => m_attack.Attack();
     }
 }

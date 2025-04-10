@@ -4,7 +4,10 @@ namespace MagmaHeart.Core.Entities
 {
     public class SkeletonAnimationPlayer : AnimationPlayer
     {
-        private Skeleton m_skeleton;
+        private Entity m_skeleton;
+        private IMeleeAttacker m_attack;
+        private IMovable m_movement;
+
         private readonly string m_takeDamageAnimationName = "TakeDamage";
         private readonly string m_deathAnimationName = "Death";
         private readonly string m_attackAnimationName = "Attack";
@@ -19,26 +22,33 @@ namespace MagmaHeart.Core.Entities
         private bool m_triggerTakeDamageAnimation = false;
         private bool m_triggerDeathAnimation = false;
 
-        public override void Awake()
+        public override void Initialize()
         {
-            base.Awake();
-            m_skeleton = GetComponent<Skeleton>();
+            base.Initialize();
+            m_skeleton = GetComponent<Entity>();
+            m_attack = m_skeleton.MeleeAttack;
+            m_movement = m_skeleton.Movement;
+
             m_takeDamageAnimationID = Animator.StringToHash(m_takeDamageAnimationName);
             m_deathAnimationID = Animator.StringToHash(m_deathAnimationName);
             m_attackAnimationID = Animator.StringToHash(m_attackAnimationName);
         }
 
-        private void OnEnable()
+        public override void Enable()
         {
-            m_skeleton.OnAttackStarted += TriggerAttackAnimation;
+            m_attack.OnAttackStarted += TriggerAttackAnimation;
             m_skeleton.Health.OnTakeDamage += TriggerTakeDamageAnimation;
             m_skeleton.Health.OnDeath += TriggerDeathAnimation;
+
+            m_triggerAttackAnimation = false;
+            m_triggerTakeDamageAnimation = false;
+            m_triggerDeathAnimation = false;
             SetAnimationState(m_idleAnimationID);
         }
 
-        private void OnDisable()
+        public override void Disable()
         {
-            m_skeleton.OnAttackStarted -= TriggerAttackAnimation;
+            m_attack.OnAttackStarted -= TriggerAttackAnimation;
             m_skeleton.Health.OnTakeDamage -= TriggerTakeDamageAnimation;
             m_skeleton.Health.OnDeath -= TriggerDeathAnimation;
         }
@@ -60,7 +70,7 @@ namespace MagmaHeart.Core.Entities
                 if (m_triggerAttackAnimation)
                 {
                     m_triggerAttackAnimation = false;
-                    m_skeleton.OnAttackStarted += TriggerAttackAnimation;
+                    m_attack.OnAttackStarted += TriggerAttackAnimation;
                 }
             }
 
@@ -71,16 +81,16 @@ namespace MagmaHeart.Core.Entities
             {
                 m_triggerAttackAnimation = false;
 
-                m_skeleton.OnAttackEnded?.Invoke();
+                m_attack.OnAttackEnded?.Invoke();
                 OnAnimationEnded?.Invoke(m_attackAnimationName);
-                
-                m_skeleton.OnAttackStarted += TriggerAttackAnimation;
+
+                m_attack.OnAttackStarted += TriggerAttackAnimation;
             }
 
             if (m_triggerAttackAnimation)
                 return m_attackAnimationID;
 
-            if (m_skeleton.CurrentMovementDirection.magnitude > 0)
+            if (m_movement.CurrentMovementDirection.magnitude > 0)
                 return m_walkAnimationID;
 
             return m_idleAnimationID;
@@ -89,7 +99,7 @@ namespace MagmaHeart.Core.Entities
         private void TriggerAttackAnimation()
         {
             m_triggerAttackAnimation = true;
-            m_skeleton.OnAttackStarted -= TriggerAttackAnimation;
+            m_attack.OnAttackStarted -= TriggerAttackAnimation;
         }
 
         private void TriggerTakeDamageAnimation()

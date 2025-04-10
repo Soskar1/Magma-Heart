@@ -3,12 +3,9 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class EnemyBehaviour : MonoBehaviour
+    public class EnemyMeleeBehaviour : MonoBehaviour
     {
-        [Header("Field Of View")]
         [SerializeField] private float m_triggerAttackDistance;
-        [SerializeField] private float m_searchRadius;
-        [SerializeField] private int m_amountOfRaycasts;
 
         [Header("Animation Events")]
         [SerializeField] private string m_takeDamageAnimationName;
@@ -16,9 +13,9 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private string m_attackAnimationName;
 
         private Entity m_entity;
-        private IAttacker m_entityAttack;
-        private IMovable m_entityMovement;
-        private IAnimatable m_entityAnimations;
+        private IMeleeAttacker m_attack;
+        private IMovable m_movement;
+        private AnimationPlayer m_animation;
 
         private Entity m_entityToChase;
         private Rigidbody2D m_rigidbody;
@@ -26,66 +23,62 @@ namespace MagmaHeart.Core.Entities
         private bool m_canMove = true;
         private bool m_canAttack = true;
 
-        private void Awake()
+        public Collider2D AttackHitCollider => m_attack.HitCollider;
+
+        public void Initialize(Entity entityToChase, RoomData roomData)
         {
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_entity = GetComponent<Entity>();
-            m_entityAttack = m_entity as IAttacker;
-            m_entityMovement = m_entity as IMovable;
-            m_entityAnimations = m_entity as IAnimatable;
-
-            if (m_entityAttack == null)
-                Debug.LogError($"Entity {transform.name} does not support IAttacker interface");
-
-            if (m_entityMovement == null)
-                Debug.LogError($"Entity {transform.name} does not support IMovable interface");
-
-            if (m_entityAnimations == null)
-                Debug.LogError($"Entity {transform.name} does not support IAnimatable interface");
-
+            m_entityToChase = entityToChase;
+            
             m_entity.Initialize();
+            m_attack = m_entity.MeleeAttack;
+            m_movement = m_entity.Movement;
+            m_animation = m_entity.Animation;
         }
 
-        public void Initialize(Entity entityToChase, RoomData roomData) => m_entityToChase = entityToChase;
-
-        private void OnEnable()
+        public void Enable()
         {
             m_entity.Health.OnTakeDamage += DisableMovement;
             m_entity.Health.OnTakeDamage += DisableAttack;
             m_entity.Health.OnTakeDamage += Unfreeze;
             m_entity.Health.OnDeath += Freeze;
 
-            m_entityAttack.OnAttackStarted += DisableMovement;
-            m_entityAttack.OnAttackStarted += DisableAttack;
-            m_entityAttack.OnAttackStarted += Stop;
-            m_entityAttack.OnAttackStarted += Freeze;
+            m_attack.OnAttackStarted += DisableMovement;
+            m_attack.OnAttackStarted += DisableAttack;
+            m_attack.OnAttackStarted += Stop;
+            m_attack.OnAttackStarted += Freeze;
 
-            m_entityAttack.OnAttackEnded += EnableMovement;
-            m_entityAttack.OnAttackEnded += Unfreeze;
+            m_attack.OnAttackEnded += EnableMovement;
+            m_attack.OnAttackEnded += Unfreeze;
 
-            m_entityAnimations.AnimationPlayer.OnAnimationEnded += ProcessAnimationOnEndEvents;
+            m_animation.OnAnimationEnded += ProcessAnimationOnEndEvents;
+            m_entity.Enable();
         }
 
-        private void OnDisable()
+        public void Disable()
         {
             m_entity.Health.OnTakeDamage -= DisableMovement;
             m_entity.Health.OnTakeDamage -= DisableAttack;
             m_entity.Health.OnTakeDamage -= Unfreeze;
             m_entity.Health.OnDeath -= Freeze;
 
-            m_entityAttack.OnAttackStarted -= DisableMovement;
-            m_entityAttack.OnAttackStarted -= DisableAttack;
-            m_entityAttack.OnAttackStarted -= Stop;
-            m_entityAttack.OnAttackStarted -= Freeze;
+            m_attack.OnAttackStarted -= DisableMovement;
+            m_attack.OnAttackStarted -= DisableAttack;
+            m_attack.OnAttackStarted -= Stop;
+            m_attack.OnAttackStarted -= Freeze;
 
-            m_entityAttack.OnAttackEnded -= EnableMovement;
-            m_entityAttack.OnAttackEnded -= Unfreeze;
+            m_attack.OnAttackEnded -= EnableMovement;
+            m_attack.OnAttackEnded -= Unfreeze;
 
-            m_entityAnimations.AnimationPlayer.OnAnimationEnded -= ProcessAnimationOnEndEvents;
+            m_animation.OnAnimationEnded -= ProcessAnimationOnEndEvents;
+            m_entity.Disable();
         }
 
         private void Update()
         {
+            m_animation.PlayAnimations();
+
             if (m_entityToChase == null)
                 return;
 
@@ -93,7 +86,7 @@ namespace MagmaHeart.Core.Entities
                 return;
 
             if (Vector2.Distance(transform.position, m_entityToChase.transform.position) < m_triggerAttackDistance)
-                m_entityAttack.Attack();
+                m_attack.Attack();
         }
 
         public void FixedUpdate()
@@ -105,7 +98,7 @@ namespace MagmaHeart.Core.Entities
                 return;
 
             Vector2 directionToMove = m_entityToChase.transform.position - transform.position;
-            m_entityMovement.Move(directionToMove.normalized);
+            m_movement.Move(directionToMove.normalized);
         }
 
         private void EnableMovement() => m_canMove = true;
@@ -118,7 +111,7 @@ namespace MagmaHeart.Core.Entities
 
         private void DisableEntity()
         {
-            m_entity.enabled = false;
+            Disable();
             enabled = false;
             GetComponent<Collider2D>().enabled = false;
         }

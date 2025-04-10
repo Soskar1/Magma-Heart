@@ -814,7 +814,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_spawnPoint: {fileID: 822654936}
-  m_entityToSpawn: {fileID: 6965426808393464807, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_entityToSpawn: {fileID: 5902962640327027025, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
   m_enemyToSpawn: {fileID: 2228734466429708742, guid: 742862497be07974a8a888e2f832ee26, type: 3}
   m_enemySpawnPoint: {fileID: 134923702}
   m_secondEnemySpawnPoint: {fileID: 730593708}
