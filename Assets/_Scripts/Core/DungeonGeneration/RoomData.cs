@@ -6,7 +6,7 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class RoomData
     {
-        private HashSet<Vector2Int> m_tiles;
+        private Dictionary<Vector2Int, DungeonTile> m_tiles;
         private readonly BoundsInt m_roomSpace;
         public int TileCount => m_tiles.Count;
         public BoundsInt RoomSpace => m_roomSpace;
@@ -30,12 +30,17 @@ namespace MagmaHeart.Core.Dungeon
             LeftBorder = m_roomSpace.xMin + borderOffsets.x;
             BottomBorder = m_roomSpace.yMin + borderOffsets.y;
 
-            m_tiles = new HashSet<Vector2Int>() { WorldPosition };
+            DungeonTile initialTile = new DungeonTile(WorldPosition, TileType.Floor);
+            m_tiles = new Dictionary<Vector2Int, DungeonTile>();
+            m_tiles.Add(WorldPosition, initialTile);
+
             LeftMostTile = WorldPosition;
             RightMostTile = WorldPosition;
             TopMostTile = WorldPosition;
             BottomMostTile = WorldPosition;
         }
+
+        public RoomData(in BoundsInt roomSpace) : this(roomSpace, Vector2Int.zero) { }
 
         public Vector2Int ToRoomSpace(Vector2Int position)
         {
@@ -54,44 +59,68 @@ namespace MagmaHeart.Core.Dungeon
             return position;
         }
 
-        public void AddTile(Vector2Int tile) 
+        public void AddTile(Vector2Int tilePosition, TileType tileType) 
         {
-            tile = ToRoomSpace(tile);
-            m_tiles.Add(tile);
+            tilePosition = ToRoomSpace(tilePosition);
+            DungeonTile dungeonTile = new DungeonTile(tilePosition, tileType);
 
-            if (tile.x < LeftMostTile.x)
-                LeftMostTile = tile;
+            if (m_tiles.ContainsKey(tilePosition))
+            {
+                if (m_tiles[tilePosition].TileType != tileType)
+                    m_tiles[tilePosition].TileType = dungeonTile.TileType;
 
-            if (tile.x > RightMostTile.x)
-                RightMostTile = tile;
+                return;
+            }
+
+            m_tiles.Add(tilePosition, dungeonTile);
+
+            if (tilePosition.x < LeftMostTile.x)
+                LeftMostTile = tilePosition;
+
+            if (tilePosition.x > RightMostTile.x)
+                RightMostTile = tilePosition;
             
-            if (tile.y > TopMostTile.y)
-                TopMostTile = tile;
+            if (tilePosition.y > TopMostTile.y)
+                TopMostTile = tilePosition;
             
-            if (tile.y < BottomMostTile.y)
-                BottomMostTile = tile;
+            if (tilePosition.y < BottomMostTile.y)
+                BottomMostTile = tilePosition;
         }
 
-        public void AddTiles(in ICollection<Vector2Int> tiles)
+        public void AddTiles(in ICollection<Vector2Int> tilesPositions, TileType tileType)
         {
-            foreach (Vector2Int tile in tiles)
-                AddTile(tile);
+            foreach (Vector2Int tilePosition in tilesPositions)
+                AddTile(tilePosition, tileType);
         }
 
-        public void SetTiles(in HashSet<Vector2Int> tiles)
+        public void SetTiles(in Dictionary<Vector2Int, DungeonTile> tiles)
         {
             m_tiles = tiles;
 
-            LeftMostTile = tiles.Aggregate((min, next) => next.x < min.x ? next : min);
-            RightMostTile = tiles.Aggregate((max, next) => next.x > max.x ? next : max);
-            BottomMostTile = tiles.Aggregate((min, next) => next.y < min.y ? next : min);
-            TopMostTile = tiles.Aggregate((max, next) => next.y > max.y ? next : max);
+            LeftMostTile = tiles.Keys.Aggregate((min, next) => next.x < min.x ? next : min);
+            RightMostTile = tiles.Keys.Aggregate((max, next) => next.x > max.x ? next : max);
+            BottomMostTile = tiles.Keys.Aggregate((min, next) => next.y < min.y ? next : min);
+            TopMostTile = tiles.Keys.Aggregate((max, next) => next.y > max.y ? next : max);
         }
 
-        public Vector2Int GetTileAtIndex(in int index) => m_tiles.ElementAt(index);
+        public DungeonTile GetTile(in Vector2Int tilePosition)
+        {
+            if (m_tiles.ContainsKey(tilePosition))
+                return m_tiles[tilePosition];
 
-        public bool ContainsTile(in Vector2Int tile) => m_tiles.Contains(tile);
+            return null;
+        }
+
+        public DungeonTile GetTileAtIndex(in int index) => m_tiles.Values.ElementAt(index);
+
+        public Vector2Int GetTilePositionAtIndex(in int index) => GetTileAtIndex(index).Position;
+
+        public bool ContainsTileAtPosition(Vector2Int tileToFind) => m_tiles.ContainsKey(tileToFind);
  
-        public HashSet<Vector2Int> GetTilesCopy() => new HashSet<Vector2Int>(m_tiles);
+        public Dictionary<Vector2Int, DungeonTile> GetTilesCopy() => new Dictionary<Vector2Int, DungeonTile>(m_tiles);
+
+        public HashSet<Vector2Int> GetTilePositions() => m_tiles.Keys.ToHashSet();
+
+        public HashSet<DungeonTile> GetTiles() => m_tiles.Values.ToHashSet();
     }
 }

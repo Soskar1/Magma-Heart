@@ -1,0 +1,25 @@
+using UnityEngine;
+
+namespace MagmaHeart.Core.Dungeon
+{
+    public enum TileType
+    {
+        Floor,
+        Wall
+    }
+
+    public class DungeonTile
+    {
+        private Vector2Int m_position;
+        private TileType m_type;
+
+        public Vector2Int Position => m_position;
+        public TileType TileType { get { return m_type; } set { m_type = value; } }
+
+        public DungeonTile(Vector2Int position, TileType type)
+        {
+            m_position = position;
+            m_type = type;
+        }
+    }
+}

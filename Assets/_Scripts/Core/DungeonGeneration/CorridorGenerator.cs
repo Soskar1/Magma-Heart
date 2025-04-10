@@ -24,9 +24,9 @@ namespace MagmaHeart.Core.Dungeon
                         m_tilesToGrab.Add(new Vector2Int(x, y));
         }
 
-        public HashSet<Vector2Int> GenerateCorridor(in RoomData room1, in RoomData room2)
+        public HashSet<DungeonTile> GenerateCorridor(in RoomData room1, in RoomData room2)
         {
-            HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
+            HashSet<DungeonTile> generatedTiles = new HashSet<DungeonTile>();
             Vector2 direction = ((Vector2)(room1.WorldPosition - room2.WorldPosition)).normalized;
             Vector2 perpendicular = Vector2.Perpendicular(direction);
 
@@ -47,7 +47,7 @@ namespace MagmaHeart.Core.Dungeon
 
             for (int i = 0; i < points.Count - 1; ++i)
             {
-                HashSet<Vector2Int> tiles = GenerateTilesBetweenPoints(points[i], points[i + 1]);
+                HashSet<DungeonTile> tiles = GenerateTilesBetweenPoints(points[i], points[i + 1]);
                 generatedTiles.UnionWith(tiles);
             }
 
@@ -63,7 +63,7 @@ namespace MagmaHeart.Core.Dungeon
             while (currentPosition.x > roomData.LeftMostTile.x && currentPosition.x < roomData.RightMostTile.x &&
                 currentPosition.y > roomData.BottomMostTile.y && currentPosition.y < roomData.TopMostTile.y)
             {
-                if (roomData.ContainsTile(currentTile))
+                if (roomData.ContainsTileAtPosition(currentTile))
                     lastVisitedTile = currentTile;
 
                 currentPosition += direction;
@@ -74,9 +74,9 @@ namespace MagmaHeart.Core.Dungeon
             return new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
         }
 
-        private HashSet<Vector2Int> GenerateTilesBetweenPoints(in Vector2 from, in Vector2 to)
+        private HashSet<DungeonTile> GenerateTilesBetweenPoints(in Vector2 from, in Vector2 to)
         {
-            HashSet<Vector2Int> generatedTiles = new HashSet<Vector2Int>();
+            HashSet<DungeonTile> generatedTiles = new HashSet<DungeonTile>();
 
             Vector2Int currentTile = new Vector2Int((int)from.x, (int)from.y);
             Vector2 currentPosition = from;
@@ -88,7 +88,10 @@ namespace MagmaHeart.Core.Dungeon
             while (currentMagnitude <= previousMagnitude)
             {
                 foreach (Vector2Int localPos in m_tilesToGrab)
-                    generatedTiles.Add(currentTile + localPos);
+                {
+                    DungeonTile tile = new DungeonTile(currentTile + localPos, TileType.Floor);
+                    generatedTiles.Add(tile);
+                }
 
                 currentPosition += directionToMove.normalized;
                 currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);

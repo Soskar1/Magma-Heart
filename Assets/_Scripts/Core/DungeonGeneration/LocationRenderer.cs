@@ -16,23 +16,17 @@ namespace MagmaHeart.Core.Dungeon
 
         public Action RenderedAllTiles;
 
-        public IEnumerator DrawTiles(HashSet<Vector2Int> tiles)
+        public IEnumerator DrawTiles(HashSet<DungeonTile> tiles)
         {
             int renderedTiles = 0;
-            foreach (Vector2Int tile in tiles)
+            foreach (DungeonTile tile in tiles)
             {
-                Vector3Int tilePosition = m_floors.WorldToCell((Vector3Int)tile);
+                Vector3Int tilePosition = m_floors.WorldToCell((Vector3Int)tile.Position);
 
-                if (!tiles.Contains(tile + Vector2Int.up) || !tiles.Contains(tile + Vector2Int.right) ||
-                    !tiles.Contains(tile + Vector2Int.down) || !tiles.Contains(tile + Vector2Int.left) ||
-                    !tiles.Contains(tile + new Vector2Int(1, 1)) || !tiles.Contains(tile + new Vector2Int(1, -1)) ||
-                    !tiles.Contains(tile + new Vector2Int(-1, -1)) || !tiles.Contains(tile + new Vector2Int(-1, 1))) {
+                if (tile.TileType == TileType.Wall)
                     m_walls.SetTile(tilePosition, m_wallTile);
-                }
                 else
-                {
                     m_floors.SetTile(tilePosition, m_floorTile);
-                }
 
                 ++renderedTiles;
 
@@ -46,6 +40,7 @@ namespace MagmaHeart.Core.Dungeon
         public void Clear()
         {
             m_floors.ClearAllTiles();
+            m_walls.ClearAllTiles();
         }
     }
 }

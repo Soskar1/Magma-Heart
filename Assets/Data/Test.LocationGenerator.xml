@@ -8,14 +8,11 @@
 		<Boxed XSize="20" YSize="20"/>
 		<RandomWalk Iterations="200"/>
 		<DiffusionLimitedAggregation TilesToPlace="100"/>
-	</RoomGenerators>
-	
-	<RoomModifiers>
 		<TilePropagation Length="3"/>
 		<UnreachableTileCapture/>
 		<TileFill/>
 		<UnreachableTileDestructor/>
-	</RoomModifiers>
+	</RoomGenerators>
 
 	<CorridorGenerator CorridorSize="3"/>
 </LocationGenerator>
