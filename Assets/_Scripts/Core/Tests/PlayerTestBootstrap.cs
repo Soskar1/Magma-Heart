@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.Tests
 
         [SerializeField] private EnemyBehaviour m_enemyToSpawn;
         [SerializeField] private Transform m_enemySpawnPoint;
+        [SerializeField] private Transform m_secondEnemySpawnPoint;
         
         [SerializeField] private HealthBar m_healthBar;
         [SerializeField] private CameraMovement m_cameraMovement;
@@ -40,6 +41,10 @@ namespace MagmaHeart.Core.Tests
 
             EnemyBehaviour enemyInstance = Instantiate(m_enemyToSpawn, m_enemySpawnPoint.position, Quaternion.identity);
             enemyInstance.Initialize(entityInstance, m_location.Rooms[0]);
+
+            EnemyBehaviour enemyInstance2 = Instantiate(m_enemyToSpawn, m_secondEnemySpawnPoint.position, Quaternion.identity);
+            enemyInstance2.Initialize(entityInstance, m_location.Rooms[0]);
+
             m_navigation = new AStarNavigation(m_location.Rooms[0]);
         }
 

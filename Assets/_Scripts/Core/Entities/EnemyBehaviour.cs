@@ -52,12 +52,16 @@ namespace MagmaHeart.Core.Entities
         {
             m_entity.Health.OnTakeDamage += DisableMovement;
             m_entity.Health.OnTakeDamage += DisableAttack;
+            m_entity.Health.OnTakeDamage += Unfreeze;
             m_entity.Health.OnDeath += Freeze;
 
             m_entityAttack.OnAttackStarted += DisableMovement;
             m_entityAttack.OnAttackStarted += DisableAttack;
             m_entityAttack.OnAttackStarted += Stop;
+            m_entityAttack.OnAttackStarted += Freeze;
+
             m_entityAttack.OnAttackEnded += EnableMovement;
+            m_entityAttack.OnAttackEnded += Unfreeze;
 
             m_entityAnimations.AnimationPlayer.OnAnimationEnded += ProcessAnimationOnEndEvents;
         }
@@ -66,12 +70,16 @@ namespace MagmaHeart.Core.Entities
         {
             m_entity.Health.OnTakeDamage -= DisableMovement;
             m_entity.Health.OnTakeDamage -= DisableAttack;
+            m_entity.Health.OnTakeDamage -= Unfreeze;
             m_entity.Health.OnDeath -= Freeze;
 
             m_entityAttack.OnAttackStarted -= DisableMovement;
             m_entityAttack.OnAttackStarted -= DisableAttack;
+            m_entityAttack.OnAttackStarted -= Stop;
             m_entityAttack.OnAttackStarted -= Freeze;
+
             m_entityAttack.OnAttackEnded -= EnableMovement;
+            m_entityAttack.OnAttackEnded -= Unfreeze;
 
             m_entityAnimations.AnimationPlayer.OnAnimationEnded -= ProcessAnimationOnEndEvents;
         }
@@ -106,6 +114,7 @@ namespace MagmaHeart.Core.Entities
         private void DisableAttack() => m_canAttack = false;
         private void Stop() => m_rigidbody.linearVelocity = Vector2.zero;
         private void Freeze() => m_rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+        private void Unfreeze() => m_rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         private void DisableEntity()
         {
