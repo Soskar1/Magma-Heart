@@ -20,20 +20,9 @@ namespace MagmaHeart.Core.Dungeon
         private List<GameObject> m_debugElements = new List<GameObject>();
 
         [SerializeField] private TextAsset m_locationGeneratorXmlFile;
-
         [SerializeField] private bool m_useSeed;
         [SerializeField] private int m_seed;
         private Random m_random;
-
-        [Header("BinarySpacePartitioning")]
-        [SerializeField] private bool m_bspDebug;
-        [SerializeField] private GameObject m_spaceVizualizer;
-
-        [Header("Location graph")]
-        [SerializeField] private bool m_locationGraphDebug;
-        [SerializeField] private bool m_mstTreeDebug;
-        [SerializeField] private GameObject m_roomNodeDebug;
-        [SerializeField] private GameObject m_roomEdgeDebug;
 
         private void Awake()
         {
@@ -68,17 +57,6 @@ namespace MagmaHeart.Core.Dungeon
                 foreach (var obj in m_debugElements)
                     Destroy(obj);
 
-            if (m_bspDebug)
-            {
-                foreach (BoundsInt space in spaces)
-                {
-                    GameObject testObject = Instantiate(m_spaceVizualizer, space.center, Quaternion.identity);
-                    testObject.transform.localScale = space.size;
-                    testObject.GetComponent<SpriteRenderer>().color = UnityEngine.Random.ColorHSV();
-                    m_debugElements.Add(testObject);
-                }
-            }
-
             await Task.Run(() =>
             {
                 foreach (BoundsInt space in spaces)
@@ -92,16 +70,10 @@ namespace MagmaHeart.Core.Dungeon
             LocationGraphCreator graphCreator = new LocationGraphCreator(RoomTileDatas);
             LocationGraph graph = graphCreator.CreateGraph();
 
-            if (m_locationGraphDebug)
-                GraphDebug(graph);
-
             // MST
             MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
             RoomTileData startNode = RoomTileDatas.ElementAt(m_random.Next(RoomTileDatas.Count));
             LocationGraph mstGraph = mstCreator.ExtractMinimalSpanningTree(graph, startNode);
-
-            if (m_mstTreeDebug)
-                GraphDebug(mstGraph);
 
             HashSet<DungeonTile> corridorTiles = new HashSet<DungeonTile>();
             if (m_corridorGenerator != null)
@@ -126,25 +98,6 @@ namespace MagmaHeart.Core.Dungeon
             HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
 
             return new Location(RoomTileDatas.ToList(), corridorTiles, wallTiles);
-        }
-
-        private void GraphDebug(in LocationGraph graph)
-        {
-            foreach (RoomTileData room in graph.Nodes)
-            {
-                GameObject nodeDebugInstance = Instantiate(m_roomNodeDebug, room.RoomSpace.center, Quaternion.identity);
-                m_debugElements.Add(nodeDebugInstance);
-            }
-
-            foreach (RoomConnectionEdge edge in graph.Edges)
-            {
-                GameObject edgeDebugInstance = Instantiate(m_roomEdgeDebug, Vector3.zero, Quaternion.identity);
-                m_debugElements.Add(edgeDebugInstance);
-
-                LineRenderer[] edgeRenderers = edgeDebugInstance.GetComponentsInChildren<LineRenderer>();
-                foreach (LineRenderer edgeRenderer in edgeRenderers)
-                    edgeRenderer.SetPositions(new Vector3[2] { edge.First.RoomSpace.center, edge.Second.RoomSpace.center });
-            }
         }
 
         private RoomTileData GenerateRoom(in BoundsInt space)
