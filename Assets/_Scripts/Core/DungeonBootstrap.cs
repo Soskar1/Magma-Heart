@@ -10,10 +10,11 @@ namespace MagmaHeart.Core
         [SerializeField] private CameraMovement m_camera;
         [SerializeField] private LocationGenerator m_locationGenerator;
         [SerializeField] private LocationRenderer m_renderer;
+        [SerializeField] private Room m_roomPrefab;
 
         private Location m_location;
 
-        private void Awake() => m_renderer.RenderedAllTiles += SpawnPlayer;
+        private void Awake() => m_renderer.RenderedAllTiles += SpawnEntities;
 
         private void Start() => BootScene();
 
@@ -23,14 +24,29 @@ namespace MagmaHeart.Core
             StartCoroutine(m_renderer.DrawTiles(m_location.Tiles));
         }
 
-        private void SpawnPlayer()
+        private void SpawnEntities()
         {
-            RoomTileData RoomTileData = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            PlayerBehaviour playerInstance = Instantiate(m_player, (Vector2)RoomTileData.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize();
-            m_renderer.RenderedAllTiles -= SpawnPlayer;
+            m_renderer.RenderedAllTiles -= SpawnEntities;
 
-            CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(RoomTileData.WorldPosition.x, RoomTileData.WorldPosition.y, -10), Quaternion.identity);
+            RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
+            SpawnPlayer(startRoom);
+
+            foreach (RoomTileData roomTileData in m_location.Rooms)
+            {
+                if (roomTileData != startRoom)
+                {
+                    Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
+                    roomInstance.SetRoomTileData(roomTileData);
+                }
+            }
+        }
+
+        private void SpawnPlayer(RoomTileData startRoom)
+        {
+            PlayerBehaviour playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
+            playerInstance.Initialize();
+            
+            CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             cameraInstance.ObjectToTrack = playerInstance.transform;
 
             playerInstance.Enable();
