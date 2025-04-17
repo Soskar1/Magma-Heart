@@ -10,6 +10,7 @@ namespace MagmaHeart.Core
         [SerializeField] private EnemyMeleeBehaviour m_enemyToSpawn;
         [SerializeField] private int m_amountOfEnemies;
         [SerializeField] private float m_minDistanceFromPlayer;
+        [SerializeField] private Vector2 m_offset;
 
         private Room m_currentRoom;
         private Entity m_player;
@@ -55,7 +56,7 @@ namespace MagmaHeart.Core
                     dungeonTile = tileData.GetTileAtIndex(Random.Range(0, tileData.TileCount - 1));
 
                 EnemyMeleeBehaviour enemyInstance = m_enemyPool.Get();
-                enemyInstance.transform.position = dungeonTile.Position.ToVector3();
+                enemyInstance.transform.position = dungeonTile.Position.ToVector2() + m_offset;
             }
         }
     }
