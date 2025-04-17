@@ -51,7 +51,7 @@ namespace MagmaHeart.Core.Dungeon
             else
                 spaces.Add(locationSpace);
 
-            HashSet<RoomTileData> RoomTileDatas = new HashSet<RoomTileData>();
+            HashSet<RoomTileData> roomTileDatas = new HashSet<RoomTileData>();
 
             if (m_debugElements.Count > 0)
                 foreach (var obj in m_debugElements)
@@ -61,18 +61,18 @@ namespace MagmaHeart.Core.Dungeon
             {
                 foreach (BoundsInt space in spaces)
                 {
-                    RoomTileData RoomTileData = GenerateRoom(space);
-                    RoomTileDatas.Add(RoomTileData);
+                    RoomTileData roomTileData = GenerateRoom(space);
+                    roomTileDatas.Add(roomTileData);
                 }
             });
 
             // LocationGraph
-            LocationGraphCreator graphCreator = new LocationGraphCreator(RoomTileDatas);
+            LocationGraphCreator graphCreator = new LocationGraphCreator(roomTileDatas);
             LocationGraph graph = graphCreator.CreateGraph();
 
             // MST
             MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
-            RoomTileData startNode = RoomTileDatas.ElementAt(m_random.Next(RoomTileDatas.Count));
+            RoomTileData startNode = roomTileDatas.ElementAt(m_random.Next(roomTileDatas.Count));
             LocationGraph mstGraph = mstCreator.ExtractMinimalSpanningTree(graph, startNode);
 
             HashSet<DungeonTile> corridorTiles = new HashSet<DungeonTile>();
@@ -88,7 +88,7 @@ namespace MagmaHeart.Core.Dungeon
             }
 
             HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
-            foreach (RoomTileData RoomTileData in RoomTileDatas)
+            foreach (RoomTileData RoomTileData in roomTileDatas)
                 tilePositions.UnionWith(RoomTileData.GetTilePositions());
 
             HashSet<Vector2Int> corridorTilePositions = corridorTiles.Select(tile => tile.Position).ToHashSet();
@@ -97,7 +97,7 @@ namespace MagmaHeart.Core.Dungeon
             LocationWallGenerator wallGenerator = new LocationWallGenerator();
             HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
 
-            return new Location(RoomTileDatas.ToList(), corridorTiles, wallTiles);
+            return new Location(roomTileDatas.ToList(), corridorTiles, wallTiles);
         }
 
         private RoomTileData GenerateRoom(in BoundsInt space)
