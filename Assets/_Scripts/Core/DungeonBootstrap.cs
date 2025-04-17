@@ -11,6 +11,7 @@ namespace MagmaHeart.Core
         [SerializeField] private LocationGenerator m_locationGenerator;
         [SerializeField] private LocationRenderer m_renderer;
         [SerializeField] private Room m_roomPrefab;
+        [SerializeField] private Spawner m_spawnerPrefab;
 
         private Location m_location;
 
@@ -29,7 +30,10 @@ namespace MagmaHeart.Core
             m_renderer.RenderedAllTiles -= SpawnEntities;
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            SpawnPlayer(startRoom);
+            Entity spawnedEntity = SpawnPlayer(startRoom);
+
+            Spawner spawner = Instantiate(m_spawnerPrefab);
+            spawner.Initialize(spawnedEntity);
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {
@@ -37,11 +41,13 @@ namespace MagmaHeart.Core
                 {
                     Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
                     roomInstance.SetRoomTileData(roomTileData);
+
+                    roomInstance.playerEnteredRoom += spawner.SetRoomTileData;
                 }
             }
         }
 
-        private void SpawnPlayer(RoomTileData startRoom)
+        private Entity SpawnPlayer(RoomTileData startRoom)
         {
             PlayerBehaviour playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             playerInstance.Initialize();
@@ -50,6 +56,8 @@ namespace MagmaHeart.Core
             cameraInstance.ObjectToTrack = playerInstance.transform;
 
             playerInstance.Enable();
+
+            return playerInstance.ControllingEntity;
         }
     }
 }

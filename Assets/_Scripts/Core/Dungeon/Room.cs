@@ -9,7 +9,9 @@ namespace MagmaHeart.Core.Dungeon
     {
         private RoomTileData m_roomTileData;
         public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
-        public Action playerEnteredRoom;
+        public RoomTileData RoomTileData => m_roomTileData;
+
+        public Action<Room> playerEnteredRoom;
         private BoxCollider2D m_boxCollider;
 
         private void Awake() => m_boxCollider = GetComponent<BoxCollider2D>();
@@ -26,7 +28,10 @@ namespace MagmaHeart.Core.Dungeon
         public void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.GetComponent<PlayerBehaviour>() != null)
-                playerEnteredRoom?.Invoke();
+            {
+                m_boxCollider.enabled = false;
+                playerEnteredRoom?.Invoke(this);
+            }
         }
     }
 }
