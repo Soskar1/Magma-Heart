@@ -25,13 +25,17 @@ namespace MagmaHeart.Core.Tests
 
         [Header("Spawner")]
         [SerializeField] private Spawner m_spawner;
-        
+        [SerializeField] private Room m_roomPrefab;
+
         public void Awake() => m_locationRenderer = GetComponent<LocationRenderer>();
 
         public async void Start()
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
             StartCoroutine(m_locationRenderer.DrawTiles(m_location.Tiles));
+
+            Room roomInstance = Instantiate(m_roomPrefab, m_location.Rooms[0].WorldPosition.ToVector3(), Quaternion.identity);
+            roomInstance.SetRoomTileData(m_location.Rooms[0]);
 
             PlayerBehaviour playerInstance = Instantiate(m_player, m_spawnPoint.position, Quaternion.identity);
             playerInstance.Initialize();

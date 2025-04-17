@@ -27,10 +27,13 @@ namespace MagmaHeart.Core
         {
             RoomTileData RoomTileData = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             PlayerBehaviour playerInstance = Instantiate(m_player, (Vector2)RoomTileData.WorldPosition, Quaternion.identity);
+            playerInstance.Initialize();
             m_renderer.RenderedAllTiles -= SpawnPlayer;
 
             CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(RoomTileData.WorldPosition.x, RoomTileData.WorldPosition.y, -10), Quaternion.identity);
             cameraInstance.ObjectToTrack = playerInstance.transform;
+
+            playerInstance.Enable();
         }
     }
 }
