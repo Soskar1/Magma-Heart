@@ -8,7 +8,7 @@ namespace MagmaHeart.Core.Dungeon
         public List<Corridor> Corridors { get; private set; }
         public HashSet<DungeonTile> Tiles { get; private set; }
     
-        public Location(in List<RoomTileData> rooms, in List<Corridor> corridors, in HashSet<DungeonTile> wallTiles)
+        public Location(in List<RoomTileData> rooms, in List<Corridor> corridors)
         {
             Rooms = rooms;
             Tiles = new HashSet<DungeonTile>();
@@ -18,8 +18,6 @@ namespace MagmaHeart.Core.Dungeon
 
             foreach (Corridor corridor in corridors)
                 Tiles.UnionWith(corridor.Tiles);
-
-            Tiles.UnionWith(wallTiles);
         }
     }
 }

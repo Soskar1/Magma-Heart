@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
@@ -16,7 +17,7 @@ namespace MagmaHeart.Core.Dungeon
             foreach (RoomTileData roomTileData in m_rooms)
                 edges.UnionWith(CreateEdges(roomTileData));
 
-            return new LocationGraph(m_rooms, edges);
+            return new LocationGraph(m_rooms.ToHashSet(), edges);
         }
 
         private HashSet<RoomConnectionEdge> CreateEdges(in RoomTileData roomTileData)

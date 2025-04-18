@@ -75,17 +75,18 @@ namespace MagmaHeart.Core.Dungeon
                 });
             }
 
-            HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
-            foreach (RoomTileData roomTileData in roomTileDatas)
-                tilePositions.UnionWith(roomTileData.GetTilePositions());
+            //HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
+            //foreach (RoomTileData roomTileData in roomTileDatas)
+            //    tilePositions.UnionWith(roomTileData.GetTilePositions());
 
-            foreach (Corridor corridor in corridors)
-                tilePositions.UnionWith(corridor.Tiles.Select(tile => tile.Position));
+            //foreach (Corridor corridor in corridors)
+            //    tilePositions.UnionWith(corridor.Tiles.Select(tile => tile.Position));
 
-            LocationWallGenerator wallGenerator = new LocationWallGenerator();
-            HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
+            //LocationWallGenerator wallGenerator = new LocationWallGenerator();
+            //HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
 
-            return new Location(roomTileDatas, corridors, wallTiles);
+
+            return new Location(roomTileDatas, corridors);
         }
 
         private RoomTileData GenerateRoom(in BoundsInt space)

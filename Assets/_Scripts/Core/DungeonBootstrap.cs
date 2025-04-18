@@ -41,8 +41,8 @@ namespace MagmaHeart.Core
                 if (roomTileData != startRoom)
                 {
                     Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Room1 == roomTileData || c.Room2 == roomTileData);
-                    roomInstance.Initialize(roomTileData, adjacentCorridors);
+                    // List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Room1 == roomTileData || c.Room2 == roomTileData);
+                    roomInstance.Initialize(roomTileData, null);
 
                     roomInstance.playerEnteredRoom += spawner.SetRoomTileData;
                 }
