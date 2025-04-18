@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace MagmaHeart.Core.Dungeon
     public class Room : MonoBehaviour
     {
         private RoomTileData m_roomTileData;
+        private List<Corridor> m_corridors = new List<Corridor>();
         public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
         public RoomTileData RoomTileData => m_roomTileData;
 
@@ -16,9 +18,10 @@ namespace MagmaHeart.Core.Dungeon
 
         private void Awake() => m_boxCollider = GetComponent<BoxCollider2D>();
 
-        public void SetRoomTileData(RoomTileData roomTileData)
+        public void Initialize(RoomTileData roomTileData, List<Corridor> corridors)
         {
             m_roomTileData = roomTileData;
+            m_corridors = corridors;
 
             float x = Mathf.Abs(WorldPosition.x - m_roomTileData.LeftMostTile.x) + Mathf.Abs(WorldPosition.x - m_roomTileData.RightMostTile.x);
             float y = Mathf.Abs(WorldPosition.y - m_roomTileData.TopMostTile.y) + Mathf.Abs(WorldPosition.y - m_roomTileData.BottomMostTile.y);

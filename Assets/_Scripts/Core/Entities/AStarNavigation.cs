@@ -82,7 +82,7 @@ namespace MagmaHeart.Core.Entities
                 {
                     Vector2Int neighbourTilePosition = currentNode.Position + direction;
                     DungeonTile tile = m_RoomTileData.GetTile(neighbourTilePosition);
-                    if (tile != null && tile.TileType == TileType.Floor && !visited.Contains(neighbourTilePosition))
+                    if (tile != null && tile.Type == TileType.Floor && !visited.Contains(neighbourTilePosition))
                     {
                         AStarNode neighbourNode = new AStarNode(neighbourTilePosition, target);
 

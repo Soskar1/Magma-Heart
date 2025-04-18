@@ -5,24 +5,24 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class LocationGraphCreator
     {
-        private readonly HashSet<RoomTileData> m_rooms;
+        private readonly List<RoomTileData> m_rooms;
 
-        public LocationGraphCreator(HashSet<RoomTileData> rooms) => m_rooms = rooms;
+        public LocationGraphCreator(List<RoomTileData> rooms) => m_rooms = rooms;
 
         public LocationGraph CreateGraph()
         {
             HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
 
-            foreach (RoomTileData RoomTileData in m_rooms)
-                edges.UnionWith(CreateEdges(RoomTileData));
+            foreach (RoomTileData roomTileData in m_rooms)
+                edges.UnionWith(CreateEdges(roomTileData));
 
             return new LocationGraph(m_rooms, edges);
         }
 
-        private HashSet<RoomConnectionEdge> CreateEdges(in RoomTileData RoomTileData)
+        private HashSet<RoomConnectionEdge> CreateEdges(in RoomTileData roomTileData)
         {
             HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
-            BoundsInt roomSpace = RoomTileData.RoomSpace;
+            BoundsInt roomSpace = roomTileData.RoomSpace;
 
             foreach (RoomTileData otherRoom in m_rooms)
             {
@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.Dungeon
                 if ((Mathf.Max(roomSpace.xMin, otherRoomSpace.xMin) < Mathf.Min(roomSpace.xMax, otherRoomSpace.xMax) && (roomSpace.yMax == otherRoomSpace.yMin || otherRoomSpace.yMax == roomSpace.yMin)) ||
                     (Mathf.Max(roomSpace.yMin, otherRoomSpace.yMin) < Mathf.Min(roomSpace.yMax, otherRoomSpace.yMax) && (roomSpace.xMax == otherRoomSpace.xMin || otherRoomSpace.xMax == roomSpace.xMin)))
                 {
-                    RoomConnectionEdge edge = new RoomConnectionEdge(RoomTileData, otherRoom);
+                    RoomConnectionEdge edge = new RoomConnectionEdge(roomTileData, otherRoom);
                     edges.Add(edge);
                 }
             }

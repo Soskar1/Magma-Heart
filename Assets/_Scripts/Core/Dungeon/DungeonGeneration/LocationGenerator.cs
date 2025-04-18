@@ -17,7 +17,6 @@ namespace MagmaHeart.Core.Dungeon
         private Vector2Int m_roomBorderOffsets;
 
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
-        private List<GameObject> m_debugElements = new List<GameObject>();
 
         [SerializeField] private TextAsset m_locationGeneratorXmlFile;
         [SerializeField] private bool m_useSeed;
@@ -51,11 +50,7 @@ namespace MagmaHeart.Core.Dungeon
             else
                 spaces.Add(locationSpace);
 
-            HashSet<RoomTileData> roomTileDatas = new HashSet<RoomTileData>();
-
-            if (m_debugElements.Count > 0)
-                foreach (var obj in m_debugElements)
-                    Destroy(obj);
+            List<RoomTileData> roomTileDatas = new List<RoomTileData>();
 
             await Task.Run(() =>
             {
@@ -66,38 +61,31 @@ namespace MagmaHeart.Core.Dungeon
                 }
             });
 
-            // LocationGraph
-            LocationGraphCreator graphCreator = new LocationGraphCreator(roomTileDatas);
-            LocationGraph graph = graphCreator.CreateGraph();
+            LocationGraph graph = CreateGraph(roomTileDatas);
 
-            // MST
-            MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
-            RoomTileData startNode = roomTileDatas.ElementAt(m_random.Next(roomTileDatas.Count));
-            LocationGraph mstGraph = mstCreator.ExtractMinimalSpanningTree(graph, startNode);
-
-            HashSet<DungeonTile> corridorTiles = new HashSet<DungeonTile>();
+            List<Corridor> corridors = new List<Corridor>();
             if (m_corridorGenerator != null)
             {
                 await Task.Run(() => {
-                    foreach (RoomConnectionEdge edge in mstGraph.Edges)
+                    foreach (RoomConnectionEdge edge in graph.Edges)
                     {
-                        HashSet<DungeonTile> tiles = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
-                        corridorTiles.UnionWith(tiles);
+                        Corridor corridor = m_corridorGenerator.GenerateCorridor(edge.First, edge.Second);
+                        corridors.Add(corridor);
                     }
                 });
             }
 
             HashSet<Vector2Int> tilePositions = new HashSet<Vector2Int>();
-            foreach (RoomTileData RoomTileData in roomTileDatas)
-                tilePositions.UnionWith(RoomTileData.GetTilePositions());
+            foreach (RoomTileData roomTileData in roomTileDatas)
+                tilePositions.UnionWith(roomTileData.GetTilePositions());
 
-            HashSet<Vector2Int> corridorTilePositions = corridorTiles.Select(tile => tile.Position).ToHashSet();
-            tilePositions.UnionWith(corridorTilePositions);
+            foreach (Corridor corridor in corridors)
+                tilePositions.UnionWith(corridor.Tiles.Select(tile => tile.Position));
 
             LocationWallGenerator wallGenerator = new LocationWallGenerator();
             HashSet<DungeonTile> wallTiles = wallGenerator.GenerateWalls(tilePositions);
 
-            return new Location(roomTileDatas.ToList(), corridorTiles, wallTiles);
+            return new Location(roomTileDatas, corridors, wallTiles);
         }
 
         private RoomTileData GenerateRoom(in BoundsInt space)
@@ -108,6 +96,16 @@ namespace MagmaHeart.Core.Dungeon
                 generator.GenerateRoom(RoomTileData);
 
             return RoomTileData;
+        }
+
+        private LocationGraph CreateGraph(in List<RoomTileData> rooms)
+        {
+            LocationGraphCreator graphCreator = new LocationGraphCreator(rooms);
+            LocationGraph graph = graphCreator.CreateGraph();
+
+            MinimalSpanningTreeCreator mstCreator = new MinimalSpanningTreeCreator();
+            RoomTileData startNode = rooms[m_random.Next(rooms.Count)];
+            return mstCreator.ExtractMinimalSpanningTree(graph, startNode);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace MagmaHeart.Core
             for (int i = 0; i < m_amountOfEnemies; ++i)
             {
                 DungeonTile dungeonTile = null;
-                while (dungeonTile == null || dungeonTile.TileType == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer)
+                while (dungeonTile == null || dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer)
                     dungeonTile = tileData.GetTileAtIndex(Random.Range(0, tileData.TileCount - 1));
 
                 EnemyMeleeBehaviour enemyInstance = m_enemyPool.Get();

@@ -23,7 +23,7 @@ namespace MagmaHeart.Core.Dungeon
             {
                 Vector3Int tilePosition = m_floors.WorldToCell((Vector3Int)tile.Position);
 
-                if (tile.TileType == TileType.Wall)
+                if (tile.Type == TileType.Wall)
                     m_walls.SetTile(tilePosition, m_wallTile);
                 else
                     m_floors.SetTile(tilePosition, m_floorTile);

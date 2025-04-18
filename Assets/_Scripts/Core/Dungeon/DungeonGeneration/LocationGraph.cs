@@ -50,19 +50,19 @@ namespace MagmaHeart.Core.Dungeon
 
     public class LocationGraph
     {
-        public HashSet<RoomTileData> Nodes { get; private set; }
+        public List<RoomTileData> Nodes { get; private set; }
         public HashSet<RoomConnectionEdge> Edges { get; private set; }
         public Dictionary<RoomTileData, HashSet<RoomConnectionEdge>> EdgesFromRoom { get; private set; }
         public int NodeCount => Nodes.Count;
 
         public LocationGraph()
         {
-            Nodes = new HashSet<RoomTileData>();
+            Nodes = new List<RoomTileData>();
             Edges = new HashSet<RoomConnectionEdge>();
             EdgesFromRoom = new Dictionary<RoomTileData, HashSet<RoomConnectionEdge>>();
         }
 
-        public LocationGraph(in HashSet<RoomTileData> nodes, in HashSet<RoomConnectionEdge> edges)
+        public LocationGraph(in List<RoomTileData> nodes, in HashSet<RoomConnectionEdge> edges)
         {
             Nodes = nodes;
             Edges = edges;

@@ -24,17 +24,15 @@ namespace MagmaHeart.Core.Dungeon
                         m_tilesToGrab.Add(new Vector2Int(x, y));
         }
 
-        public HashSet<DungeonTile> GenerateCorridor(in RoomTileData room1, in RoomTileData room2)
+        public Corridor GenerateCorridor(in RoomTileData room1, in RoomTileData room2)
         {
-            HashSet<DungeonTile> generatedTiles = new HashSet<DungeonTile>();
+            Corridor corridor = new Corridor(room1, room2);
+
             Vector2 direction = ((Vector2)(room1.WorldPosition - room2.WorldPosition)).normalized;
             Vector2 perpendicular = Vector2.Perpendicular(direction);
 
             Vector2Int entryPoint1 = CreateEntryPoint(room1, -direction);
             Vector2Int entryPoint2 = CreateEntryPoint(room2, direction);
-
-            Vector2Int currentTile = entryPoint2;
-            Vector2 currentPosition = entryPoint2;
 
             List<Vector2> points = new List<Vector2>() { entryPoint1 };
             for (int i = 1; i < INITIAL_POINTS; ++i)
@@ -48,10 +46,13 @@ namespace MagmaHeart.Core.Dungeon
             for (int i = 0; i < points.Count - 1; ++i)
             {
                 HashSet<DungeonTile> tiles = GenerateTilesBetweenPoints(points[i], points[i + 1]);
-                generatedTiles.UnionWith(tiles);
+
+                foreach (DungeonTile tile in tiles)
+                    if (!room1.ContainsTileAtPosition(tile.Position) && !room2.ContainsTileAtPosition(tile.Position))
+                        corridor.AddTile(tile);
             }
 
-            return generatedTiles;
+            return corridor;
         }
 
         private Vector2Int CreateEntryPoint(in RoomTileData RoomTileData, in Vector2 direction)

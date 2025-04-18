@@ -66,8 +66,8 @@ namespace MagmaHeart.Core.Dungeon
 
             if (m_tiles.ContainsKey(tilePosition))
             {
-                if (m_tiles[tilePosition].TileType != tileType)
-                    m_tiles[tilePosition].TileType = dungeonTile.TileType;
+                if (m_tiles[tilePosition].Type != tileType)
+                    m_tiles[tilePosition].Type = dungeonTile.Type;
 
                 return;
             }
