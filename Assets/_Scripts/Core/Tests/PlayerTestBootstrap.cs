@@ -3,6 +3,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.UI;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Debug=UnityEngine.Debug;
 
 namespace MagmaHeart.Core.Tests
@@ -27,12 +28,19 @@ namespace MagmaHeart.Core.Tests
         [SerializeField] private Spawner m_spawner;
         [SerializeField] private Room m_roomPrefab;
 
+        [Header("GFX")]
+        [SerializeField] private Tilemap m_floor;
+        [SerializeField] private Tilemap m_walls;
+        [SerializeField] private TileBase m_floorTile;
+        [SerializeField] private TileBase m_wallTile;
+
         public void Awake() => m_locationRenderer = GetComponent<LocationRenderer>();
 
         public async void Start()
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-            StartCoroutine(m_locationRenderer.DrawTiles(m_location.Tiles));
+            StartCoroutine(m_locationRenderer.DrawTiles(m_location.FloorTiles, m_floor, m_floorTile));
+            StartCoroutine(m_locationRenderer.DrawTiles(m_location.WallTiles, m_walls, m_wallTile));
 
             Room roomInstance = Instantiate(m_roomPrefab, m_location.Rooms[0].WorldPosition.ToVector3(), Quaternion.identity);
             roomInstance.Initialize(m_location.Rooms[0], null);

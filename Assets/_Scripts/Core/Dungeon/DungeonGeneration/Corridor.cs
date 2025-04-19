@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.Dungeon
         public HashSet<DungeonTile> Tiles => m_tiles;
 
         private HashSet<DungeonTile> m_entranceTiles = new HashSet<DungeonTile>();
+        public HashSet<DungeonTile> EntranceTiles => m_entranceTiles;
 
         public Corridor(RoomTileData room1, RoomTileData room2)
         {
@@ -22,6 +23,7 @@ namespace MagmaHeart.Core.Dungeon
         }
 
         public void AddTile(DungeonTile tile) => m_tiles.Add(tile);
+        public void AddEntranceTile(DungeonTile tile) => m_entranceTiles.Add(tile);
 
         public void Close()
         {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core
 {
@@ -14,6 +15,13 @@ namespace MagmaHeart.Core
         [SerializeField] private Room m_roomPrefab;
         [SerializeField] private Spawner m_spawnerPrefab;
 
+        [Header("GFX")]
+        [SerializeField] private Tilemap m_floor;
+        [SerializeField] private Tilemap m_walls;
+        [SerializeField] private Tilemap m_corridorEntrances;
+        [SerializeField] private TileBase m_floorTile;
+        [SerializeField] private TileBase m_wallTile;
+
         private Location m_location;
 
         private void Awake() => m_renderer.RenderedAllTiles += SpawnEntities;
@@ -23,7 +31,9 @@ namespace MagmaHeart.Core
         private async void BootScene()
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-            StartCoroutine(m_renderer.DrawTiles(m_location.Tiles));
+            StartCoroutine(m_renderer.DrawTiles(m_location.FloorTiles, m_floor, m_floorTile));
+            StartCoroutine(m_renderer.DrawTiles(m_location.WallTiles, m_walls, m_wallTile));
+            StartCoroutine(m_renderer.DrawTiles(m_location.CorridorEntranceTiles, m_corridorEntrances, m_wallTile));
         }
 
         private void SpawnEntities()

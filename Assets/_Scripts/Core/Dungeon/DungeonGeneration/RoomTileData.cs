@@ -120,5 +120,25 @@ namespace MagmaHeart.Core.Dungeon
         public HashSet<Vector2Int> GetTilePositions() => m_tiles.Keys.ToHashSet();
 
         public HashSet<DungeonTile> GetTiles() => m_tiles.Values.ToHashSet();
+
+        public DungeonTile[] GetAdjacentTiles(DungeonTile tile) => GetAdjacentTiles(tile.Position);
+
+        public DungeonTile[] GetAdjacentTiles(Vector2Int tilePosition)
+        {
+            if (!ContainsTileAtPosition(tilePosition))
+                return null;
+            
+            DungeonTile[] adjacentTiles = new DungeonTile[4];
+            Vector2Int[] positionsToCheck = {Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left};
+
+            for (int i = 0; i < adjacentTiles.Length; ++i)
+            {
+                Vector2Int newPosition = tilePosition + positionsToCheck[i];
+                if (ContainsTileAtPosition(newPosition))
+                    adjacentTiles[i] = m_tiles[newPosition];
+            }
+
+            return adjacentTiles;
+        }
     }
 }

@@ -48,8 +48,17 @@ namespace MagmaHeart.Core.Dungeon
                 HashSet<DungeonTile> tiles = GenerateTilesBetweenPoints(points[i], points[i + 1]);
 
                 foreach (DungeonTile tile in tiles)
+                {
                     if (!room1.ContainsTileAtPosition(tile.Position) && !room2.ContainsTileAtPosition(tile.Position))
+                    {
                         corridor.AddTile(tile);
+                    }
+                    else
+                    {
+                        tile.Type = TileType.Wall;
+                        corridor.AddEntranceTile(tile);
+                    }
+                }
             }
 
             return corridor;
