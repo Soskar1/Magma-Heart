@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
@@ -51,10 +52,11 @@ namespace MagmaHeart.Core
                 if (roomTileData != startRoom)
                 {
                     Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    // List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Room1 == roomTileData || c.Room2 == roomTileData);
-                    roomInstance.Initialize(roomTileData, null);
+                    List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Entrance1.RoomTileData == roomTileData || c.Entrance2.RoomTileData == roomTileData);
+                    roomInstance.Initialize(roomTileData, adjacentCorridors);
 
                     roomInstance.playerEnteredRoom += spawner.SetRoomTileData;
+                    roomInstance.playerEnteredRoom += (room) => m_corridorEntrances.gameObject.SetActive(true);
                 }
             }
         }

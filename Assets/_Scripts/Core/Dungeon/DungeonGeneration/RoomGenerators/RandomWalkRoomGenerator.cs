@@ -23,18 +23,18 @@ namespace MagmaHeart.Core.Dungeon
             m_random = random;
         }
 
-        public void GenerateRoom(in RoomTileData RoomTileData)
+        public void GenerateRoom(in RoomTileData roomTileData)
         {
-            Vector2Int currentPosition = RoomTileData.WorldPosition;
+            Vector2Int currentPosition = roomTileData.WorldPosition;
 
-            if (RoomTileData.TileCount > 1)
-                currentPosition = RoomTileData.GetTilePositionAtIndex(m_random.Next(RoomTileData.TileCount));
+            if (roomTileData.TileCount > 1)
+                currentPosition = roomTileData.GetTilePositionAtIndex(m_random.Next(roomTileData.TileCount));
 
             for (int i = 0; i < m_randomWalkIterations; ++i)
             {
-                Vector2Int newPosition = RoomTileData.ToRoomSpace(currentPosition + m_randomWalk.TakeRandomDirection());
+                Vector2Int newPosition = roomTileData.ToRoomSpace(currentPosition + m_randomWalk.TakeRandomDirection());
                 currentPosition = newPosition;
-                RoomTileData.AddTile(currentPosition, TileType.Floor);
+                roomTileData.AddTile(currentPosition, TileType.Floor);
             }
         }
     }

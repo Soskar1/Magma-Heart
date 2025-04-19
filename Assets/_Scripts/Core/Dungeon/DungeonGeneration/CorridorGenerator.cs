@@ -26,9 +26,6 @@ namespace MagmaHeart.Core.Dungeon
 
         public Corridor GenerateCorridor(in RoomTileData room1, in RoomTileData room2)
         {
-            Corridor corridor = new Corridor(room1, room2);
-            TileData tileData = corridor.TileData;
-
             Vector2 direction = ((Vector2)(room1.WorldPosition - room2.WorldPosition)).normalized;
             Vector2 perpendicular = Vector2.Perpendicular(direction);
 
@@ -43,6 +40,12 @@ namespace MagmaHeart.Core.Dungeon
             }
             points.Add(entryPoint2);
             points = m_curveGenerator.GenerateSmoothCurve(points, 3);
+
+            CorridorEntrance entrance1 = new CorridorEntrance(room1, entryPoint1);
+            CorridorEntrance entrance2 = new CorridorEntrance(room2, entryPoint2);
+
+            Corridor corridor = new Corridor(entrance1, entrance2);
+            TileData tileData = corridor.TileData;
 
             for (int i = 0; i < points.Count - 1; ++i)
             {
@@ -69,18 +72,18 @@ namespace MagmaHeart.Core.Dungeon
             Vector2Int lastVisitedTile = currentTile;
             Vector2 currentPosition = roomTileData.WorldPosition;
 
-            while (currentPosition.x > roomTileData.LeftMostTile.x && currentPosition.x < roomTileData.RightMostTile.x &&
-                currentPosition.y > roomTileData.BottomMostTile.y && currentPosition.y < roomTileData.TopMostTile.y)
+            while (currentPosition.x > roomTileData.TileData.LeftMostTile.x && currentPosition.x < roomTileData.TileData.RightMostTile.x &&
+                currentPosition.y > roomTileData.TileData.BottomMostTile.y && currentPosition.y < roomTileData.TileData.TopMostTile.y)
             {
                 if (roomTileData.ContainsTileAtPosition(currentTile))
                     lastVisitedTile = currentTile;
 
                 currentPosition += direction;
-                currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
+                currentTile = currentPosition.ToVector2Int();
             }
 
             currentPosition = (Vector2)lastVisitedTile - direction * OFFSET;
-            return new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
+            return currentPosition.ToVector2Int();
         }
 
         private HashSet<DungeonTile> GenerateTilesBetweenPoints(in Vector2 from, in Vector2 to)

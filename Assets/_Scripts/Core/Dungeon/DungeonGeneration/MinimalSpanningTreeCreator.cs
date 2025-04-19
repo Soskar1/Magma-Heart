@@ -14,8 +14,8 @@ namespace MagmaHeart.Core.Dungeon
             {
                 HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
 
-                foreach (RoomTileData RoomTileData in mstGraph.Nodes)
-                    edges.UnionWith(graph.EdgesFromRoom[RoomTileData]);
+                foreach (RoomTileData roomTileData in mstGraph.Nodes)
+                    edges.UnionWith(graph.EdgesFromRoom[roomTileData]);
 
                 edges.ExceptWith(mstGraph.Edges);
 

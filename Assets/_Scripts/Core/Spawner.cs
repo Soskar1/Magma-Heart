@@ -48,7 +48,7 @@ namespace MagmaHeart.Core
 
         public void SpawnWave()
         {
-            RoomTileData tileData = m_currentRoom.RoomTileData;
+            RoomTileData tileData = m_currentRoom.roomTileData;
             for (int i = 0; i < m_amountOfEnemies; ++i)
             {
                 DungeonTile dungeonTile = null;

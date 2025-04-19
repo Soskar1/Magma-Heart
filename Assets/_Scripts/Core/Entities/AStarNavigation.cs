@@ -29,11 +29,11 @@ namespace MagmaHeart.Core.Entities
             public override int GetHashCode() => Position.GetHashCode();
         }
 
-        private RoomTileData m_RoomTileData;
+        private RoomTileData m_roomTileData;
         private List<Vector2Int> m_directionsToVisit;
         private Vector2 m_offset;
 
-        public AStarNavigation(RoomTileData RoomTileData)
+        public AStarNavigation(RoomTileData roomTileData)
         {
             m_directionsToVisit = new List<Vector2Int>()
             {
@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.Entities
                 Vector2Int.left
             };
 
-            m_RoomTileData = RoomTileData;
+            m_roomTileData = roomTileData;
             m_offset = new Vector2(0.5f, 0.5f);
         }
 
@@ -81,7 +81,7 @@ namespace MagmaHeart.Core.Entities
                 foreach (Vector2Int direction in m_directionsToVisit)
                 {
                     Vector2Int neighbourTilePosition = currentNode.Position + direction;
-                    DungeonTile tile = m_RoomTileData.GetTile(neighbourTilePosition);
+                    DungeonTile tile = m_roomTileData.GetTile(neighbourTilePosition);
                     if (tile != null && tile.Type == TileType.Floor && !visited.Contains(neighbourTilePosition))
                     {
                         AStarNode neighbourNode = new AStarNode(neighbourTilePosition, target);

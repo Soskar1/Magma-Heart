@@ -1,22 +1,33 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
+    public class CorridorEntrance
+    {
+        public RoomTileData RoomTileData { get; private set; }
+        public Vector2Int StartPoint { get; private set; }
+
+        public CorridorEntrance(RoomTileData roomTileData, Vector2Int startPoint)
+        {
+            RoomTileData = roomTileData;
+            StartPoint = startPoint;
+        }
+    }
+
     public class Corridor
     {
         public TileData TileData { get; private set; }
-        private RoomTileData m_room1;
-        private RoomTileData m_room2;
 
-        public RoomTileData Room1 => m_room1;
-        public RoomTileData Room2 => m_room2;
+        public CorridorEntrance Entrance1 { get; private set; }
+        public CorridorEntrance Entrance2 { get; private set; }
 
         public HashSet<DungeonTile> BlockingTiles { get; private set; }
 
-        public Corridor(RoomTileData room1, RoomTileData room2)
+        public Corridor(CorridorEntrance entrance1, CorridorEntrance entrance2)
         {
-            m_room1 = room1;
-            m_room2 = room2;
+            Entrance1 = entrance1;
+            Entrance2 = entrance2;
             TileData = new TileData();
             BlockingTiles = new HashSet<DungeonTile>();
         }

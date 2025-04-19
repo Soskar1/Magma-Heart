@@ -97,12 +97,12 @@ namespace MagmaHeart.Core.Dungeon
 
         private RoomTileData GenerateRoom(in BoundsInt space)
         {
-            RoomTileData RoomTileData = new RoomTileData(space, m_roomBorderOffsets);
+            RoomTileData roomTileData = new RoomTileData(space, m_roomBorderOffsets);
 
             foreach (IRoomGenerator generator in m_generators)
-                generator.GenerateRoom(RoomTileData);
+                generator.GenerateRoom(roomTileData);
 
-            return RoomTileData;
+            return roomTileData;
         }
 
         private LocationGraph CreateGraph(in List<RoomTileData> rooms)

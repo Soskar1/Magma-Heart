@@ -15,6 +15,7 @@ namespace MagmaHeart.Core.Dungeon
         public Location(in List<RoomTileData> rooms, in List<Corridor> corridors)
         {
             Rooms = rooms;
+            Corridors = corridors;
 
             Tiles = new HashSet<DungeonTile>();
             FloorTiles = new HashSet<DungeonTile>();
