@@ -22,22 +22,16 @@ namespace MagmaHeart.Core.Dungeon
         {
             m_roomTileData = roomTileData;
 
-            List<Vector2Int> borderPoints = new List<Vector2Int>();
+            float minDistance = float.MaxValue;
             foreach (Corridor corridor in corridors)
             {
                 CorridorEntrance entrance = corridor.Entrance1.RoomTileData == roomTileData ? corridor.Entrance1 : corridor.Entrance2;
-                borderPoints.Add(entrance.StartPoint);
+                float distance = Vector2Int.Distance(roomTileData.WorldPosition, entrance.StartPoint);
+                if (distance < minDistance)
+                    minDistance = distance;
             }
 
-            int minX = borderPoints.Min(p => p.x);
-            int maxX = borderPoints.Max(p => p.x);
-            int minY = borderPoints.Min(p => p.y);
-            int maxY = borderPoints.Max(p => p.y);
-
-            float x = Mathf.Abs(WorldPosition.x - minX) + Mathf.Abs(WorldPosition.x - maxX);
-            float y = Mathf.Abs(WorldPosition.y - maxY) + Mathf.Abs(WorldPosition.y - minY);
-
-            m_boxCollider.size = new Vector2(x, y);
+            m_boxCollider.size = new Vector2(minDistance, minDistance) * 1.5f;
         }
 
         public void OnTriggerEnter2D(Collider2D collision)
