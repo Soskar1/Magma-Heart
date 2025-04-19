@@ -87,7 +87,7 @@ namespace MagmaHeart.Core.Dungeon
                 allTiles.UnionWith(roomTileData.GetTiles());
 
             foreach (Corridor corridor in corridors)
-                allTiles.UnionWith(corridor.Tiles);
+                allTiles.UnionWith(corridor.TileData.GetTiles());
 
             HashSet<DungeonTile> outline = TileOutline.GetOutline(allTiles);
 

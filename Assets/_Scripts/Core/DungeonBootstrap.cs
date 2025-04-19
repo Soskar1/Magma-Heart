@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
@@ -31,9 +30,10 @@ namespace MagmaHeart.Core
         private async void BootScene()
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-            StartCoroutine(m_renderer.DrawTiles(m_location.FloorTiles, m_floor, m_floorTile));
-            StartCoroutine(m_renderer.DrawTiles(m_location.WallTiles, m_walls, m_wallTile));
-            StartCoroutine(m_renderer.DrawTiles(m_location.CorridorEntranceTiles, m_corridorEntrances, m_wallTile));
+            m_renderer.AddTilesToDraw(m_location.FloorTiles, m_floor, m_floorTile);
+            m_renderer.AddTilesToDraw(m_location.WallTiles, m_walls, m_wallTile);
+            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, m_corridorEntrances, m_wallTile);
+            m_renderer.DrawTiles();
         }
 
         private void SpawnEntities()

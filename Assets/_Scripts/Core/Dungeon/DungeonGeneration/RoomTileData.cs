@@ -6,9 +6,10 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class RoomTileData
     {
-        private Dictionary<Vector2Int, DungeonTile> m_tiles;
+        private TileData m_tileData;
+        public int TileCount => m_tileData.TileCount;
+
         private readonly BoundsInt m_roomSpace;
-        public int TileCount => m_tiles.Count;
         public BoundsInt RoomSpace => m_roomSpace;
         public Vector2Int WorldPosition { get; private set; }
         public int LeftBorder { get; private set; }
@@ -30,9 +31,9 @@ namespace MagmaHeart.Core.Dungeon
             LeftBorder = m_roomSpace.xMin + borderOffsets.x;
             BottomBorder = m_roomSpace.yMin + borderOffsets.y;
 
+            m_tileData = new TileData();
             DungeonTile initialTile = new DungeonTile(WorldPosition, TileType.Floor);
-            m_tiles = new Dictionary<Vector2Int, DungeonTile>();
-            m_tiles.Add(WorldPosition, initialTile);
+            m_tileData.AddTile(initialTile);
 
             LeftMostTile = WorldPosition;
             RightMostTile = WorldPosition;
@@ -64,15 +65,7 @@ namespace MagmaHeart.Core.Dungeon
             tilePosition = ToRoomSpace(tilePosition);
             DungeonTile dungeonTile = new DungeonTile(tilePosition, tileType);
 
-            if (m_tiles.ContainsKey(tilePosition))
-            {
-                if (m_tiles[tilePosition].Type != tileType)
-                    m_tiles[tilePosition].Type = dungeonTile.Type;
-
-                return;
-            }
-
-            m_tiles.Add(tilePosition, dungeonTile);
+            m_tileData.AddTile(dungeonTile);
 
             if (tilePosition.x < LeftMostTile.x)
                 LeftMostTile = tilePosition;
@@ -95,7 +88,7 @@ namespace MagmaHeart.Core.Dungeon
 
         public void SetTiles(in Dictionary<Vector2Int, DungeonTile> tiles)
         {
-            m_tiles = tiles;
+            m_tileData.SetTiles(tiles);
 
             LeftMostTile = tiles.Keys.Aggregate((min, next) => next.x < min.x ? next : min);
             RightMostTile = tiles.Keys.Aggregate((max, next) => next.x > max.x ? next : max);
@@ -103,42 +96,11 @@ namespace MagmaHeart.Core.Dungeon
             TopMostTile = tiles.Keys.Aggregate((max, next) => next.y > max.y ? next : max);
         }
 
-        public DungeonTile GetTile(in Vector2Int tilePosition)
-        {
-            if (m_tiles.ContainsKey(tilePosition))
-                return m_tiles[tilePosition];
-
-            return null;
-        }
-
-        public DungeonTile GetTileAtIndex(in int index) => m_tiles.Values.ElementAt(index);
-
+        public DungeonTile GetTile(Vector2Int position) => m_tileData.GetTile(position);
+        public DungeonTile GetTileAtIndex(in int index) => m_tileData.GetTileAtIndex(index);
+        public HashSet<DungeonTile> GetTiles() => m_tileData.GetTiles();
+        public HashSet<Vector2Int> GetTilePositions() => m_tileData.GetTilePositions();
+        public bool ContainsTileAtPosition(Vector2Int position) => m_tileData.ContainsTileAtPosition(position);
         public Vector2Int GetTilePositionAtIndex(in int index) => GetTileAtIndex(index).Position;
-
-        public bool ContainsTileAtPosition(Vector2Int tileToFind) => m_tiles.ContainsKey(tileToFind);
- 
-        public HashSet<Vector2Int> GetTilePositions() => m_tiles.Keys.ToHashSet();
-
-        public HashSet<DungeonTile> GetTiles() => m_tiles.Values.ToHashSet();
-
-        public DungeonTile[] GetAdjacentTiles(DungeonTile tile) => GetAdjacentTiles(tile.Position);
-
-        public DungeonTile[] GetAdjacentTiles(Vector2Int tilePosition)
-        {
-            if (!ContainsTileAtPosition(tilePosition))
-                return null;
-            
-            DungeonTile[] adjacentTiles = new DungeonTile[4];
-            Vector2Int[] positionsToCheck = {Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left};
-
-            for (int i = 0; i < adjacentTiles.Length; ++i)
-            {
-                Vector2Int newPosition = tilePosition + positionsToCheck[i];
-                if (ContainsTileAtPosition(newPosition))
-                    adjacentTiles[i] = m_tiles[newPosition];
-            }
-
-            return adjacentTiles;
-        }
     }
 }

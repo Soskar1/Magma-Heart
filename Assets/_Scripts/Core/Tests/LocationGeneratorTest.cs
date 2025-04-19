@@ -20,9 +20,10 @@ namespace MagmaHeart.Core.Tests
         {
             m_renderer.Clear();
             Location location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-            StartCoroutine(m_renderer.DrawTiles(location.FloorTiles, m_floor, m_floorTile));
-            StartCoroutine(m_renderer.DrawTiles(location.WallTiles, m_walls, m_wallTile));
-            StartCoroutine(m_renderer.DrawTiles(location.CorridorEntranceTiles, m_corridorEntrances, m_wallTile));
+            m_renderer.AddTilesToDraw(location.FloorTiles, m_floor, m_floorTile);
+            m_renderer.AddTilesToDraw(location.WallTiles, m_walls, m_wallTile);
+            m_renderer.AddTilesToDraw(location.CorridorEntranceTiles, m_corridorEntrances, m_wallTile);
+            m_renderer.DrawTiles();
         }
     }
 }

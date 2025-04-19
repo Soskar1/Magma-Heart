@@ -39,8 +39,9 @@ namespace MagmaHeart.Core.Tests
         public async void Start()
         {
             m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-            StartCoroutine(m_locationRenderer.DrawTiles(m_location.FloorTiles, m_floor, m_floorTile));
-            StartCoroutine(m_locationRenderer.DrawTiles(m_location.WallTiles, m_walls, m_wallTile));
+            m_locationRenderer.AddTilesToDraw(m_location.FloorTiles, m_floor, m_floorTile);
+            m_locationRenderer.AddTilesToDraw(m_location.WallTiles, m_walls, m_wallTile);
+            m_locationRenderer.DrawTiles();
 
             Room roomInstance = Instantiate(m_roomPrefab, m_location.Rooms[0].WorldPosition.ToVector3(), Quaternion.identity);
             roomInstance.Initialize(m_location.Rooms[0], null);

@@ -15,7 +15,11 @@ namespace MagmaHeart.Core.Dungeon
         public Location(in List<RoomTileData> rooms, in List<Corridor> corridors)
         {
             Rooms = rooms;
+
             Tiles = new HashSet<DungeonTile>();
+            FloorTiles = new HashSet<DungeonTile>();
+            WallTiles = new HashSet<DungeonTile>();
+            CorridorEntranceTiles = new HashSet<DungeonTile>();
 
             foreach (RoomTileData roomTileData in rooms)
             {
@@ -27,11 +31,11 @@ namespace MagmaHeart.Core.Dungeon
 
             foreach (Corridor corridor in corridors)
             {
-                HashSet<DungeonTile> tiles = corridor.Tiles;
+                HashSet<DungeonTile> tiles = corridor.TileData.GetTiles();
                 Tiles.UnionWith(tiles);
                 FloorTiles.UnionWith(tiles.Where(t => t.Type == TileType.Floor));
                 WallTiles.UnionWith(tiles.Where(t => t.Type == TileType.Wall));
-                CorridorEntranceTiles.UnionWith(corridor.EntranceTiles);
+                CorridorEntranceTiles.UnionWith(corridor.BlockingTiles);
             }
         }
     }

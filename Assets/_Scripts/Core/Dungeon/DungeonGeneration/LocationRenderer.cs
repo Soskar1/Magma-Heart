@@ -13,13 +13,43 @@ namespace MagmaHeart.Core.Dungeon
 
         public Action RenderedAllTiles;
 
-        public IEnumerator DrawTiles(HashSet<DungeonTile> tiles, Tilemap tilemap, TileBase tileBase)
+        private struct RendererJob
+        {
+            public HashSet<DungeonTile> tiles;
+            public Tilemap tilemap;
+            public TileBase tileBase;
+
+            public RendererJob(Tilemap tilemap, HashSet<DungeonTile> tiles, TileBase tileBase)
+            {
+                this.tiles = tiles;
+                this.tilemap = tilemap;
+                this.tileBase = tileBase;
+            }
+        }
+
+        private List<RendererJob> m_jobs = new List<RendererJob>();
+        private int m_completedJobs = 0;
+
+        public void AddTilesToDraw(HashSet<DungeonTile> tiles, Tilemap tilemap, TileBase tileBase)
+        {
+            m_usedTilemaps.Add(tilemap);
+            RendererJob job = new RendererJob(tilemap, tiles, tileBase);
+            m_jobs.Add(job);
+        }
+
+        public void DrawTiles()
+        {
+            foreach (RendererJob job in m_jobs)
+                StartCoroutine(DrawTiles(job));
+        }
+
+        private IEnumerator DrawTiles(RendererJob job)
         {
             int renderedTiles = 0;
-            foreach (DungeonTile tile in tiles)
+            foreach (DungeonTile tile in job.tiles)
             {
-                Vector3Int tilePosition = tilemap.WorldToCell((Vector3Int)tile.Position);
-                tilemap.SetTile(tilePosition, tileBase);
+                Vector3Int tilePosition = job.tilemap.WorldToCell((Vector3Int)tile.Position);
+                job.tilemap.SetTile(tilePosition, job.tileBase);
 
                 ++renderedTiles;
 
@@ -27,8 +57,13 @@ namespace MagmaHeart.Core.Dungeon
                     yield return new WaitForEndOfFrame();
             }
 
-            m_usedTilemaps.Add(tilemap);
-            RenderedAllTiles?.Invoke();
+            ++m_completedJobs;
+            if (m_completedJobs == m_jobs.Count)
+            {
+                m_jobs.Clear();
+                m_completedJobs = 0;
+                RenderedAllTiles?.Invoke();
+            }
         }
 
         public void Clear()
