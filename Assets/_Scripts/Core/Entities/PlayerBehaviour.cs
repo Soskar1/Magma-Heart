@@ -6,6 +6,7 @@ namespace MagmaHeart.Core.Entities
 {
     public class PlayerBehaviour : MonoBehaviour
     {
+        [SerializeField] private MeleeWeapon m_weapon;
         private UserInput m_userInput;
         private IMeleeAttacker m_attack;
         private IMovable m_movement;
@@ -36,6 +37,8 @@ namespace MagmaHeart.Core.Entities
             ControllingEntity.Enable();
 
             m_artifactApplier.IncreaseHealth += ControllingEntity.Health.IncreaseMaxHealth;
+            m_artifactApplier.IncreaseDamage += m_weapon.IncreaseDamage;
+            m_artifactApplier.IncreaseSpeed += m_movement.IncreaseMaxSpeed;
         }
 
         public void Disable()
@@ -45,6 +48,8 @@ namespace MagmaHeart.Core.Entities
             ControllingEntity.Disable();
 
             m_artifactApplier.IncreaseHealth -= ControllingEntity.Health.IncreaseMaxHealth;
+            m_artifactApplier.IncreaseDamage -= m_weapon.IncreaseDamage;
+            m_artifactApplier.IncreaseSpeed -= m_movement.IncreaseMaxSpeed;
         }
 
         public void Update() => m_animation.PlayAnimations();
