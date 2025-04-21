@@ -1477,7 +1477,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.42, y: 0.42, z: 0.42}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 263402209038901625}
@@ -1548,7 +1548,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1793,9 +1793,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5275737574815216745, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
+      propertyPath: m_attackSpeedAmount
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 9101556375396627781, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
       propertyPath: m_Name
       value: EnergyDrink
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199777319290631545, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 7482667652216324306, guid: eb50701b4ebb6844d874d64f401f3886, type: 3}
+    - target: {fileID: 9199777319290631545, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
