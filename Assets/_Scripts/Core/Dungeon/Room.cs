@@ -9,6 +9,8 @@ namespace MagmaHeart.Core.Dungeon
     [RequireComponent(typeof(BoxCollider2D))]
     public class Room : MonoBehaviour
     {
+        [SerializeField] private float m_colliderSizeModifier;
+
         private RoomTileData m_roomTileData;
         public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
         public RoomTileData roomTileData => m_roomTileData;
@@ -31,7 +33,7 @@ namespace MagmaHeart.Core.Dungeon
                     minDistance = distance;
             }
 
-            m_boxCollider.size = new Vector2(minDistance, minDistance) * 1.5f;
+            m_boxCollider.size = new Vector2(minDistance, minDistance) * m_colliderSizeModifier;
         }
 
         public void OnTriggerEnter2D(Collider2D collision)

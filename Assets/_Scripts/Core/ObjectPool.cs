@@ -19,7 +19,8 @@ namespace MagmaHeart.Core
             {
                 T obj = GameObject.Instantiate(m_prefab);
                 m_initialization(obj);
-                m_pool.Enqueue(obj);
+                PushToPool(obj);
+                obj.gameObject.SetActive(false);
             }
         }
 
@@ -30,6 +31,7 @@ namespace MagmaHeart.Core
             if (m_pool.Count > 0)
             {
                 obj = m_pool.Dequeue();
+                obj.gameObject.SetActive(true);
             }
             else
             {

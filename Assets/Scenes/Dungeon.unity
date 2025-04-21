@@ -174,6 +174,7 @@ MonoBehaviour:
   m_renderer: {fileID: 2060185617}
   m_roomPrefab: {fileID: 1152494207554128281, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}
   m_spawnerPrefab: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
+  m_amountOfWaves: 3
   m_floor: {fileID: 1912713220}
   m_walls: {fileID: 602240937}
   m_corridorEntrances: {fileID: 1095428752}

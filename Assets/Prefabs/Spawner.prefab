@@ -48,3 +48,4 @@ MonoBehaviour:
   m_amountOfEnemies: 5
   m_minDistanceFromPlayer: 3
   m_offset: {x: 0.5, y: 0.5}
+  m_initialPoolSize: 20

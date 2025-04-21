@@ -15,6 +15,8 @@ namespace MagmaHeart.Core
         [SerializeField] private Room m_roomPrefab;
         [SerializeField] private Spawner m_spawnerPrefab;
 
+        [SerializeField] private int m_amountOfWaves;
+
         [Header("GFX")]
         [SerializeField] private Tilemap m_floor;
         [SerializeField] private Tilemap m_walls;
@@ -47,6 +49,9 @@ namespace MagmaHeart.Core
             Spawner spawner = Instantiate(m_spawnerPrefab);
             spawner.Initialize(spawnedEntity);
 
+            CombatEvent combatEvent = new CombatEvent(spawner, m_amountOfWaves);
+            combatEvent.OnCombatEventEnded += EndCombatEvent;
+
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {
                 if (roomTileData != startRoom)
@@ -55,7 +60,7 @@ namespace MagmaHeart.Core
                     List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Entrance1.RoomTileData == roomTileData || c.Entrance2.RoomTileData == roomTileData);
                     roomInstance.Initialize(roomTileData, adjacentCorridors);
 
-                    roomInstance.playerEnteredRoom += spawner.SetRoomTileData;
+                    roomInstance.playerEnteredRoom += combatEvent.Start;
                     roomInstance.playerEnteredRoom += (room) => m_corridorEntrances.gameObject.SetActive(true);
                 }
             }
@@ -72,6 +77,12 @@ namespace MagmaHeart.Core
             playerInstance.Enable();
 
             return playerInstance.ControllingEntity;
+        }
+        
+        private void EndCombatEvent()
+        {
+            m_corridorEntrances.gameObject.SetActive(false);
+            Debug.Log("Combat event ended");
         }
     }
 }

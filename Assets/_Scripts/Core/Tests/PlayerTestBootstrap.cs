@@ -53,7 +53,7 @@ namespace MagmaHeart.Core.Tests
             playerInstance.Enable();
 
             m_spawner.Initialize(playerInstance.ControllingEntity);
-            m_spawner.SetRoomTileData(roomInstance);
+            m_spawner.SetRoom(roomInstance);
 
             m_navigation = new AStarNavigation(m_location.Rooms[0]);
         }
