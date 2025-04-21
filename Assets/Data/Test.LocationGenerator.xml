@@ -1,14 +1,13 @@
 <?xml version ="1.0"?>
 <LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LocationGenerator.xsd">
-	<LocationSpace XSize="400" YSize="400"/>
-	<RoomSpace XBorderOffset="5" YBorderOffset="5"/>
-	<SpacePartitioning MaxPartitions="20" RoomXMinSize="60" RoomYMinSize="60"/>
+	<LocationSpace XSize="200" YSize="200"/>
+	<RoomSpace XBorderOffset="3" YBorderOffset="3"/>
+	<SpacePartitioning MaxPartitions="50" RoomXMinSize="40" RoomYMinSize="40"/>
 	
 	<RoomGenerators>
-		<Boxed XSize="20" YSize="20"/>
-		<RandomWalk Iterations="200"/>
+		<Boxed XSize="25" YSize="25"/>
 		<DiffusionLimitedAggregation TilesToPlace="100"/>
-		<TilePropagation Length="3"/>
+		<TilePropagation Length="2"/>
 		<UnreachableTileCapture/>
 		<TileFill/>
 		<UnreachableTileDestructor/>

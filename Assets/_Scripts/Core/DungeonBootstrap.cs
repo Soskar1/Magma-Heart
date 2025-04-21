@@ -18,7 +18,7 @@ namespace MagmaHeart.Core
         [SerializeField] private HealthBar m_healthBar;
 
         [Header("Combat Event")]
-        [SerializeField] private Spawner m_spawnerPrefab;
+        [SerializeField] private Spawner m_spawner;
         [SerializeField] private int m_amountOfWaves;
         [SerializeField] private List<Artifact> m_artifactPrefabs;
 
@@ -53,10 +53,9 @@ namespace MagmaHeart.Core
             m_healthBar.Initialize(spawnedEntity);
             m_healthBar.gameObject.SetActive(true);
 
-            Spawner spawner = Instantiate(m_spawnerPrefab);
-            spawner.Initialize(spawnedEntity);
+            m_spawner.Initialize(spawnedEntity);
 
-            CombatEvent combatEvent = new CombatEvent(spawner, m_amountOfWaves, m_artifactPrefabs);
+            CombatEvent combatEvent = new CombatEvent(m_spawner, m_amountOfWaves, m_artifactPrefabs);
             combatEvent.OnCombatEventEnded += EndCombatEvent;
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
