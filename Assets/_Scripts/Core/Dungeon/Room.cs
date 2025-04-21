@@ -20,6 +20,11 @@ namespace MagmaHeart.Core.Dungeon
 
         private void Awake() => m_boxCollider = GetComponent<BoxCollider2D>();
 
+        public void Initialize(RoomTileData roomTileData)
+        {
+            m_roomTileData = roomTileData;
+        }
+
         public void Initialize(RoomTileData roomTileData, List<Corridor> corridors)
         {
             m_roomTileData = roomTileData;

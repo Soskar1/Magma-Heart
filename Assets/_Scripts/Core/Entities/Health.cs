@@ -8,6 +8,7 @@ namespace MagmaHeart.Core.Entities
         private float m_maxHealth;
 
         public Action OnTakeDamage;
+        public Action OnMaxHealthChanged;
         public Action OnDeath;
 
         public float CurrentHealth => m_currentHealth;
@@ -28,6 +29,12 @@ namespace MagmaHeart.Core.Entities
 
             if (m_currentHealth <= 0)
                 OnDeath?.Invoke();
+        }
+
+        public void IncreaseMaxHealth(float amount) 
+        {
+            m_maxHealth += amount;
+            OnMaxHealthChanged?.Invoke();
         }
     }
 }

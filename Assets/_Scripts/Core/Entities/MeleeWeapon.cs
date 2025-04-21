@@ -10,6 +10,8 @@ namespace MagmaHeart.Core.Entities
 
         private void Awake() => m_owner = GetComponentInParent<Entity>();
 
+        public void IncreaseDamage(float amount) => m_damage += amount;
+
         private void OnTriggerEnter2D(Collider2D collider)
         {
             if (collider.TryGetComponent(out Entity entity) && entity != m_owner)

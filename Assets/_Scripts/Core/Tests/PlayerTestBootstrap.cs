@@ -44,7 +44,7 @@ namespace MagmaHeart.Core.Tests
             m_locationRenderer.DrawTiles();
 
             Room roomInstance = Instantiate(m_roomPrefab, m_location.Rooms[0].WorldPosition.ToVector3(), Quaternion.identity);
-            roomInstance.Initialize(m_location.Rooms[0], null);
+            roomInstance.Initialize(m_location.Rooms[0]);
 
             PlayerBehaviour playerInstance = Instantiate(m_player, m_spawnPoint.position, Quaternion.identity);
             playerInstance.Initialize();

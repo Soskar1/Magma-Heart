@@ -6,5 +6,6 @@ namespace MagmaHeart.Core.Entities
     {
         public Vector2 CurrentMovementDirection { get; }
         public void Move(Vector2 direction);
+        public void IncreaseMaxSpeed(float amount);
     }
 }
