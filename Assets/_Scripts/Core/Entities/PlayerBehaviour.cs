@@ -1,3 +1,4 @@
+using MagmaHeart.Core.Artifacts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,7 @@ namespace MagmaHeart.Core.Entities
         private IMeleeAttacker m_attack;
         private IMovable m_movement;
         private AnimationPlayer m_animation;
+        private ArtifactApplier m_artifactApplier;
 
         public Entity ControllingEntity { get; private set; }
 
@@ -22,6 +24,8 @@ namespace MagmaHeart.Core.Entities
             m_movement = entity.Movement;
             m_animation = entity.Animation;
 
+            m_artifactApplier = GetComponent<ArtifactApplier>();
+
             ControllingEntity = entity;
         }
 
@@ -30,6 +34,8 @@ namespace MagmaHeart.Core.Entities
             m_userInput.Controls.Player.Attack.performed += Attack;
             m_userInput.Enable();
             ControllingEntity.Enable();
+
+            m_artifactApplier.IncreaseHealth += ControllingEntity.Health.IncreaseMaxHealth;
         }
 
         public void Disable()
@@ -37,6 +43,8 @@ namespace MagmaHeart.Core.Entities
             m_userInput.Controls.Player.Attack.performed -= Attack;
             m_userInput.Disable();
             ControllingEntity.Disable();
+
+            m_artifactApplier.IncreaseHealth -= ControllingEntity.Health.IncreaseMaxHealth;
         }
 
         public void Update() => m_animation.PlayAnimations();
