@@ -5,7 +5,7 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class MinimalSpanningTreeCreator
     {
-        public LocationGraph ExtractMinimalSpanningTree(in LocationGraph graph, in RoomData startNode)
+        public LocationGraph ExtractMinimalSpanningTree(in LocationGraph graph, in RoomTileData startNode)
         {
             LocationGraph mstGraph = new LocationGraph();
             mstGraph.TryAddNode(startNode);
@@ -14,8 +14,8 @@ namespace MagmaHeart.Core.Dungeon
             {
                 HashSet<RoomConnectionEdge> edges = new HashSet<RoomConnectionEdge>();
 
-                foreach (RoomData roomData in mstGraph.Nodes)
-                    edges.UnionWith(graph.EdgesFromRoom[roomData]);
+                foreach (RoomTileData roomTileData in mstGraph.Nodes)
+                    edges.UnionWith(graph.EdgesFromRoom[roomTileData]);
 
                 edges.ExceptWith(mstGraph.Edges);
 

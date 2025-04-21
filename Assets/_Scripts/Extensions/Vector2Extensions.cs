@@ -2,6 +2,7 @@ using UnityEngine;
 
 public static class Vector2Extension
 {
+    public static Vector2Int ToVector2Int(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
     public static Vector2 Rotate(this Vector2 v, float degrees)
     {
         float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);

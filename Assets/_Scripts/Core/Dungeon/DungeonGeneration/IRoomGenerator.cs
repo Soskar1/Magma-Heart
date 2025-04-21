@@ -2,6 +2,6 @@ namespace MagmaHeart.Core.Dungeon
 {
     public interface IRoomGenerator
     {
-        public void GenerateRoom(in RoomData roomData);
+        public void GenerateRoom(in RoomTileData roomTileData);
     }
 }

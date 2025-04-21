@@ -27,11 +27,11 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public void GenerateRoom(in RoomData roomData)
+        public void GenerateRoom(in RoomTileData roomTileData)
         {
             HashSet<Vector2Int> visitedTiles = new HashSet<Vector2Int>();
             Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
-            tilesToVisit.Enqueue(roomData.WorldPosition);
+            tilesToVisit.Enqueue(roomTileData.WorldPosition);
 
             while (tilesToVisit.Count > 0)
             {
@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.Dungeon
                 {
                     Vector2Int neighbourTile = tile + direction;
 
-                    if (roomData.ContainsTileAtPosition(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                    if (roomTileData.ContainsTileAtPosition(neighbourTile) && !visitedTiles.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                         tilesToVisit.Enqueue(neighbourTile);
                 }
 
@@ -52,10 +52,10 @@ namespace MagmaHeart.Core.Dungeon
                     Vector2Int xDirectionTile = new Vector2Int(tile.x + direction.x, tile.y);
                     Vector2Int yDirectionTile = new Vector2Int(tile.x, tile.y + direction.y);
 
-                    if (roomData.ContainsTileAtPosition(tileToCapture) && !roomData.ContainsTileAtPosition(xDirectionTile) && !roomData.ContainsTileAtPosition(yDirectionTile))
+                    if (roomTileData.ContainsTileAtPosition(tileToCapture) && !roomTileData.ContainsTileAtPosition(xDirectionTile) && !roomTileData.ContainsTileAtPosition(yDirectionTile))
                     {
-                        roomData.AddTile(xDirectionTile, TileType.Floor);
-                        roomData.AddTile(yDirectionTile, TileType.Floor);
+                        roomTileData.AddTile(xDirectionTile, TileType.Floor);
+                        roomTileData.AddTile(yDirectionTile, TileType.Floor);
 
                         if (!tilesToVisit.Contains(tileToCapture) && !visitedTiles.Contains(tileToCapture))
                             tilesToVisit.Enqueue(tileToCapture);

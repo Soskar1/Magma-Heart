@@ -24,17 +24,13 @@ namespace MagmaHeart.Core.Dungeon
                         m_tilesToGrab.Add(new Vector2Int(x, y));
         }
 
-        public HashSet<DungeonTile> GenerateCorridor(in RoomData room1, in RoomData room2)
+        public Corridor GenerateCorridor(in RoomTileData room1, in RoomTileData room2)
         {
-            HashSet<DungeonTile> generatedTiles = new HashSet<DungeonTile>();
             Vector2 direction = ((Vector2)(room1.WorldPosition - room2.WorldPosition)).normalized;
             Vector2 perpendicular = Vector2.Perpendicular(direction);
 
             Vector2Int entryPoint1 = CreateEntryPoint(room1, -direction);
             Vector2Int entryPoint2 = CreateEntryPoint(room2, direction);
-
-            Vector2Int currentTile = entryPoint2;
-            Vector2 currentPosition = entryPoint2;
 
             List<Vector2> points = new List<Vector2>() { entryPoint1 };
             for (int i = 1; i < INITIAL_POINTS; ++i)
@@ -45,33 +41,49 @@ namespace MagmaHeart.Core.Dungeon
             points.Add(entryPoint2);
             points = m_curveGenerator.GenerateSmoothCurve(points, 3);
 
+            CorridorEntrance entrance1 = new CorridorEntrance(room1, entryPoint1);
+            CorridorEntrance entrance2 = new CorridorEntrance(room2, entryPoint2);
+
+            Corridor corridor = new Corridor(entrance1, entrance2);
+            TileData tileData = corridor.TileData;
+
             for (int i = 0; i < points.Count - 1; ++i)
             {
                 HashSet<DungeonTile> tiles = GenerateTilesBetweenPoints(points[i], points[i + 1]);
-                generatedTiles.UnionWith(tiles);
+
+                foreach (DungeonTile tile in tiles)
+                {
+                    if (!room1.ContainsTileAtPosition(tile.Position) && !room2.ContainsTileAtPosition(tile.Position))
+                        tileData.AddTile(tile);
+                }
             }
 
-            return generatedTiles;
+            HashSet<DungeonTile> entranceTiles1 = ConvertToWalls(tileData);
+            HashSet<DungeonTile> entranceTiles2 = ConvertToWalls(tileData);
+            corridor.BlockingTiles.UnionWith(entranceTiles1);
+            corridor.BlockingTiles.UnionWith(entranceTiles2);
+
+            return corridor;
         }
 
-        private Vector2Int CreateEntryPoint(in RoomData roomData, in Vector2 direction)
+        private Vector2Int CreateEntryPoint(in RoomTileData roomTileData, in Vector2 direction)
         {
-            Vector2Int currentTile = roomData.WorldPosition;
+            Vector2Int currentTile = roomTileData.WorldPosition;
             Vector2Int lastVisitedTile = currentTile;
-            Vector2 currentPosition = roomData.WorldPosition;
+            Vector2 currentPosition = roomTileData.WorldPosition;
 
-            while (currentPosition.x > roomData.LeftMostTile.x && currentPosition.x < roomData.RightMostTile.x &&
-                currentPosition.y > roomData.BottomMostTile.y && currentPosition.y < roomData.TopMostTile.y)
+            while (currentPosition.x > roomTileData.TileData.LeftMostTile.x && currentPosition.x < roomTileData.TileData.RightMostTile.x &&
+                currentPosition.y > roomTileData.TileData.BottomMostTile.y && currentPosition.y < roomTileData.TileData.TopMostTile.y)
             {
-                if (roomData.ContainsTileAtPosition(currentTile))
+                if (roomTileData.ContainsTileAtPosition(currentTile))
                     lastVisitedTile = currentTile;
 
                 currentPosition += direction;
-                currentTile = new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
+                currentTile = currentPosition.ToVector2Int();
             }
 
             currentPosition = (Vector2)lastVisitedTile - direction * OFFSET;
-            return new Vector2Int((int)currentPosition.x, (int)currentPosition.y);
+            return currentPosition.ToVector2Int();
         }
 
         private HashSet<DungeonTile> GenerateTilesBetweenPoints(in Vector2 from, in Vector2 to)
@@ -101,6 +113,20 @@ namespace MagmaHeart.Core.Dungeon
             }
 
             return generatedTiles;
+        }
+
+        private HashSet<DungeonTile> ConvertToWalls(TileData tiles)
+        {
+            HashSet<DungeonTile> wallTiles = new HashSet<DungeonTile>();
+            HashSet<DungeonTile> generatedTiles = tiles.GetTiles();
+
+            foreach (DungeonTile tile in generatedTiles)
+            {
+                DungeonTile newTile = new DungeonTile(tile.Position, TileType.Wall);
+                wallTiles.Add(newTile);
+            }
+
+            return wallTiles;
         }
     }
 }

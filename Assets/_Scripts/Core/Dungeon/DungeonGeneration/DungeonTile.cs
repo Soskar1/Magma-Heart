@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.Dungeon
         private TileType m_type;
 
         public Vector2Int Position => m_position;
-        public TileType TileType { get { return m_type; } set { m_type = value; } }
+        public TileType Type { get { return m_type; } set { m_type = value; } }
 
         public DungeonTile(Vector2Int position, TileType type)
         {

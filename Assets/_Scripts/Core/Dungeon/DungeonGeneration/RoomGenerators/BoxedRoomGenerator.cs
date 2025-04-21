@@ -15,13 +15,13 @@ namespace MagmaHeart.Core.Dungeon
             m_halfSize = new Vector2Int(xSize / 2, ySize / 2);
         }
 
-        public void GenerateRoom(in RoomData roomData)
+        public void GenerateRoom(in RoomTileData roomTileData)
         {
-            Vector2Int startPoint = roomData.WorldPosition - m_halfSize;
+            Vector2Int startPoint = roomTileData.WorldPosition - m_halfSize;
 
             for (int x = 0; x < m_xSize; ++x)
                 for (int y = 0; y < m_ySize; ++y)
-                    roomData.AddTile(startPoint + new Vector2Int(x, y), TileType.Floor);
+                    roomTileData.AddTile(startPoint + new Vector2Int(x, y), TileType.Floor);
         }
     }
 }
