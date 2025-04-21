@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,6 +15,7 @@ namespace MagmaHeart.Core
         [SerializeField] private LocationGenerator m_locationGenerator;
         [SerializeField] private LocationRenderer m_renderer;
         [SerializeField] private Room m_roomPrefab;
+        [SerializeField] private HealthBar m_healthBar;
 
         [Header("Combat Event")]
         [SerializeField] private Spawner m_spawnerPrefab;
@@ -48,6 +50,8 @@ namespace MagmaHeart.Core
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             Entity spawnedEntity = SpawnPlayer(startRoom);
+            m_healthBar.Initialize(spawnedEntity);
+            m_healthBar.gameObject.SetActive(true);
 
             Spawner spawner = Instantiate(m_spawnerPrefab);
             spawner.Initialize(spawnedEntity);
@@ -85,7 +89,6 @@ namespace MagmaHeart.Core
         private void EndCombatEvent()
         {
             m_corridorEntrances.gameObject.SetActive(false);
-            Debug.Log("Combat event ended");
         }
     }
 }
