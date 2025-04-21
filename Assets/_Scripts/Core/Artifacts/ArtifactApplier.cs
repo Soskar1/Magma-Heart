@@ -5,10 +5,12 @@ namespace MagmaHeart.Core.Artifacts
 {
     public class ArtifactApplier : MonoBehaviour
     {
+        [SerializeField] private string m_attackSpeedParameter;
+
         public Action<float> IncreaseHealth;
         public Action<float> IncreaseDamage;
         public Action<float> IncreaseSpeed;
-        public Action<float> IncreaseAttackSpeed;
+        public Action<string, float> IncreaseAttackSpeed;
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -21,7 +23,7 @@ namespace MagmaHeart.Core.Artifacts
                 else if (artifact is Boots boots)
                     IncreaseSpeed.Invoke(boots.SpeedAmount);
                 else if (artifact is EnergyDrink energyDrink)
-                    IncreaseAttackSpeed.Invoke(energyDrink.AttackSpeedAmount);
+                    IncreaseAttackSpeed.Invoke(m_attackSpeedParameter, energyDrink.AttackSpeedAmount);
                 
                 Destroy(artifact.gameObject);
             }

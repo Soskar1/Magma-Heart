@@ -39,6 +39,7 @@ namespace MagmaHeart.Core.Entities
             m_artifactApplier.IncreaseHealth += ControllingEntity.Health.IncreaseMaxHealth;
             m_artifactApplier.IncreaseDamage += m_weapon.IncreaseDamage;
             m_artifactApplier.IncreaseSpeed += m_movement.IncreaseMaxSpeed;
+            m_artifactApplier.IncreaseAttackSpeed += m_animation.IncreaseAnimationSpeed;
         }
 
         public void Disable()
@@ -50,6 +51,7 @@ namespace MagmaHeart.Core.Entities
             m_artifactApplier.IncreaseHealth -= ControllingEntity.Health.IncreaseMaxHealth;
             m_artifactApplier.IncreaseDamage -= m_weapon.IncreaseDamage;
             m_artifactApplier.IncreaseSpeed -= m_movement.IncreaseMaxSpeed;
+            m_artifactApplier.IncreaseAttackSpeed -= m_animation.IncreaseAnimationSpeed;
         }
 
         public void Update() => m_animation.PlayAnimations();

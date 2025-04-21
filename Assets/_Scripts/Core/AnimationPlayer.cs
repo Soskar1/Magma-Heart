@@ -33,5 +33,11 @@ namespace MagmaHeart.Core
         public abstract int GetAnimationState();
 
         public bool DoesCurrentAnimationEnded() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
+
+        public void IncreaseAnimationSpeed(string animationParameter, float amount)
+        {
+            float currentAmount = m_animator.GetFloat(animationParameter);
+            m_animator.SetFloat(animationParameter, currentAmount + amount);
+        }
     }
 }
