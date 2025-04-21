@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
@@ -13,9 +14,11 @@ namespace MagmaHeart.Core
         [SerializeField] private LocationGenerator m_locationGenerator;
         [SerializeField] private LocationRenderer m_renderer;
         [SerializeField] private Room m_roomPrefab;
-        [SerializeField] private Spawner m_spawnerPrefab;
 
+        [Header("Combat Event")]
+        [SerializeField] private Spawner m_spawnerPrefab;
         [SerializeField] private int m_amountOfWaves;
+        [SerializeField] private List<Artifact> m_artifactPrefabs;
 
         [Header("GFX")]
         [SerializeField] private Tilemap m_floor;
@@ -49,7 +52,7 @@ namespace MagmaHeart.Core
             Spawner spawner = Instantiate(m_spawnerPrefab);
             spawner.Initialize(spawnedEntity);
 
-            CombatEvent combatEvent = new CombatEvent(spawner, m_amountOfWaves);
+            CombatEvent combatEvent = new CombatEvent(spawner, m_amountOfWaves, m_artifactPrefabs);
             combatEvent.OnCombatEventEnded += EndCombatEvent;
 
             foreach (RoomTileData roomTileData in m_location.Rooms)

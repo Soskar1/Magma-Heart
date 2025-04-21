@@ -175,6 +175,11 @@ MonoBehaviour:
   m_roomPrefab: {fileID: 1152494207554128281, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}
   m_spawnerPrefab: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
   m_amountOfWaves: 3
+  m_artifactPrefabs:
+  - {fileID: 8781321674045735426, guid: f5f6e6b5e0c86184483e74bd30c8ad0f, type: 3}
+  - {fileID: 1654007457724616342, guid: 356d6280392c57b4ea2919ef9baa407a, type: 3}
+  - {fileID: 5275737574815216745, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
+  - {fileID: 2064139830985503399, guid: 071db7a70097f9e4582652e10c0143b9, type: 3}
   m_floor: {fileID: 1912713220}
   m_walls: {fileID: 602240937}
   m_corridorEntrances: {fileID: 1095428752}
