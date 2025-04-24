@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
 
@@ -17,12 +16,11 @@ namespace MagmaHeart.Core.Dungeon
     public class Room : MonoBehaviour
     {
         [SerializeField] private float m_colliderSizeModifier;
-        [SerializeField] private List<RoomEnemy> m_enemies;
 
         private RoomTileData m_roomTileData;
         public RoomTileData roomTileData => m_roomTileData;
         public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
-        public List<RoomEnemy> Enemies => m_enemies;
+        public List<RoomEnemy> Enemies { get; private set; }
 
         public Action<Room> playerEnteredRoom;
         private BoxCollider2D m_boxCollider;
@@ -34,9 +32,10 @@ namespace MagmaHeart.Core.Dungeon
             m_roomTileData = roomTileData;
         }
 
-        public void Initialize(RoomTileData roomTileData, List<Corridor> corridors)
+        public void Initialize(RoomTileData roomTileData, List<Corridor> corridors, List<RoomEnemy> enemies)
         {
             m_roomTileData = roomTileData;
+            Enemies = enemies;
 
             float minDistance = float.MaxValue;
             foreach (Corridor corridor in corridors)

@@ -22,6 +22,10 @@ namespace MagmaHeart.Core
         [SerializeField] private int m_amountOfWaves;
         [SerializeField] private List<Artifact> m_artifactPrefabs;
 
+        [Header("Enemies")]
+        [SerializeField] private List<RoomEnemy> m_monsterRoomEnemies;
+        [SerializeField] private List<RoomEnemy> m_bossRoomEnemies;
+
         [Header("GFX")]
         [SerializeField] private Tilemap m_floor;
         [SerializeField] private Tilemap m_walls;
@@ -66,7 +70,11 @@ namespace MagmaHeart.Core
                 {
                     Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
                     List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Entrance1.RoomTileData == roomTileData || c.Entrance2.RoomTileData == roomTileData);
-                    roomInstance.Initialize(roomTileData, adjacentCorridors);
+
+                    if (roomTileData != bossRoom)
+                        roomInstance.Initialize(roomTileData, adjacentCorridors, m_monsterRoomEnemies);
+                    else
+                        roomInstance.Initialize(roomTileData, adjacentCorridors, m_bossRoomEnemies);
 
                     roomInstance.playerEnteredRoom += combatEvent.Start;
                     roomInstance.playerEnteredRoom += (room) => m_corridorEntrances.gameObject.SetActive(true);
