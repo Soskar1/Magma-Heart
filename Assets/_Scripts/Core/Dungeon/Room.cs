@@ -6,14 +6,23 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
+    [Serializable]
+    public struct RoomEnemy
+    {
+        public EnemyMeleeBehaviour prefab;
+        public int count;
+    }
+
     [RequireComponent(typeof(BoxCollider2D))]
     public class Room : MonoBehaviour
     {
         [SerializeField] private float m_colliderSizeModifier;
+        [SerializeField] private List<RoomEnemy> m_enemies;
 
         private RoomTileData m_roomTileData;
-        public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
         public RoomTileData roomTileData => m_roomTileData;
+        public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
+        public List<RoomEnemy> Enemies => m_enemies;
 
         public Action<Room> playerEnteredRoom;
         private BoxCollider2D m_boxCollider;

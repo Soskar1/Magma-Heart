@@ -1,4 +1,5 @@
 using System;
+using MagmaHeart.Core.ObjectPooling;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities

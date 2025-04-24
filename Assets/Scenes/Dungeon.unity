@@ -660,8 +660,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
+      propertyPath: m_enemyToSpawn
+      value: 
+      objectReference: {fileID: 2174559174635198697, guid: 742862497be07974a8a888e2f832ee26, type: 3}
+    - target: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
       propertyPath: m_amountOfEnemies
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
+      propertyPath: m_initialPoolSize
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2981728072148827743, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
       propertyPath: m_LocalPosition.x

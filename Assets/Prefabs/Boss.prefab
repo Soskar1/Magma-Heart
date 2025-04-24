@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1910f8f24e4f98a488892ea1e5c97b07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_triggerAttackDistance: 1
+  m_triggerAttackDistance: 2
   m_takeDamageAnimationName: TakeDamage
   m_deathAnimationName: Death
   m_attackAnimationName: Attack
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2d701dc63d61d0428abaa77619e41b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHealth: 3
+  m_maxHealth: 10
 --- !u!114 &5788486722498899380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a1d95233e4a22c4a95e25e0c666040c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxSpeed: 10
+  m_maxSpeed: 12
   m_acceleration: 10
   m_decceleration: 10
   m_velocityPower: 0.8
