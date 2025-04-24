@@ -10,7 +10,6 @@ namespace MagmaHeart.Core
 {
     public class Spawner : MonoBehaviour
     {
-        [SerializeField] private int m_amountOfEnemies;
         [SerializeField] private float m_minDistanceFromPlayer;
         [SerializeField] private Vector2 m_offset;
         [SerializeField] private int m_initialPoolSize;
