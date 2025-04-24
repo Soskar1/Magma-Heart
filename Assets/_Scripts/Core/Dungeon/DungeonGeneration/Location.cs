@@ -11,11 +11,14 @@ namespace MagmaHeart.Core.Dungeon
         public HashSet<DungeonTile> FloorTiles { get; private set; }
         public HashSet<DungeonTile> WallTiles { get; private set; }
         public HashSet<DungeonTile> CorridorEntranceTiles { get; private set; }
+
+        private readonly LocationGraph m_locationGraph;
     
-        public Location(in List<RoomTileData> rooms, in List<Corridor> corridors)
+        public Location(in List<RoomTileData> rooms, in List<Corridor> corridors, in LocationGraph locationGraph)
         {
             Rooms = rooms;
             Corridors = corridors;
+            m_locationGraph = locationGraph;
 
             Tiles = new HashSet<DungeonTile>();
             FloorTiles = new HashSet<DungeonTile>();
@@ -38,6 +41,28 @@ namespace MagmaHeart.Core.Dungeon
                 WallTiles.UnionWith(tiles.Where(t => t.Type == TileType.Wall));
                 CorridorEntranceTiles.UnionWith(corridor.BlockingTiles);
             }
+        }
+
+        public RoomTileData GetFarthestRoomFrom(RoomTileData roomTileData)
+        {
+            RoomTileData farthestRoom = roomTileData;
+            HashSet<RoomTileData> visited = new HashSet<RoomTileData>();
+            Queue<RoomTileData> queue = new Queue<RoomTileData>();
+            queue.Enqueue(roomTileData);
+
+            while (queue.Any())
+            {
+                RoomTileData room = queue.Dequeue();
+                visited.Add(room);
+                farthestRoom = room;
+
+                HashSet<RoomTileData> neighbours = m_locationGraph.ConnectedRooms[room];
+                foreach (RoomTileData neighbor in neighbours)
+                    if (!visited.Contains(neighbor) && !queue.Contains(neighbor))
+                        queue.Enqueue(neighbor);
+            }
+
+            return farthestRoom;
         }
     }
 }

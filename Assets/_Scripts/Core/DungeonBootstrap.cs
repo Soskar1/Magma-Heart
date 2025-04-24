@@ -49,6 +49,8 @@ namespace MagmaHeart.Core
             m_renderer.RenderedAllTiles -= SpawnEntities;
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
+            RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
+
             Entity spawnedEntity = SpawnPlayer(startRoom);
             m_healthBar.Initialize(spawnedEntity);
             m_healthBar.gameObject.SetActive(true);

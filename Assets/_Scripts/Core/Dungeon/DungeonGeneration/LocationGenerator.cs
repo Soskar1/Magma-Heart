@@ -77,7 +77,7 @@ namespace MagmaHeart.Core.Dungeon
             
             AddWalls(roomTileDatas, corridors);
 
-            return new Location(roomTileDatas, corridors);
+            return new Location(roomTileDatas, corridors, graph);
         }
 
         private void AddWalls(List<RoomTileData> roomTileDatas, List<Corridor> corridors)
