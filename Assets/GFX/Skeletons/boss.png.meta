@@ -265,7 +265,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: boss_0
+      name: boss_Idle_0
       rect:
         serializedVersion: 2
         x: 0
@@ -273,7 +273,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -287,7 +287,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_1
+      name: boss_Idle_1
       rect:
         serializedVersion: 2
         x: 32
@@ -295,7 +295,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -309,7 +309,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_2
+      name: boss_Idle_2
       rect:
         serializedVersion: 2
         x: 64
@@ -317,7 +317,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -331,7 +331,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_3
+      name: boss_Idle_3
       rect:
         serializedVersion: 2
         x: 96
@@ -339,7 +339,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -353,7 +353,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_4
+      name: boss_Idle_4
       rect:
         serializedVersion: 2
         x: 128
@@ -361,7 +361,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -375,7 +375,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_5
+      name: boss_Idle_5
       rect:
         serializedVersion: 2
         x: 160
@@ -383,7 +383,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -397,7 +397,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_6
+      name: boss_walk_0
       rect:
         serializedVersion: 2
         x: 192
@@ -405,7 +405,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -419,7 +419,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_7
+      name: boss_walk_1
       rect:
         serializedVersion: 2
         x: 224
@@ -427,7 +427,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -441,7 +441,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_8
+      name: boss_walk_2
       rect:
         serializedVersion: 2
         x: 0
@@ -449,7 +449,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -463,7 +463,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_9
+      name: boss_walk_3
       rect:
         serializedVersion: 2
         x: 32
@@ -471,7 +471,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -485,7 +485,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_10
+      name: boss_walk_4
       rect:
         serializedVersion: 2
         x: 64
@@ -493,7 +493,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -507,7 +507,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_11
+      name: boss_walk_5
       rect:
         serializedVersion: 2
         x: 96
@@ -515,7 +515,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -529,7 +529,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_12
+      name: boss_walk_6
       rect:
         serializedVersion: 2
         x: 128
@@ -537,7 +537,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -551,7 +551,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_13
+      name: boss_walk_7
       rect:
         serializedVersion: 2
         x: 160
@@ -559,7 +559,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -573,7 +573,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_14
+      name: boss_walk_8
       rect:
         serializedVersion: 2
         x: 192
@@ -581,7 +581,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -595,7 +595,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_15
+      name: boss_walk_9
       rect:
         serializedVersion: 2
         x: 224
@@ -603,7 +603,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -617,7 +617,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_16
+      name: boss_attack_0
       rect:
         serializedVersion: 2
         x: 0
@@ -625,7 +625,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -639,7 +639,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_17
+      name: boss_attack_1
       rect:
         serializedVersion: 2
         x: 32
@@ -647,7 +647,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -661,7 +661,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_18
+      name: boss_attack_2
       rect:
         serializedVersion: 2
         x: 64
@@ -669,7 +669,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -683,7 +683,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_19
+      name: boss_attack_3
       rect:
         serializedVersion: 2
         x: 96
@@ -691,7 +691,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -705,7 +705,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_20
+      name: boss_attack_4
       rect:
         serializedVersion: 2
         x: 128
@@ -713,7 +713,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -727,7 +727,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_21
+      name: boss_attack_5
       rect:
         serializedVersion: 2
         x: 160
@@ -735,7 +735,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -749,7 +749,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_22
+      name: boss_attack_6
       rect:
         serializedVersion: 2
         x: 192
@@ -757,7 +757,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -771,7 +771,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_23
+      name: boss_attack_7
       rect:
         serializedVersion: 2
         x: 224
@@ -779,7 +779,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -793,7 +793,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_24
+      name: boss_attack_8
       rect:
         serializedVersion: 2
         x: 0
@@ -801,7 +801,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -815,7 +815,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_25
+      name: boss_attack_9
       rect:
         serializedVersion: 2
         x: 32
@@ -823,7 +823,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -837,7 +837,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_26
+      name: boss_attack_10
       rect:
         serializedVersion: 2
         x: 64
@@ -845,7 +845,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -859,7 +859,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_27
+      name: boss_attack_11
       rect:
         serializedVersion: 2
         x: 96
@@ -867,7 +867,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -881,7 +881,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_28
+      name: boss_attack_12
       rect:
         serializedVersion: 2
         x: 128
@@ -889,7 +889,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -903,7 +903,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_29
+      name: boss_attack_13
       rect:
         serializedVersion: 2
         x: 160
@@ -911,7 +911,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -925,7 +925,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_30
+      name: boss_attack_14
       rect:
         serializedVersion: 2
         x: 192
@@ -933,7 +933,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -947,7 +947,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_31
+      name: boss_TakeDamage_0
       rect:
         serializedVersion: 2
         x: 224
@@ -955,7 +955,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -969,7 +969,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_32
+      name: boss_TakeDamage_1
       rect:
         serializedVersion: 2
         x: 0
@@ -977,7 +977,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -991,7 +991,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_33
+      name: boss_TakeDamage_2
       rect:
         serializedVersion: 2
         x: 32
@@ -999,7 +999,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1013,7 +1013,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_34
+      name: boss_TakeDamage_3
       rect:
         serializedVersion: 2
         x: 64
@@ -1021,7 +1021,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1035,7 +1035,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_35
+      name: boss_TakeDamage_4
       rect:
         serializedVersion: 2
         x: 96
@@ -1043,7 +1043,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1057,7 +1057,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_36
+      name: boss_Death_0
       rect:
         serializedVersion: 2
         x: 128
@@ -1065,7 +1065,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1079,7 +1079,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_37
+      name: boss_Death_1
       rect:
         serializedVersion: 2
         x: 160
@@ -1087,7 +1087,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1101,7 +1101,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_38
+      name: boss_Death_2
       rect:
         serializedVersion: 2
         x: 192
@@ -1109,7 +1109,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1123,7 +1123,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_39
+      name: boss_Death_3
       rect:
         serializedVersion: 2
         x: 224
@@ -1131,7 +1131,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1145,7 +1145,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_40
+      name: boss_Death_4
       rect:
         serializedVersion: 2
         x: 0
@@ -1153,7 +1153,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1167,7 +1167,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_41
+      name: boss_Death_5
       rect:
         serializedVersion: 2
         x: 32
@@ -1175,7 +1175,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1189,7 +1189,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_42
+      name: boss_Death_6
       rect:
         serializedVersion: 2
         x: 64
@@ -1197,7 +1197,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1211,7 +1211,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_43
+      name: boss_Death_7
       rect:
         serializedVersion: 2
         x: 96
@@ -1219,7 +1219,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1233,7 +1233,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_44
+      name: boss_Death_8
       rect:
         serializedVersion: 2
         x: 128
@@ -1241,7 +1241,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1255,7 +1255,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_45
+      name: boss_Death_9
       rect:
         serializedVersion: 2
         x: 160
@@ -1263,7 +1263,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1277,7 +1277,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_46
+      name: boss_Death_10
       rect:
         serializedVersion: 2
         x: 192
@@ -1285,7 +1285,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1299,7 +1299,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_47
+      name: boss_Death_11
       rect:
         serializedVersion: 2
         x: 224
@@ -1307,7 +1307,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1321,7 +1321,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_48
+      name: boss_Death_12
       rect:
         serializedVersion: 2
         x: 0
@@ -1329,7 +1329,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1343,7 +1343,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_49
+      name: boss_Death_13
       rect:
         serializedVersion: 2
         x: 32
@@ -1351,7 +1351,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1365,7 +1365,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: boss_50
+      name: boss_Death_14
       rect:
         serializedVersion: 2
         x: 64
@@ -1373,7 +1373,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1400,57 +1400,57 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      boss_0: -2424553518018739129
-      boss_1: -3588229512158965765
-      boss_10: 1734522602796540859
-      boss_11: 4811487537473343952
-      boss_12: 576763674245041098
-      boss_13: 7875803310954514552
-      boss_14: -111301877416365784
-      boss_15: 3046850359654010694
-      boss_16: 2909469358611949070
-      boss_17: -143739131173224929
-      boss_18: -7414294391761901277
-      boss_19: -3362370236742786337
-      boss_2: -6963195877183015321
-      boss_20: 6468140377098887652
-      boss_21: -1482001269152524858
-      boss_22: 3246051020336757466
-      boss_23: 7216382117629168960
-      boss_24: 6127640030052930200
-      boss_25: -4769743985019881921
-      boss_26: -6992872179053906543
-      boss_27: 9085017485183396690
-      boss_28: 3459553351661952965
-      boss_29: -5959449431205058972
-      boss_3: 7801903984715115176
-      boss_30: 5669583937807936801
-      boss_31: -5409040304852023484
-      boss_32: -8922974238262997143
-      boss_33: 6348195900532298265
-      boss_34: 3503970012561585107
-      boss_35: 3493504925957640842
-      boss_36: -5943826405339452633
-      boss_37: -3491411290609207243
-      boss_38: -7950412279874798916
-      boss_39: 6088500126303497995
-      boss_4: -5888845342232556802
-      boss_40: 9030763747999784923
-      boss_41: -1532511525492430162
-      boss_42: 4309711259821979391
-      boss_43: 5704238324849453733
-      boss_44: -1146501461341007107
-      boss_45: 1283577974875658082
-      boss_46: -8095329463354045958
-      boss_47: 6950635454182265961
-      boss_48: 4144881563733362126
-      boss_49: 1349598342595010485
-      boss_5: -7366506907712603825
-      boss_50: 8000395305061380302
-      boss_6: 5981802871748074552
-      boss_7: -8797041637764437337
-      boss_8: -6067672718842985316
-      boss_9: 8484074019104989873
+      boss_Death_0: -5943826405339452633
+      boss_Death_1: -3491411290609207243
+      boss_Death_10: -8095329463354045958
+      boss_Death_11: 6950635454182265961
+      boss_Death_12: 4144881563733362126
+      boss_Death_13: 1349598342595010485
+      boss_Death_14: 8000395305061380302
+      boss_Death_2: -7950412279874798916
+      boss_Death_3: 6088500126303497995
+      boss_Death_4: 9030763747999784923
+      boss_Death_5: -1532511525492430162
+      boss_Death_6: 4309711259821979391
+      boss_Death_7: 5704238324849453733
+      boss_Death_8: -1146501461341007107
+      boss_Death_9: 1283577974875658082
+      boss_Idle_0: -2424553518018739129
+      boss_Idle_1: -3588229512158965765
+      boss_Idle_2: -6963195877183015321
+      boss_Idle_3: 7801903984715115176
+      boss_Idle_4: -5888845342232556802
+      boss_Idle_5: -7366506907712603825
+      boss_TakeDamage_0: -5409040304852023484
+      boss_TakeDamage_1: -8922974238262997143
+      boss_TakeDamage_2: 6348195900532298265
+      boss_TakeDamage_3: 3503970012561585107
+      boss_TakeDamage_4: 3493504925957640842
+      boss_attack_0: 2909469358611949070
+      boss_attack_1: -143739131173224929
+      boss_attack_10: -6992872179053906543
+      boss_attack_11: 9085017485183396690
+      boss_attack_12: 3459553351661952965
+      boss_attack_13: -5959449431205058972
+      boss_attack_14: 5669583937807936801
+      boss_attack_2: -7414294391761901277
+      boss_attack_3: -3362370236742786337
+      boss_attack_4: 6468140377098887652
+      boss_attack_5: -1482001269152524858
+      boss_attack_6: 3246051020336757466
+      boss_attack_7: 7216382117629168960
+      boss_attack_8: 6127640030052930200
+      boss_attack_9: -4769743985019881921
+      boss_walk_0: 5981802871748074552
+      boss_walk_1: -8797041637764437337
+      boss_walk_2: -6067672718842985316
+      boss_walk_3: 8484074019104989873
+      boss_walk_4: 1734522602796540859
+      boss_walk_5: 4811487537473343952
+      boss_walk_6: 576763674245041098
+      boss_walk_7: 7875803310954514552
+      boss_walk_8: -111301877416365784
+      boss_walk_9: 3046850359654010694
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
