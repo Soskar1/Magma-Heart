@@ -260,6 +260,12 @@ MonoBehaviour:
   - {fileID: 1654007457724616342, guid: 356d6280392c57b4ea2919ef9baa407a, type: 3}
   - {fileID: 5275737574815216745, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
   - {fileID: 2064139830985503399, guid: 071db7a70097f9e4582652e10c0143b9, type: 3}
+  m_monsterRoomEnemies:
+  - prefab: {fileID: 2174559174635198697, guid: 742862497be07974a8a888e2f832ee26, type: 3}
+    count: 3
+  m_bossRoomEnemies:
+  - prefab: {fileID: 9126221276518035511, guid: 0ec0960a145037b4da172e8f60710f55, type: 3}
+    count: 1
   m_floor: {fileID: 1912713220}
   m_walls: {fileID: 602240937}
   m_corridorEntrances: {fileID: 1095428752}
@@ -660,8 +666,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
+      propertyPath: m_enemyToSpawn
+      value: 
+      objectReference: {fileID: 2174559174635198697, guid: 742862497be07974a8a888e2f832ee26, type: 3}
+    - target: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
       propertyPath: m_amountOfEnemies
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928700902015151912, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
+      propertyPath: m_initialPoolSize
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2981728072148827743, guid: 600dcbdf27e584e4fbfe952e80f8a77c, type: 3}
       propertyPath: m_LocalPosition.x

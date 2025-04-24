@@ -53,6 +53,7 @@ namespace MagmaHeart.Core.Dungeon
         public HashSet<RoomTileData> Nodes { get; private set; }
         public HashSet<RoomConnectionEdge> Edges { get; private set; }
         public Dictionary<RoomTileData, HashSet<RoomConnectionEdge>> EdgesFromRoom { get; private set; }
+        public Dictionary<RoomTileData, HashSet<RoomTileData>> ConnectedRooms { get; private set; }
         public int NodeCount => Nodes.Count;
 
         public LocationGraph()
@@ -60,6 +61,7 @@ namespace MagmaHeart.Core.Dungeon
             Nodes = new HashSet<RoomTileData>();
             Edges = new HashSet<RoomConnectionEdge>();
             EdgesFromRoom = new Dictionary<RoomTileData, HashSet<RoomConnectionEdge>>();
+            ConnectedRooms = new Dictionary<RoomTileData, HashSet<RoomTileData>>();
         }
 
         public LocationGraph(in HashSet<RoomTileData> nodes, in HashSet<RoomConnectionEdge> edges)
@@ -67,14 +69,21 @@ namespace MagmaHeart.Core.Dungeon
             Nodes = nodes;
             Edges = edges;
             EdgesFromRoom = new Dictionary<RoomTileData, HashSet<RoomConnectionEdge>>();
+            ConnectedRooms = new Dictionary<RoomTileData, HashSet<RoomTileData>>();
 
             foreach (RoomTileData node in Nodes)
+            {
                 EdgesFromRoom.Add(node, new HashSet<RoomConnectionEdge>());
+                ConnectedRooms.Add(node, new HashSet<RoomTileData>());
+            }
 
             foreach (RoomConnectionEdge edge in Edges)
             {
                 EdgesFromRoom[edge.First].Add(edge);
                 EdgesFromRoom[edge.Second].Add(edge);
+
+                ConnectedRooms[edge.First].Add(edge.Second);
+                ConnectedRooms[edge.Second].Add(edge.First);
             }
         }
 
@@ -82,6 +91,7 @@ namespace MagmaHeart.Core.Dungeon
         {
             Nodes.Add(node);
             EdgesFromRoom.TryAdd(node, new HashSet<RoomConnectionEdge>());
+            ConnectedRooms.TryAdd(node, new HashSet<RoomTileData>());
         }
 
         public void TryAddEdge(in RoomConnectionEdge edge)
@@ -94,6 +104,9 @@ namespace MagmaHeart.Core.Dungeon
                 Edges.Add(edge);
                 EdgesFromRoom[edge.First].Add(edge);
                 EdgesFromRoom[edge.Second].Add(edge);
+
+                ConnectedRooms[edge.First].Add(edge.Second);
+                ConnectedRooms[edge.Second].Add(edge.First);
             }
         }
         public bool ContainsEdge(in RoomConnectionEdge edge) => Edges.Contains(edge);

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.ObjectPooling
 {
     public class ObjectPool<T> where T : MonoBehaviour, IPoolable
     {

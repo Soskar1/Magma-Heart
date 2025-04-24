@@ -92,3 +92,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_colliderSizeModifier: 1.5
+  m_enemies:
+  - prefab: {fileID: 2174559174635198697, guid: 742862497be07974a8a888e2f832ee26, type: 3}
+    count: 3

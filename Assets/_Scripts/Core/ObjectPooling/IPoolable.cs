@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.ObjectPooling
 {
     public interface IPoolable
     {
