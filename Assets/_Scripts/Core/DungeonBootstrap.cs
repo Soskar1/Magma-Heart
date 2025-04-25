@@ -4,7 +4,6 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.UI;
 using UnityEngine;
-using Grid = MagmaHeart.Core.Dungeon.Grid;
 
 namespace MagmaHeart.Core
 {
@@ -15,7 +14,7 @@ namespace MagmaHeart.Core
         [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
         [SerializeField] private Room m_roomPrefab;
         [SerializeField] private GameUI m_uiPrefab;
-        [SerializeField] private Grid m_gridPrefab;
+        [SerializeField] private GameGrid m_gridPrefab;
 
         [Header("Combat Event")]
         [SerializeField] private Spawner m_spawnerPrefab;
@@ -27,7 +26,7 @@ namespace MagmaHeart.Core
 
         private Location m_location;
         private LocationRenderer m_renderer;
-        private Grid m_grid;
+        private GameGrid m_grid;
 
         public async void BootScene()
         {
