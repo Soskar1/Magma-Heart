@@ -20,18 +20,29 @@ namespace MagmaHeart.Core.Artifacts
         {
             if (collision.TryGetComponent(out Artifact artifact))
             {
-                if (artifact is Apple appleArtifact)
-                    IncreaseHealth.Invoke(appleArtifact.HealthAmount);
-                else if (artifact is StoneFist stoneFist)
-                    IncreaseDamage.Invoke(stoneFist.DamageAmount);
-                else if (artifact is Boots boots)
-                    IncreaseSpeed.Invoke(boots.SpeedAmount);
-                else if (artifact is EnergyDrink energyDrink)
-                    IncreaseAttackSpeed.Invoke(m_attackSpeedParameter, energyDrink.AttackSpeedAmount);
-
-                ObtainedArtifacts.Add(artifact);
+                ApplyArtifact(artifact);
                 Destroy(artifact.gameObject);
             }
+        }
+
+        public void ApplyArtifacts(List<Artifact> artifacts)
+        {
+            foreach (Artifact artifact in artifacts)
+                ApplyArtifact(artifact);
+        }
+
+        private void ApplyArtifact(Artifact artifact)
+        {
+            if (artifact is Apple appleArtifact)
+                IncreaseHealth.Invoke(appleArtifact.HealthAmount);
+            else if (artifact is StoneFist stoneFist)
+                IncreaseDamage.Invoke(stoneFist.DamageAmount);
+            else if (artifact is Boots boots)
+                IncreaseSpeed.Invoke(boots.SpeedAmount);
+            else if (artifact is EnergyDrink energyDrink)
+                IncreaseAttackSpeed.Invoke(m_attackSpeedParameter, energyDrink.AttackSpeedAmount);
+
+            ObtainedArtifacts.Add(artifact);
         }
     }
 }

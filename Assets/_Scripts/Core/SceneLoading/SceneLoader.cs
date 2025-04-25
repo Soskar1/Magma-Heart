@@ -9,11 +9,12 @@ namespace MagmaHeart.Core.SceneLoading
     public class SceneLoader : MonoBehaviour
     {
         [SerializeField] private BootstrapDictionary m_bootstrapData;
-        private Dictionary<string, DungeonBootstrap> m_bootstraps;
+        private Dictionary<string, SceneBootstrap> m_bootstraps;
         private DataTransfer m_data;
 
         private void Awake()
         {
+            m_data = new DataTransfer();
             m_bootstraps = m_bootstrapData.ToDictionary();
             DontDestroyOnLoad(gameObject);
         }
@@ -22,9 +23,9 @@ namespace MagmaHeart.Core.SceneLoading
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            DungeonBootstrap prefab = m_bootstraps[scene.name];
-            DungeonBootstrap bootstrapInstance = Instantiate(prefab);
-            bootstrapInstance.Initialize(this);
+            SceneBootstrap prefab = m_bootstraps[scene.name];
+            SceneBootstrap bootstrapInstance = Instantiate(prefab);
+            bootstrapInstance.Initialize(this, m_data.ObtainedArtifacts);
             bootstrapInstance.BootScene();
         }
 
@@ -38,17 +39,17 @@ namespace MagmaHeart.Core.SceneLoading
     [Serializable]
     public class BootstrapDictionary
     {
-        [SerializeField] private List<SceneBootstrap> m_bootstraps;
-        public List<SceneBootstrap> Bootstraps => m_bootstraps;
+        [SerializeField] private List<SceneBootstrapKeyValue> m_bootstraps;
+        public List<SceneBootstrapKeyValue> Bootstraps => m_bootstraps;
     }
 
     public static class BootstrapDictionaryExtensions
     {
-        public static Dictionary<string, DungeonBootstrap> ToDictionary(this BootstrapDictionary bootstrapers)
+        public static Dictionary<string, SceneBootstrap> ToDictionary(this BootstrapDictionary bootstrapers)
         {
-            Dictionary<string, DungeonBootstrap> dict = new Dictionary<string, DungeonBootstrap>();
+            Dictionary<string, SceneBootstrap> dict = new Dictionary<string, SceneBootstrap>();
 
-            foreach (SceneBootstrap bootstrap in bootstrapers.Bootstraps)
+            foreach (SceneBootstrapKeyValue bootstrap in bootstrapers.Bootstraps)
                 dict.Add(bootstrap.Scene.name, bootstrap.Bootstrap);
 
             return dict;
@@ -56,12 +57,12 @@ namespace MagmaHeart.Core.SceneLoading
     }
 
     [Serializable]
-    public class SceneBootstrap
+    public class SceneBootstrapKeyValue
     {
         [SerializeField] private SceneAsset m_scene;
-        [SerializeField] private DungeonBootstrap m_bootstrap;
+        [SerializeField] private SceneBootstrap m_bootstrap;
 
         public SceneAsset Scene => m_scene;
-        public DungeonBootstrap Bootstrap => m_bootstrap;
+        public SceneBootstrap Bootstrap => m_bootstrap;
     }
 }

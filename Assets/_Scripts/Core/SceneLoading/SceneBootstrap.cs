@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.SceneLoading
 {
-    public class DungeonBootstrap : MonoBehaviour
+    public class SceneBootstrap : MonoBehaviour
     {
         [SerializeField] private PlayerBehaviour m_player;
         [SerializeField] private CameraMovement m_camera;
@@ -30,8 +29,13 @@ namespace MagmaHeart.Core
         private Location m_location;
         private LocationRenderer m_renderer;
         private GameGrid m_grid;
+        private List<Artifact> m_artifactsToApply;
 
-        public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
+        public void Initialize(SceneLoader sceneLoader, List<Artifact> artifactsToApply)
+        {
+            m_sceneLoader = sceneLoader;
+            m_artifactsToApply = artifactsToApply;
+        }
 
         public async void BootScene()
         {
@@ -61,6 +65,9 @@ namespace MagmaHeart.Core
             GameUI uiInstance = Instantiate(m_uiPrefab);
             uiInstance.HealthBar.Initialize(spawnedEntity);
             uiInstance.HealthBar.gameObject.SetActive(true);
+
+            if (m_artifactsToApply != null && spawnedEntity.TryGetComponent(out ArtifactApplier applier))
+                applier.ApplyArtifacts(m_artifactsToApply);
 
             Spawner spawnerInstance = Instantiate(m_spawnerPrefab);
             spawnerInstance.Initialize(spawnedEntity);
