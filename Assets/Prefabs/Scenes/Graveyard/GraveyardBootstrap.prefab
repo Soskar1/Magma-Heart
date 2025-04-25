@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8064050329079246698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7825085680296273284}
+  - component: {fileID: 3628464558979318996}
+  m_Layer: 0
+  m_Name: GraveyardBootstrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7825085680296273284
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8064050329079246698}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3628464558979318996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8064050329079246698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1b2f813e6936a489bf89fc4883584a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_player: {fileID: 5902962640327027025, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_camera: {fileID: 4795547985218310682, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
+  m_locationGeneratorPrefab: {fileID: 4989227748005816970, guid: 3b4e263b6c03ee849904d0d7c364a478, type: 3}
+  m_roomPrefab: {fileID: 1152494207554128281, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}
+  m_uiPrefab: {fileID: 6341758075742481958, guid: 5740d4716790e0e439d7c4b2a0139e8b, type: 3}
+  m_gridPrefab: {fileID: 7317234101835903557, guid: 230714f8488e8724b82e2a8216774cba, type: 3}
+  m_spawnerPrefab: {fileID: 1928700902015151912, guid: 700facb0624dcac489527ed2f51d1c18, type: 3}
+  m_artifactPrefabs:
+  - {fileID: 8781321674045735426, guid: f5f6e6b5e0c86184483e74bd30c8ad0f, type: 3}
+  - {fileID: 1654007457724616342, guid: 356d6280392c57b4ea2919ef9baa407a, type: 3}
+  - {fileID: 5275737574815216745, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
+  - {fileID: 2064139830985503399, guid: 071db7a70097f9e4582652e10c0143b9, type: 3}
+  m_monsterRoomEnemies:
+    prefabs:
+    - {fileID: 2174559174635198697, guid: 742862497be07974a8a888e2f832ee26, type: 3}
+    enemyCount: 5
+    waves: 2
+  m_bossRoomEnemies:
+    prefabs:
+    - {fileID: 9126221276518035511, guid: 0ec0960a145037b4da172e8f60710f55, type: 3}
+    enemyCount: 1
+    waves: 1

@@ -4,7 +4,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.UI;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using Grid = MagmaHeart.Core.Dungeon.Grid;
 
 namespace MagmaHeart.Core
 {
@@ -12,38 +12,36 @@ namespace MagmaHeart.Core
     {
         [SerializeField] private PlayerBehaviour m_player;
         [SerializeField] private CameraMovement m_camera;
-        [SerializeField] private LocationGenerator m_locationGenerator;
-        [SerializeField] private LocationRenderer m_renderer;
+        [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
         [SerializeField] private Room m_roomPrefab;
-        [SerializeField] private HealthBar m_healthBar;
+        [SerializeField] private GameUI m_uiPrefab;
+        [SerializeField] private Grid m_gridPrefab;
 
         [Header("Combat Event")]
-        [SerializeField] private Spawner m_spawner;
+        [SerializeField] private Spawner m_spawnerPrefab;
         [SerializeField] private List<Artifact> m_artifactPrefabs;
 
         [Header("CombatData")]
         [SerializeField] private CombatData m_monsterRoomEnemies;
         [SerializeField] private CombatData m_bossRoomEnemies;
 
-        [Header("GFX")]
-        [SerializeField] private Tilemap m_floor;
-        [SerializeField] private Tilemap m_walls;
-        [SerializeField] private Tilemap m_corridorEntrances;
-        [SerializeField] private TileBase m_floorTile;
-        [SerializeField] private TileBase m_wallTile;
-
         private Location m_location;
+        private LocationRenderer m_renderer;
+        private Grid m_grid;
 
-        private void Awake() => m_renderer.RenderedAllTiles += SpawnEntities;
-
-        private void Start() => BootScene();
-
-        private async void BootScene()
+        public async void BootScene()
         {
-            m_location = await m_locationGenerator.GenerateLocation(Vector2Int.zero);
-            m_renderer.AddTilesToDraw(m_location.FloorTiles, m_floor, m_floorTile);
-            m_renderer.AddTilesToDraw(m_location.WallTiles, m_walls, m_wallTile);
-            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, m_corridorEntrances, m_wallTile);
+            m_grid = Instantiate(m_gridPrefab);
+
+            LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
+            m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
+
+            m_renderer.RenderedAllTiles += SpawnEntities;
+
+            m_location = await locationGeneratorInstance.GenerateLocation(Vector2Int.zero);
+            m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
+            m_renderer.AddTilesToDraw(m_location.WallTiles, m_grid.Walls, m_grid.WallTile);
+            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, m_grid.Corridors, m_grid.WallTile);
             m_renderer.DrawTiles();
         }
 
@@ -55,12 +53,15 @@ namespace MagmaHeart.Core
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
             Entity spawnedEntity = SpawnPlayer(startRoom);
-            m_healthBar.Initialize(spawnedEntity);
-            m_healthBar.gameObject.SetActive(true);
 
-            m_spawner.Initialize(spawnedEntity);
+            GameUI uiInstance = Instantiate(m_uiPrefab);
+            uiInstance.HealthBar.Initialize(spawnedEntity);
+            uiInstance.HealthBar.gameObject.SetActive(true);
 
-            CombatEvent combatEvent = new CombatEvent(m_spawner, m_artifactPrefabs);
+            Spawner spawnerInstance = Instantiate(m_spawnerPrefab);
+            spawnerInstance.Initialize(spawnedEntity);
+
+            CombatEvent combatEvent = new CombatEvent(spawnerInstance, m_artifactPrefabs);
             combatEvent.OnCombatEventEnded += EndCombatEvent;
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
@@ -76,7 +77,7 @@ namespace MagmaHeart.Core
                         roomInstance.Initialize(roomTileData, adjacentCorridors, m_bossRoomEnemies);
 
                     roomInstance.playerEnteredRoom += combatEvent.Start;
-                    roomInstance.playerEnteredRoom += (room) => m_corridorEntrances.gameObject.SetActive(true);
+                    roomInstance.playerEnteredRoom += (room) => m_grid.Corridors.gameObject.SetActive(true);
                 }
             }
         }
@@ -96,7 +97,7 @@ namespace MagmaHeart.Core
         
         private void EndCombatEvent()
         {
-            m_corridorEntrances.gameObject.SetActive(false);
+            m_grid.Corridors.gameObject.SetActive(false);
         }
     }
 }
