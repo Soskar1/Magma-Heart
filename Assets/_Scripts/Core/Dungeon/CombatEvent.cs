@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MagmaHeart.Core.Artifacts;
-using UnityEngine;
-using Random=UnityEngine.Random;
+using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -14,15 +12,12 @@ namespace MagmaHeart.Core.Dungeon
         public Action OnCombatEventEnded;
         private Room m_currentRoom;
         private int m_currentAmountOfMonsters;
-        private List<Artifact> m_possibleRewards;
 
-        public CombatEvent(Spawner spawner, List<Artifact> rewards)
+        public CombatEvent(Spawner spawner)
         {
             m_spawner = spawner;
             m_currentWave = 1;
             m_currentAmountOfMonsters = 0;
-
-            m_possibleRewards = rewards;
 
             m_spawner.SpawnedEnemy += IncrementCurrentAmountOfMonsters;
             m_spawner.EnemyDisabled += DecrementCurrentAmountOfMonsters;
@@ -61,14 +56,16 @@ namespace MagmaHeart.Core.Dungeon
         private void EndCombatEvent()
         {
             m_currentWave = 1;
-            OnCombatEventEnded?.Invoke();
-            SpawnAward();
+            m_currentRoom.CombatData.OnCombatEnded?.Invoke(m_currentRoom);
         }
+    }
 
-        private void SpawnAward()
-        {
-            Artifact artifactPrefab = m_possibleRewards[Random.Range(0, m_possibleRewards.Count)];
-            GameObject.Instantiate(artifactPrefab, m_currentRoom.WorldPosition.ToVector2(), Quaternion.identity);
-        }
+    [Serializable]
+    public class CombatData
+    {
+        public List<EnemyMeleeBehaviour> prefabs;
+        public int enemyCount;
+        public int waves;
+        public Action<Room> OnCombatEnded;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
@@ -15,18 +16,22 @@ namespace MagmaHeart.Core
         [SerializeField] private Room m_roomPrefab;
         [SerializeField] private GameUI m_uiPrefab;
         [SerializeField] private GameGrid m_gridPrefab;
+        [SerializeField] private Teleporter m_teleporterPrefab;
 
         [Header("Combat Event")]
         [SerializeField] private Spawner m_spawnerPrefab;
         [SerializeField] private List<Artifact> m_artifactPrefabs;
 
         [Header("CombatData")]
-        [SerializeField] private CombatData m_monsterRoomEnemies;
-        [SerializeField] private CombatData m_bossRoomEnemies;
+        [SerializeField] private CombatData m_monsterRooms;
+        [SerializeField] private CombatData m_bossRooms;
 
+        private SceneLoader m_sceneLoader;
         private Location m_location;
         private LocationRenderer m_renderer;
         private GameGrid m_grid;
+
+        public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void BootScene()
         {
@@ -60,8 +65,12 @@ namespace MagmaHeart.Core
             Spawner spawnerInstance = Instantiate(m_spawnerPrefab);
             spawnerInstance.Initialize(spawnedEntity);
 
-            CombatEvent combatEvent = new CombatEvent(spawnerInstance, m_artifactPrefabs);
-            combatEvent.OnCombatEventEnded += EndCombatEvent;
+            CombatEvent combatEvent = new CombatEvent(spawnerInstance);
+
+            m_monsterRooms.OnCombatEnded += OpenCorridors;
+            m_monsterRooms.OnCombatEnded += SpawnArtifact;
+            m_bossRooms.OnCombatEnded += OpenCorridors;
+            m_bossRooms.OnCombatEnded += ActivateTeleporter;
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {
@@ -71,10 +80,10 @@ namespace MagmaHeart.Core
                     List<Corridor> adjacentCorridors = m_location.Corridors.FindAll(c => c.Entrance1.RoomTileData == roomTileData || c.Entrance2.RoomTileData == roomTileData);
 
                     if (roomTileData != bossRoom)
-                        roomInstance.Initialize(roomTileData, adjacentCorridors, m_monsterRoomEnemies);
+                        roomInstance.Initialize(roomTileData, adjacentCorridors, m_monsterRooms);
                     else
-                        roomInstance.Initialize(roomTileData, adjacentCorridors, m_bossRoomEnemies);
-
+                        roomInstance.Initialize(roomTileData, adjacentCorridors, m_bossRooms);
+                    
                     roomInstance.playerEnteredRoom += combatEvent.Start;
                     roomInstance.playerEnteredRoom += (room) => m_grid.Corridors.gameObject.SetActive(true);
                 }
@@ -94,9 +103,21 @@ namespace MagmaHeart.Core
             return playerInstance.ControllingEntity;
         }
         
-        private void EndCombatEvent()
+        private void OpenCorridors(Room room)
         {
             m_grid.Corridors.gameObject.SetActive(false);
+        }
+
+        private void SpawnArtifact(Room room)
+        {
+            Artifact prefab = m_artifactPrefabs[Random.Range(0, m_artifactPrefabs.Count)];
+            Instantiate(prefab, room.WorldPosition.ToVector3(), Quaternion.identity);
+        }
+
+        private void ActivateTeleporter(Room room)
+        {
+            Teleporter teleporterInstance = Instantiate(m_teleporterPrefab, room.WorldPosition.ToVector2(), Quaternion.identity);
+            teleporterInstance.Initialize(m_sceneLoader);
         }
     }
 }

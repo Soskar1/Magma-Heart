@@ -24,6 +24,7 @@ namespace MagmaHeart.Core.SceneLoading
         {
             DungeonBootstrap prefab = m_bootstraps[scene.name];
             DungeonBootstrap bootstrapInstance = Instantiate(prefab);
+            bootstrapInstance.Initialize(this);
             bootstrapInstance.BootScene();
         }
 

@@ -6,7 +6,9 @@ namespace MagmaHeart.Core.SceneLoading
 {
     public class Teleporter : MonoBehaviour
     {
-        [SerializeField] private SceneLoader m_loader;
+        private SceneLoader m_loader;
+
+        public void Initialize(SceneLoader sceneLoader) => m_loader = sceneLoader;
 
         private void OnTriggerEnter2D(Collider2D collision)
         {

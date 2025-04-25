@@ -5,14 +5,6 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    [Serializable]
-    public struct CombatData
-    {
-        public List<EnemyMeleeBehaviour> prefabs;
-        public int enemyCount;
-        public int waves;
-    }
-
     [RequireComponent(typeof(BoxCollider2D))]
     public class Room : MonoBehaviour
     {

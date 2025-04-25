@@ -50,18 +50,19 @@ MonoBehaviour:
   m_roomPrefab: {fileID: 1152494207554128281, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}
   m_uiPrefab: {fileID: 6341758075742481958, guid: 5740d4716790e0e439d7c4b2a0139e8b, type: 3}
   m_gridPrefab: {fileID: 7317234101835903557, guid: 230714f8488e8724b82e2a8216774cba, type: 3}
+  m_teleporterPrefab: {fileID: 7001880076195291559, guid: bd596004a1ef0424ba53365e88845e9b, type: 3}
   m_spawnerPrefab: {fileID: 1928700902015151912, guid: 700facb0624dcac489527ed2f51d1c18, type: 3}
   m_artifactPrefabs:
   - {fileID: 8781321674045735426, guid: f5f6e6b5e0c86184483e74bd30c8ad0f, type: 3}
   - {fileID: 1654007457724616342, guid: 356d6280392c57b4ea2919ef9baa407a, type: 3}
   - {fileID: 5275737574815216745, guid: 25a93b45e055b6948acbb9d9f7f5b0aa, type: 3}
   - {fileID: 2064139830985503399, guid: 071db7a70097f9e4582652e10c0143b9, type: 3}
-  m_monsterRoomEnemies:
+  m_monsterRooms:
     prefabs:
     - {fileID: 2174559174635198697, guid: 742862497be07974a8a888e2f832ee26, type: 3}
     enemyCount: 5
     waves: 2
-  m_bossRoomEnemies:
+  m_bossRooms:
     prefabs:
     - {fileID: 9126221276518035511, guid: 0ec0960a145037b4da172e8f60710f55, type: 3}
     enemyCount: 1
