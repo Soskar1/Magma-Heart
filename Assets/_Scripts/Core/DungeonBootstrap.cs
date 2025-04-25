@@ -19,12 +19,11 @@ namespace MagmaHeart.Core
 
         [Header("Combat Event")]
         [SerializeField] private Spawner m_spawner;
-        [SerializeField] private int m_amountOfWaves;
         [SerializeField] private List<Artifact> m_artifactPrefabs;
 
-        [Header("Enemies")]
-        [SerializeField] private List<RoomEnemy> m_monsterRoomEnemies;
-        [SerializeField] private List<RoomEnemy> m_bossRoomEnemies;
+        [Header("CombatData")]
+        [SerializeField] private CombatData m_monsterRoomEnemies;
+        [SerializeField] private CombatData m_bossRoomEnemies;
 
         [Header("GFX")]
         [SerializeField] private Tilemap m_floor;
@@ -61,7 +60,7 @@ namespace MagmaHeart.Core
 
             m_spawner.Initialize(spawnedEntity);
 
-            CombatEvent combatEvent = new CombatEvent(m_spawner, m_amountOfWaves, m_artifactPrefabs);
+            CombatEvent combatEvent = new CombatEvent(m_spawner, m_artifactPrefabs);
             combatEvent.OnCombatEventEnded += EndCombatEvent;
 
             foreach (RoomTileData roomTileData in m_location.Rooms)

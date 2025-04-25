@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 using Random=UnityEngine.Random;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.Dungeon
 {
     public class CombatEvent
     {
         private Spawner m_spawner;
-        private int m_waves;
         private int m_currentWave;
 
         public Action OnCombatEventEnded;
@@ -18,10 +16,9 @@ namespace MagmaHeart.Core
         private int m_currentAmountOfMonsters;
         private List<Artifact> m_possibleRewards;
 
-        public CombatEvent(Spawner spawner, int waves, List<Artifact> rewards)
+        public CombatEvent(Spawner spawner, List<Artifact> rewards)
         {
             m_spawner = spawner;
-            m_waves = waves;
             m_currentWave = 1;
             m_currentAmountOfMonsters = 0;
 
@@ -47,7 +44,7 @@ namespace MagmaHeart.Core
 
             if (m_currentAmountOfMonsters == 0)
             {
-                if (m_currentWave < m_waves)
+                if (m_currentWave < m_currentRoom.CombatData.waves)
                 {
                     ++m_currentWave;
                     SpawnWave();

@@ -6,10 +6,11 @@ using UnityEngine;
 namespace MagmaHeart.Core.Dungeon
 {
     [Serializable]
-    public struct RoomEnemy
+    public struct CombatData
     {
-        public EnemyMeleeBehaviour prefab;
-        public int count;
+        public List<EnemyMeleeBehaviour> prefabs;
+        public int enemyCount;
+        public int waves;
     }
 
     [RequireComponent(typeof(BoxCollider2D))]
@@ -20,7 +21,7 @@ namespace MagmaHeart.Core.Dungeon
         private RoomTileData m_roomTileData;
         public RoomTileData roomTileData => m_roomTileData;
         public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
-        public List<RoomEnemy> Enemies { get; private set; }
+        public CombatData CombatData { get; private set; }
 
         public Action<Room> playerEnteredRoom;
         private BoxCollider2D m_boxCollider;
@@ -32,10 +33,10 @@ namespace MagmaHeart.Core.Dungeon
             m_roomTileData = roomTileData;
         }
 
-        public void Initialize(RoomTileData roomTileData, List<Corridor> corridors, List<RoomEnemy> enemies)
+        public void Initialize(RoomTileData roomTileData, List<Corridor> corridors, CombatData combatData)
         {
             m_roomTileData = roomTileData;
-            Enemies = enemies;
+            CombatData = combatData;
 
             float minDistance = float.MaxValue;
             foreach (Corridor corridor in corridors)
