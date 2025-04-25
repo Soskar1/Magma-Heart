@@ -10,14 +10,16 @@ namespace MagmaHeart.Core.SceneLoading
     {
         [SerializeField] private BootstrapDictionary m_bootstrapData;
         private Dictionary<string, SceneBootstrap> m_bootstraps;
-        private DataTransfer m_data;
+        private SaveData m_data;
+
+        public SaveData SavedData => m_data;
 
         private void Awake()
         {
-            m_data = new DataTransfer();
             m_bootstraps = m_bootstrapData.ToDictionary();
             DontDestroyOnLoad(gameObject);
         }
+
         private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
         private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
@@ -25,11 +27,11 @@ namespace MagmaHeart.Core.SceneLoading
         {
             SceneBootstrap prefab = m_bootstraps[scene.name];
             SceneBootstrap bootstrapInstance = Instantiate(prefab);
-            bootstrapInstance.Initialize(this, m_data.ObtainedArtifacts);
+            bootstrapInstance.Initialize(this);
             bootstrapInstance.BootScene();
         }
 
-        public void LoadNextScene(DataTransfer data)
+        public void LoadNextScene(SaveData data)
         {
             m_data = data;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

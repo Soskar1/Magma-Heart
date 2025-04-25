@@ -29,13 +29,8 @@ namespace MagmaHeart.Core.SceneLoading
         private Location m_location;
         private LocationRenderer m_renderer;
         private GameGrid m_grid;
-        private List<Artifact> m_artifactsToApply;
 
-        public void Initialize(SceneLoader sceneLoader, List<Artifact> artifactsToApply)
-        {
-            m_sceneLoader = sceneLoader;
-            m_artifactsToApply = artifactsToApply;
-        }
+        public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void BootScene()
         {
@@ -66,8 +61,15 @@ namespace MagmaHeart.Core.SceneLoading
             uiInstance.HealthBar.Initialize(spawnedEntity);
             uiInstance.HealthBar.gameObject.SetActive(true);
 
-            if (m_artifactsToApply != null && spawnedEntity.TryGetComponent(out ArtifactApplier applier))
-                applier.ApplyArtifacts(m_artifactsToApply);
+            if (m_sceneLoader.SavedData != null)
+            {
+                SaveData savedData = m_sceneLoader.SavedData;
+
+                if (spawnedEntity.TryGetComponent(out ArtifactApplier applier))
+                    applier.ApplyArtifacts(savedData.ObtainedArtifacts);
+
+                spawnedEntity.Health.SetCurrentHealth(savedData.health);
+            }
 
             Spawner spawnerInstance = Instantiate(m_spawnerPrefab);
             spawnerInstance.Initialize(spawnedEntity);

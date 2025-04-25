@@ -12,19 +12,16 @@ namespace MagmaHeart.Core.UI
         public void Initialize(Entity playerEntity)
         {
             m_playerHealth = playerEntity.Health;
-            m_playerHealth.OnTakeDamage += UpdateHealthBar;
+            m_playerHealth.OnCurrentHealthChanged += UpdateHealthBar;
             m_playerHealth.OnMaxHealthChanged += UpdateHealthBar;
         }
 
         private void OnDisable()
         {
-            m_playerHealth.OnTakeDamage -= UpdateHealthBar;
+            m_playerHealth.OnCurrentHealthChanged -= UpdateHealthBar;
             m_playerHealth.OnMaxHealthChanged -= UpdateHealthBar;
         }
 
-        public void UpdateHealthBar()
-        {
-            m_healthBar.fillAmount = m_playerHealth.CurrentHealth / m_playerHealth.MaxHealth;
-        }
+        public void UpdateHealthBar() => m_healthBar.fillAmount = m_playerHealth.CurrentHealth / m_playerHealth.MaxHealth;
     }
 }

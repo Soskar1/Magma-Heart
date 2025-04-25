@@ -12,12 +12,11 @@ namespace MagmaHeart.Core.SceneLoading
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.GetComponent<PlayerBehaviour>() != null)
+            if (collision.TryGetComponent(out PlayerBehaviour player))
             {
-                ArtifactApplier applier = collision.GetComponent<ArtifactApplier>();
-
-                DataTransfer dataTransfer = new DataTransfer();
-                dataTransfer.SaveObtainedArtifacts(applier.ObtainedArtifacts);
+                SaveData dataTransfer = new SaveData();
+                dataTransfer.SaveObtainedArtifacts(player.ArtifactApplier.ObtainedArtifacts);
+                dataTransfer.health = player.ControllingEntity.Health.CurrentHealth;
                 m_loader.LoadNextScene(dataTransfer);
             }
         }
