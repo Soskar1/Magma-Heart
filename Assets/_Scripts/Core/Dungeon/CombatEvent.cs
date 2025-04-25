@@ -1,31 +1,23 @@
 using System;
 using System.Collections.Generic;
-using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.Dungeon;
-using UnityEngine;
-using Random=UnityEngine.Random;
+using MagmaHeart.Core.Entities;
 
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.Dungeon
 {
     public class CombatEvent
     {
         private Spawner m_spawner;
-        private int m_waves;
         private int m_currentWave;
 
         public Action OnCombatEventEnded;
         private Room m_currentRoom;
         private int m_currentAmountOfMonsters;
-        private List<Artifact> m_possibleRewards;
 
-        public CombatEvent(Spawner spawner, int waves, List<Artifact> rewards)
+        public CombatEvent(Spawner spawner)
         {
             m_spawner = spawner;
-            m_waves = waves;
             m_currentWave = 1;
             m_currentAmountOfMonsters = 0;
-
-            m_possibleRewards = rewards;
 
             m_spawner.SpawnedEnemy += IncrementCurrentAmountOfMonsters;
             m_spawner.EnemyDisabled += DecrementCurrentAmountOfMonsters;
@@ -47,7 +39,7 @@ namespace MagmaHeart.Core
 
             if (m_currentAmountOfMonsters == 0)
             {
-                if (m_currentWave < m_waves)
+                if (m_currentWave < m_currentRoom.CombatData.waves)
                 {
                     ++m_currentWave;
                     SpawnWave();
@@ -64,14 +56,16 @@ namespace MagmaHeart.Core
         private void EndCombatEvent()
         {
             m_currentWave = 1;
-            OnCombatEventEnded?.Invoke();
-            SpawnAward();
+            m_currentRoom.CombatData.OnCombatEnded?.Invoke(m_currentRoom);
         }
+    }
 
-        private void SpawnAward()
-        {
-            Artifact artifactPrefab = m_possibleRewards[Random.Range(0, m_possibleRewards.Count)];
-            GameObject.Instantiate(artifactPrefab, m_currentRoom.WorldPosition.ToVector2(), Quaternion.identity);
-        }
+    [Serializable]
+    public class CombatData
+    {
+        public List<EnemyMeleeBehaviour> prefabs;
+        public int enemyCount;
+        public int waves;
+        public Action<Room> OnCombatEnded;
     }
 }

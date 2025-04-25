@@ -37,28 +37,35 @@ namespace MagmaHeart.Core
         {
             RoomTileData tileData = m_currentRoom.roomTileData;
 
-            foreach (RoomEnemy enemy in m_currentRoom.Enemies)
+            for (int i = 0; i < m_currentRoom.CombatData.enemyCount; ++i)
             {
-                if (!m_enemyObjectPoolMap.IsRegistered(enemy.prefab.GetType()))
-                    m_enemyObjectPoolMap.RegisterPool<EnemyMeleeBehaviour>(enemy.prefab, EnemyInitialization, m_initialPoolSize);
+                DungeonTile dungeonTile = null;
+                while (dungeonTile == null || dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer)
+                    dungeonTile = tileData.GetTileAtIndex(Random.Range(0, tileData.TileCount - 1));
 
-                for (int i = 0; i < enemy.count; ++i)
+                EnemyMeleeBehaviour enemyInstance = SpawnEnemy(dungeonTile.Position);
+
+                foreach (EnemyMeleeBehaviour other in m_spawnedEnemies)
                 {
-                    DungeonTile dungeonTile = null;
-                    while (dungeonTile == null || dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer)
-                        dungeonTile = tileData.GetTileAtIndex(Random.Range(0, tileData.TileCount - 1));
-
-                    EnemyMeleeBehaviour enemyInstance = m_enemyObjectPoolMap.Get<EnemyMeleeBehaviour>(enemy.prefab.GetType());
-                    enemyInstance.transform.position = dungeonTile.Position.ToVector2() + m_offset;
-                    SpawnedEnemy?.Invoke();
-
-                    foreach (EnemyMeleeBehaviour other in m_spawnedEnemies)
-                    {
-                        Physics2D.IgnoreCollision(other.Collider, enemyInstance.AttackHitCollider);
-                        Physics2D.IgnoreCollision(enemyInstance.Collider, other.AttackHitCollider);
-                    }
+                    Physics2D.IgnoreCollision(other.Collider, enemyInstance.AttackHitCollider);
+                    Physics2D.IgnoreCollision(enemyInstance.Collider, other.AttackHitCollider);
                 }
             }
+        }
+
+        private EnemyMeleeBehaviour SpawnEnemy(Vector2 position)
+        {
+            CombatData combatData = m_currentRoom.CombatData;
+            EnemyMeleeBehaviour enemyToSpawn = combatData.prefabs[Random.Range(0, combatData.prefabs.Count)];
+
+            if (!m_enemyObjectPoolMap.IsRegistered(enemyToSpawn.GetType()))
+                m_enemyObjectPoolMap.RegisterPool<EnemyMeleeBehaviour>(enemyToSpawn, EnemyInitialization, m_initialPoolSize);
+
+            EnemyMeleeBehaviour enemyInstance = m_enemyObjectPoolMap.Get<EnemyMeleeBehaviour>(enemyToSpawn.GetType());
+            enemyInstance.transform.position = position + m_offset;
+            SpawnedEnemy?.Invoke();
+
+            return enemyInstance;
         }
 
         private void PushToPool(EnemyMeleeBehaviour enemy)

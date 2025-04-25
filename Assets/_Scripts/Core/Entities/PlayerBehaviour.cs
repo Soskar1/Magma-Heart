@@ -11,9 +11,9 @@ namespace MagmaHeart.Core.Entities
         private IMeleeAttacker m_attack;
         private IMovable m_movement;
         private AnimationPlayer m_animation;
-        private ArtifactApplier m_artifactApplier;
 
         public Entity ControllingEntity { get; private set; }
+        public ArtifactApplier ArtifactApplier { get; private set; }
 
         public void Initialize()
         {
@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Entities
             m_movement = entity.Movement;
             m_animation = entity.Animation;
 
-            m_artifactApplier = GetComponent<ArtifactApplier>();
+            ArtifactApplier = GetComponent<ArtifactApplier>();
 
             ControllingEntity = entity;
         }
@@ -36,10 +36,10 @@ namespace MagmaHeart.Core.Entities
             m_userInput.Enable();
             ControllingEntity.Enable();
 
-            m_artifactApplier.IncreaseHealth += ControllingEntity.Health.IncreaseMaxHealth;
-            m_artifactApplier.IncreaseDamage += m_weapon.IncreaseDamage;
-            m_artifactApplier.IncreaseSpeed += m_movement.IncreaseMaxSpeed;
-            m_artifactApplier.IncreaseAttackSpeed += m_animation.IncreaseAnimationSpeed;
+            ArtifactApplier.IncreaseHealth += ControllingEntity.Health.IncreaseMaxHealth;
+            ArtifactApplier.IncreaseDamage += m_weapon.IncreaseDamage;
+            ArtifactApplier.IncreaseSpeed += m_movement.IncreaseMaxSpeed;
+            ArtifactApplier.IncreaseAttackSpeed += m_animation.IncreaseAnimationSpeed;
         }
 
         public void Disable()
@@ -48,10 +48,10 @@ namespace MagmaHeart.Core.Entities
             m_userInput.Disable();
             ControllingEntity.Disable();
 
-            m_artifactApplier.IncreaseHealth -= ControllingEntity.Health.IncreaseMaxHealth;
-            m_artifactApplier.IncreaseDamage -= m_weapon.IncreaseDamage;
-            m_artifactApplier.IncreaseSpeed -= m_movement.IncreaseMaxSpeed;
-            m_artifactApplier.IncreaseAttackSpeed -= m_animation.IncreaseAnimationSpeed;
+            ArtifactApplier.IncreaseHealth -= ControllingEntity.Health.IncreaseMaxHealth;
+            ArtifactApplier.IncreaseDamage -= m_weapon.IncreaseDamage;
+            ArtifactApplier.IncreaseSpeed -= m_movement.IncreaseMaxSpeed;
+            ArtifactApplier.IncreaseAttackSpeed -= m_animation.IncreaseAnimationSpeed;
         }
 
         public void Update() => m_animation.PlayAnimations();
