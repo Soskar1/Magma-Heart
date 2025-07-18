@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,15 +7,19 @@ namespace MagmaHeart.Core.SceneLoading
 {
     public class SceneLoader : MonoBehaviour
     {
-        [SerializeField] private BootstrapDictionary m_bootstrapData;
         private Dictionary<string, SceneBootstrap> m_bootstraps;
+        [SerializeField] private SceneBootstrapKeyValue[] m_bootstrapsKeyValues;
         private SaveData m_data;
 
         public SaveData SavedData => m_data;
 
         private void Awake()
         {
-            m_bootstraps = m_bootstrapData.ToDictionary();
+            m_bootstraps = new Dictionary<string, SceneBootstrap>();
+
+            foreach (SceneBootstrapKeyValue bootstrap in m_bootstrapsKeyValues)
+                m_bootstraps.Add(bootstrap.Scene, bootstrap.Bootstrap);
+
             DontDestroyOnLoad(gameObject);
         }
 
@@ -39,32 +42,13 @@ namespace MagmaHeart.Core.SceneLoading
     }
 
     [Serializable]
-    public class BootstrapDictionary
-    {
-        [SerializeField] private List<SceneBootstrapKeyValue> m_bootstraps;
-        public List<SceneBootstrapKeyValue> Bootstraps => m_bootstraps;
-    }
-
-    public static class BootstrapDictionaryExtensions
-    {
-        public static Dictionary<string, SceneBootstrap> ToDictionary(this BootstrapDictionary bootstrapers)
-        {
-            Dictionary<string, SceneBootstrap> dict = new Dictionary<string, SceneBootstrap>();
-
-            foreach (SceneBootstrapKeyValue bootstrap in bootstrapers.Bootstraps)
-                dict.Add(bootstrap.Scene.name, bootstrap.Bootstrap);
-
-            return dict;
-        }
-    }
-
-    [Serializable]
     public class SceneBootstrapKeyValue
     {
-        [SerializeField] private SceneAsset m_scene;
         [SerializeField] private SceneBootstrap m_bootstrap;
+        [SerializeField] private string m_scenePath;
+        [SerializeField] private string m_sceneName;
 
-        public SceneAsset Scene => m_scene;
+        public string Scene => m_sceneName;
         public SceneBootstrap Bootstrap => m_bootstrap;
     }
 }

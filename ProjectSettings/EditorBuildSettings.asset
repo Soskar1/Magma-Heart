@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game/Graveyard.unity
     guid: e2f1e4525291367498bf9b27a96a56c0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game/Volcano.unity
     guid: 7681805a70dac644f9f23fc24ef2d250
   m_configObjects:
