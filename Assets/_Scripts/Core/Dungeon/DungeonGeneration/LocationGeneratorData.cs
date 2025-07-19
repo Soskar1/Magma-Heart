@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using UnityEngine;
 using Random = System.Random;
@@ -24,12 +25,10 @@ namespace MagmaHeart.Core.Dungeon
 
         private const string LOCATION_GENERATOR_XPATH = "//LocationGenerator";
 
-        public LocationGeneratorDeserializer(string xmlFileName, Random random)
+        public LocationGeneratorDeserializer(TextAsset configFile, Random random)
         {
-            string pathToXml = $"Assets\\Data\\{xmlFileName}.xml";
-
             m_document = new XmlDocument();
-            m_document.Load(pathToXml);
+            m_document.Load(new StringReader(configFile.text));
             m_random = random;
         }
 

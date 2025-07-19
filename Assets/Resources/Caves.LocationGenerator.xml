@@ -1,5 +1,5 @@
 <?xml version ="1.0"?>
-<LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LocationGenerator.xsd">
+<LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Data/LocationGenerator.xsd">
 	<LocationSpace XSize="200" YSize="200"/>
 	<RoomSpace XBorderOffset="3" YBorderOffset="3"/>
 	<SpacePartitioning MaxPartitions="50" RoomXMinSize="40" RoomYMinSize="40"/>

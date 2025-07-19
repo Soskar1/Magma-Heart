@@ -8,6 +8,11 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class LocationGenerator : MonoBehaviour
     {
+        [SerializeField] private string m_generatorConfigFileName;
+        [SerializeField] private bool m_useSeed;
+        [SerializeField] private int m_seed;
+        private Random m_random;
+
         private BinarySpacePartitioning m_spacePartitioning;
         private CorridorGenerator m_corridorGenerator;
 
@@ -16,11 +21,6 @@ namespace MagmaHeart.Core.Dungeon
 
         private List<IRoomGenerator> m_generators = new List<IRoomGenerator>();
 
-        [SerializeField] private TextAsset m_locationGeneratorXmlFile;
-        [SerializeField] private bool m_useSeed;
-        [SerializeField] private int m_seed;
-        private Random m_random;
-
         private void Awake()
         {
             if (!m_useSeed)
@@ -28,7 +28,8 @@ namespace MagmaHeart.Core.Dungeon
 
             m_random = new Random(m_seed);
 
-            LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(m_locationGeneratorXmlFile.name, m_random);
+            TextAsset configFile = ExternalResources.LoadTextAsset(m_generatorConfigFileName);
+            LocationGeneratorDeserializer deserializer = new LocationGeneratorDeserializer(configFile, m_random);
             LocationGeneratorData data = deserializer.Deserialize();
             m_generators = data.generators;
             m_locationSpaceSize = data.locationSpaceSize;

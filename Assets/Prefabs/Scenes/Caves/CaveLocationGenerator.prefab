@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab029721c1a586c419418028420852c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_locationGeneratorXmlFile: {fileID: 4900000, guid: 70bf2016c47641748b61dc2eaa7bdbc0, type: 3}
+  m_generatorConfigFileName: Caves.LocationGenerator
   m_useSeed: 0
   m_seed: 0
 --- !u!114 &2613289529635105314
