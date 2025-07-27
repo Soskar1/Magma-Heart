@@ -47,5 +47,8 @@ TagManager:
   - name: Debug
     uniqueID: 555564033
     locked: 0
+  - name: HUD
+    uniqueID: 62365245
+    locked: 0
   m_RenderingLayers:
   - Default

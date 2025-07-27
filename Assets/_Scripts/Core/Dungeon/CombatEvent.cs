@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.Dungeon
             m_currentRoom = room;
             m_spawner.SetRoom(room);
             SpawnWave();
-            room.playerEnteredRoom -= Start;
+            // room.playerEnteredRoom -= Start;
         }
 
         private void IncrementCurrentAmountOfMonsters() => ++m_currentAmountOfMonsters;

@@ -51,3 +51,4 @@ MonoBehaviour:
   m_gridPrefab: {fileID: 7317234101835903557, guid: 230714f8488e8724b82e2a8216774cba, type: 3}
   m_teleporterPrefab: {fileID: 7001880076195291559, guid: bd596004a1ef0424ba53365e88845e9b, type: 3}
   m_combatAltarPrefab: {fileID: 8918392495559026645, guid: b4ea2020421ad15429d6d334566dcddb, type: 3}
+  m_roomPrefab: {fileID: 1152494207554128281, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}

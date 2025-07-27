@@ -16,17 +16,18 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private GameGrid m_gridPrefab;
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
+        [SerializeField] private Room m_roomPrefab;
 
         private SceneLoader m_sceneLoader;
         private Location m_location;
         private LocationRenderer m_renderer;
-        private GameGrid m_grid;
+        private TurnBasedCombatManager m_turnBasedCombatManager;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void BootScene()
         {
-            m_grid = Instantiate(m_gridPrefab);
+            GameGrid gridInstance = Instantiate(m_gridPrefab);
 
             LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
             m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
@@ -34,10 +35,13 @@ namespace MagmaHeart.Core.SceneLoading
             m_renderer.RenderedAllTiles += SpawnEntities;
 
             m_location = await locationGeneratorInstance.GenerateLocation(Vector2Int.zero);
-            m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
-            m_renderer.AddTilesToDraw(m_location.WallTiles, m_grid.Walls, m_grid.WallTile);
-            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, m_grid.Corridors, m_grid.WallTile);
+            m_renderer.AddTilesToDraw(m_location.FloorTiles, gridInstance.Floor, gridInstance.FloorTile);
+            m_renderer.AddTilesToDraw(m_location.WallTiles, gridInstance.Walls, gridInstance.WallTile);
+            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, gridInstance.Corridors, gridInstance.WallTile);
             m_renderer.DrawTiles();
+
+            m_turnBasedCombatManager = new TurnBasedCombatManager();
+            m_turnBasedCombatManager.Initialize(gridInstance.Corridors);
         }
 
         private void SpawnEntities()
@@ -63,11 +67,18 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedEntity.Health.SetCurrentHealth(savedData.health);
             }
 
-            foreach (RoomTileData room in m_location.Rooms)
+            foreach (RoomTileData roomTileData in m_location.Rooms)
             {
-                if (room != startRoom && room != bossRoom)
+                if (roomTileData != startRoom)
                 {
-                    Instantiate(m_combatAltarPrefab, room.WorldPosition.ToVector3(), Quaternion.identity);
+                    Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
+                    roomInstance.Initialize(roomTileData);
+
+                    if (roomTileData != bossRoom)
+                    {
+                        CombatAltar altarInstance = Instantiate(m_combatAltarPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
+                        altarInstance.Initialize(roomInstance, m_turnBasedCombatManager);
+                    }
                 }
             }
         }
