@@ -12,6 +12,8 @@ namespace MagmaHeart.Core.Entities
         private IMovable m_movement;
         private AnimationPlayer m_animation;
 
+        private IInteractable m_currentInteractableObject = null;
+
         public Entity ControllingEntity { get; private set; }
         public ArtifactApplier ArtifactApplier { get; private set; }
 
@@ -33,6 +35,7 @@ namespace MagmaHeart.Core.Entities
         public void Enable()
         {
             m_userInput.Controls.Player.Attack.performed += Attack;
+            m_userInput.Controls.Player.Interaction.performed += Interact;
             m_userInput.Enable();
             ControllingEntity.Enable();
 
@@ -45,6 +48,7 @@ namespace MagmaHeart.Core.Entities
         public void Disable()
         {
             m_userInput.Controls.Player.Attack.performed -= Attack;
+            m_userInput.Controls.Player.Interaction.performed -= Interact;
             m_userInput.Disable();
             ControllingEntity.Disable();
 
@@ -59,5 +63,23 @@ namespace MagmaHeart.Core.Entities
         public void FixedUpdate() => m_movement.Move(m_userInput.Movement);
 
         public void Attack(InputAction.CallbackContext context) => m_attack.Attack();
+
+        public void Interact(InputAction.CallbackContext context)
+        {
+            if (m_currentInteractableObject != null)
+                m_currentInteractableObject.Interact();
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.TryGetComponent(out IInteractable interactable))
+                m_currentInteractableObject = interactable;
+        }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.TryGetComponent(out IInteractable interactable) && interactable == m_currentInteractableObject)
+                m_currentInteractableObject = null;
+        }
     }
 }
