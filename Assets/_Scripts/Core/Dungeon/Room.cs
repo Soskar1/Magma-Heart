@@ -10,8 +10,6 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private TileBase m_combatTile;
 
         private RoomTileData m_roomTileData;
-        public RoomTileData roomTileData => m_roomTileData;
-        public CombatData CombatData { get; private set; }
 
         private Tilemap m_tilemap;
         private TilemapRenderer m_tilemapRenderer;

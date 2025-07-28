@@ -9,7 +9,7 @@ namespace MagmaHeart.Core.SceneLoading
 {
     public class SceneBootstrap : MonoBehaviour
     {
-        [SerializeField] private PlayerBehaviour m_player;
+        [SerializeField] private Player m_player;
         [SerializeField] private CameraMovement m_camera;
         [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
         [SerializeField] private GameUI m_uiPrefab;
@@ -40,8 +40,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, gridInstance.Corridors, gridInstance.WallTile);
             m_renderer.DrawTiles();
 
-            m_turnBasedCombatManager = new TurnBasedCombatManager();
-            m_turnBasedCombatManager.Initialize(gridInstance.Corridors);
+            m_turnBasedCombatManager = new TurnBasedCombatManager(gridInstance.Corridors);
         }
 
         private void SpawnEntities()
@@ -51,20 +50,20 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
-            Entity spawnedEntity = SpawnPlayer(startRoom);
+            Player spawnedPlayer = SpawnPlayer(startRoom);
 
             GameUI uiInstance = Instantiate(m_uiPrefab);
-            uiInstance.HealthBar.Initialize(spawnedEntity);
+            uiInstance.HealthBar.Initialize(spawnedPlayer.ControllingEntity);
             uiInstance.HealthBar.gameObject.SetActive(true);
 
             if (m_sceneLoader.SavedData != null)
             {
                 SaveData savedData = m_sceneLoader.SavedData;
 
-                if (spawnedEntity.TryGetComponent(out ArtifactApplier applier))
+                if (spawnedPlayer.TryGetComponent(out ArtifactApplier applier))
                     applier.ApplyArtifacts(savedData.ObtainedArtifacts);
 
-                spawnedEntity.Health.SetCurrentHealth(savedData.health);
+                spawnedPlayer.Health.SetCurrentHealth(savedData.health);
             }
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
@@ -83,9 +82,9 @@ namespace MagmaHeart.Core.SceneLoading
             }
         }
 
-        private Entity SpawnPlayer(RoomTileData startRoom)
+        private Player SpawnPlayer(RoomTileData startRoom)
         {
-            PlayerBehaviour playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
+            Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             playerInstance.Initialize();
             
             CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
@@ -93,7 +92,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             playerInstance.Enable();
 
-            return playerInstance.ControllingEntity;
+            return playerInstance;
         }
     }
 }

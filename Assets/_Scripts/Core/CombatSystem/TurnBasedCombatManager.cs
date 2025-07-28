@@ -1,4 +1,5 @@
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,10 +9,18 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private Tilemap m_corridors;
         private Room m_currentRoom;
+        private Player m_player;
+        private PlayerNonCombatBehaviour m_nonCombatBehaviour;
+        private PlayerCombatBehaviour m_combatBehaviour;
 
-        public void Initialize(Tilemap corridors)
+        private UserInput m_userInput;
+
+        public TurnBasedCombatManager(Tilemap corridors)
         {
             m_corridors = corridors;
+            m_userInput = new UserInput();
+
+            // m_nonCombatBehaviour = new PlayerNonCombatBehaviour(m_userInput, m_player.Movement, );
         }
 
         public void StartCombat(Room room)

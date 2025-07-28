@@ -13,7 +13,7 @@ namespace MagmaHeart.Core
         public Animator Animator => m_animator;
         public int CurrentAnimationState => m_currentAnimationState;
 
-        public virtual void Initialize() => m_animator = GetComponent<Animator>();
+        public virtual void Awake() => m_animator = GetComponent<Animator>();
         public abstract void Enable();
         public abstract void Disable();
 

@@ -1,39 +1,43 @@
-using UnityEngine;
-
 namespace MagmaHeart.Core.Entities
 {
-    public class Entity : MonoBehaviour
+    public class Entity
     {
-        [SerializeField] private float m_maxHealth;
+        private AnimationPlayer m_animation;
 
         public Health Health { get; private set; }
-        public IMovable Movement { get; private set; }
-        public IMeleeAttacker MeleeAttack { get; private set; }
-        public AnimationPlayer Animation { get; private set; }
 
-        public void Initialize()
+        public Entity(float health, AnimationPlayer animationPlayer = null)
         {
-            Health = new Health(m_maxHealth);
-            Movement = GetComponent<IMovable>();
-            MeleeAttack = GetComponent<IMeleeAttacker>();
-            Animation = GetComponent<AnimationPlayer>();
+            Health = new Health(health);
+            m_animation = animationPlayer;
+        }
 
-            if (Movement == null)
-                Debug.LogError($"{name} is missing IMovable.");
+        public void Enable()
+        {
+            if (m_animation == null)
+                return;
 
-            if (MeleeAttack == null)
-                Debug.LogError($"{name} is missing IMeleeAttacker.");
+            m_animation.Enable();
+        }
 
-            if (Animation == null)
-                Debug.LogWarning($"{name} has no IAnimatable (optional).");
+        public void Disable()
+        {
+            if (m_animation == null)
+                return;
 
-            Animation.Initialize();
+            m_animation.Disable();
         }
 
         public void Reset() => Health.Reset();
 
-        public void Enable() => Animation.Enable();
-        public void Disable() => Animation.Disable();
+        public void RunAnimations()
+        {
+            if (m_animation == null)
+                return;
+
+            m_animation.PlayAnimations();
+        }
+
         public void Hit(in float damage) => Health.TakeDamage(damage);
     }
 }
