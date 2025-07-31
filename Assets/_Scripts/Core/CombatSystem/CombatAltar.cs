@@ -5,19 +5,19 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class CombatAltar : MonoBehaviour, IInteractable
     {
-        private TurnBasedCombatManager m_combatManager;
+        private CombatStateSwitcher m_combatStateSwitcher;
         private Room m_room;
 
-        public void Initialize(Room room, TurnBasedCombatManager combatManager)
+        public void Initialize(Room room, CombatStateSwitcher combatStateSwitcher)
         {
             m_room = room;
-            m_combatManager = combatManager;
+            m_combatStateSwitcher = combatStateSwitcher;
         }
 
         public void Interact()
         {
             Destroy(gameObject);
-            m_combatManager.StartCombat(m_room);
+            m_combatStateSwitcher.EnterCombatState(m_room);
         }
     }
 }

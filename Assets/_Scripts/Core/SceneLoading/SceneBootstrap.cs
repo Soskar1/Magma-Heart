@@ -1,7 +1,7 @@
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
@@ -21,13 +21,17 @@ namespace MagmaHeart.Core.SceneLoading
         private SceneLoader m_sceneLoader;
         private Location m_location;
         private LocationRenderer m_renderer;
-        private TurnBasedCombatManager m_turnBasedCombatManager;
+        private CombatStateSwitcher m_combatStateSwitcher;
+        private UserInput m_userInput;
+        private GameGrid m_grid;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void BootScene()
         {
-            GameGrid gridInstance = Instantiate(m_gridPrefab);
+            m_userInput = new UserInput();
+
+            m_grid = Instantiate(m_gridPrefab);
 
             LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
             m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
@@ -35,12 +39,10 @@ namespace MagmaHeart.Core.SceneLoading
             m_renderer.RenderedAllTiles += SpawnEntities;
 
             m_location = await locationGeneratorInstance.GenerateLocation(Vector2Int.zero);
-            m_renderer.AddTilesToDraw(m_location.FloorTiles, gridInstance.Floor, gridInstance.FloorTile);
-            m_renderer.AddTilesToDraw(m_location.WallTiles, gridInstance.Walls, gridInstance.WallTile);
-            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, gridInstance.Corridors, gridInstance.WallTile);
+            m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
+            m_renderer.AddTilesToDraw(m_location.WallTiles, m_grid.Walls, m_grid.WallTile);
+            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, m_grid.Corridors, m_grid.WallTile);
             m_renderer.DrawTiles();
-
-            m_turnBasedCombatManager = new TurnBasedCombatManager(gridInstance.Corridors);
         }
 
         private void SpawnEntities()
@@ -51,6 +53,7 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
             Player spawnedPlayer = SpawnPlayer(startRoom);
+            m_combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, spawnedPlayer);
 
             GameUI uiInstance = Instantiate(m_uiPrefab);
             uiInstance.HealthBar.Initialize(spawnedPlayer.ControllingEntity);
@@ -76,7 +79,7 @@ namespace MagmaHeart.Core.SceneLoading
                     if (roomTileData != bossRoom)
                     {
                         CombatAltar altarInstance = Instantiate(m_combatAltarPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                        altarInstance.Initialize(roomInstance, m_turnBasedCombatManager);
+                        altarInstance.Initialize(roomInstance, m_combatStateSwitcher);
                     }
                 }
             }
@@ -85,7 +88,7 @@ namespace MagmaHeart.Core.SceneLoading
         private Player SpawnPlayer(RoomTileData startRoom)
         {
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize();
+            playerInstance.Initialize(m_userInput);
             
             CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             cameraInstance.ObjectToTrack = playerInstance.transform;
