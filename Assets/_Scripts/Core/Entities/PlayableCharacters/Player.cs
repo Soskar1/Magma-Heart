@@ -1,4 +1,6 @@
 using System;
+using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.UI;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -20,11 +22,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private ActionPlayerBehaviour m_actionBehaviour;
         private TurnBasedPlayerBehaviour m_turnBasedBehaviour;
 
-        public void Initialize(UserInput userInput)
+        public TurnBasedPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
+
+        public void Initialize(UserInput userInput, CombatUI combatUI)
         {
             Movement = GetComponent<IMovable>();
             m_actionBehaviour = new ActionPlayerBehaviour(userInput, Movement, this);
-            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(userInput);
+            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(userInput, combatUI);
             m_currentBehaviour = m_actionBehaviour;
 
             AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();

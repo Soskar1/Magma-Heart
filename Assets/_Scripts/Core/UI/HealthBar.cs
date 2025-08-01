@@ -1,4 +1,5 @@
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,9 @@ namespace MagmaHeart.Core.UI
         [SerializeField] private Image m_healthBar;
         private Health m_playerHealth;
 
-        public void Initialize(Entity playerEntity)
+        public void Initialize(Player player)
         {
-            m_playerHealth = playerEntity.Health;
+            m_playerHealth = player.Health;
             m_playerHealth.OnCurrentHealthChanged += UpdateHealthBar;
             m_playerHealth.OnMaxHealthChanged += UpdateHealthBar;
         }
