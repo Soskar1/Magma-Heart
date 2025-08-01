@@ -3,18 +3,20 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IEntity
     {
         [SerializeField] private float m_health;
-        private IPlayerBehaviour m_currentBehaviour;
 
         public Action<Collider2D> OnTriggerEnter;
         public Action<Collider2D> OnTriggerExit;
 
+        private Entity m_controllingEntity;
+
         public IMovable Movement { get; private set; }
-        public Entity ControllingEntity { get; private set; }
+        public Entity ControllingEntity => m_controllingEntity;
         public Health Health => ControllingEntity.Health;
 
+        private IPlayerBehaviour m_currentBehaviour;
         private ActionPlayerBehaviour m_actionBehaviour;
         private TurnBasedPlayerBehaviour m_turnBasedBehaviour;
 
@@ -26,7 +28,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour = m_actionBehaviour;
 
             AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
-            ControllingEntity = new Entity(m_health, animationPlayer);
+            m_controllingEntity = new Entity(m_health, animationPlayer);
         }
 
         public void Enable()

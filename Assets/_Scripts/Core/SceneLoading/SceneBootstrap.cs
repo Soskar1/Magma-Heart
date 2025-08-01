@@ -1,6 +1,7 @@
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.UI;
 using UnityEngine;
@@ -17,6 +18,10 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
         [SerializeField] private Room m_roomPrefab;
+
+        [Header("Spawner Settings")]
+        [SerializeField] private Enemy m_enemyPrefab;
+        [SerializeField] private float m_minDistanceFromPlayer;
 
         private SceneLoader m_sceneLoader;
         private Location m_location;
@@ -36,7 +41,7 @@ namespace MagmaHeart.Core.SceneLoading
             LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
             m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
 
-            m_renderer.RenderedAllTiles += SpawnEntities;
+            m_renderer.RenderedAllTiles += InitializePlayer;
 
             m_location = await locationGeneratorInstance.GenerateLocation(Vector2Int.zero);
             m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
@@ -45,15 +50,12 @@ namespace MagmaHeart.Core.SceneLoading
             m_renderer.DrawTiles();
         }
 
-        private void SpawnEntities()
+        private void InitializePlayer()
         {
-            m_renderer.RenderedAllTiles -= SpawnEntities;
+            m_renderer.RenderedAllTiles -= InitializePlayer;
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
-
             Player spawnedPlayer = SpawnPlayer(startRoom);
-            m_combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, spawnedPlayer);
 
             GameUI uiInstance = Instantiate(m_uiPrefab);
             uiInstance.HealthBar.Initialize(spawnedPlayer.ControllingEntity);
@@ -69,6 +71,29 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.SetCurrentHealth(savedData.health);
             }
 
+            InitializeCombatSystem(spawnedPlayer, startRoom);
+        }
+
+        private Player SpawnPlayer(RoomTileData startRoom)
+        {
+            Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
+            playerInstance.Initialize(m_userInput);
+            
+            CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
+            cameraInstance.ObjectToTrack = playerInstance.transform;
+
+            playerInstance.Enable();
+
+            return playerInstance;
+        }
+
+        private void InitializeCombatSystem(Player player, RoomTileData startRoom)
+        {
+            RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
+
+            Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
+            m_combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, spawner);
+
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {
                 if (roomTileData != startRoom)
@@ -83,19 +108,6 @@ namespace MagmaHeart.Core.SceneLoading
                     }
                 }
             }
-        }
-
-        private Player SpawnPlayer(RoomTileData startRoom)
-        {
-            Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(m_userInput);
-            
-            CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
-            cameraInstance.ObjectToTrack = playerInstance.transform;
-
-            playerInstance.Enable();
-
-            return playerInstance;
         }
     }
 }

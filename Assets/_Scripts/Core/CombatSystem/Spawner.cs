@@ -1,0 +1,36 @@
+using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
+using UnityEngine;
+
+namespace MagmaHeart.Core.CombatSystem
+{
+    public class Spawner
+    {
+        private Enemy m_enemyPrefab;
+        private Player m_player;
+        private float m_minDistanceFromPlayer;
+        private Vector3 m_offset = new Vector2(0.5f, 0.5f); // Used for offsetting spawned enemies
+
+        public Spawner(Player player, Enemy enemyPrefab, float minDistanceFromPlayer)
+        {
+            m_player = player;
+            m_enemyPrefab = enemyPrefab;
+            m_minDistanceFromPlayer = minDistanceFromPlayer;
+        }
+
+        public Enemy SpawnEnemy(RoomTileData roomTileData)
+        {
+            DungeonTile dungeonTile = null;
+            do
+            {
+                dungeonTile = roomTileData.GetTileAtIndex(Random.Range(0, roomTileData.TileCount - 1));
+            } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
+
+            Enemy entityInstance = Object.Instantiate(m_enemyPrefab, dungeonTile.Position.ToVector3() + m_offset, Quaternion.identity);
+            entityInstance.Initialize();
+
+            return entityInstance;
+        }
+    }
+}

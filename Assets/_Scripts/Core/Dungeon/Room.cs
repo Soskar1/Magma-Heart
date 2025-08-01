@@ -8,19 +8,18 @@ namespace MagmaHeart.Core.Dungeon
     public class Room : MonoBehaviour
     {
         [SerializeField] private TileBase m_combatTile;
-
-        private RoomTileData m_roomTileData;
+        public RoomTileData RoomTileData { get; private set; }
 
         private Tilemap m_tilemap;
         private TilemapRenderer m_tilemapRenderer;
 
         public void Initialize(RoomTileData roomTileData)
         {
-            m_roomTileData = roomTileData;
+            RoomTileData = roomTileData;
             m_tilemap = GetComponentInChildren<Tilemap>();
             m_tilemapRenderer = GetComponentInChildren<TilemapRenderer>();
 
-            HashSet<DungeonTile> dungeonTiles = m_roomTileData.GetTiles();
+            HashSet<DungeonTile> dungeonTiles = RoomTileData.GetTiles();
             foreach (DungeonTile tile in dungeonTiles)
             {
                 if (tile.Type != TileType.Wall)
