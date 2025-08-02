@@ -101,7 +101,7 @@ namespace MagmaHeart.Core.SceneLoading
                 if (roomTileData != startRoom)
                 {
                     Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    roomInstance.Initialize(roomTileData);
+                    roomInstance.Initialize(roomTileData, m_grid);
 
                     if (roomTileData != bossRoom)
                     {

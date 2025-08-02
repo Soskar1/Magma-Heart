@@ -4,14 +4,14 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class TurnOrder
     {
-        private LinkedList<ITurnController> m_turnOrder;
-        private LinkedListNode<ITurnController> m_currentNode;
+        private LinkedList<ICombatController> m_turnOrder;
+        private LinkedListNode<ICombatController> m_currentNode;
 
-        public TurnOrder() => m_turnOrder = new LinkedList<ITurnController>();
+        public TurnOrder() => m_turnOrder = new LinkedList<ICombatController>();
 
-        public ITurnController First => m_turnOrder.First.Value;
+        public ICombatController First => m_turnOrder.First.Value;
 
-        public void Add(ITurnController turnController)
+        public void Add(ICombatController turnController)
         {
             m_turnOrder.AddLast(turnController);
 
@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.CombatSystem
                 m_currentNode = m_turnOrder.First;
         }
 
-        public void Remove(ITurnController entity)
+        public void Remove(ICombatController entity)
         {
             if (m_currentNode.Value == entity)
                 SetNext();
@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_turnOrder.Remove(entity);
         }
 
-        public ITurnController Next()
+        public ICombatController Next()
         {
             SetNext();
 

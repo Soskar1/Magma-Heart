@@ -3,7 +3,7 @@ namespace MagmaHeart.Core.CombatSystem
     public class TurnSwitcher
     {
         private TurnOrder m_turnOrder;
-        private ITurnController m_currentTurn;
+        private ICombatController m_currentTurn;
 
         public TurnSwitcher(TurnOrder turnOrder)
         {

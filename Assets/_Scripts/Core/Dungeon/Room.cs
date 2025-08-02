@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,28 +9,50 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private TileBase m_combatTile;
         public RoomTileData RoomTileData { get; private set; }
 
-        private Tilemap m_tilemap;
-        private TilemapRenderer m_tilemapRenderer;
+        private Tilemap m_combatTilemap;
+        private GameGrid m_grid;
 
-        public void Initialize(RoomTileData roomTileData)
+        private Vector3Int? m_previousDisplayedTile;
+
+        public void Initialize(RoomTileData roomTileData, GameGrid gameGrid)
         {
             RoomTileData = roomTileData;
-            m_tilemap = GetComponentInChildren<Tilemap>();
-            m_tilemapRenderer = GetComponentInChildren<TilemapRenderer>();
+            m_grid = gameGrid;
+            m_combatTilemap = GetComponentInChildren<Tilemap>();
+        }
 
-            HashSet<DungeonTile> dungeonTiles = RoomTileData.GetTiles();
-            foreach (DungeonTile tile in dungeonTiles)
+        public void TryDisplayCombatTile(Vector2 worldPosition)
+        {
+            Vector3Int tilePosition = m_grid.WorldToTilePosition(worldPosition);
+            DungeonTile tile = RoomTileData.GetTile((Vector2Int)tilePosition);
+
+            if (tile == null)
+            {
+                TryHidePreviousCombatTile();
+            }
+            else
             {
                 if (tile.Type != TileType.Wall)
                 {
-                    Vector3Int tilePosition = m_tilemap.WorldToCell(tile.Position.ToVector3Int());
-                    m_tilemap.SetTile(tilePosition, m_combatTile);
+                    TryHidePreviousCombatTile();
+
+                    // Need to use combat tilemap for getting a new position
+                    // Can't use previously defined tilePosition, because of the offset issues
+                    tilePosition = m_combatTilemap.WorldToCell(worldPosition);
+                    m_combatTilemap.SetTile(tilePosition, m_combatTile);
+                    m_previousDisplayedTile = tilePosition;
+                }
+                else
+                {
+                    TryHidePreviousCombatTile();
                 }
             }
         }
 
-        public void ShowCombatTiles() => m_tilemapRenderer.enabled = true;
-
-        public void HideCombatTiles() => m_tilemapRenderer.enabled = false;
+        public void TryHidePreviousCombatTile()
+        {
+            if (m_previousDisplayedTile.HasValue)
+                m_combatTilemap.SetTile(m_previousDisplayedTile.Value, null);
+        }
     }
 }

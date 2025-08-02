@@ -5,12 +5,12 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class TurnOrderBuilder
     {
-        public TurnOrder Build(List<ITurnController> entities)
+        public TurnOrder Build(List<ICombatController> entities)
         {
             TurnOrder turnOrder = new TurnOrder();
-            PriorityQueue<ITurnController, int> iniciativePriority = new PriorityQueue<ITurnController, int>();
+            PriorityQueue<ICombatController, int> iniciativePriority = new PriorityQueue<ICombatController, int>();
 
-            foreach (ITurnController entity in entities)
+            foreach (ICombatController entity in entities)
             {
                 int iniciative = IniciativeRoll();
                 iniciativePriority.Enqueue(entity, -iniciative);
@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             while (iniciativePriority.Count > 0)
             {
-                ITurnController entity = iniciativePriority.Dequeue();
+                ICombatController entity = iniciativePriority.Dequeue();
                 turnOrder.Add(entity);
             }
 

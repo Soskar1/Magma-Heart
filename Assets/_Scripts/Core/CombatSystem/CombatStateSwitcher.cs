@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             m_player.EnterCombat();
 
-            List<ITurnController> entitiesInCombat = new List<ITurnController>() { m_player.TurnBasedPlayerBehaviour };
+            List<ICombatController> entitiesInCombat = new List<ICombatController>() { m_player.TurnBasedPlayerBehaviour };
 
             for (int i = 0; i < 3; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
@@ -42,6 +42,10 @@ namespace MagmaHeart.Core.CombatSystem
             // TODO: Turn on combat HUD
 
             TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder);
+
+            foreach (ICombatController controller in entitiesInCombat)
+                controller.StartCombat(room);
+
             turnSwitcher.Start();
         }
 

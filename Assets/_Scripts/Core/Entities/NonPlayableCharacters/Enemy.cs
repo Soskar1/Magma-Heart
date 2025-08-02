@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class Enemy : MonoBehaviour, IEntity, ITurnController
+    public class Enemy : MonoBehaviour, IEntity, ICombatController
     {
         [SerializeField] private EntityData m_data;
+        private Room m_currentRoom;
 
         private Entity m_controllingEntity;
         public Entity ControllingEntity => m_controllingEntity;
@@ -17,6 +19,11 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public void Initialize()
         {
             m_controllingEntity = new Entity(m_data);
+        }
+
+        public void StartCombat(Room room)
+        {
+            m_currentRoom = room;
         }
 
         public void StartTurn()
