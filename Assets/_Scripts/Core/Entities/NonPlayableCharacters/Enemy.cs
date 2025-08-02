@@ -7,7 +7,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class Enemy : MonoBehaviour, IEntity, ITurnController
     {
-        [SerializeField] private float m_maxHealth;
+        [SerializeField] private EntityData m_data;
 
         private Entity m_controllingEntity;
         public Entity ControllingEntity => m_controllingEntity;
@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public void Initialize()
         {
-            m_controllingEntity = new Entity(m_maxHealth);
+            m_controllingEntity = new Entity(m_data);
         }
 
         public void StartTurn()

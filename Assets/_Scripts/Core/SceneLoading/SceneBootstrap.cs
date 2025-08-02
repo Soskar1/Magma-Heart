@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
@@ -57,7 +58,7 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             
             GameUI uiInstance = Instantiate(m_uiPrefab);
-            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance.CombatUI);
+            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance.CombatRelatedUI);
 
             uiInstance.Initialize(spawnedPlayer);
             uiInstance.HealthBar.gameObject.SetActive(true);
@@ -75,7 +76,7 @@ namespace MagmaHeart.Core.SceneLoading
             InitializeCombatSystem(spawnedPlayer, startRoom);
         }
 
-        private Player SpawnPlayer(RoomTileData startRoom, CombatUI combatUI)
+        private Player SpawnPlayer(RoomTileData startRoom, List<IDisplayable> combatUI)
         {
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             playerInstance.Initialize(m_userInput, combatUI);

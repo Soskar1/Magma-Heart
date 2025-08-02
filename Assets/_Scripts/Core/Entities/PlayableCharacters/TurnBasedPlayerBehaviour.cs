@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.UI;
 using UnityEngine;
@@ -8,12 +9,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class TurnBasedPlayerBehaviour : IPlayerBehaviour, ITurnController
     {
         private UserInput m_userInput;
-        private CombatUI m_combatUI;
+        private List<IDisplayable> m_combatUI;
+        private Energy m_energy;
 
         public Action NextTurn { get; set; }
 
-        public TurnBasedPlayerBehaviour(UserInput userInput, CombatUI combatUI)
+        public TurnBasedPlayerBehaviour(Energy energy, UserInput userInput, List<IDisplayable> combatUI)
         {
+            m_energy = energy;
             m_userInput = userInput;
             m_combatUI = combatUI;
         }
@@ -35,14 +38,20 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void StartTurn()
         {
+            m_energy.Regenerate();
+
             Debug.Log("Player is doing a move");
-            m_combatUI.gameObject.SetActive(true);
+            foreach (IDisplayable ui in m_combatUI)
+                ui.Show();
         }
 
         public void EndTurn()
         {
             Debug.Log("Player ended his move");
-            m_combatUI.gameObject.SetActive(false);
+
+            foreach (IDisplayable ui in m_combatUI)
+                ui.Hide();
+
             NextTurn?.Invoke();
         }
     }

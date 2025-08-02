@@ -22,24 +22,24 @@ namespace MagmaHeart.Core.CombatSystem
         public void Remove(ITurnController entity)
         {
             if (m_currentNode.Value == entity)
-            {
-                if (m_currentNode.Next == null)
-                    m_currentNode = m_turnOrder.First;
-                else
-                    m_currentNode = m_currentNode.Next;
-            }
+                SetNext();
 
             m_turnOrder.Remove(entity);
         }
 
         public ITurnController Next()
         {
+            SetNext();
+
+            return m_currentNode.Value;
+        }
+
+        private void SetNext()
+        {
             if (m_currentNode.Next == null)
                 m_currentNode = m_turnOrder.First;
             else
                 m_currentNode = m_currentNode.Next;
-
-            return m_currentNode.Value;
         }
     }
 }

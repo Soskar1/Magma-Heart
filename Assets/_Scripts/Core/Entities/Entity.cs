@@ -5,11 +5,17 @@ namespace MagmaHeart.Core.Entities
         private AnimationPlayer m_animation;
 
         public Health Health { get; private set; }
+        public Energy Energy { get; private set; }
+        public EntityData Data { get; private set; }
+        public EntityStats Stats => Data.Stats;
 
-        public Entity(float health, AnimationPlayer animationPlayer = null)
+        public Entity(EntityData data, AnimationPlayer animationPlayer = null)
         {
-            Health = new Health(health);
+            Data = data;
             m_animation = animationPlayer;
+
+            Health = new Health(Stats.MaxHealth);
+            Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
         }
 
         public void Enable()
