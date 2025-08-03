@@ -53,9 +53,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (!m_playerTurnIsActive)
                 return;
 
-            if (m_currentRoom == null)
-                throw new NullReferenceException("m_currentRoom is not set");
-
             m_mouseControl.UpdateMousePosition();
         }
         
