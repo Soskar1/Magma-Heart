@@ -38,6 +38,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_userInput = new UserInput();
 
             m_grid = Instantiate(m_gridPrefab);
+            m_grid.Initialize();
 
             LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
             m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();

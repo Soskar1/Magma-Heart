@@ -8,22 +8,22 @@ namespace MagmaHeart.Core.Dungeon
     {
         [SerializeField] private TileBase m_combatTile;
         public RoomTileData RoomTileData { get; private set; }
+        public GameGrid Grid { get; private set; }
 
         private Tilemap m_combatTilemap;
-        private GameGrid m_grid;
 
         private Vector3Int? m_previousDisplayedTile;
 
         public void Initialize(RoomTileData roomTileData, GameGrid gameGrid)
         {
             RoomTileData = roomTileData;
-            m_grid = gameGrid;
+            Grid = gameGrid;
             m_combatTilemap = GetComponentInChildren<Tilemap>();
         }
 
         public void TryDisplayCombatTile(Vector2 worldPosition)
         {
-            Vector3Int tilePosition = m_grid.WorldToTilePosition(worldPosition);
+            Vector3Int tilePosition = Grid.WorldToTilePosition(worldPosition);
             DungeonTile tile = RoomTileData.GetTile((Vector2Int)tilePosition);
 
             if (tile == null)

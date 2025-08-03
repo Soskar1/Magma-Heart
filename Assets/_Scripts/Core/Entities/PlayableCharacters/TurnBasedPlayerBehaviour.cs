@@ -13,13 +13,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private List<IDisplayable> m_combatUI;
         private Energy m_energy;
         private Room m_currentRoom;
+        private Transform m_playerTransform;
 
         public Action NextTurn { get; set; }
 
         private bool m_playerTurnIsActive;
 
-        public TurnBasedPlayerBehaviour(Energy energy, UserInput userInput, List<IDisplayable> combatUI)
+        public TurnBasedPlayerBehaviour(Transform playerTransform, Energy energy, UserInput userInput, List<IDisplayable> combatUI)
         {
+            m_playerTransform = playerTransform;
             m_energy = energy;
             m_userInput = userInput;
             m_combatUI = combatUI;
@@ -52,6 +54,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void StartCombat(Room room)
         {
             m_currentRoom = room;
+
+            // Move player at the center of the current standing tile
+            Vector3 newPosition = m_currentRoom.Grid.WorldToTileCenterPosition(m_playerTransform.position);
+            m_playerTransform.position = newPosition;
         }
 
         public void StartTurn()

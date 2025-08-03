@@ -33,7 +33,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             Movement = GetComponent<IMovable>();
             m_actionBehaviour = new ActionPlayerBehaviour(userInput, Movement, this);
-            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(Energy, userInput, combatUI);
+            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(transform, Energy, userInput, combatUI);
             m_currentBehaviour = m_actionBehaviour;
         }
 
