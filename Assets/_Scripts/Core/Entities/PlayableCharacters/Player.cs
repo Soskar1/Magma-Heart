@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
+using UnityEditor.TextCore.Text;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -27,15 +28,18 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public TurnBasedPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
 
-        public void Initialize(UserInput userInput, GameGrid grid, List<IDisplayable> combatUI)
+        public void Initialize(UserInput userInput, GameGrid grid, EnergyHUD energyHUD)
         {
             AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
             m_controllingEntity = new Entity(m_data, animationPlayer);
 
             Movement = GetComponent<IMovable>();
-            MouseControl mouseControl = new MouseControl(userInput, grid);
             m_actionBehaviour = new ActionPlayerBehaviour(userInput, Movement, this);
-            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(transform, Energy, userInput, mouseControl, combatUI);
+
+            MouseControl mouseControl = new MouseControl(userInput, grid);
+            TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(userInput, mouseControl);
+
+            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(this, turnBasedUserInput, energyHUD);
             m_currentBehaviour = m_actionBehaviour;
         }
 

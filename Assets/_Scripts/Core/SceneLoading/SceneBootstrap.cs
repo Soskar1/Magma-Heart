@@ -59,7 +59,7 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             
             GameUI uiInstance = Instantiate(m_uiPrefab);
-            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance.CombatRelatedUI);
+            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance.EnergyHUD);
 
             uiInstance.Initialize(spawnedPlayer);
             uiInstance.HealthBar.gameObject.SetActive(true);
@@ -74,13 +74,13 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.SetCurrentHealth(savedData.health);
             }
 
-            InitializeCombatSystem(spawnedPlayer, startRoom);
+            InitializeCombatSystem(spawnedPlayer, startRoom, uiInstance.CombatRelatedUI);
         }
 
-        private Player SpawnPlayer(RoomTileData startRoom, List<IDisplayable> combatUI)
+        private Player SpawnPlayer(RoomTileData startRoom, EnergyHUD energyHUD)
         {
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(m_userInput, m_grid, combatUI);
+            playerInstance.Initialize(m_userInput, m_grid, energyHUD);
             
             CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             cameraInstance.ObjectToTrack = playerInstance.transform;
@@ -90,12 +90,12 @@ namespace MagmaHeart.Core.SceneLoading
             return playerInstance;
         }
 
-        private void InitializeCombatSystem(Player player, RoomTileData startRoom)
+        private void InitializeCombatSystem(Player player, RoomTileData startRoom, List<IDisplayable> combatUI)
         {
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
             Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
-            m_combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, spawner);
+            m_combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, spawner, combatUI);
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {

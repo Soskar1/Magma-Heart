@@ -5,6 +5,7 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public interface ICombatController
     {
+        public bool IsPlayableCharacter { get; }
         public Action NextTurn { get; set; }
         public void StartTurn();
         public void EndTurn();

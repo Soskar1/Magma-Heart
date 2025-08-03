@@ -194,7 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_healthBar: {fileID: 1279922772312791759}
   m_combatUI: {fileID: 305202934452996970}
-  m_combatHUD: {fileID: 4315020891727069179}
+  m_energyHUD: {fileID: 8755058543669154352}
 --- !u!1 &2335779659382844979
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,7 +463,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 459811484331319396}
-  - component: {fileID: 4315020891727069179}
+  - component: {fileID: 8755058543669154352}
   m_Layer: 5
   m_Name: CombatHUD
   m_TagString: Untagged
@@ -491,7 +491,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4315020891727069179
+--- !u!114 &8755058543669154352
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -500,13 +500,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5732310236109853490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10e0d90b9062a6f48a3cac9aa60e9f42, type: 3}
+  m_Script: {fileID: 11500000, guid: 968fba107e6a0b949b264052b95c0bdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_energyHUD: {fileID: 3574056321731460907}
   m_energyCrystalPrefab: {fileID: 4352785577852372541, guid: 962f16cdcc15b784797e96761ab1f6a7, type: 3}
   m_emptyEnergyCrystalGFX: {fileID: 8713915412419360977, guid: b750710ae32151f4ab49efe52b66ae44, type: 3}
   m_activeEnergyCrystalGFX: {fileID: -6494811302086260735, guid: 36f4ce886a3340b48933a99c1476b07f, type: 3}
+  m_priceEnergyCrystalGFX: {fileID: -2545692360956530447, guid: 94a7b951ad5f8fe4d81f9874baf1ea14, type: 3}
 --- !u!1 &7112060181696422945
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,6 +16,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public Action NextTurn { get; set; }
 
+        public bool IsPlayableCharacter => false;
+
         public void Initialize()
         {
             m_controllingEntity = new Entity(m_data);

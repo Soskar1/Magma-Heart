@@ -6,12 +6,13 @@ using UnityEngine.UI;
 
 namespace MagmaHeart.Core.UI
 {
-    public class CombatHUD : MonoBehaviour, IDisplayable
+    public class EnergyHUD : MonoBehaviour, IDisplayable
     {
         [SerializeField] private GameObject m_energyHUD;
         [SerializeField] private GameObject m_energyCrystalPrefab;
         [SerializeField] private Sprite m_emptyEnergyCrystalGFX;
         [SerializeField] private Sprite m_activeEnergyCrystalGFX;
+        [SerializeField] private Sprite m_priceEnergyCrystalGFX;
 
         private List<Image> m_crystalVisuals;
         private Energy m_playerEnergy;
@@ -29,17 +30,20 @@ namespace MagmaHeart.Core.UI
             }
         }
 
-        public void Show()
+        public void DisplayAvailableEnergy()
         {
             for (int i = 0; i < m_playerEnergy.CurrentEnergy; ++i)
                 m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
-
-            m_energyHUD.gameObject.SetActive(true);
         }
 
-        public void Hide()
+        public void DisplayEnergyPrice(int energyAmount)
         {
-            m_energyHUD.gameObject.SetActive(false);
+            //for (int i = 0; i < energyAmount; ++i)
+            //    m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
         }
+
+        public void Show() => m_energyHUD.gameObject.SetActive(true);
+
+        public void Hide() => m_energyHUD.gameObject.SetActive(false);
     }
 }

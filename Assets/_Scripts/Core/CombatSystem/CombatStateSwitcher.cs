@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.UI;
 using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -12,13 +13,15 @@ namespace MagmaHeart.Core.CombatSystem
         private Room m_currentRoom;
         private Player m_player;
         private Spawner m_spawner;
+        private List<IDisplayable> m_combatUI;
         private TurnOrderBuilder m_turnOrderBuilder;
 
-        public CombatStateSwitcher(Tilemap corridors, Player player, Spawner spawner)
+        public CombatStateSwitcher(Tilemap corridors, Player player, Spawner spawner, List<IDisplayable> combatUI)
         {
             m_corridors = corridors;
             m_player = player;
             m_spawner = spawner;
+            m_combatUI = combatUI;
             m_turnOrderBuilder = new TurnOrderBuilder();
         }
 
@@ -41,7 +44,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             // TODO: Turn on combat HUD
 
-            TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder);
+            TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder, m_combatUI);
 
             foreach (ICombatController controller in entitiesInCombat)
                 controller.StartCombat(room);
