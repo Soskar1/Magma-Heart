@@ -21,23 +21,17 @@ namespace MagmaHeart.Core.Dungeon
 
         public void TryDisplayCombatTile(Vector3Int roomTilePosition)
         {
-            Vector2 worldPosition = Grid.TilePositionToWorld(roomTilePosition);
-            Vector3Int tilePosition = Grid.WorldToTilePosition(worldPosition);
-
-            if (TileIsAccessable(tilePosition))
-            {
-                tilePosition = Grid.WorldToTilePosition(worldPosition);
-                tilePosition = m_combatTilemap.WorldToCell(worldPosition);
-                m_combatTilemap.SetTile(tilePosition, m_combatTile);
-            }
+            if (!TileIsAccessable(roomTilePosition))
+                return;
+            
+            Vector3Int combatTilePosition = ConvertToCombatTilemap(roomTilePosition);
+            m_combatTilemap.SetTile(combatTilePosition, m_combatTile);
         }
 
         public void HideCombatTileAt(Vector3Int roomTilePosition)
         {
-            // Here we need to convert roomTile to combatTile position, because of the offset issues
-            Vector2 worldPosition = Grid.TilePositionToWorld(roomTilePosition);
-            Vector3Int tilePosition = m_combatTilemap.WorldToCell(worldPosition);
-            m_combatTilemap.SetTile(tilePosition, null);
+            Vector3Int combatTilePosition = ConvertToCombatTilemap(roomTilePosition);
+            m_combatTilemap.SetTile(combatTilePosition, null);
         }
 
         public bool TileIsAccessable(Vector3Int tilePosition)
@@ -49,5 +43,12 @@ namespace MagmaHeart.Core.Dungeon
 
             return true;
         }
+
+        // Convertation from roomTile to combatTile position is necessary, because of the offset issues
+        private Vector3Int ConvertToCombatTilemap(Vector3Int roomTilePosition)
+        {
+            Vector2 worldPosition = Grid.TilePositionToWorld(roomTilePosition);
+            return m_combatTilemap.WorldToCell(worldPosition);
+        }    
     }
 }
