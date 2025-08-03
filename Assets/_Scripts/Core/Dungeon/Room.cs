@@ -12,8 +12,6 @@ namespace MagmaHeart.Core.Dungeon
 
         private Tilemap m_combatTilemap;
 
-        private Vector3Int? m_previousDisplayedTile;
-
         public void Initialize(RoomTileData roomTileData, GameGrid gameGrid)
         {
             RoomTileData = roomTileData;
@@ -21,38 +19,35 @@ namespace MagmaHeart.Core.Dungeon
             m_combatTilemap = GetComponentInChildren<Tilemap>();
         }
 
-        public void TryDisplayCombatTile(Vector2 worldPosition)
+        public void TryDisplayCombatTile(Vector3Int roomTilePosition)
         {
+            Vector2 worldPosition = Grid.TilePositionToWorld(roomTilePosition);
             Vector3Int tilePosition = Grid.WorldToTilePosition(worldPosition);
-            DungeonTile tile = RoomTileData.GetTile((Vector2Int)tilePosition);
 
-            if (tile == null)
+            if (TileIsAccessable(tilePosition))
             {
-                TryHidePreviousCombatTile();
-            }
-            else
-            {
-                if (tile.Type != TileType.Wall)
-                {
-                    TryHidePreviousCombatTile();
-
-                    // Need to use combat tilemap for getting a new position
-                    // Can't use previously defined tilePosition, because of the offset issues
-                    tilePosition = m_combatTilemap.WorldToCell(worldPosition);
-                    m_combatTilemap.SetTile(tilePosition, m_combatTile);
-                    m_previousDisplayedTile = tilePosition;
-                }
-                else
-                {
-                    TryHidePreviousCombatTile();
-                }
+                tilePosition = Grid.WorldToTilePosition(worldPosition);
+                tilePosition = m_combatTilemap.WorldToCell(worldPosition);
+                m_combatTilemap.SetTile(tilePosition, m_combatTile);
             }
         }
 
-        public void TryHidePreviousCombatTile()
+        public void HideCombatTileAt(Vector3Int roomTilePosition)
         {
-            if (m_previousDisplayedTile.HasValue)
-                m_combatTilemap.SetTile(m_previousDisplayedTile.Value, null);
+            // Here we need to convert roomTile to combatTile position, because of the offset issues
+            Vector2 worldPosition = Grid.TilePositionToWorld(roomTilePosition);
+            Vector3Int tilePosition = m_combatTilemap.WorldToCell(worldPosition);
+            m_combatTilemap.SetTile(tilePosition, null);
+        }
+
+        public bool TileIsAccessable(Vector3Int tilePosition)
+        {
+            DungeonTile tile = RoomTileData.GetTile((Vector2Int)tilePosition);
+
+            if (tile == null || tile.Type == TileType.Wall)
+                return false;
+
+            return true;
         }
     }
 }

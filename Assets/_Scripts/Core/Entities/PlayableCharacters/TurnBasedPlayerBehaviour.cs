@@ -10,20 +10,26 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class TurnBasedPlayerBehaviour : IPlayerBehaviour, ICombatController
     {
         private UserInput m_userInput;
+        private MouseControl m_mouseControl;
         private List<IDisplayable> m_combatUI;
         private Energy m_energy;
         private Room m_currentRoom;
+
         private Transform m_playerTransform;
+        private Vector3Int m_playersCurrentTile;
+
+        private Vector3Int? m_previousMousePosition;
 
         public Action NextTurn { get; set; }
 
         private bool m_playerTurnIsActive;
 
-        public TurnBasedPlayerBehaviour(Transform playerTransform, Energy energy, UserInput userInput, List<IDisplayable> combatUI)
+        public TurnBasedPlayerBehaviour(Transform playerTransform, Energy energy, UserInput userInput, MouseControl mouseControl, List<IDisplayable> combatUI)
         {
             m_playerTransform = playerTransform;
             m_energy = energy;
             m_userInput = userInput;
+            m_mouseControl = mouseControl;
             m_combatUI = combatUI;
             m_playerTurnIsActive = false;
         }
@@ -31,11 +37,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Enable()
         {
             m_userInput.Controls.TurnBasedPlayer.Enable();
+            m_mouseControl.OnMouseChangedTile += DisplayCombatTile;
+            m_mouseControl.OnMouseChangedTile += DisplayEnergyForMovementAction;
         }
 
         public void Disable()
         {
             m_userInput.Controls.TurnBasedPlayer.Disable();
+            m_mouseControl.OnMouseChangedTile -= DisplayCombatTile;
+            m_mouseControl.OnMouseChangedTile -= DisplayEnergyForMovementAction;
         }
 
         public void Update()
@@ -46,9 +56,22 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentRoom == null)
                 throw new NullReferenceException("m_currentRoom is not set");
 
-            Vector2 currentMousePosition = m_userInput.Controls.TurnBasedPlayer.MousePosition.ReadValue<Vector2>();
-            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(currentMousePosition);
-            m_currentRoom.TryDisplayCombatTile(worldPosition);
+            m_mouseControl.UpdateMousePosition();
+        }
+        
+        private void DisplayCombatTile(Vector3Int mouseRoomTilePosition)
+        {
+            if (m_previousMousePosition.HasValue)
+                m_currentRoom.HideCombatTileAt(m_previousMousePosition.Value);
+
+            m_currentRoom.TryDisplayCombatTile(mouseRoomTilePosition);
+            m_previousMousePosition = mouseRoomTilePosition;
+        }
+
+        private void DisplayEnergyForMovementAction(Vector3Int mouseRoomTilePosition)
+        {
+            int distance = m_currentRoom.Grid.ManhattanDistance(m_playersCurrentTile, mouseRoomTilePosition);
+            Debug.Log($"Distance between {m_playersCurrentTile} and {mouseRoomTilePosition} is {distance} tiles");
         }
 
         public void StartCombat(Room room)
@@ -56,8 +79,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentRoom = room;
 
             // Move player at the center of the current standing tile
-            Vector3 newPosition = m_currentRoom.Grid.WorldToTileCenterPosition(m_playerTransform.position);
-            m_playerTransform.position = newPosition;
+            m_playersCurrentTile = m_currentRoom.Grid.WorldToTilePosition(m_playerTransform.position);
+            m_playerTransform.position = m_currentRoom.Grid.ToTileCenter(m_playersCurrentTile);
         }
 
         public void StartTurn()
@@ -75,7 +98,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             Debug.Log("Player ended his move");
             m_playerTurnIsActive = false;
-            m_currentRoom.TryHidePreviousCombatTile();
+            m_previousMousePosition = null;
+            if (m_mouseControl.CurrentMouseTile.HasValue)
+            {
+                m_currentRoom.HideCombatTileAt(m_mouseControl.CurrentMouseTile.Value);
+                m_mouseControl.ClearMousePosition();
+            }
 
             foreach (IDisplayable ui in m_combatUI)
                 ui.Hide();

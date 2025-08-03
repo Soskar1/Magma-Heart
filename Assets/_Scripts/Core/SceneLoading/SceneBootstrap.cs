@@ -80,7 +80,7 @@ namespace MagmaHeart.Core.SceneLoading
         private Player SpawnPlayer(RoomTileData startRoom, List<IDisplayable> combatUI)
         {
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(m_userInput, combatUI);
+            playerInstance.Initialize(m_userInput, m_grid, combatUI);
             
             CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             cameraInstance.ObjectToTrack = playerInstance.transform;

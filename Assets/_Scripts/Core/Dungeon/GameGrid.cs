@@ -34,10 +34,26 @@ namespace MagmaHeart.Core.Dungeon
         // then you will receive offsetted tile positions
         public Vector3Int WorldToTilePosition(Vector2 worldPosition) => m_floor.WorldToCell(worldPosition);
 
+        public Vector2 TilePositionToWorld(Vector3Int roomTilePosition) => m_floor.CellToWorld(roomTilePosition);
+
         public Vector3 WorldToTileCenterPosition(Vector3 worldPosition)
         {
             Vector3Int tilePosition = WorldToTilePosition(worldPosition);
             return tilePosition + m_offsetToTileCenter;
         }
+
+        public Vector3 ToTileCenter(Vector3Int tile)
+        {
+            return tile + m_offsetToTileCenter;
+        }
+
+        public int DistanceBetweenTilesInWorld(Vector2 worldPosition1, Vector2 worldPosition2)
+        {
+            Vector3Int tile1 = WorldToTilePosition(worldPosition1);
+            Vector3Int tile2 = WorldToTilePosition(worldPosition2);
+            return ManhattanDistance(tile1, tile2);
+        }
+
+        public int ManhattanDistance(Vector3Int tile1, Vector3Int tile2) => Mathf.Abs(tile1.x - tile2.x) + Mathf.Abs(tile1.y - tile2.y);
     }
 }
