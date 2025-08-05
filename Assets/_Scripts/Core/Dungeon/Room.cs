@@ -8,11 +8,11 @@ namespace MagmaHeart.Core.Dungeon
     {
         [SerializeField] private TileBase m_combatTile;
         public RoomTileData RoomTileData { get; private set; }
-        public GameGrid Grid { get; private set; }
+        public DungeonGrid Grid { get; private set; }
 
         private Tilemap m_combatTilemap;
 
-        public void Initialize(RoomTileData roomTileData, GameGrid gameGrid)
+        public void Initialize(RoomTileData roomTileData, DungeonGrid gameGrid)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;

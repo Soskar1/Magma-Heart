@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 namespace MagmaHeart.Core.Dungeon
 {
     [RequireComponent(typeof(Grid))]
-    public class GameGrid : MonoBehaviour
+    public class DungeonGrid : MonoBehaviour
     {
         [SerializeField] private Tilemap m_floor;
         [SerializeField] private Tilemap m_walls;

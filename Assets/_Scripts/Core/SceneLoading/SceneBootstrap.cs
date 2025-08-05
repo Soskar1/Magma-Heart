@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private CameraMovement m_camera;
         [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
         [SerializeField] private GameUI m_uiPrefab;
-        [SerializeField] private GameGrid m_gridPrefab;
+        [SerializeField] private DungeonGrid m_gridPrefab;
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
         [SerializeField] private Room m_roomPrefab;
@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.SceneLoading
         private LocationRenderer m_renderer;
         private CombatStateSwitcher m_combatStateSwitcher;
         private UserInput m_userInput;
-        private GameGrid m_grid;
+        private DungeonGrid m_grid;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 

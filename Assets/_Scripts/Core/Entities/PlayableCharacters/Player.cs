@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public TurnBasedPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
 
-        public void Initialize(UserInput userInput, GameGrid grid, EnergyHUD energyHUD)
+        public void Initialize(UserInput userInput, DungeonGrid grid, EnergyHUD energyHUD)
         {
             AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
             m_controllingEntity = new Entity(m_data, transform, animationPlayer);

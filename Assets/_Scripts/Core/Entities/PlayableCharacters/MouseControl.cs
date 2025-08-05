@@ -8,13 +8,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class MouseControl
     {
         private UserInput m_userInput;
-        private GameGrid m_grid;
+        private DungeonGrid m_grid;
 
         private Vector3Int? m_currentMouseTile;
         public Action<Vector3Int> OnMouseChangedTile;
         public Action OnMouseClicked;
 
-        public MouseControl(UserInput userInput, GameGrid grid)
+        public MouseControl(UserInput userInput, DungeonGrid grid)
         {
             m_userInput = userInput;
             m_grid = grid;
