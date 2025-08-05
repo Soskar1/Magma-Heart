@@ -11,12 +11,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         }
 
-        public int CalculateEnergyUsage(int distance)
-        {
-            if (distance == 0)
-                return 0;
-
-            return distance / (MovementDistanceInTilesForOneEnergy + 1) + 1;
-        }
+        public int CalculateEnergyUsage(int distance) => Mathf.CeilToInt(distance / (float)MovementDistanceInTilesForOneEnergy);
     }
 }
