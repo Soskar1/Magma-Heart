@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
-using UnityEditor.TextCore.Text;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters

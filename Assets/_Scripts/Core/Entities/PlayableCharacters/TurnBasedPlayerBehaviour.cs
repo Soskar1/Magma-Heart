@@ -61,7 +61,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentMouseTile.HasValue)
                 m_currentRoom.HideCombatTileAt(m_currentMouseTile.Value);
 
-            int energyCost = m_movementAction.CalculateEnergyUsage(mouseRoomTilePosition);
+            (int energyCost, _) = m_movementAction.CalculateEnergyUsage(mouseRoomTilePosition);
 
             if (m_energy.HasEnough(energyCost))
             {
@@ -71,7 +71,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             else
             {
                 // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
-                Debug.LogWarning("You don't have enough energy to move there");
             }
 
             m_currentMouseTile = mouseRoomTilePosition;
@@ -125,6 +124,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
 
             NextTurn?.Invoke();
+            m_movementAction.Reset();
         }
     }
 }

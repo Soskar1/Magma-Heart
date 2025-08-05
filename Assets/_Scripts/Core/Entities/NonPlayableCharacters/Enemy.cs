@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         private IEnumerator MakingThinkingMove()
         {
-            yield return new WaitForSeconds(4);
+            yield return new WaitForSeconds(1);
             EndTurn();
         }
     }
