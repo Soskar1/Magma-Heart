@@ -30,10 +30,13 @@ namespace MagmaHeart.Core.UI
             }
         }
 
-        public void DisplayAvailableEnergy()
+        public void DisplayEnergy()
         {
             for (int i = 0; i < m_playerEnergy.CurrentEnergy; ++i)
                 m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
+
+            for (int i = m_playerEnergy.CurrentEnergy; i < m_crystalVisuals.Count; ++i)
+                m_crystalVisuals[i].sprite = m_emptyEnergyCrystalGFX;
         }
 
         public void DisplayEnergyPrice(int energyAmount)

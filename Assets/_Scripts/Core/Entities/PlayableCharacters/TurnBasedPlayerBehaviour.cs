@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Transform m_playerTransform;
         private Vector3Int m_playersCurrentTile;
 
-        private Vector3Int? m_previousMousePosition;
+        private Vector3Int? m_currentMouseTile;
 
         public Action NextTurn { get; set; }
 
@@ -35,19 +35,17 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energyHUD = energyHUD;
             m_playerTurnIsActive = false;
 
-            m_movementAction = new MovementAction();
+            m_movementAction = new MovementAction(player.ControllingEntity);
         }
 
         public void Enable()
         {
-            m_userInput.Enable();
-            m_userInput.MouseControl.OnMouseChangedTile += HandleMovementAction;
+            m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
         }
 
         public void Disable()
         {
-            m_userInput.Disable();
-            m_userInput.MouseControl.OnMouseChangedTile -= HandleMovementAction;
+            m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
         }
 
         public void Update()
@@ -58,19 +56,17 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.UpdateMousePosition();
         }
 
-        private void HandleMovementAction(Vector3Int mouseRoomTilePosition)
+        private void DisplayCostForMovementAction(Vector3Int mouseRoomTilePosition)
         {
-            if (m_previousMousePosition.HasValue)
-                m_currentRoom.HideCombatTileAt(m_previousMousePosition.Value);
+            if (m_currentMouseTile.HasValue)
+                m_currentRoom.HideCombatTileAt(m_currentMouseTile.Value);
 
-            int distance = m_currentRoom.Grid.ManhattanDistance(m_playersCurrentTile, mouseRoomTilePosition);
-            int energyAmountForMovementAction = m_movementAction.CalculateEnergyUsage(distance);
-            Debug.Log($"Distance between {m_playersCurrentTile} and {mouseRoomTilePosition} is {distance} tiles. You need {energyAmountForMovementAction} energy to move there");
+            int energyCost = m_movementAction.CalculateEnergyUsage(mouseRoomTilePosition);
 
-            if (m_energy.HasEnough(energyAmountForMovementAction))
+            if (m_energy.HasEnough(energyCost))
             {
                 m_currentRoom.TryDisplayCombatTile(mouseRoomTilePosition);
-                m_energyHUD.DisplayEnergyPrice(energyAmountForMovementAction);
+                m_energyHUD.DisplayEnergyPrice(energyCost);
             }
             else
             {
@@ -78,12 +74,23 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 Debug.LogWarning("You don't have enough energy to move there");
             }
 
-            m_previousMousePosition = mouseRoomTilePosition;
+            m_currentMouseTile = mouseRoomTilePosition;
+        }
+
+        private void ApplyMovementAction()
+        {
+            if (!m_currentMouseTile.HasValue)
+                Debug.LogWarning("Player clicked on tile, but current mouse tile is not set. This should never happen!");
+
+            Debug.Log($"Player clicked on tile {m_currentMouseTile}");
+
+            m_movementAction.TryMove(m_currentMouseTile.Value);
         }
 
         public void StartCombat(Room room)
         {
             m_currentRoom = room;
+            m_movementAction.SetCurrentRoom(m_currentRoom);
 
             // Move player at the center of the current standing tile
             m_playersCurrentTile = m_currentRoom.Grid.WorldToTilePosition(m_playerTransform.position);
@@ -92,8 +99,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void StartTurn()
         {
+            m_userInput.Enable();
+            m_userInput.MouseControl.OnMouseChangedTile += DisplayCostForMovementAction;
+            m_userInput.MouseControl.OnMouseClicked += ApplyMovementAction;
+
             m_energy.Regenerate();
-            m_energyHUD.DisplayAvailableEnergy();
 
             Debug.Log("Player is doing a move");
             m_playerTurnIsActive = true;
@@ -101,13 +111,17 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void EndTurn()
         {
+            m_userInput.Disable();
+            m_userInput.MouseControl.OnMouseChangedTile -= DisplayCostForMovementAction;
+            m_userInput.MouseControl.OnMouseClicked -= ApplyMovementAction;
+
             Debug.Log("Player ended his move");
             m_playerTurnIsActive = false;
-            m_previousMousePosition = null;
-            if (m_userInput.MouseControl.CurrentMouseTile.HasValue)
+
+            if (m_currentMouseTile.HasValue)
             {
-                m_currentRoom.HideCombatTileAt(m_userInput.MouseControl.CurrentMouseTile.Value);
-                m_userInput.MouseControl.ClearMousePosition();
+                m_currentRoom.HideCombatTileAt(m_currentMouseTile.Value);
+                m_currentMouseTile = null;
             }
 
             NextTurn?.Invoke();

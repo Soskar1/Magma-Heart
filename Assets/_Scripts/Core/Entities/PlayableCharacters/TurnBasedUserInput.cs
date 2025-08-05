@@ -15,11 +15,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Enable()
         {
             m_userInput.Controls.TurnBasedPlayer.Enable();
+            MouseControl.Enable();
         }
 
         public void Disable()
         {
             m_userInput.Controls.TurnBasedPlayer.Disable();
+            MouseControl.Disable();
         }
     }
 }

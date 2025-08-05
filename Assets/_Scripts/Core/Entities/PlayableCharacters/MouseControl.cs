@@ -1,6 +1,7 @@
 using System;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
@@ -11,8 +12,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private Vector3Int? m_currentMouseTile;
         public Action<Vector3Int> OnMouseChangedTile;
-
-        public Vector3Int? CurrentMouseTile => m_currentMouseTile;
+        public Action OnMouseClicked;
 
         public MouseControl(UserInput userInput, GameGrid grid)
         {
@@ -20,10 +20,19 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_grid = grid;
         }
 
+        public void Enable()
+        {
+            m_userInput.Controls.TurnBasedPlayer.MouseClick.performed += OnMouseClick;
+        }
+
+        public void Disable()
+        {
+            m_userInput.Controls.TurnBasedPlayer.MouseClick.performed -= OnMouseClick;
+        }
+
         public void UpdateMousePosition()
         {
-            Vector2 currentMousePosition = m_userInput.Controls.TurnBasedPlayer.MousePosition.ReadValue<Vector2>();
-            Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(currentMousePosition);
+            Vector2 mouseWorldPosition = GetMouseWorldPosition();
             Vector3Int mouseOverTilePosition = m_grid.WorldToTilePosition(mouseWorldPosition);
 
             if (m_currentMouseTile.HasValue)
@@ -41,6 +50,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public void ClearMousePosition() => m_currentMouseTile = null;
+        private Vector2 GetMouseWorldPosition()
+        {
+            Vector2 currentMousePosition = m_userInput.Controls.TurnBasedPlayer.MousePosition.ReadValue<Vector2>();
+            return Camera.main.ScreenToWorldPoint(currentMousePosition);
+        }
+
+        private void OnMouseClick(InputAction.CallbackContext context)
+        {
+            OnMouseClicked?.Invoke();
+        }
     }
 }

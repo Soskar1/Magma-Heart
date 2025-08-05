@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -6,6 +7,7 @@ namespace MagmaHeart.Core.Entities
     {
         private int m_maxEnergy;
         private int m_energyRegenerationPerTurn;
+        public Action OnEnergyChanged;
 
         public int CurrentEnergy { get; private set; }
 
@@ -18,15 +20,16 @@ namespace MagmaHeart.Core.Entities
 
         public bool HasEnough(int energyToSpent) => energyToSpent <= CurrentEnergy;
 
-        public void Spent(int amount)
+        public void Spend(int amount)
         {
             if (!HasEnough(amount))
             {
-                Debug.LogWarning($"Tried to spent {amount}, but entity have {CurrentEnergy}");
+                Debug.LogWarning($"Tried to spend {amount}, but entity has {CurrentEnergy}");
                 return;
             }
 
             CurrentEnergy -= amount;
+            OnEnergyChanged?.Invoke();
         }
 
         public void Regenerate()

@@ -1,17 +1,21 @@
+using UnityEngine;
+
 namespace MagmaHeart.Core.Entities
 {
     public class Entity
     {
         private AnimationPlayer m_animation;
 
+        public Transform Transform { get; private set; }
         public Health Health { get; private set; }
         public Energy Energy { get; private set; }
         public EntityData Data { get; private set; }
         public EntityStats Stats => Data.Stats;
 
-        public Entity(EntityData data, AnimationPlayer animationPlayer = null)
+        public Entity(EntityData data, Transform transform, AnimationPlayer animationPlayer = null)
         {
             Data = data;
+            Transform = transform;
             m_animation = animationPlayer;
 
             Health = new Health(Stats.MaxHealth);

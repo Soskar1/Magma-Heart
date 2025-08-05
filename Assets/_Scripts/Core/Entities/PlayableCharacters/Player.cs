@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Initialize(UserInput userInput, GameGrid grid, EnergyHUD energyHUD)
         {
             AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
-            m_controllingEntity = new Entity(m_data, animationPlayer);
+            m_controllingEntity = new Entity(m_data, transform, animationPlayer);
 
             Movement = GetComponent<IMovable>();
             m_actionBehaviour = new ActionPlayerBehaviour(userInput, Movement, this);
