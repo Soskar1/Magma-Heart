@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Entities
             m_energyRegenerationPerTurn = energyRegenerationPerTurn;
         }
 
-        public bool HasEnough(int energyToSpent) => energyToSpent >= CurrentEnergy;
+        public bool HasEnough(int energyToSpent) => energyToSpent <= CurrentEnergy;
 
         public void Spent(int amount)
         {

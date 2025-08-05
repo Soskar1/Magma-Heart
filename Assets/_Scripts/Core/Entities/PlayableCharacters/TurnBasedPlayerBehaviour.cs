@@ -9,9 +9,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class TurnBasedPlayerBehaviour : IPlayerBehaviour, ICombatController
     {
         private TurnBasedUserInput m_userInput;
-        private Energy m_energy;
         private Room m_currentRoom;
 
+        private Energy m_energy;
         private EnergyHUD m_energyHUD;
 
         private MovementAction m_movementAction;
@@ -41,15 +41,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Enable()
         {
             m_userInput.Enable();
-            m_userInput.MouseControl.OnMouseChangedTile += DisplayCombatTile;
-            m_userInput.MouseControl.OnMouseChangedTile += DisplayEnergyForMovementAction;
+            m_userInput.MouseControl.OnMouseChangedTile += HandleMovementAction;
         }
 
         public void Disable()
         {
             m_userInput.Disable();
-            m_userInput.MouseControl.OnMouseChangedTile -= DisplayCombatTile;
-            m_userInput.MouseControl.OnMouseChangedTile -= DisplayEnergyForMovementAction;
+            m_userInput.MouseControl.OnMouseChangedTile -= HandleMovementAction;
         }
 
         public void Update()
@@ -59,21 +57,28 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             m_userInput.MouseControl.UpdateMousePosition();
         }
-        
-        private void DisplayCombatTile(Vector3Int mouseRoomTilePosition)
+
+        private void HandleMovementAction(Vector3Int mouseRoomTilePosition)
         {
             if (m_previousMousePosition.HasValue)
                 m_currentRoom.HideCombatTileAt(m_previousMousePosition.Value);
 
-            m_currentRoom.TryDisplayCombatTile(mouseRoomTilePosition);
-            m_previousMousePosition = mouseRoomTilePosition;
-        }
-
-        private void DisplayEnergyForMovementAction(Vector3Int mouseRoomTilePosition)
-        {
             int distance = m_currentRoom.Grid.ManhattanDistance(m_playersCurrentTile, mouseRoomTilePosition);
-            int energyAmountToMove = m_movementAction.CalculateEnergyUsage(distance);
-            Debug.Log($"Distance between {m_playersCurrentTile} and {mouseRoomTilePosition} is {distance} tiles. You need {energyAmountToMove} energy to move there");
+            int energyAmountForMovementAction = m_movementAction.CalculateEnergyUsage(distance);
+            Debug.Log($"Distance between {m_playersCurrentTile} and {mouseRoomTilePosition} is {distance} tiles. You need {energyAmountForMovementAction} energy to move there");
+
+            if (m_energy.HasEnough(energyAmountForMovementAction))
+            {
+                m_currentRoom.TryDisplayCombatTile(mouseRoomTilePosition);
+                m_energyHUD.DisplayEnergyPrice(energyAmountForMovementAction);
+            }
+            else
+            {
+                // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
+                Debug.LogWarning("You don't have enough energy to move there");
+            }
+
+            m_previousMousePosition = mouseRoomTilePosition;
         }
 
         public void StartCombat(Room room)

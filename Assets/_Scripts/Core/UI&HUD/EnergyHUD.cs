@@ -38,8 +38,11 @@ namespace MagmaHeart.Core.UI
 
         public void DisplayEnergyPrice(int energyAmount)
         {
-            //for (int i = 0; i < energyAmount; ++i)
-            //    m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
+            for (int i = m_playerEnergy.CurrentEnergy; i > m_playerEnergy.CurrentEnergy - energyAmount; --i)
+                m_crystalVisuals[i - 1].sprite = m_priceEnergyCrystalGFX;
+
+            for (int i = m_playerEnergy.CurrentEnergy - energyAmount - 1; i >= 0; --i)
+                m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
         }
 
         public void Show() => m_energyHUD.gameObject.SetActive(true);
