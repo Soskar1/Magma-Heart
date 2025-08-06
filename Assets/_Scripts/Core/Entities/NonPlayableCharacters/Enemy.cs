@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class Enemy : MonoBehaviour, IEntity, ICombatController
+    public class Enemy : MonoBehaviour, ICombatController
     {
         [SerializeField] private EntityData m_data;
         private Room m_currentRoom;
@@ -15,8 +15,10 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public Entity ControllingEntity => m_controllingEntity;
 
         public Action NextTurn { get; set; }
-
         public bool IsPlayableCharacter => false;
+
+        private Vector3Int m_currentTilePosition; // TODO: Use MovementAction
+        public Vector3Int CurrentTilePosition => m_currentTilePosition;
 
         public void Initialize()
         {
@@ -26,6 +28,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public void StartCombat(Room room)
         {
             m_currentRoom = room;
+            m_currentTilePosition = m_currentRoom.GetTilePosition(transform.position);
         }
 
         public void StartTurn()

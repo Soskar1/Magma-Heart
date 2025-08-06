@@ -47,7 +47,10 @@ namespace MagmaHeart.Core.CombatSystem
             TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder, m_combatUI);
 
             foreach (ICombatController controller in entitiesInCombat)
+            {
                 controller.StartCombat(room);
+                room.AddEntityToInspect(controller);
+            }
 
             turnSwitcher.Start();
         }

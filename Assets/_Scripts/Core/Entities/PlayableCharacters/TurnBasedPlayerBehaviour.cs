@@ -17,12 +17,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private MovementAction m_movementAction;
 
         private Transform m_playerTransform;
-        private Vector3Int m_playersCurrentTile;
 
         private Vector3Int? m_currentMouseTile;
 
+        public Vector3Int CurrentTilePosition => m_movementAction.CurrentTilePosition;
         public Action NextTurn { get; set; }
-
         public bool IsPlayableCharacter => true;
 
         private bool m_playerTurnIsActive;
@@ -61,16 +60,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentMouseTile.HasValue)
                 m_currentRoom.HideCombatTileAt(m_currentMouseTile.Value);
 
-            (int energyCost, _) = m_movementAction.CalculateEnergyUsage(mouseRoomTilePosition);
-
-            if (m_energy.HasEnough(energyCost))
+            if (m_movementAction.CanMoveToTile(mouseRoomTilePosition))
             {
                 m_currentRoom.TryDisplayCombatTile(mouseRoomTilePosition);
-                m_energyHUD.DisplayEnergyPrice(energyCost);
+                m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
             }
             else
             {
                 // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
+                Debug.LogWarning($"Player cannot move to tile {mouseRoomTilePosition} because of insufficient energy or tile is not accessible.");
             }
 
             m_currentMouseTile = mouseRoomTilePosition;
@@ -83,7 +81,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             Debug.Log($"Player clicked on tile {m_currentMouseTile}");
 
-            m_movementAction.TryMove(m_currentMouseTile.Value);
+            m_movementAction.MoveWithEnergyCost(m_currentMouseTile.Value);
         }
 
         public void StartCombat(Room room)
@@ -92,8 +90,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_movementAction.SetCurrentRoom(m_currentRoom);
 
             // Move player at the center of the current standing tile
-            m_playersCurrentTile = m_currentRoom.Grid.WorldToTilePosition(m_playerTransform.position);
-            m_playerTransform.position = m_currentRoom.Grid.ToTileCenter(m_playersCurrentTile);
+            Vector3Int playerTile = m_currentRoom.GetTilePosition(m_playerTransform.position);
+            m_movementAction.Move(playerTile);
         }
 
         public void StartTurn()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : MonoBehaviour, IEntity
+    public class Player : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
 

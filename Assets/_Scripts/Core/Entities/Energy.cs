@@ -7,14 +7,27 @@ namespace MagmaHeart.Core.Entities
     {
         private int m_maxEnergy;
         private int m_energyRegenerationPerTurn;
+        private int m_currentEnergy;
         public Action OnEnergyChanged;
 
-        public int CurrentEnergy { get; private set; }
+        public int CurrentEnergy
+        {
+            get => m_currentEnergy;
+            private set
+            {
+                m_currentEnergy = value;
+
+                if (m_currentEnergy > m_maxEnergy)
+                    m_currentEnergy = m_maxEnergy;
+
+                OnEnergyChanged?.Invoke();
+            }
+        }
 
         public Energy(int maxEnergy, int energyRegenerationPerTurn)
         {
             m_maxEnergy = maxEnergy;
-            CurrentEnergy = 0;
+            m_currentEnergy = 0;
             m_energyRegenerationPerTurn = energyRegenerationPerTurn;
         }
 
@@ -29,15 +42,8 @@ namespace MagmaHeart.Core.Entities
             }
 
             CurrentEnergy -= amount;
-            OnEnergyChanged?.Invoke();
         }
 
-        public void Regenerate()
-        {
-            CurrentEnergy += m_energyRegenerationPerTurn;
-
-            if (CurrentEnergy > m_maxEnergy)
-                CurrentEnergy = m_maxEnergy;
-        }
+        public void Regenerate() => CurrentEnergy += m_energyRegenerationPerTurn;
     }
 }
