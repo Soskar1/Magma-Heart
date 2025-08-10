@@ -1,7 +1,7 @@
-using System;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -105,12 +105,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_movementAction.Reset();
         }
 
-        private void HandleOnMouseChangeTile(Vector3Int mouseRoomTilePosition)
+        private void HandleOnMouseChangeTile(object obj, OnMouseChangedTileEventArgs e)
         {
             if (m_currentMouseTile != null)
                 m_currentRoom.HideCombatTileAt(m_currentMouseTile);
 
-            RoomTile roomTile = m_currentRoom.GetRoomTile(mouseRoomTilePosition);
+            RoomTile roomTile = m_currentRoom.GetRoomTile(e.TilePosition);
 
             if (m_currentRoom.EntityIsOnTile(roomTile, out IHittableTile entity))
             {
@@ -138,7 +138,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentMouseTile = roomTile;
         }
 
-        private void HandleOnMouseClicked()
+        private void HandleOnMouseClicked(object obj, EventArgs e)
         {
             m_onMouseClicked?.Invoke();
         }
@@ -176,6 +176,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
 
             m_attackAction.AttackWithEnergyCost(m_currentMouseOverEntity);
+
+            if (m_currentMouseOverEntity != null && m_attackAction.CanAttack(m_currentMouseOverEntity))
+                m_energyHUD.DisplayEnergyPrice(AttackAction.ENERGY_COST);
         }
     }
 }

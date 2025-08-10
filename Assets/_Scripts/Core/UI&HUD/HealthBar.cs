@@ -1,5 +1,6 @@
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,9 @@ namespace MagmaHeart.Core.UI
             m_playerHealth.OnMaxHealthChanged -= UpdateHealthBar;
         }
 
-        public void UpdateHealthBar() => m_healthBar.fillAmount = m_playerHealth.CurrentHealth / m_playerHealth.MaxHealth;
+        public void UpdateHealthBar(object obj, EventArgs e)
+        {
+            m_healthBar.fillAmount = m_playerHealth.CurrentHealth / m_playerHealth.MaxHealth;
+        }
     }
 }

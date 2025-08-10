@@ -11,8 +11,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private DungeonGrid m_grid;
 
         private Vector3Int? m_currentMouseTile;
-        public Action<Vector3Int> OnMouseChangedTile;
-        public Action OnMouseClicked;
+
+        public event EventHandler<OnMouseChangedTileEventArgs> OnMouseChangedTile;
+        public event EventHandler<EventArgs> OnMouseClicked;
 
         public MouseControl(UserInput userInput, DungeonGrid grid)
         {
@@ -40,13 +41,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 if (m_currentMouseTile.Value != mouseOverTilePosition)
                 {
                     m_currentMouseTile = mouseOverTilePosition;
-                    OnMouseChangedTile?.Invoke(mouseOverTilePosition);
+                    OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(mouseOverTilePosition));
                 }
             }
             else
             {
                 m_currentMouseTile = mouseOverTilePosition;
-                OnMouseChangedTile?.Invoke(mouseOverTilePosition);
+                OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(mouseOverTilePosition));
             }
         }
 
@@ -58,7 +59,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void OnMouseClick(InputAction.CallbackContext context)
         {
-            OnMouseClicked?.Invoke();
+            OnMouseClicked?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    public class OnMouseChangedTileEventArgs : EventArgs
+    {
+        public Vector3Int TilePosition { get; private set; }
+        public OnMouseChangedTileEventArgs(Vector3Int tilePosition) => TilePosition = tilePosition;
     }
 }
