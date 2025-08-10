@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private DungeonGrid m_gridPrefab;
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
-        [SerializeField] private Room m_roomPrefab;
+        [SerializeField] private CombatTilemapRenderer m_combatTilemapRendererPrefab;
 
         [Header("Spawner Settings")]
         [SerializeField] private Enemy m_enemyPrefab;
@@ -101,13 +101,13 @@ namespace MagmaHeart.Core.SceneLoading
             {
                 if (roomTileData != startRoom)
                 {
-                    Room roomInstance = Instantiate(m_roomPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    roomInstance.Initialize(roomTileData, m_grid);
+                    CombatTilemapRenderer renderer = Instantiate(m_combatTilemapRendererPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
+                    Room room = new Room(roomTileData, m_grid, renderer);
 
                     if (roomTileData != bossRoom)
                     {
                         CombatAltar altarInstance = Instantiate(m_combatAltarPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                        altarInstance.Initialize(roomInstance, m_combatStateSwitcher);
+                        altarInstance.Initialize(room, m_combatStateSwitcher);
                     }
                 }
             }

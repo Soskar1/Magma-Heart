@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7021314077308254535}
-  - component: {fileID: 1152494207554128281}
   - component: {fileID: 2643426448405317315}
+  - component: {fileID: 3941165013236252738}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -34,19 +34,6 @@ Transform:
   - {fileID: 886778585943573368}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1152494207554128281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 141662538129126774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07ecc8731bc55db42a2a13a2ee95752f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_combatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
 --- !u!156049354 &2643426448405317315
 Grid:
   m_ObjectHideFlags: 0
@@ -59,6 +46,20 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &3941165013236252738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141662538129126774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5ab1befd9487d7488f9ca68b5f2b39f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_combatTilemap: {fileID: 5707164300172116252}
+  m_combatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
 --- !u!1 &7834666960902025706
 GameObject:
   m_ObjectHideFlags: 0

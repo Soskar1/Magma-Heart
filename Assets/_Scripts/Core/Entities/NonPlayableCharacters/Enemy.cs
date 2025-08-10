@@ -18,7 +18,9 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public bool IsPlayableCharacter => false;
 
         private Vector3Int m_currentTilePosition; // TODO: Use MovementAction
-        public Vector3Int CurrentTilePosition => m_currentTilePosition;
+        public Vector3Int CurrentTilePosition { get => m_currentTilePosition; set => m_currentTilePosition = value; }
+        public Transform Transform => transform;
+        public Health Health => ControllingEntity.Health;
 
         public void Initialize()
         {
@@ -28,7 +30,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public void StartCombat(Room room)
         {
             m_currentRoom = room;
-            m_currentTilePosition = m_currentRoom.GetTilePosition(transform.position);
+            m_currentTilePosition = m_currentRoom.GetRoomTile(transform.position).Position;
         }
 
         public void StartTurn()
@@ -47,6 +49,12 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         {
             yield return new WaitForSeconds(1);
             EndTurn();
+        }
+
+        public void Hit(float damage)
+        {
+            Health.TakeDamage(damage);
+            Debug.Log($"{gameObject.name} took {damage} damage. Current health: {Health.CurrentHealth}");
         }
     }
 }

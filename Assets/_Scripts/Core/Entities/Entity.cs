@@ -47,7 +47,5 @@ namespace MagmaHeart.Core.Entities
 
             m_animation.PlayAnimations();
         }
-
-        public void Hit(in float damage) => Health.TakeDamage(damage);
     }
 }

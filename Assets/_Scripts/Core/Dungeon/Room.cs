@@ -6,60 +6,88 @@ using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    [RequireComponent(typeof(Grid))]
-    public class Room : MonoBehaviour
+    public class Room
     {
-        [SerializeField] private TileBase m_combatTile;
+        private CombatTilemapRenderer m_renderer;
         public RoomTileData RoomTileData { get; private set; }
         public DungeonGrid Grid { get; private set; }
+        public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
-        private Tilemap m_combatTilemap;
         private List<ICombatController> m_entitiesInCombat;
 
-        public void Initialize(RoomTileData roomTileData, DungeonGrid gameGrid)
+        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
-            m_combatTilemap = GetComponentInChildren<Tilemap>();
+            m_renderer = renderer;
             m_entitiesInCombat = new List<ICombatController>();
         }
 
         public void AddEntityToInspect(ICombatController combatController) => m_entitiesInCombat.Add(combatController);
 
-        public Vector3Int GetTilePosition(Vector3 worldPosition) => Grid.WorldToTilePosition(worldPosition);
-
-        public void TryDisplayCombatTile(Vector3Int roomTilePosition)
+        public RoomTile GetRoomTile(Vector3 worldPosition)
         {
-            if (!TileIsAccessable(roomTilePosition))
+            Vector3Int position = Grid.WorldToTilePosition(worldPosition);
+            return new RoomTile(this, position);
+        }
+
+        public void TryDisplayCombatTile(RoomTile roomTile)
+        {
+            if (!TileIsAccessable(roomTile))
                 return;
 
-            Vector3Int combatTilePosition = ConvertToCombatTilemap(roomTilePosition);
-            m_combatTilemap.SetTile(combatTilePosition, m_combatTile);
+            CombatTile combatTile = roomTile.ToCombatTile();
+            m_renderer.DisplayCombatTile(combatTile);
         }
 
-        public void HideCombatTileAt(Vector3Int roomTilePosition)
+        public void HideCombatTileAt(RoomTile roomTile)
         {
-            Vector3Int combatTilePosition = ConvertToCombatTilemap(roomTilePosition);
-            m_combatTilemap.SetTile(combatTilePosition, null);
+            CombatTile combatTile = roomTile.ToCombatTile();
+            m_renderer.HideCombatTileAt(combatTile);
         }
 
-        public bool TileIsAccessable(Vector3Int tilePosition)
+        public bool TileIsAccessable(RoomTile roomTile)
         {
-            DungeonTile tile = RoomTileData.GetTile((Vector2Int)tilePosition);
+            DungeonTile tile = RoomTileData.GetTile((Vector2Int)roomTile.Position);
 
-            if (tile == null || tile.Type == TileType.Wall || EntityIsOnTile(tilePosition))
+            if (tile == null || tile.Type == TileType.Wall || EntityIsOnTile(roomTile, out _))
                 return false;
 
             return true;
         }
 
-        // Convertation from roomTile to combatTile position is necessary, because of the offset issues
-        private Vector3Int ConvertToCombatTilemap(Vector3Int roomTilePosition)
+        public bool EntityIsOnTile(RoomTile roomTile, out IHittableTile entity)
         {
-            Vector2 worldPosition = Grid.TilePositionToWorld(roomTilePosition);
-            return m_combatTilemap.WorldToCell(worldPosition);
+            entity = m_entitiesInCombat.FirstOrDefault(e => e.CurrentTilePosition == roomTile.Position);
+            if (entity == null)
+                return false;
+
+            return true;
+        }
+    }
+
+    public class RoomTile
+    {
+        private Room m_room;
+        public Vector3Int Position { get; private set; }
+        public RoomTile(Room room, Vector3Int position)
+        {
+            m_room = room;
+            Position = position;
         }
 
-        private bool EntityIsOnTile(Vector3Int tilePosition) => m_entitiesInCombat.Any(entity => entity.CurrentTilePosition == tilePosition);
+        public CombatTile ToCombatTile()
+        {
+            Vector2 worldPosition = m_room.Grid.TilePositionToWorld(Position);
+            Vector3Int combatTilePosition = m_room.CombatTilemap.WorldToCell(worldPosition);
+            return new CombatTile(combatTilePosition);
+        }
+    }
+
+    public class CombatTile
+    {
+        public Vector3Int Position { get; private set; }
+
+        public CombatTile(Vector3Int position) => Position = position;
     }
 }
