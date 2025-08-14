@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             int distance = DungeonGrid.ManhattanDistance(m_tilePosition.CurrentTilePosition, hittable.CurrentTilePosition);
-            if (distance != ATTACK_DISTANCE)
+            if (distance > ATTACK_DISTANCE)
             {
                 Debug.Log($"Distance between entities: {distance}. Can't attack");
                 return false;

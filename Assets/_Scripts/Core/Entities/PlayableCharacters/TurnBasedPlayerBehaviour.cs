@@ -115,7 +115,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentRoom.EntityIsOnTile(roomTile, out IHittableTile entity))
             {
                 m_currentMouseOverEntity = entity;
-                if (m_attackAction.CanAttack(entity))
+                if (entity != this && m_attackAction.CanAttack(entity))
                 {
                     // TODO: Outline the entity that can be attacked or display some kind of visual feedback
                     m_onMouseClicked = ApplyAttackAction;
@@ -125,6 +125,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 else
                 {
                     m_onMouseClicked = null;
+                    m_energyHUD.DisplayEnergyPrice(0);
                     Debug.LogWarning($"Player cannot attack entity at tile {roomTile.Position} because of insufficient energy or tile is not accessible.");
                 }
             }
