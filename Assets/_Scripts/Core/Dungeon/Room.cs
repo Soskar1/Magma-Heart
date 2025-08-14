@@ -1,54 +1,96 @@
-using System;
+using MagmaHeart.Core.CombatSystem;
 using System.Collections.Generic;
-using MagmaHeart.Core.Entities;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    [RequireComponent(typeof(BoxCollider2D))]
-    public class Room : MonoBehaviour
+    public class Room
     {
-        [SerializeField] private float m_colliderSizeModifier;
+        private CombatTilemapRenderer m_renderer;
+        public RoomTileData RoomTileData { get; private set; }
+        public DungeonGrid Grid { get; private set; }
+        public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
-        private RoomTileData m_roomTileData;
-        public RoomTileData roomTileData => m_roomTileData;
-        public Vector2Int WorldPosition => m_roomTileData.WorldPosition;
-        public CombatData CombatData { get; private set; }
+        private List<ICombatController> m_entitiesInCombat;
 
-        public Action<Room> playerEnteredRoom;
-        private BoxCollider2D m_boxCollider;
-
-        private void Awake() => m_boxCollider = GetComponent<BoxCollider2D>();
-
-        public void Initialize(RoomTileData roomTileData)
+        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer)
         {
-            m_roomTileData = roomTileData;
+            RoomTileData = roomTileData;
+            Grid = gameGrid;
+            m_renderer = renderer;
+            m_entitiesInCombat = new List<ICombatController>();
         }
 
-        public void Initialize(RoomTileData roomTileData, List<Corridor> corridors, CombatData combatData)
+        public void AddEntityToInspect(ICombatController combatController) => m_entitiesInCombat.Add(combatController);
+        public void RemoveEntityFromRoom(ICombatController combatController) => m_entitiesInCombat.Remove(combatController);
+
+        public RoomTile GetRoomTile(Vector3 worldPosition)
         {
-            m_roomTileData = roomTileData;
-            CombatData = combatData;
-
-            float minDistance = float.MaxValue;
-            foreach (Corridor corridor in corridors)
-            {
-                CorridorEntrance entrance = corridor.Entrance1.RoomTileData == roomTileData ? corridor.Entrance1 : corridor.Entrance2;
-                float distance = Vector2Int.Distance(roomTileData.WorldPosition, entrance.StartPoint);
-                if (distance < minDistance)
-                    minDistance = distance;
-            }
-
-            m_boxCollider.size = new Vector2(minDistance, minDistance) * m_colliderSizeModifier;
+            Vector3Int position = Grid.WorldToTilePosition(worldPosition);
+            return new RoomTile(this, position);
         }
 
-        public void OnTriggerEnter2D(Collider2D collision)
+        public void TryDisplayCombatTile(RoomTile roomTile)
         {
-            if (collision.GetComponent<PlayerBehaviour>() != null)
-            {
-                m_boxCollider.enabled = false;
-                playerEnteredRoom?.Invoke(this);
-            }
+            if (!TileIsAccessable(roomTile))
+                return;
+
+            CombatTile combatTile = roomTile.ToCombatTile();
+            m_renderer.DisplayCombatTile(combatTile);
         }
+
+        public void HideCombatTileAt(RoomTile roomTile)
+        {
+            CombatTile combatTile = roomTile.ToCombatTile();
+            m_renderer.HideCombatTileAt(combatTile);
+        }
+
+        public bool TileIsAccessable(RoomTile roomTile)
+        {
+            DungeonTile tile = RoomTileData.GetTile((Vector2Int)roomTile.Position);
+
+            if (tile == null || tile.Type == TileType.Wall || EntityIsOnTile(roomTile, out _))
+                return false;
+
+            return true;
+        }
+
+        public bool EntityIsOnTile(RoomTile roomTile, out IHittableTile entity)
+        {
+            entity = m_entitiesInCombat.FirstOrDefault(e => e.CurrentTilePosition == roomTile.Position);
+            if (entity == null)
+                return false;
+
+            return true;
+        }
+
+        public bool EntityExists(IHittableTile entity) => m_entitiesInCombat.Any(e => e.CurrentTilePosition == entity.CurrentTilePosition);
+    }
+
+    public class RoomTile
+    {
+        private Room m_room;
+        public Vector3Int Position { get; private set; }
+        public RoomTile(Room room, Vector3Int position)
+        {
+            m_room = room;
+            Position = position;
+        }
+
+        public CombatTile ToCombatTile()
+        {
+            Vector2 worldPosition = m_room.Grid.TilePositionToWorld(Position);
+            Vector3Int combatTilePosition = m_room.CombatTilemap.WorldToCell(worldPosition);
+            return new CombatTile(combatTilePosition);
+        }
+    }
+
+    public class CombatTile
+    {
+        public Vector3Int Position { get; private set; }
+
+        public CombatTile(Vector3Int position) => Position = position;
     }
 }

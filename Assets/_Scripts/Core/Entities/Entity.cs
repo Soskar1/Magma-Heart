@@ -2,38 +2,50 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class Entity : MonoBehaviour
+    public class Entity
     {
-        [SerializeField] private float m_maxHealth;
+        private AnimationPlayer m_animation;
 
+        public Transform Transform { get; private set; }
         public Health Health { get; private set; }
-        public IMovable Movement { get; private set; }
-        public IMeleeAttacker MeleeAttack { get; private set; }
-        public AnimationPlayer Animation { get; private set; }
+        public Energy Energy { get; private set; }
+        public EntityData Data { get; private set; }
+        public EntityStats Stats => Data.Stats;
 
-        public void Initialize()
+        public Entity(EntityData data, Transform transform, AnimationPlayer animationPlayer = null)
         {
-            Health = new Health(m_maxHealth);
-            Movement = GetComponent<IMovable>();
-            MeleeAttack = GetComponent<IMeleeAttacker>();
-            Animation = GetComponent<AnimationPlayer>();
+            Data = data;
+            Transform = transform;
+            m_animation = animationPlayer;
 
-            if (Movement == null)
-                Debug.LogError($"{name} is missing IMovable.");
+            Health = new Health(Stats.MaxHealth);
+            Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+        }
 
-            if (MeleeAttack == null)
-                Debug.LogError($"{name} is missing IMeleeAttacker.");
+        public void Enable()
+        {
+            if (m_animation == null)
+                return;
 
-            if (Animation == null)
-                Debug.LogWarning($"{name} has no IAnimatable (optional).");
+            m_animation.Enable();
+        }
 
-            Animation.Initialize();
+        public void Disable()
+        {
+            if (m_animation == null)
+                return;
+
+            m_animation.Disable();
         }
 
         public void Reset() => Health.Reset();
 
-        public void Enable() => Animation.Enable();
-        public void Disable() => Animation.Disable();
-        public void Hit(in float damage) => Health.TakeDamage(damage);
+        public void RunAnimations()
+        {
+            if (m_animation == null)
+                return;
+
+            m_animation.PlayAnimations();
+        }
     }
 }

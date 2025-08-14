@@ -88,7 +88,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     ""name"": ""Controls"",
     ""maps"": [
         {
-            ""name"": ""Player"",
+            ""name"": ""ActionPlayer"",
             ""id"": ""df70fa95-8a34-4494-b137-73ab6b9c7d37"",
             ""actions"": [
                 {
@@ -107,6 +107,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interaction"",
+                    ""type"": ""Button"",
+                    ""id"": ""8d44fbe8-fddf-4c0a-81e3-51d906d0b6ab"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -174,6 +183,65 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b43d7d4a-d6be-46c1-86a9-2cb0d2387d9c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""TurnBasedPlayer"",
+            ""id"": ""493982c9-fcc5-4be7-9c76-46f4c46d367c"",
+            ""actions"": [
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""a190f30b-d084-4f4c-b398-89055228ba7b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""f76f1526-b361-436e-9672-3f95c385d9f3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""7e0e1fd0-d2f0-46a0-a4a5-1afaed0c8a9d"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a272ffee-068a-41b7-94c3-ad984daa29b2"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -759,10 +827,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Player
-        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        // ActionPlayer
+        m_ActionPlayer = asset.FindActionMap("ActionPlayer", throwIfNotFound: true);
+        m_ActionPlayer_Move = m_ActionPlayer.FindAction("Move", throwIfNotFound: true);
+        m_ActionPlayer_Attack = m_ActionPlayer.FindAction("Attack", throwIfNotFound: true);
+        m_ActionPlayer_Interaction = m_ActionPlayer.FindAction("Interaction", throwIfNotFound: true);
+        // TurnBasedPlayer
+        m_TurnBasedPlayer = asset.FindActionMap("TurnBasedPlayer", throwIfNotFound: true);
+        m_TurnBasedPlayer_MousePosition = m_TurnBasedPlayer.FindAction("MousePosition", throwIfNotFound: true);
+        m_TurnBasedPlayer_MouseClick = m_TurnBasedPlayer.FindAction("MouseClick", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -779,7 +852,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
 
     ~@Controls()
     {
-        UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, Controls.Player.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_ActionPlayer.enabled, "This will cause a leak and performance issues, Controls.ActionPlayer.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_TurnBasedPlayer.enabled, "This will cause a leak and performance issues, Controls.TurnBasedPlayer.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, Controls.UI.Disable() has not been called.");
     }
 
@@ -853,34 +927,39 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player
-    private readonly InputActionMap m_Player;
-    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Attack;
+    // ActionPlayer
+    private readonly InputActionMap m_ActionPlayer;
+    private List<IActionPlayerActions> m_ActionPlayerActionsCallbackInterfaces = new List<IActionPlayerActions>();
+    private readonly InputAction m_ActionPlayer_Move;
+    private readonly InputAction m_ActionPlayer_Attack;
+    private readonly InputAction m_ActionPlayer_Interaction;
     /// <summary>
-    /// Provides access to input actions defined in input action map "Player".
+    /// Provides access to input actions defined in input action map "ActionPlayer".
     /// </summary>
-    public struct PlayerActions
+    public struct ActionPlayerActions
     {
         private @Controls m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public ActionPlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Player/Move".
+        /// Provides access to the underlying input action "ActionPlayer/Move".
         /// </summary>
-        public InputAction @Move => m_Wrapper.m_Player_Move;
+        public InputAction @Move => m_Wrapper.m_ActionPlayer_Move;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Attack".
+        /// Provides access to the underlying input action "ActionPlayer/Attack".
         /// </summary>
-        public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @Attack => m_Wrapper.m_ActionPlayer_Attack;
+        /// <summary>
+        /// Provides access to the underlying input action "ActionPlayer/Interaction".
+        /// </summary>
+        public InputAction @Interaction => m_Wrapper.m_ActionPlayer_Interaction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public InputActionMap Get() { return m_Wrapper.m_ActionPlayer; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -888,9 +967,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="PlayerActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="ActionPlayerActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(ActionPlayerActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -898,17 +977,20 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="PlayerActions" />
-        public void AddCallbacks(IPlayerActions instance)
+        /// <seealso cref="ActionPlayerActions" />
+        public void AddCallbacks(IActionPlayerActions instance)
         {
-            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_ActionPlayerActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ActionPlayerActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @Interaction.started += instance.OnInteraction;
+            @Interaction.performed += instance.OnInteraction;
+            @Interaction.canceled += instance.OnInteraction;
         }
 
         /// <summary>
@@ -917,8 +999,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="PlayerActions" />
-        private void UnregisterCallbacks(IPlayerActions instance)
+        /// <seealso cref="ActionPlayerActions" />
+        private void UnregisterCallbacks(IActionPlayerActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
@@ -926,15 +1008,18 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @Interaction.started -= instance.OnInteraction;
+            @Interaction.performed -= instance.OnInteraction;
+            @Interaction.canceled -= instance.OnInteraction;
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PlayerActions.UnregisterCallbacks(IPlayerActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ActionPlayerActions.UnregisterCallbacks(IActionPlayerActions)" />.
         /// </summary>
-        /// <seealso cref="PlayerActions.UnregisterCallbacks(IPlayerActions)" />
-        public void RemoveCallbacks(IPlayerActions instance)
+        /// <seealso cref="ActionPlayerActions.UnregisterCallbacks(IActionPlayerActions)" />
+        public void RemoveCallbacks(IActionPlayerActions instance)
         {
-            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_ActionPlayerActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -944,21 +1029,128 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="PlayerActions.AddCallbacks(IPlayerActions)" />
-        /// <seealso cref="PlayerActions.RemoveCallbacks(IPlayerActions)" />
-        /// <seealso cref="PlayerActions.UnregisterCallbacks(IPlayerActions)" />
-        public void SetCallbacks(IPlayerActions instance)
+        /// <seealso cref="ActionPlayerActions.AddCallbacks(IActionPlayerActions)" />
+        /// <seealso cref="ActionPlayerActions.RemoveCallbacks(IActionPlayerActions)" />
+        /// <seealso cref="ActionPlayerActions.UnregisterCallbacks(IActionPlayerActions)" />
+        public void SetCallbacks(IActionPlayerActions instance)
         {
-            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_ActionPlayerActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_ActionPlayerActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="PlayerActions" /> instance referencing this action map.
+    /// Provides a new <see cref="ActionPlayerActions" /> instance referencing this action map.
     /// </summary>
-    public PlayerActions @Player => new PlayerActions(this);
+    public ActionPlayerActions @ActionPlayer => new ActionPlayerActions(this);
+
+    // TurnBasedPlayer
+    private readonly InputActionMap m_TurnBasedPlayer;
+    private List<ITurnBasedPlayerActions> m_TurnBasedPlayerActionsCallbackInterfaces = new List<ITurnBasedPlayerActions>();
+    private readonly InputAction m_TurnBasedPlayer_MousePosition;
+    private readonly InputAction m_TurnBasedPlayer_MouseClick;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "TurnBasedPlayer".
+    /// </summary>
+    public struct TurnBasedPlayerActions
+    {
+        private @Controls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public TurnBasedPlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "TurnBasedPlayer/MousePosition".
+        /// </summary>
+        public InputAction @MousePosition => m_Wrapper.m_TurnBasedPlayer_MousePosition;
+        /// <summary>
+        /// Provides access to the underlying input action "TurnBasedPlayer/MouseClick".
+        /// </summary>
+        public InputAction @MouseClick => m_Wrapper.m_TurnBasedPlayer_MouseClick;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_TurnBasedPlayer; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="TurnBasedPlayerActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(TurnBasedPlayerActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="TurnBasedPlayerActions" />
+        public void AddCallbacks(ITurnBasedPlayerActions instance)
+        {
+            if (instance == null || m_Wrapper.m_TurnBasedPlayerActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_TurnBasedPlayerActionsCallbackInterfaces.Add(instance);
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
+            @MouseClick.started += instance.OnMouseClick;
+            @MouseClick.performed += instance.OnMouseClick;
+            @MouseClick.canceled += instance.OnMouseClick;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="TurnBasedPlayerActions" />
+        private void UnregisterCallbacks(ITurnBasedPlayerActions instance)
+        {
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
+            @MouseClick.started -= instance.OnMouseClick;
+            @MouseClick.performed -= instance.OnMouseClick;
+            @MouseClick.canceled -= instance.OnMouseClick;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="TurnBasedPlayerActions.UnregisterCallbacks(ITurnBasedPlayerActions)" />.
+        /// </summary>
+        /// <seealso cref="TurnBasedPlayerActions.UnregisterCallbacks(ITurnBasedPlayerActions)" />
+        public void RemoveCallbacks(ITurnBasedPlayerActions instance)
+        {
+            if (m_Wrapper.m_TurnBasedPlayerActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="TurnBasedPlayerActions.AddCallbacks(ITurnBasedPlayerActions)" />
+        /// <seealso cref="TurnBasedPlayerActions.RemoveCallbacks(ITurnBasedPlayerActions)" />
+        /// <seealso cref="TurnBasedPlayerActions.UnregisterCallbacks(ITurnBasedPlayerActions)" />
+        public void SetCallbacks(ITurnBasedPlayerActions instance)
+        {
+            foreach (var item in m_Wrapper.m_TurnBasedPlayerActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_TurnBasedPlayerActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="TurnBasedPlayerActions" /> instance referencing this action map.
+    /// </summary>
+    public TurnBasedPlayerActions @TurnBasedPlayer => new TurnBasedPlayerActions(this);
 
     // UI
     private readonly InputActionMap m_UI;
@@ -1220,11 +1412,11 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         }
     }
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ActionPlayer" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="PlayerActions.AddCallbacks(IPlayerActions)" />
-    /// <seealso cref="PlayerActions.RemoveCallbacks(IPlayerActions)" />
-    public interface IPlayerActions
+    /// <seealso cref="ActionPlayerActions.AddCallbacks(IActionPlayerActions)" />
+    /// <seealso cref="ActionPlayerActions.RemoveCallbacks(IActionPlayerActions)" />
+    public interface IActionPlayerActions
     {
         /// <summary>
         /// Method invoked when associated input action "Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
@@ -1240,6 +1432,35 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAttack(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interaction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteraction(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "TurnBasedPlayer" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="TurnBasedPlayerActions.AddCallbacks(ITurnBasedPlayerActions)" />
+    /// <seealso cref="TurnBasedPlayerActions.RemoveCallbacks(ITurnBasedPlayerActions)" />
+    public interface ITurnBasedPlayerActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "MousePosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMousePosition(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MouseClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMouseClick(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

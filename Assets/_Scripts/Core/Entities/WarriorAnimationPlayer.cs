@@ -4,7 +4,6 @@ namespace MagmaHeart.Core.Entities
 {
     public class WarriorAnimationPlayer : AnimationPlayer
     {
-        private IMeleeAttacker m_attacker;
         private IMovable m_movement;
         private readonly int m_idleAnimationID = Animator.StringToHash("Idle");
         private readonly int m_runAnimationID = Animator.StringToHash("Run");
@@ -12,33 +11,24 @@ namespace MagmaHeart.Core.Entities
 
         private bool m_triggerAttackAnimation = false;
 
-        public override void Initialize()
+        public override void Awake()
         {
-            base.Initialize();
-            m_attacker = GetComponent<IMeleeAttacker>();
+            base.Awake();
             m_movement = GetComponent<IMovable>();
         }
 
         public override void Enable()
         {
             SetAnimationState(m_idleAnimationID);
-            m_attacker.OnAttackStarted += TriggerAttackAnimation;
         }
 
         public override void Disable()
         {
             m_triggerAttackAnimation = false;
-            m_attacker.OnAttackStarted -= TriggerAttackAnimation;
         }
 
         public override int GetAnimationState()
         {
-            if (m_triggerAttackAnimation && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && CurrentAnimationState == m_attackAnimationID)
-            {
-                m_triggerAttackAnimation = false;
-                m_attacker.OnAttackStarted += TriggerAttackAnimation;
-            }
-
             if (m_triggerAttackAnimation)
                 return m_attackAnimationID;
 
@@ -46,12 +36,6 @@ namespace MagmaHeart.Core.Entities
                 return m_runAnimationID;
 
             return m_idleAnimationID;
-        }
-
-        private void TriggerAttackAnimation()
-        {
-            m_triggerAttackAnimation = true;
-            m_attacker.OnAttackStarted -= TriggerAttackAnimation;
         }
     }
 }

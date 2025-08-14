@@ -1,5 +1,4 @@
-using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.SceneLoading
@@ -12,11 +11,11 @@ namespace MagmaHeart.Core.SceneLoading
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out PlayerBehaviour player))
+            if (collision.TryGetComponent(out Player player))
             {
                 SaveData dataTransfer = new SaveData();
-                dataTransfer.SaveObtainedArtifacts(player.ArtifactApplier.ObtainedArtifacts);
-                dataTransfer.health = player.ControllingEntity.Health.CurrentHealth;
+                // dataTransfer.SaveObtainedArtifacts(player.ArtifactApplier.ObtainedArtifacts);
+                dataTransfer.health = player.Health.CurrentHealth;
                 m_loader.LoadNextScene(dataTransfer);
             }
         }
