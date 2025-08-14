@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public Transform Transform => m_playerTransform;
         public Vector3Int CurrentTilePosition { get; set; }
-        public Action NextTurn { get; set; }
+        public EventHandler NextTurn { get; set; }
         public bool IsPlayableCharacter => true;
 
         public Health Health => m_health;
@@ -101,7 +101,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 m_currentMouseOverEntity = null;
             }
 
-            NextTurn?.Invoke();
+            NextTurn?.Invoke(this, EventArgs.Empty);
             m_movementAction.Reset();
         }
 

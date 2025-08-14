@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         private Entity m_controllingEntity;
         public Entity ControllingEntity => m_controllingEntity;
 
-        public Action NextTurn { get; set; }
+        public EventHandler NextTurn { get; set; }
         public bool IsPlayableCharacter => false;
 
         private Vector3Int m_currentTilePosition; // TODO: Use MovementAction
@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public void EndTurn()
         {
             Debug.Log($"{gameObject.name} ({gameObject.transform.position}) ended his move");
-            NextTurn?.Invoke();
+            NextTurn?.Invoke(this, EventArgs.Empty);
         }
 
         private IEnumerator MakingThinkingMove()

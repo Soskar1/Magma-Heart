@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MagmaHeart.Core.UI;
 
@@ -22,7 +23,7 @@ namespace MagmaHeart.Core.CombatSystem
             StartTurn();
         }
 
-        private void NextTurn()
+        private void NextTurn(object obj, EventArgs e)
         {
             EndTurn();
 
