@@ -27,7 +27,6 @@ namespace MagmaHeart.Core.SceneLoading
         private SceneLoader m_sceneLoader;
         private Location m_location;
         private LocationRenderer m_renderer;
-        private CombatStateSwitcher m_combatStateSwitcher;
         private UserInput m_userInput;
         private DungeonGrid m_grid;
 
@@ -95,7 +94,7 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
             Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
-            m_combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, spawner, combatUI);
+            CombatStateSwitcher combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, spawner, combatUI);
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {
@@ -107,7 +106,7 @@ namespace MagmaHeart.Core.SceneLoading
                     if (roomTileData != bossRoom)
                     {
                         CombatAltar altarInstance = Instantiate(m_combatAltarPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                        altarInstance.Initialize(room, m_combatStateSwitcher);
+                        altarInstance.Initialize(room, combatStateSwitcher);
                     }
                 }
             }
