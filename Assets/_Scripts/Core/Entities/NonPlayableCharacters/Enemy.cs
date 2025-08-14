@@ -51,10 +51,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             EndTurn();
         }
 
-        public void Hit(float damage)
-        {
-            Health.TakeDamage(damage);
-            Debug.Log($"{gameObject.name} took {damage} damage. Current health: {Health.CurrentHealth}");
-        }
+        public void Hit(float damage) => Health.TakeDamage(damage);
     }
 }

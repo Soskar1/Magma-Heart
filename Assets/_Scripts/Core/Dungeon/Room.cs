@@ -24,6 +24,7 @@ namespace MagmaHeart.Core.Dungeon
         }
 
         public void AddEntityToInspect(ICombatController combatController) => m_entitiesInCombat.Add(combatController);
+        public void RemoveEntityFromRoom(ICombatController combatController) => m_entitiesInCombat.Remove(combatController);
 
         public RoomTile GetRoomTile(Vector3 worldPosition)
         {
@@ -64,6 +65,8 @@ namespace MagmaHeart.Core.Dungeon
 
             return true;
         }
+
+        public bool EntityExists(IHittableTile entity) => m_entitiesInCombat.Any(e => e.CurrentTilePosition == entity.CurrentTilePosition);
     }
 
     public class RoomTile

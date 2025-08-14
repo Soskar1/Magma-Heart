@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.UI;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -14,7 +14,6 @@ namespace MagmaHeart.Core.CombatSystem
         private Player m_player;
         private Spawner m_spawner;
         private List<IDisplayable> m_combatUI;
-        private TurnOrderBuilder m_turnOrderBuilder;
 
         public CombatStateSwitcher(Tilemap corridors, Player player, Spawner spawner, List<IDisplayable> combatUI)
         {
@@ -22,7 +21,6 @@ namespace MagmaHeart.Core.CombatSystem
             m_player = player;
             m_spawner = spawner;
             m_combatUI = combatUI;
-            m_turnOrderBuilder = new TurnOrderBuilder();
         }
 
         public void EnterCombatState(Room room)
@@ -36,31 +34,38 @@ namespace MagmaHeart.Core.CombatSystem
 
             for (int i = 0; i < 3; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
-                Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
+                ICombatController spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 entitiesInCombat.Add(spawnedEntity);
             }
 
-            TurnOrder turnOrder = m_turnOrderBuilder.Build(entitiesInCombat);
-
-            // TODO: Turn on combat HUD
-
-            TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder, m_combatUI);
-
-            foreach (ICombatController controller in entitiesInCombat)
-            {
-                controller.StartCombat(room);
-                room.AddEntityToInspect(controller);
-            }
-
-            turnSwitcher.Start();
+            Battle battle = new Battle(room, entitiesInCombat, m_combatUI);
+            battle.BattleEnded += ExitCombatState;
+            battle.Start();
         }
 
-        private void EndCombat()
+        private void ExitCombatState(object obj, BattleEndedEventArgs e)
         {
-            m_corridors.gameObject.SetActive(false);
-            m_player.ExitCombat();
+            foreach (IDisplayable displayable in m_combatUI)
+                displayable.Hide();
 
-            // TODO: Turn off combat HUD
+            if (e.IsPlayerVictory)
+            {
+                e.BattleSurvivors.ForEach(survivor =>
+                {
+                    survivor.NextTurn = null;
+                    survivor.EndTurn();
+                });
+
+                m_corridors.gameObject.SetActive(false);
+                m_player.ExitCombat();
+
+                Debug.Log("Player won the battle!");
+            }
+            else
+            {
+                // TODO: Handle player defeat
+            }
+
         }
     }
 }

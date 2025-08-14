@@ -27,6 +27,7 @@ namespace MagmaHeart.Core.CombatSystem
                 dungeonTile = roomTileData.GetTileAtIndex(Random.Range(0, roomTileData.TileCount - 1));
             } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
 
+            // TODO: Use object pooling
             Enemy entityInstance = Object.Instantiate(m_enemyPrefab, dungeonTile.Position.ToVector3() + m_offset, Quaternion.identity);
             entityInstance.Initialize();
 
