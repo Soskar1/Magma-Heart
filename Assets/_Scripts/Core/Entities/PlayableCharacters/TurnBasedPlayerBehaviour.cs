@@ -10,7 +10,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private TurnBasedUserInput m_userInput;
         private RoomTile m_currentMouseTile;
-        private Action m_onMouseClicked;
 
         private Room m_currentRoom;
 
@@ -21,6 +20,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private MovementAction m_movementAction;
         private AttackAction m_attackAction;
+        private ICombatAction m_currentAction;
         private IHittableTile m_currentMouseOverEntity;
 
         public Transform Transform => m_playerTransform;
@@ -72,7 +72,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void StartTurn()
         {
             m_userInput.Enable();
-            m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangeTile;
+            m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
 
             m_energy.Regenerate();
@@ -84,7 +84,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void EndTurn()
         {
             m_userInput.Disable();
-            m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangeTile;
+            m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
 
             Debug.Log("Player ended his move");
@@ -105,7 +105,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_movementAction.Reset();
         }
 
-        private void HandleOnMouseChangeTile(object obj, OnMouseChangedTileEventArgs e)
+        private void HandleOnMouseChangedTile(object obj, OnMouseChangedTileEventArgs e)
         {
             if (m_currentMouseTile != null)
                 m_currentRoom.HideCombatTileAt(m_currentMouseTile);
@@ -118,13 +118,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 if (entity != this && m_attackAction.CanAttack(entity))
                 {
                     // TODO: Outline the entity that can be attacked or display some kind of visual feedback
-                    m_onMouseClicked = ApplyAttackAction;
+                    m_attackAction.EntityToHit = entity;
+                    m_currentAction = m_attackAction;
                     m_energyHUD.DisplayEnergyPrice(AttackAction.ENERGY_COST);
                     Debug.Log($"Player can attack entity at tile {roomTile.Position}. Energy cost: {AttackAction.ENERGY_COST}");
                 }
                 else
                 {
-                    m_onMouseClicked = null;
+                    m_currentAction = null;
                     m_energyHUD.DisplayEnergyPrice(0);
                     Debug.LogWarning($"Player cannot attack entity at tile {roomTile.Position} because of insufficient energy or tile is not accessible.");
                 }
@@ -132,7 +133,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             else
             {
                 DisplayCostForMovementAction(roomTile);
-                m_onMouseClicked = ApplyMovementAction;
+                m_movementAction.TileToMove = roomTile;
+                m_currentAction = m_movementAction;
                 m_currentMouseOverEntity = null;
             }
 
@@ -141,7 +143,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseClicked(object obj, EventArgs e)
         {
-            m_onMouseClicked?.Invoke();
+            if (m_currentAction == null)
+                return;
+
+            m_currentAction.Execute();
+            m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
 
         private void DisplayCostForMovementAction(RoomTile roomTile)
@@ -156,30 +162,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
                 Debug.LogWarning($"Player cannot move to tile {roomTile.Position} because of insufficient energy or tile is not accessible.");
             }
-        }
-
-        private void ApplyMovementAction()
-        {
-            if (m_currentMouseTile == null)
-                Debug.LogWarning("Player clicked on tile, but current mouse tile is not set. This should never happen!");
-
-            Debug.Log($"Player clicked on tile {m_currentMouseTile}");
-
-            m_movementAction.MoveWithEnergyCost(m_currentMouseTile);
-        }
-
-        private void ApplyAttackAction()
-        {
-            if (m_currentMouseOverEntity == null)
-            {
-                Debug.LogWarning("Player clicked on entity, but current mouse over entity is not set. This should never happen!");
-                return;
-            }
-
-            m_attackAction.AttackWithEnergyCost(m_currentMouseOverEntity);
-
-            if (m_currentMouseOverEntity != null && m_attackAction.CanAttack(m_currentMouseOverEntity))
-                m_energyHUD.DisplayEnergyPrice(AttackAction.ENERGY_COST);
         }
     }
 }

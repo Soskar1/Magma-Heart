@@ -51,6 +51,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
+        public void ForceTriggerOnMouseChangedTile() => OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(m_currentMouseTile.Value));
+
         private Vector2 GetMouseWorldPosition()
         {
             Vector2 currentMousePosition = m_userInput.Controls.TurnBasedPlayer.MousePosition.ReadValue<Vector2>();

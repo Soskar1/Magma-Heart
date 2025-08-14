@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class MovementAction
+    public class MovementAction : ICombatAction
     {
         private ITilePosition m_tilePosition;
         private Energy m_energy;
@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
         public int MovementDistanceInTilesForOneEnergy { get; private set; } = 2;
+        public RoomTile TileToMove { get; set; }
 
         public MovementAction(Energy energy, ITilePosition tilePosition)
         {
@@ -29,20 +30,20 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
+        public void Execute()
+        {
+            if (CanMoveToTile(TileToMove))
+            {
+                m_energy.Spend(CurrentTheoreticalEnergyUsage);
+                Move(TileToMove);
+                m_freeDistanceToMove = m_currentTheoreticalFreeDistanceToMove;
+            }
+        }
+
         public bool CanMoveToTile(RoomTile targetTile)
         {
             CalculateEnergyUsage(targetTile);
             return m_energy.HasEnough(CurrentTheoreticalEnergyUsage) && m_currentRoom.TileIsAccessable(targetTile);
-        }
-
-        public void MoveWithEnergyCost(RoomTile targetTile)
-        {
-            if (CanMoveToTile(targetTile))
-            {
-                m_energy.Spend(CurrentTheoreticalEnergyUsage);
-                Move(targetTile);
-                m_freeDistanceToMove = m_currentTheoreticalFreeDistanceToMove;
-            }
         }
 
         public void Move(RoomTile targetTile)

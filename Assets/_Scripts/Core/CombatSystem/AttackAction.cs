@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class AttackAction
+    public class AttackAction : ICombatAction
     {
         public const int ENERGY_COST = 2;
         public const int ATTACK_DISTANCE = 1;
@@ -13,10 +13,21 @@ namespace MagmaHeart.Core.CombatSystem
         private Energy m_energy;
         private ITilePosition m_tilePosition;
 
+        public IHittableTile EntityToHit { get; set; }
+
         public AttackAction(Energy energy, ITilePosition tilePosition)
         {
             m_tilePosition = tilePosition;
             m_energy = energy;
+        }
+
+        public void Execute()
+        {
+            if (CanAttack(EntityToHit))
+            {
+                m_energy.Spend(ENERGY_COST);
+                EntityToHit.Hit(ATTACK_DAMAGE);
+            }
         }
 
         public bool CanAttack(IHittableTile hittable)
@@ -35,15 +46,6 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             return true;
-        }
-
-        public void AttackWithEnergyCost(IHittableTile hittable)
-        {
-            if (CanAttack(hittable))
-            {
-                m_energy.Spend(ENERGY_COST);
-                hittable.Hit(ATTACK_DAMAGE);
-            }
         }
     }
 }
