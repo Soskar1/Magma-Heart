@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using MagmaHeart.Core.Collections;
+using UnityEditor.Graphs;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Navigation
@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.Navigation
 
         public List<Vector2> FindPath(Vector2 start, Vector2 target)
         {
-            if (!m_graph.HasNode(start) || !m_graph.HasNode(target))
+            if (!m_graph.ContainsNode(start) || !m_graph.ContainsNode(target))
             {
                 Debug.LogWarning($"Can't find a path between {start} and {target}. One of the nodes does not exist!");
                 return null;
@@ -72,7 +72,7 @@ namespace MagmaHeart.Core.Navigation
 
                 visitedNodes.Add(current.Node);
 
-                IEnumerable<AStarNode> adjacentNodes = m_graph.GetAdjacentNodes(current.Node.Position);
+                IEnumerable<AStarNode> adjacentNodes = m_graph.GetAdjacentNodes(current.Node);
                 foreach (AStarNode adjacentNode in adjacentNodes)
                 {
                     Debug.Log($"Analysing adjacent node: {adjacentNode.Position}");

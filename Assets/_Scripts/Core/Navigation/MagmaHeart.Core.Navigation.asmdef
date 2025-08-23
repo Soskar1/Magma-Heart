@@ -1,0 +1,17 @@
+{
+    "name": "MagmaHeart.Core.Navigation",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5e9795e688f316245979cd619d1e993b",
+        "GUID:80a5bf9362ac37640a3609e7abc0650d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
