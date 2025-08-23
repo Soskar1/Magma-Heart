@@ -2,25 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagmaHeart
+namespace MagmaHeart.Core.Collections
 {
     public class PriorityQueue<TElement, TPriority> where TPriority : IComparable<TPriority>
     {
         private readonly SortedDictionary<TPriority, LinkedList<TElement>> m_storage;
-        private readonly HashSet<TElement> m_elements;
-        public int Count => m_elements.Count;
+        public int Count { get; private set; }
 
         public PriorityQueue() 
         {
             m_storage = new SortedDictionary<TPriority, LinkedList<TElement>>();
-            m_elements = new HashSet<TElement>();
         }
 
         public void Enqueue(TElement item, TPriority priority)
         {
-            if (m_elements.Contains(item))
-                return;
-
             if (!m_storage.TryGetValue(priority, out var queue))
             {
                 queue = new LinkedList<TElement>();
@@ -28,7 +23,7 @@ namespace MagmaHeart
             }
 
             queue.AddLast(item);
-            m_elements.Add(item);
+            ++Count;
         }
 
         public TElement Dequeue()
@@ -44,22 +39,23 @@ namespace MagmaHeart
             if (linkedList.Count == 0)
                 m_storage.Remove(priority);
 
-            m_elements.Remove(item);
+            --Count;
             return item;
         }
 
         public void Remove(TElement item)
         {
-            if (!m_elements.Contains(item))
-                return;
-
-            foreach (LinkedList<TElement> linkedList in m_storage.Values)
+            foreach ((TPriority priority, LinkedList<TElement> linkedList) in m_storage)
             {
-                LinkedListNode<TElement> node = linkedList.Find(item);
+                LinkedListNode <TElement> node = linkedList.Find(item);
                 if (node != null)
                 {
                     linkedList.Remove(node);
-                    m_elements.Remove(item);
+
+                    if (linkedList.Count == 0)
+                        m_storage.Remove(priority);
+
+                    --Count;
                     return;
                 }
             }
@@ -67,9 +63,6 @@ namespace MagmaHeart
 
         public void UpdatePriority(TElement item, TPriority newPriority)
         {
-            if (!m_elements.Contains(item))
-                return;
-
             Remove(item);
             Enqueue(item, newPriority);
         }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using MagmaHeart.Core.Collections;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Navigation
@@ -29,12 +31,12 @@ namespace MagmaHeart.Core.Navigation
             public float HeuristicCost { get; set; }
             public float TotalCost => PathCost + HeuristicCost;
 
-            public ComputationalAStarNode(AStarNode node, float pathCost, float heuristicCost)
+            public ComputationalAStarNode(AStarNode node, float pathCost, float heuristicCost, ComputationalAStarNode parent = null)
             {
                 Node = node;
                 PathCost = pathCost;
                 HeuristicCost = heuristicCost;
-                Parent = null;
+                Parent = parent;
             }
         }
 
@@ -60,15 +62,21 @@ namespace MagmaHeart.Core.Navigation
             while (nodeQueue.Count > 0)
             {
                 ComputationalAStarNode current = nodeQueue.Dequeue();
+                Debug.Log($"Current node: {current.Node.Position}\nTotal Cost: {current.TotalCost}");
 
                 if (current.Node.Position == target)
+                {
+                    Debug.Log("Found path!");
                     return ReconstructPath(current);
+                }
 
                 visitedNodes.Add(current.Node);
 
                 IEnumerable<AStarNode> adjacentNodes = m_graph.GetAdjacentNodes(current.Node.Position);
                 foreach (AStarNode adjacentNode in adjacentNodes)
                 {
+                    Debug.Log($"Analysing adjacent node: {adjacentNode.Position}");
+
                     if (!visitedNodes.Contains(adjacentNode) && adjacentNode.Type == AStarNodeType.Walkable)
                     {
                         float pathCost = current.PathCost + m_graph.GetCost(current.Node, adjacentNode);
@@ -76,7 +84,7 @@ namespace MagmaHeart.Core.Navigation
                         if (!nodesInProcess.ContainsKey(adjacentNode))
                         {
                             ComputationalAStarNode computationalAdjacentNode =
-                                new ComputationalAStarNode(adjacentNode, pathCost, m_heuristic(adjacentNode.Position, target));
+                                new ComputationalAStarNode(adjacentNode, pathCost, m_heuristic(adjacentNode.Position, target), current);
 
                             nodeQueue.Enqueue(computationalAdjacentNode, computationalAdjacentNode.TotalCost);
                             nodesInProcess.Add(adjacentNode, computationalAdjacentNode);

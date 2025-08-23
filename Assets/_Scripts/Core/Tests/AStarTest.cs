@@ -1,6 +1,7 @@
 using MagmaHeart.Core.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Tests
@@ -52,6 +53,8 @@ namespace MagmaHeart.Core.Tests
                     m_graph.ConnectNodes(pos1, pos2, cost);
                 }
             }
+
+            Debug.Log("Built A* graph");
         }
 
         public void PerformAStar()
@@ -59,6 +62,16 @@ namespace MagmaHeart.Core.Tests
             AStar aStar = new AStar(m_graph, AStar.EuclideanDistance);
 
             m_currentPath = aStar.FindPath(m_start.position, m_target.position);
+
+            StringBuilder sb = new StringBuilder("Path: ");
+            for (int i = 0; i < m_currentPath.Count; ++i)
+            {
+                sb.Append(m_currentPath[i]);
+                if (i + 1 != m_currentPath.Count)
+                    sb.Append(" -> ");
+            }
+
+            Debug.Log(sb.ToString());
         }
 
         private void OnDrawGizmos()

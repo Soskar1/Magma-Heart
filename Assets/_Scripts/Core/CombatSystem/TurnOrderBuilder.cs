@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MagmaHeart.Core.Collections;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem

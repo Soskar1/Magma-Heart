@@ -144,9 +144,9 @@ namespace MagmaHeart.Core.Navigation
             foreach (AStarEdge edge in m_edges[node])
             {
                 if (edge.First.Position == node)
-                    yield return edge.First;
-                else
                     yield return edge.Second;
+                else
+                    yield return edge.First;
             }
         }
 
@@ -167,7 +167,7 @@ namespace MagmaHeart.Core.Navigation
             if (!HasNode(node1) || !HasNode(node2))
                 return false;
 
-            if (!m_edges.ContainsKey(node1) && !m_edges.ContainsKey(node2))
+            if (!m_edges.ContainsKey(node1) || !m_edges.ContainsKey(node2))
                 return false;
 
             return GetEdgeBetweenNodes(node1, node2) != null;
