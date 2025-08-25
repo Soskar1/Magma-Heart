@@ -49,6 +49,12 @@ namespace MagmaHeart.Core.Navigation
             m_nodes[node.Position] = node;
         }
 
+        public void AddNode(Vector2 position, AStarNodeType nodeType)
+        {
+            AStarNode node = new AStarNode(position, nodeType);
+            AddNode(node);
+        }
+
         public AStarNode GetNode(Vector2 position)
         {
             if (m_nodes.TryGetValue(position, out AStarNode node))
