@@ -71,6 +71,7 @@ namespace MagmaHeart.Core.Dungeon
 
         public bool EntityExists(IHittableTile entity) => m_entitiesInCombat.Any(e => e.CurrentTilePosition == entity.CurrentTilePosition);
     
+        // TODO: This method freeze the game
         private AStarGraph GenerateAStarGraph()
         {
             AStarGraph graph = new AStarGraph();
@@ -87,6 +88,7 @@ namespace MagmaHeart.Core.Dungeon
                 graph.AddNode(node);
             }
 
+            // TODO: Change to BFS
             foreach (DungeonTile tile in RoomTileData)
             {
                 IEnumerable<DungeonTile> adjacentTiles = RoomTileData.GetAdjacentTiles(tile.Position);
