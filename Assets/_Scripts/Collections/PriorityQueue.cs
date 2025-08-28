@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagmaHeart.Core.Collections
+namespace MagmaHeart.Collections
 {
     public class PriorityQueue<TElement, TPriority> where TPriority : IComparable<TPriority>
     {

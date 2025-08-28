@@ -1,2 +1,2 @@
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("MagmaHeart.Tests")]
+[assembly: InternalsVisibleTo("MagmaHeart.Navigation.Tests")]

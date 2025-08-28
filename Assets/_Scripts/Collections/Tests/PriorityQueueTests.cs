@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using MagmaHeart.Core.Collections;
+using MagmaHeart.Collections;
 using System;
 
 namespace MagmaHeart.Tests

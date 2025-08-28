@@ -1,10 +1,9 @@
 {
-    "name": "MagmaHeart.Tests",
+    "name": "MagmaHeart.Navigation.Tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "MagmaHeart.Core.Collections",
         "MagmaHeart.Navigation"
     ],
     "includePlatforms": [

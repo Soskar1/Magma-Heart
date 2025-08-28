@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MagmaHeart.Core.Collections;
+using MagmaHeart.Collections;
 using MagmaHeart.Extensions;
 using UnityEngine;
 
