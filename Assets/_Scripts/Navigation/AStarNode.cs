@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MagmaHeart.Core.Navigation
+namespace MagmaHeart.Navigation
 {
     public class AStarNode
     {

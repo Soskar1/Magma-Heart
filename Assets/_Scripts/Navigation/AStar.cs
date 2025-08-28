@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using MagmaHeart.Core.Collections;
-using UnityEditor.Graphs;
+using MagmaHeart.Extensions;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Navigation
+namespace MagmaHeart.Navigation
 {
     public class AStar
     {

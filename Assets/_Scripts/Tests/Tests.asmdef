@@ -5,7 +5,7 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "MagmaHeart.Core.Collections",
-        "MagmaHeart.Core.Navigation"
+        "MagmaHeart.Navigation"
     ],
     "includePlatforms": [
         "Editor"

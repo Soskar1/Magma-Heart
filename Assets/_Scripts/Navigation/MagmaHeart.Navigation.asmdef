@@ -1,5 +1,5 @@
 {
-    "name": "MagmaHeart.Core.Navigation",
+    "name": "MagmaHeart.Navigation",
     "rootNamespace": "",
     "references": [
         "GUID:5e9795e688f316245979cd619d1e993b",

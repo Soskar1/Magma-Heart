@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
-using MagmaHeart.Core.Navigation;
+using MagmaHeart.Navigation;
 using System;
 using UnityEngine.TestTools;
 using System.Collections.Generic;

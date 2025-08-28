@@ -1,4 +1,6 @@
-namespace MagmaHeart.Core.Navigation
+using MagmaHeart.Extensions;
+
+namespace MagmaHeart.Navigation
 {
     public class AStarEdge
     {

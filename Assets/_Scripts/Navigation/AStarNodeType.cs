@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core.Navigation
+namespace MagmaHeart.Navigation
 {
     public enum AStarNodeType
     {

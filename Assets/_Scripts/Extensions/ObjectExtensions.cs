@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core
+namespace MagmaHeart.Extensions
 {
     public static class ObjectExtensions
     {

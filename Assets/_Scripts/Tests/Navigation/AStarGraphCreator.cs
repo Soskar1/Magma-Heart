@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Navigation;
+using MagmaHeart.Navigation;
 using UnityEngine;
 
 namespace MagmaHeart.Tests

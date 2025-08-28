@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using MagmaHeart.Core.Navigation;
+using MagmaHeart.Navigation;
 using NUnit.Framework;
 using UnityEngine;
 
