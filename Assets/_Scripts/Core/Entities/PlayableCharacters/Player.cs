@@ -1,10 +1,12 @@
 using System;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
+using MagmaHeart.Navigation;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
+    [RequireComponent(typeof(PathGizmosRenderer))] // Only for debug purposes
     public class Player : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
@@ -37,7 +39,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             MouseControl mouseControl = new MouseControl(userInput, grid);
             TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(userInput, mouseControl);
 
-            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(this, turnBasedUserInput, energyHUD);
+            // Change this to the UI solution. PathGizmosRenderer is used only for the debug purposes
+            PathGizmosRenderer pathGizmosRenderer = GetComponent<PathGizmosRenderer>(); 
+            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(this, turnBasedUserInput, energyHUD, pathGizmosRenderer);
             m_currentBehaviour = m_actionBehaviour;
         }
 

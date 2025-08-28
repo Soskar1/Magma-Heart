@@ -16,8 +16,8 @@ namespace MagmaHeart.Tests
             AStarNode node = new AStarNode(start, AStarNodeType.Walkable);
             graph.AddNode(node);
 
-            AStar aStar = new AStar(graph, AStar.ManhattanDistance);
-            List<Vector2> path = aStar.FindPath(start, start);
+            AStar aStar = new AStar(AStar.ManhattanDistance);
+            List<Vector2> path = aStar.FindPath(graph, start, start);
 
             Assert.That(path, Is.Not.Null);
             Assert.That(path.Count, Is.EqualTo(1));
@@ -35,8 +35,8 @@ namespace MagmaHeart.Tests
             graph.AddNode(end, AStarNodeType.Walkable);
             graph.ConnectNodes(start, end, 3);
 
-            AStar aStar = new AStar(graph, AStar.ManhattanDistance);
-            List<Vector2> path = aStar.FindPath(start, end);
+            AStar aStar = new AStar(AStar.ManhattanDistance);
+            List<Vector2> path = aStar.FindPath(graph, start, end);
 
             Assert.That(path, Is.Not.Null);
             Assert.That(path.Count, Is.EqualTo(2));
@@ -55,8 +55,8 @@ namespace MagmaHeart.Tests
             graph.AddNode(end, AStarNodeType.Obstacle);
             graph.ConnectNodes(start, end, 3);
 
-            AStar aStar = new AStar(graph, AStar.ManhattanDistance);
-            List<Vector2> path = aStar.FindPath(start, end);
+            AStar aStar = new AStar(AStar.ManhattanDistance);
+            List<Vector2> path = aStar.FindPath(graph, start, end);
 
             Assert.That(path, Is.Null);
         }
@@ -74,8 +74,8 @@ namespace MagmaHeart.Tests
             graph.UpdateCost(nodes[1, 0], nodes[2, 0], newCost);
             graph.UpdateCost(nodes[1, 1], nodes[2, 1], newCost);
 
-            AStar aStar = new AStar(graph, AStar.ManhattanDistance);
-            List<Vector2> path = aStar.FindPath(nodes[0, 0], nodes[2, 0]);
+            AStar aStar = new AStar(AStar.ManhattanDistance);
+            List<Vector2> path = aStar.FindPath(graph, nodes[0, 0], nodes[2, 0]);
 
             Assert.That(path, Is.Not.Null);
             Assert.That(path.Count, Is.EqualTo(7));
@@ -97,8 +97,8 @@ namespace MagmaHeart.Tests
             graph.ChangeNodeType(nodes[1, 1], AStarNodeType.Obstacle);
             graph.ChangeNodeType(nodes[1, 2], AStarNodeType.Obstacle);
 
-            AStar aStar = new AStar(graph, AStar.ManhattanDistance);
-            List<Vector2> path = aStar.FindPath(nodes[0, 0], nodes[2, 2]);
+            AStar aStar = new AStar(AStar.ManhattanDistance);
+            List<Vector2> path = aStar.FindPath(graph, nodes[0, 0], nodes[2, 2]);
 
             Assert.That(path, Is.Null);
         }
@@ -111,8 +111,8 @@ namespace MagmaHeart.Tests
             graph.ChangeNodeType(nodes[1, 0], AStarNodeType.Obstacle);
             graph.ChangeNodeType(nodes[1, 2], AStarNodeType.Obstacle);
 
-            AStar aStar = new AStar(graph, AStar.ManhattanDistance);
-            List<Vector2> path = aStar.FindPath(nodes[0, 0], nodes[2, 2]);
+            AStar aStar = new AStar(AStar.ManhattanDistance);
+            List<Vector2> path = aStar.FindPath(graph, nodes[0, 0], nodes[2, 2]);
 
             Assert.That(path, Is.Not.Null);
             Assert.That(path.Count, Is.EqualTo(5));

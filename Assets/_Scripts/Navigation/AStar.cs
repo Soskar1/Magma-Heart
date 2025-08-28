@@ -8,18 +8,15 @@ namespace MagmaHeart.Navigation
 {
     public class AStar
     {
-        private AStarGraph m_graph;
         private Func<Vector2, Vector2, float> m_heuristic;
 
         public static Func<Vector2, Vector2, float> ManhattanDistance = (v1, v2) => Mathf.Abs(v1.x - v2.x) + Mathf.Abs(v1.y - v2.y);
         public static Func<Vector2, Vector2, float> EuclideanDistance = (v1, v2) => Vector2.Distance(v1, v2);
 
-        public AStar(AStarGraph graph, Func<Vector2, Vector2, float> heuristic)
+        public AStar(Func<Vector2, Vector2, float> heuristic)
         {
-            graph.ThrowIfNull(nameof(graph));
             heuristic.ThrowIfNull(nameof(heuristic));
 
-            m_graph = graph;
             m_heuristic = heuristic;
         }
 
@@ -40,15 +37,15 @@ namespace MagmaHeart.Navigation
             }
         }
 
-        public List<Vector2> FindPath(Vector2 start, Vector2 target)
+        public List<Vector2> FindPath(AStarGraph graph, Vector2 start, Vector2 target)
         {
-            if (!m_graph.ContainsNode(start) || !m_graph.ContainsNode(target))
+            if (!graph.ContainsNode(start) || !graph.ContainsNode(target))
             {
                 Debug.LogWarning($"Can't find a path between {start} and {target}. One of the nodes does not exist!");
                 return null;
             }
 
-            AStarNode startNode = m_graph.GetNode(start);
+            AStarNode startNode = graph.GetNode(start);
             ComputationalAStarNode startComputationalNode = new ComputationalAStarNode(startNode, 0, m_heuristic(start, target));
 
             HashSet<AStarNode> visitedNodes = new HashSet<AStarNode>();
@@ -72,14 +69,14 @@ namespace MagmaHeart.Navigation
 
                 visitedNodes.Add(current.Node);
 
-                IEnumerable<AStarNode> adjacentNodes = m_graph.GetAdjacentNodes(current.Node);
+                IEnumerable<AStarNode> adjacentNodes = graph.GetAdjacentNodes(current.Node);
                 foreach (AStarNode adjacentNode in adjacentNodes)
                 {
                     Debug.Log($"Analysing adjacent node: {adjacentNode.Position}");
 
                     if (!visitedNodes.Contains(adjacentNode) && adjacentNode.Type == AStarNodeType.Walkable)
                     {
-                        float pathCost = current.PathCost + m_graph.GetCost(current.Node, adjacentNode);
+                        float pathCost = current.PathCost + graph.GetCost(current.Node, adjacentNode);
 
                         if (!nodesInProcess.ContainsKey(adjacentNode))
                         {

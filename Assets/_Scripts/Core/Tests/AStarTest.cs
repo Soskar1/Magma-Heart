@@ -59,9 +59,9 @@ namespace MagmaHeart.Core.Tests
 
         public void PerformAStar()
         {
-            AStar aStar = new AStar(m_graph, AStar.EuclideanDistance);
+            AStar aStar = new AStar(AStar.EuclideanDistance);
 
-            m_currentPath = aStar.FindPath(m_start.position, m_target.position);
+            m_currentPath = aStar.FindPath(m_graph, m_start.position, m_target.position);
 
             StringBuilder sb = new StringBuilder("Path: ");
             for (int i = 0; i < m_currentPath.Count; ++i)

@@ -1,6 +1,7 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
+using MagmaHeart.Navigation;
 using System;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private EnergyHUD m_energyHUD;
 
         private MovementAction m_movementAction;
+        private PathGizmosRenderer m_aStarPathRenderer;
+
         private AttackAction m_attackAction;
         private ICombatAction m_currentAction;
         private IHittableTile m_currentMouseOverEntity;
@@ -32,7 +35,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private bool m_playerTurnIsActive;
 
-        public TurnBasedPlayerBehaviour(Player player, TurnBasedUserInput userInput, EnergyHUD energyHUD)
+        public TurnBasedPlayerBehaviour(Player player, TurnBasedUserInput userInput, EnergyHUD energyHUD, PathGizmosRenderer aStarPathRenderer)
         {
             m_playerTransform = player.transform;
             m_energy = player.Energy;
@@ -43,6 +46,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             m_movementAction = new MovementAction(m_energy, this);
             m_attackAction = new AttackAction(m_energy, this);
+            m_aStarPathRenderer = aStarPathRenderer;
         }
 
         public void Enable() => m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
@@ -121,21 +125,29 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                     m_attackAction.EntityToHit = entity;
                     m_currentAction = m_attackAction;
                     m_energyHUD.DisplayEnergyPrice(AttackAction.ENERGY_COST);
-                    Debug.Log($"Player can attack entity at tile {roomTile.Position}. Energy cost: {AttackAction.ENERGY_COST}");
                 }
                 else
                 {
                     m_currentAction = null;
                     m_energyHUD.DisplayEnergyPrice(0);
-                    Debug.LogWarning($"Player cannot attack entity at tile {roomTile.Position} because of insufficient energy or tile is not accessible.");
                 }
+            }
+            else if (m_movementAction.CanMoveToTile(roomTile))
+            {
+                m_currentMouseOverEntity = null;
+                m_movementAction.TileToMove = roomTile;
+                m_currentAction = m_movementAction;
+
+                m_currentRoom.TryDisplayCombatTile(roomTile);
+                m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
+                m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath;
             }
             else
             {
-                DisplayCostForMovementAction(roomTile);
-                m_movementAction.TileToMove = roomTile;
-                m_currentAction = m_movementAction;
-                m_currentMouseOverEntity = null;
+                m_currentAction = null;
+
+                // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
+                Debug.LogWarning($"Player cannot move to tile {roomTile.Position} because of insufficient energy or tile is not accessible.");
             }
 
             m_currentMouseTile = roomTile;
@@ -148,20 +160,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             m_currentAction.Execute();
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
-        }
-
-        private void DisplayCostForMovementAction(RoomTile roomTile)
-        {
-            if (m_movementAction.CanMoveToTile(roomTile))
-            {
-                m_currentRoom.TryDisplayCombatTile(roomTile);
-                m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
-            }
-            else
-            {
-                // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
-                Debug.LogWarning($"Player cannot move to tile {roomTile.Position} because of insufficient energy or tile is not accessible.");
-            }
         }
     }
 }
