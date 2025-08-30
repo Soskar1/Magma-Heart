@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private IHittableTile m_currentMouseOverEntity;
 
         public Transform Transform => m_playerTransform;
-        public Vector3Int CurrentTilePosition { get; set; }
+        public Vector3Int CurrentTilePosition => m_currentRoom.Grid.WorldToTilePosition(m_playerTransform.position);
         public EventHandler NextTurn { get; set; }
         public bool IsPlayableCharacter => true;
 

@@ -102,7 +102,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void CalculatePath(RoomTile targetTile)
         {
-            Vector3Int currentTile = m_currentRoom.Grid.WorldToTilePosition(m_tilePosition.Transform.position);
+            Vector3Int currentTile = m_tilePosition.CurrentTilePosition;
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.AStarGraph, currentTile.ToVector2(), targetTile.Position.ToVector2());
             CurrentPath = path;
         }
