@@ -59,21 +59,15 @@ namespace MagmaHeart.Navigation
             while (nodeQueue.Count > 0)
             {
                 ComputationalAStarNode current = nodeQueue.Dequeue();
-                Debug.Log($"Current node: {current.Node.Position}\nTotal Cost: {current.TotalCost}");
 
                 if (current.Node.Position == target)
-                {
-                    Debug.Log("Found path!");
                     return ReconstructPath(current);
-                }
 
                 visitedNodes.Add(current.Node);
 
                 IEnumerable<AStarNode> adjacentNodes = graph.GetAdjacentNodes(current.Node);
                 foreach (AStarNode adjacentNode in adjacentNodes)
                 {
-                    Debug.Log($"Analysing adjacent node: {adjacentNode.Position}");
-
                     if (!visitedNodes.Contains(adjacentNode) && adjacentNode.Type == AStarNodeType.Walkable)
                     {
                         float pathCost = current.PathCost + graph.GetCost(current.Node, adjacentNode);

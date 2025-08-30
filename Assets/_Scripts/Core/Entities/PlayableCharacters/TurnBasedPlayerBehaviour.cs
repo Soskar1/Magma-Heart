@@ -19,12 +19,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Energy m_energy;
         private EnergyHUD m_energyHUD;
 
+        private ICombatAction m_currentAction;
+
         private MovementAction m_movementAction;
         private TurnBasedMovement m_movement;
         private PathGizmosRenderer m_aStarPathRenderer;
+        public EventHandler<OnMovedEventArgs> OnMoved { get; set; }
 
         private AttackAction m_attackAction;
-        private ICombatAction m_currentAction;
         private IHittableTile m_currentMouseOverEntity;
 
         public Transform Transform => m_playerTransform;

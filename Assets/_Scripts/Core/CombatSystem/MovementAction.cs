@@ -4,6 +4,7 @@ using MagmaHeart.Navigation;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace MagmaHeart.Core.CombatSystem
 {
@@ -86,12 +87,15 @@ namespace MagmaHeart.Core.CombatSystem
             return m_energy.HasEnough(CurrentTheoreticalEnergyUsage);
         }
 
-        public void Move()
+        private void Move()
         {
             if (CurrentPath.Count == 0)
                 return;
 
             m_movement.StartMovement(CurrentPath);
+
+            OnMovedEventArgs args = new OnMovedEventArgs(CurrentPath.First().ToVector3Int(), CurrentPath.Last().ToVector3Int());
+            m_tilePosition.OnMoved?.Invoke(this, args);
         }
 
         public void MoveWithoutEnergyUsage(RoomTile targetTile)
