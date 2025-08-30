@@ -79,7 +79,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             CalculatePath(targetTile);
 
-            int distance = CurrentPath.Count - m_freeDistanceToMove;
+            int distance = CurrentPath.Count - 1 - m_freeDistanceToMove;
             CurrentTheoreticalEnergyUsage = Mathf.CeilToInt(distance / (float)MovementDistanceInTilesForOneEnergy);
             m_currentTheoreticalFreeDistanceToMove = distance % MovementDistanceInTilesForOneEnergy;
 
