@@ -20,6 +20,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private EnergyHUD m_energyHUD;
 
         private MovementAction m_movementAction;
+        private TurnBasedMovement m_movement;
         private PathGizmosRenderer m_aStarPathRenderer;
 
         private AttackAction m_attackAction;
@@ -34,6 +35,18 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public Health Health => m_health;
 
         private bool m_playerTurnIsActive;
+        private bool m_canExecuteActions;
+
+        private bool CanExecuteAction
+        {
+            get => m_canExecuteActions;
+            set
+            {
+                m_canExecuteActions = value;
+                if (m_canExecuteActions)
+                    m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+            }
+        }
 
         public TurnBasedPlayerBehaviour(Player player, TurnBasedUserInput userInput, EnergyHUD energyHUD)
         {
@@ -44,16 +57,26 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energyHUD = energyHUD;
             m_playerTurnIsActive = false;
 
-            TurnBasedMovement movement = player.GetComponent<TurnBasedMovement>();
-            m_movementAction = new MovementAction(movement, m_energy, this);
+            m_movement = player.GetComponent<TurnBasedMovement>();
+            m_movementAction = new MovementAction(m_movement, m_energy, this);
             m_attackAction = new AttackAction(m_energy, this);
 
             m_aStarPathRenderer = player.GetComponent<PathGizmosRenderer>(); // For debug purposes
         }
 
-        public void Enable() => m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
+        public void Enable()
+        {
+            m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
+            m_movement.OnMovementStarted += DisableActionExecution;
+            m_movement.OnMovementEnded += EnableActionExecution;
+        }
 
-        public void Disable() => m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
+        public void Disable()
+        {
+            m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
+            m_movement.OnMovementStarted -= DisableActionExecution;
+            m_movement.OnMovementEnded -= EnableActionExecution;
+        }
 
         public void Update()
         {
@@ -113,6 +136,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseChangedTile(object obj, OnMouseChangedTileEventArgs e)
         {
+            if (!m_canExecuteActions)
+                return;
+
             if (m_currentMouseTile != null)
                 m_currentRoom.HideCombatTileAt(m_currentMouseTile);
 
@@ -157,11 +183,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseClicked(object obj, EventArgs e)
         {
-            if (m_currentAction == null)
+            if (m_currentAction == null || !m_canExecuteActions)
                 return;
 
             m_currentAction.Execute();
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
+
+        private void EnableActionExecution(object obj, EventArgs e) => CanExecuteAction = true;
+        private void DisableActionExecution(object obj, EventArgs e) => CanExecuteAction = false;
     }
 }
