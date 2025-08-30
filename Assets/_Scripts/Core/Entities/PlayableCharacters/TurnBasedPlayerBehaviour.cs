@@ -3,6 +3,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
 using MagmaHeart.Navigation;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -19,12 +20,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Energy m_energy;
         private EnergyHUD m_energyHUD;
 
+        private ICombatAction m_currentAction;
+
         private MovementAction m_movementAction;
         private TurnBasedMovement m_movement;
         private PathGizmosRenderer m_aStarPathRenderer;
+        public EventHandler<OnMovedEventArgs> OnMoved { get; set; }
 
         private AttackAction m_attackAction;
-        private ICombatAction m_currentAction;
         private IHittableTile m_currentMouseOverEntity;
 
         public Transform Transform => m_playerTransform;
@@ -168,7 +171,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
                 m_currentRoom.TryDisplayCombatTile(roomTile);
                 m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
-                m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath;
+                m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
             }
             else
             {

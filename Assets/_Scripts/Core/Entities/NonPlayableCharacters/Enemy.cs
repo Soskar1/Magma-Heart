@@ -22,6 +22,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public Transform Transform => transform;
         public Health Health => ControllingEntity.Health;
 
+        public EventHandler<OnMovedEventArgs> OnMoved { get; set; }
+
         public void Initialize()
         {
             m_controllingEntity = new Entity(m_data, transform);

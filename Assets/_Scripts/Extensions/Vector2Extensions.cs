@@ -1,17 +1,21 @@
 using UnityEngine;
 
-public static class Vector2Extension
+namespace MagmaHeart.Extensions
 {
-    public static Vector2Int ToVector2Int(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
-    public static Vector2 Rotate(this Vector2 v, float degrees)
+    public static class Vector2Extension
     {
-        float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
-        float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
+        public static Vector2Int ToVector2Int(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
+        public static Vector3Int ToVector3Int(this Vector2 v) => new Vector3Int((int)v.x, (int)v.y);
+        public static Vector2 Rotate(this Vector2 v, float degrees)
+        {
+            float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
+            float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
 
-        float tx = v.x;
-        float ty = v.y;
-        v.x = (cos * tx) - (sin * ty);
-        v.y = (sin * tx) + (cos * ty);
-        return v;
+            float tx = v.x;
+            float ty = v.y;
+            v.x = (cos * tx) - (sin * ty);
+            v.y = (sin * tx) + (cos * ty);
+            return v;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using MagmaHeart.Core.Dungeon;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,12 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private float m_changePointAtDistance = 0.001f;
         private int m_targetIndex;
         private bool m_canMove = false;
-        private List<Vector2> m_currentPath = new List<Vector2>();
+        private List<RoomTile> m_currentPath = new List<RoomTile>();
 
         public event EventHandler OnMovementStarted;
         public event EventHandler OnMovementEnded;
 
-        public void StartMovement(List<Vector2> path)
+        public void StartMovement(List<RoomTile> path)
         {
             m_currentPath = path;
             m_targetIndex = 0;
@@ -28,13 +29,13 @@ namespace MagmaHeart.Core.Entities
             if (!m_canMove)
                 return;
 
-            Vector2 target = m_currentPath[m_targetIndex];
+            RoomTile target = m_currentPath[m_targetIndex];
 
-            transform.position = Vector3.MoveTowards(transform.position, target, m_speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target.TileCenter, m_speed * Time.deltaTime);
 
-            if (Vector3.Distance(transform.position, target) < m_changePointAtDistance)
+            if (Vector3.Distance(transform.position, target.TileCenter) < m_changePointAtDistance)
             {
-                transform.position = target;
+                transform.position = target.TileCenter;
                 ++m_targetIndex;
             }
 

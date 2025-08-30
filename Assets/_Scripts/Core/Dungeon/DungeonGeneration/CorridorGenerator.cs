@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Random = System.Random;
+using MagmaHeart.Extensions;
 
 namespace MagmaHeart.Core.Dungeon
 {
