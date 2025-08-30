@@ -96,6 +96,7 @@ namespace MagmaHeart.Core.Dungeon
     {
         private Room m_room;
         public Vector3Int Position { get; private set; }
+        public Vector2 TileCenter => m_room.Grid.ToTileCenter(Position.ToVector2Int());
         public RoomTile(Room room, Vector3Int position)
         {
             m_room = room;

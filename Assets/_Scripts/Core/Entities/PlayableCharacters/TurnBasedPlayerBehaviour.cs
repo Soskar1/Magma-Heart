@@ -3,6 +3,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.UI;
 using MagmaHeart.Navigation;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -170,7 +171,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
                 m_currentRoom.TryDisplayCombatTile(roomTile);
                 m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
-                m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath;
+                m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
             }
             else
             {

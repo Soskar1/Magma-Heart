@@ -17,16 +17,16 @@ namespace MagmaHeart.Core.CombatSystem
         private AStar m_aStar;
         private int m_freeDistanceToMove;
         private int m_currentTheoreticalFreeDistanceToMove;
-        private List<Vector2> m_currentPath;
+        private List<RoomTile> m_currentPath;
 
         public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
         public int MovementDistanceInTilesForOneEnergy { get; private set; } = 2;
-        public List<Vector2> CurrentPath
+        public List<RoomTile> CurrentPath
         {
             get
             {
                 if (m_currentPath == null)
-                    m_currentPath = new List<Vector2>();
+                    m_currentPath = new List<RoomTile>();
 
                 return m_currentPath;
             }
@@ -36,9 +36,6 @@ namespace MagmaHeart.Core.CombatSystem
                     return;
 
                 m_currentPath = value;
-
-                for (int i = 0; i < m_currentPath.Count; i++)
-                    m_currentPath[i] = m_currentRoom.Grid.ToTileCenter(m_currentPath[i].ToVector2Int());
             }
         }
         public RoomTile TileToMove { get; set; }
@@ -49,7 +46,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_energy = energy;
             m_tilePosition = tilePosition;
             m_aStar = new AStar(AStar.ManhattanDistance);
-            CurrentPath = new List<Vector2>();
+            CurrentPath = new List<RoomTile>();
         }
 
         public void Reset()
@@ -94,7 +91,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             m_movement.StartMovement(CurrentPath);
 
-            OnMovedEventArgs args = new OnMovedEventArgs(CurrentPath.First().ToVector3Int(), CurrentPath.Last().ToVector3Int());
+            OnMovedEventArgs args = new OnMovedEventArgs(CurrentPath.First().Position, CurrentPath.Last().Position);
             m_tilePosition.OnMoved?.Invoke(this, args);
         }
 
@@ -108,7 +105,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             Vector3Int currentTile = m_tilePosition.CurrentTilePosition;
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.AStarGraph, currentTile.ToVector2(), targetTile.Position.ToVector2());
-            CurrentPath = path;
+            CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
         }
     }
 }
