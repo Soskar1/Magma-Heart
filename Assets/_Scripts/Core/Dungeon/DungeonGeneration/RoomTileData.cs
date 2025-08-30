@@ -71,5 +71,6 @@ namespace MagmaHeart.Core.Dungeon
         public bool ContainsTileAtPosition(Vector2Int position) => TileData.ContainsTileAtPosition(position);
         public Vector2Int GetTilePositionAtIndex(in int index) => GetTileAtIndex(index).Position;
         public IEnumerable<DungeonTile> GetAdjacentTiles(Vector2Int sourceTile) => TileData.GetAdjacentTiles(sourceTile);
+        public IEnumerable<DungeonTile> GetAdjacentTiles(DungeonTile sourceTile) => GetAdjacentTiles(sourceTile.Position);
     }
 }

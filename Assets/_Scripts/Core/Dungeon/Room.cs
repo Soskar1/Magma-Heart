@@ -17,13 +17,13 @@ namespace MagmaHeart.Core.Dungeon
 
         private List<ICombatController> m_entitiesInCombat;
 
-        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer)
+        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, AStarGraph aStarGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
             m_entitiesInCombat = new List<ICombatController>();
-            AStarGraph = GenerateAStarGraph();
+            AStarGraph = aStarGraph;
         }
 
         public void AddEntityToInspect(ICombatController combatController) => m_entitiesInCombat.Add(combatController);
@@ -70,35 +70,6 @@ namespace MagmaHeart.Core.Dungeon
         }
 
         public bool EntityExists(IHittableTile entity) => m_entitiesInCombat.Any(e => e.CurrentTilePosition == entity.CurrentTilePosition);
-    
-        // TODO: This method freeze the game
-        private AStarGraph GenerateAStarGraph()
-        {
-            AStarGraph graph = new AStarGraph();
-
-            foreach (DungeonTile tile in RoomTileData)
-            {
-                AStarNode node = new AStarNode(tile.Position, AStarNodeType.None);
-
-                if (tile.Type == TileType.Floor)
-                    node.Type = AStarNodeType.Walkable;
-                else
-                    node.Type = AStarNodeType.Obstacle;
-
-                graph.AddNode(node);
-            }
-
-            // TODO: Change to BFS
-            foreach (DungeonTile tile in RoomTileData)
-            {
-                IEnumerable<DungeonTile> adjacentTiles = RoomTileData.GetAdjacentTiles(tile.Position);
-
-                foreach (DungeonTile adjacentTile in adjacentTiles)
-                    graph.ConnectNodes(tile.Position, adjacentTile.Position, cost: 1); // TODO: use cost in the future
-            }
-
-            return graph;
-        }
     }
 
     public class RoomTile
