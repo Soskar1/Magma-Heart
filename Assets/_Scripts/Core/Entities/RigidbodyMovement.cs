@@ -4,7 +4,7 @@ namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Facing))]
-    public class RigidbodyMovement : MonoBehaviour, IMovable
+    public class RigidbodyMovement : MonoBehaviour, IMovement
     {
         [SerializeField] private float m_maxSpeed;
         [SerializeField] private float m_acceleration;
@@ -40,7 +40,5 @@ namespace MagmaHeart.Core.Entities
             m_rigidbody.AddForce(movement);
             
         }
-
-        public void IncreaseMaxSpeed(float amount) => m_maxSpeed += amount;
     }
 }

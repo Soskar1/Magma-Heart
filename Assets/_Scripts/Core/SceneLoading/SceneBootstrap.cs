@@ -4,7 +4,9 @@ using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.UI;
+using MagmaHeart.Navigation;
 using UnityEngine;
 
 namespace MagmaHeart.Core.SceneLoading
@@ -101,7 +103,8 @@ namespace MagmaHeart.Core.SceneLoading
                 if (roomTileData != startRoom)
                 {
                     CombatTilemapRenderer renderer = Instantiate(m_combatTilemapRendererPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    Room room = new Room(roomTileData, m_grid, renderer);
+                    AStarGraph aStarGraph = AStarGraphBuilder.GenerateAStarGraph(roomTileData);
+                    Room room = new Room(roomTileData, m_grid, renderer, aStarGraph);
 
                     if (roomTileData != bossRoom)
                     {

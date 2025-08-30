@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class RoomTileData
+    public class RoomTileData : IEnumerable<DungeonTile>
     {
         public TileData TileData { get; private set; }
         public int TileCount => TileData.TileCount;
@@ -64,8 +65,12 @@ namespace MagmaHeart.Core.Dungeon
         public DungeonTile GetTile(Vector2Int position) => TileData.GetTile(position);
         public DungeonTile GetTileAtIndex(in int index) => TileData.GetTileAtIndex(index);
         public HashSet<DungeonTile> GetTiles() => TileData.GetTiles();
+        public IEnumerator<DungeonTile> GetEnumerator() => TileData.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => TileData.GetEnumerator();
         public HashSet<Vector2Int> GetTilePositions() => TileData.GetTilePositions();
         public bool ContainsTileAtPosition(Vector2Int position) => TileData.ContainsTileAtPosition(position);
         public Vector2Int GetTilePositionAtIndex(in int index) => GetTileAtIndex(index).Position;
+        public IEnumerable<DungeonTile> GetAdjacentTiles(Vector2Int sourceTile) => TileData.GetAdjacentTiles(sourceTile);
+        public IEnumerable<DungeonTile> GetAdjacentTiles(DungeonTile sourceTile) => GetAdjacentTiles(sourceTile.Position);
     }
 }

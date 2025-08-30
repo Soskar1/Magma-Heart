@@ -1,4 +1,5 @@
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Navigation;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,18 +10,20 @@ namespace MagmaHeart.Core.Dungeon
     public class Room
     {
         private CombatTilemapRenderer m_renderer;
-        public RoomTileData RoomTileData { get; private set; }
-        public DungeonGrid Grid { get; private set; }
+        public RoomTileData RoomTileData { get; init; }
+        public DungeonGrid Grid { get; init; }
+        public AStarGraph AStarGraph { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
         private List<ICombatController> m_entitiesInCombat;
 
-        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer)
+        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, AStarGraph aStarGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
             m_entitiesInCombat = new List<ICombatController>();
+            AStarGraph = aStarGraph;
         }
 
         public void AddEntityToInspect(ICombatController combatController) => m_entitiesInCombat.Add(combatController);

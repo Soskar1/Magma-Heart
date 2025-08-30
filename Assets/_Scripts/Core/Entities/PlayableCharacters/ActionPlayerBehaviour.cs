@@ -6,17 +6,17 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class ActionPlayerBehaviour : IPlayerBehaviour
     {
         private UserInput m_userInput;
-        private IMovable m_movement;
+        private RigidbodyMovement m_movement;
 
         private IInteractable m_currentInteractableObject;
         private Player m_player;
         private Rigidbody2D m_rigidbody;
 
-        public ActionPlayerBehaviour(UserInput userInput, IMovable movement, Player player)
+        public ActionPlayerBehaviour(Player player, UserInput userInput)
         {
             m_userInput = userInput;
-            m_movement = movement;
             m_player = player;
+            m_movement = player.GetComponent<RigidbodyMovement>();
             m_rigidbody = player.GetComponent<Rigidbody2D>();
         }
 

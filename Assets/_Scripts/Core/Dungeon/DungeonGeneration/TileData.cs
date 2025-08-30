@@ -1,10 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class TileData
+    public class TileData : IEnumerable<DungeonTile>
     {
         private Dictionary<Vector2Int, DungeonTile> m_tiles;
         public int TileCount => m_tiles.Count;
@@ -56,6 +57,8 @@ namespace MagmaHeart.Core.Dungeon
         }
 
         public HashSet<DungeonTile> GetTiles() => m_tiles.Values.ToHashSet();
+        public IEnumerator<DungeonTile> GetEnumerator() => m_tiles.Values.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => m_tiles.Values.GetEnumerator();
         public HashSet<Vector2Int> GetTilePositions() => m_tiles.Keys.ToHashSet();
         
         public void SetTiles(in Dictionary<Vector2Int, DungeonTile> tiles)
@@ -71,5 +74,23 @@ namespace MagmaHeart.Core.Dungeon
         public DungeonTile GetTileAtIndex(in int index) => m_tiles.Values.ElementAt(index);
 
         public bool ContainsTileAtPosition(Vector2Int tileToFind) => m_tiles.ContainsKey(tileToFind);
+
+        public IEnumerable<DungeonTile> GetAdjacentTiles(Vector2Int sourceTilePosition)
+        {
+            if (m_tiles.ContainsKey(sourceTilePosition))
+            {
+                if (m_tiles.ContainsKey(sourceTilePosition + Vector2Int.up))
+                    yield return m_tiles[sourceTilePosition + Vector2Int.up];
+
+                if (m_tiles.ContainsKey(sourceTilePosition + Vector2Int.right))
+                    yield return m_tiles[sourceTilePosition + Vector2Int.right];
+
+                if (m_tiles.ContainsKey(sourceTilePosition + Vector2Int.down))
+                    yield return m_tiles[sourceTilePosition + Vector2Int.down];
+
+                if (m_tiles.ContainsKey(sourceTilePosition + Vector2Int.left))
+                    yield return m_tiles[sourceTilePosition + Vector2Int.left];
+            }
+        }
     }
 }

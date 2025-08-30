@@ -4,7 +4,7 @@ namespace MagmaHeart.Core.Entities
 {
     public class WarriorAnimationPlayer : AnimationPlayer
     {
-        private IMovable m_movement;
+        private IMovement m_movement;
         private readonly int m_idleAnimationID = Animator.StringToHash("Idle");
         private readonly int m_runAnimationID = Animator.StringToHash("Run");
         private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.Entities
         public override void Awake()
         {
             base.Awake();
-            m_movement = GetComponent<IMovable>();
+            m_movement = GetComponent<IMovement>();
         }
 
         public override void Enable()

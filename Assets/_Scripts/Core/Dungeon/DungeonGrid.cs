@@ -36,12 +36,7 @@ namespace MagmaHeart.Core.Dungeon
 
         public Vector2 TilePositionToWorld(Vector3Int roomTilePosition) => m_floor.CellToWorld(roomTilePosition);
 
-        public Vector3 ToTileCenter(Vector3Int tile)
-        {
-            // TODO: check if tile parameter is already correctly offsetted
-
-            return tile + m_offsetToTileCenter;
-        }
+        public Vector2 ToTileCenter(Vector2Int tile) => tile.ToVector2() + (Vector2)m_offsetToTileCenter;
 
         public static int ManhattanDistance(Vector3Int tile1, Vector3Int tile2) => Mathf.Abs(tile1.x - tile2.x) + Mathf.Abs(tile1.y - tile2.y);
     }

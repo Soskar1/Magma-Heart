@@ -14,7 +14,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private Entity m_controllingEntity;
 
-        public IMovable Movement { get; private set; }
         public Entity ControllingEntity => m_controllingEntity;
         public Health Health => ControllingEntity.Health;
         public Energy Energy => ControllingEntity.Energy;
@@ -31,8 +30,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
             m_controllingEntity = new Entity(m_data, transform, animationPlayer);
 
-            Movement = GetComponent<IMovable>();
-            m_actionBehaviour = new ActionPlayerBehaviour(userInput, Movement, this);
+            m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
 
             MouseControl mouseControl = new MouseControl(userInput, grid);
             TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(userInput, mouseControl);
