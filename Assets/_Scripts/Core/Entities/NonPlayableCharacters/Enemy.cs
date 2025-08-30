@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public bool IsPlayableCharacter => false;
 
         private Vector3Int m_currentTilePosition; // TODO: Use MovementAction
-        public Vector3Int CurrentTilePosition { get => m_currentTilePosition; set => m_currentTilePosition = value; }
+        public Vector3Int CurrentTilePosition => m_currentTilePosition;
         public Transform Transform => transform;
         public Health Health => ControllingEntity.Health;
 
