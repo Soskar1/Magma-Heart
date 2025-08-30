@@ -9,20 +9,42 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class MovementAction : ICombatAction
     {
+        private TurnBasedMovement m_movement;
         private ITilePosition m_tilePosition;
         private Energy m_energy;
         private Room m_currentRoom;
         private AStar m_aStar;
         private int m_freeDistanceToMove;
         private int m_currentTheoreticalFreeDistanceToMove;
+        private List<Vector2> m_currentPath;
 
         public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
         public int MovementDistanceInTilesForOneEnergy { get; private set; } = 2;
-        public List<Vector2> CurrentPath { get; private set; }
+        public List<Vector2> CurrentPath
+        {
+            get
+            {
+                if (m_currentPath == null)
+                    m_currentPath = new List<Vector2>();
+
+                return m_currentPath;
+            }
+            private set
+            {
+                if (value == null)
+                    return;
+
+                m_currentPath = value;
+
+                for (int i = 0; i < m_currentPath.Count; i++)
+                    m_currentPath[i] = m_currentRoom.Grid.ToTileCenter(m_currentPath[i].ToVector2Int());
+            }
+        }
         public RoomTile TileToMove { get; set; }
 
-        public MovementAction(Energy energy, ITilePosition tilePosition)
+        public MovementAction(TurnBasedMovement movement, Energy energy, ITilePosition tilePosition)
         {
+            m_movement = movement;
             m_energy = energy;
             m_tilePosition = tilePosition;
             m_aStar = new AStar(AStar.ManhattanDistance);
@@ -43,7 +65,7 @@ namespace MagmaHeart.Core.CombatSystem
             if (CanMoveToTile(TileToMove))
             {
                 m_energy.Spend(CurrentTheoreticalEnergyUsage);
-                Move(TileToMove);
+                Move();
                 m_freeDistanceToMove = m_currentTheoreticalFreeDistanceToMove;
             }
         }
@@ -55,13 +77,7 @@ namespace MagmaHeart.Core.CombatSystem
             if (!m_currentRoom.TileIsAccessable(targetTile))
                 return false;
 
-            Vector3Int currentTile = m_currentRoom.Grid.WorldToTilePosition(m_tilePosition.Transform.position);
-            List<Vector2> path = m_aStar.FindPath(m_currentRoom.AStarGraph, currentTile.ToVector2(), targetTile.Position.ToVector2());
-            
-            if (path == null)
-                return false;
-
-            CurrentPath = path;
+            CalculatePath(targetTile);
 
             int distance = CurrentPath.Count - m_freeDistanceToMove;
             CurrentTheoreticalEnergyUsage = Mathf.CeilToInt(distance / (float)MovementDistanceInTilesForOneEnergy);
@@ -70,10 +86,25 @@ namespace MagmaHeart.Core.CombatSystem
             return m_energy.HasEnough(CurrentTheoreticalEnergyUsage);
         }
 
-        public void Move(RoomTile targetTile)
+        public void Move()
         {
-            m_tilePosition.Transform.position = m_currentRoom.Grid.ToTileCenter(targetTile.Position);
-            m_tilePosition.CurrentTilePosition = targetTile.Position;
+            if (CurrentPath.Count == 0)
+                return;
+
+            m_movement.StartMovement(CurrentPath);
+        }
+
+        public void MoveWithoutEnergyUsage(RoomTile targetTile)
+        {
+            CalculatePath(targetTile);
+            Move();
+        }
+
+        private void CalculatePath(RoomTile targetTile)
+        {
+            Vector3Int currentTile = m_currentRoom.Grid.WorldToTilePosition(m_tilePosition.Transform.position);
+            List<Vector2> path = m_aStar.FindPath(m_currentRoom.AStarGraph, currentTile.ToVector2(), targetTile.Position.ToVector2());
+            CurrentPath = path;
         }
     }
 }

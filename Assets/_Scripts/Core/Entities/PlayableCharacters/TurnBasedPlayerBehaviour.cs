@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private bool m_playerTurnIsActive;
 
-        public TurnBasedPlayerBehaviour(Player player, TurnBasedUserInput userInput, EnergyHUD energyHUD, PathGizmosRenderer aStarPathRenderer)
+        public TurnBasedPlayerBehaviour(Player player, TurnBasedUserInput userInput, EnergyHUD energyHUD)
         {
             m_playerTransform = player.transform;
             m_energy = player.Energy;
@@ -44,9 +44,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energyHUD = energyHUD;
             m_playerTurnIsActive = false;
 
-            m_movementAction = new MovementAction(m_energy, this);
+            TurnBasedMovement movement = player.GetComponent<TurnBasedMovement>();
+            m_movementAction = new MovementAction(movement, m_energy, this);
             m_attackAction = new AttackAction(m_energy, this);
-            m_aStarPathRenderer = aStarPathRenderer;
+
+            m_aStarPathRenderer = player.GetComponent<PathGizmosRenderer>(); // For debug purposes
         }
 
         public void Enable() => m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
@@ -70,7 +72,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = m_currentRoom.GetRoomTile(m_playerTransform.position);
-            m_movementAction.Move(roomTile);
+            m_movementAction.MoveWithoutEnergyUsage(roomTile);
         }
 
         public void StartTurn()
