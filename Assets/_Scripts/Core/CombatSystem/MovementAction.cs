@@ -5,6 +5,7 @@ using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace MagmaHeart.Core.CombatSystem
 {
@@ -18,6 +19,7 @@ namespace MagmaHeart.Core.CombatSystem
         private int m_freeDistanceToMove;
         private int m_currentTheoreticalFreeDistanceToMove;
         private List<RoomTile> m_currentPath;
+        private bool m_isEnabled;
 
         public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
         public int MovementDistanceInTilesForOneEnergy { get; private set; } = 2;
@@ -47,6 +49,21 @@ namespace MagmaHeart.Core.CombatSystem
             m_tilePosition = tilePosition;
             m_aStar = new AStar(AStar.ManhattanDistance);
             CurrentPath = new List<RoomTile>();
+        }
+
+        public void Enable()
+        {
+            if (m_isEnabled)
+                return;
+
+            m_movement.OnMovementEnded += HandleOnMovementEnded;
+            m_isEnabled = true;
+        }
+
+        public void Disable()
+        {
+            m_movement.OnMovementEnded -= HandleOnMovementEnded;
+            m_isEnabled = false;
         }
 
         public void Reset()
@@ -86,13 +103,13 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void Move()
         {
+            if (!m_isEnabled)
+                throw new InvalidOperationException("Movement action is not enabled");
+
             if (CurrentPath.Count == 0)
                 return;
 
             m_movement.StartMovement(CurrentPath);
-
-            OnMovedEventArgs args = new OnMovedEventArgs(CurrentPath.First().Position, CurrentPath.Last().Position);
-            m_tilePosition.OnMoved?.Invoke(this, args);
         }
 
         public void MoveWithoutEnergyUsage(RoomTile targetTile)
@@ -107,5 +124,7 @@ namespace MagmaHeart.Core.CombatSystem
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.AStarGraph, currentTile.ToVector2(), targetTile.Position.ToVector2());
             CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
         }
+
+        private void HandleOnMovementEnded(object obj, OnMovementEventArgs args) => m_tilePosition.OnMoved?.Invoke(this, args);
     }
 }

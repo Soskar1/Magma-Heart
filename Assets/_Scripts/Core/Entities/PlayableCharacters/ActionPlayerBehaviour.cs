@@ -56,8 +56,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 m_animation.PlayRunAnimation();
             else
                 m_animation.PlayIdleAnimation();
-
-            m_animation.PlayAnimations();
         }
 
         private void Interact(InputAction.CallbackContext context)

@@ -7,6 +7,6 @@ namespace MagmaHeart.Core.CombatSystem
     {
         public Transform Transform { get; }
         public Vector3Int CurrentTilePosition { get; }
-        public EventHandler<OnMovedEventArgs> OnMoved { get; set; }
+        public EventHandler<OnMovementEventArgs> OnMoved { get; set; }
     }
 }

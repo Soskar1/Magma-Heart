@@ -14,6 +14,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private Entity m_controllingEntity;
 
+        private PlayerAnimation m_animation;
+
         public Entity ControllingEntity => m_controllingEntity;
         public Health Health => ControllingEntity.Health;
         public Energy Energy => ControllingEntity.Energy;
@@ -27,6 +29,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Initialize(UserInput userInput, DungeonGrid grid, EnergyHUD energyHUD)
         {
+            m_animation = GetComponent<PlayerAnimation>();
             m_controllingEntity = new Entity(m_data, transform);
             m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
 
@@ -51,7 +54,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         }
 
 
-        private void FixedUpdate() => m_currentBehaviour.Update();
+        private void FixedUpdate()
+        {
+            m_currentBehaviour.Update();
+            m_animation.PlayAnimations();
+        }
 
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 
