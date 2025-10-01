@@ -4,31 +4,20 @@ namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Facing))]
-    public class RigidbodyMovement : MonoBehaviour, IMovement
+    public class RigidbodyMovement : MonoBehaviour
     {
         [SerializeField] private float m_maxSpeed;
         [SerializeField] private float m_acceleration;
         [SerializeField] private float m_decceleration;
         [SerializeField] private float m_velocityPower;
         private Rigidbody2D m_rigidbody;
-        private Facing m_facing;
 
         private const float EPSILON = 0.01f;
 
-        private Vector2 m_currentMovementDirection;
-        public Vector2 CurrentMovementDirection => m_currentMovementDirection;
-
-        private void Awake()
-        {
-            m_rigidbody = GetComponent<Rigidbody2D>();
-            m_facing = GetComponent<Facing>();
-        }
+        private void Awake() => m_rigidbody = GetComponent<Rigidbody2D>();
 
         public void Move(Vector2 direction)
         {
-            m_facing.TryUpdateFacing(direction.x);
-            m_currentMovementDirection = direction;
-
             Vector2 targetVelocity = direction * m_maxSpeed;
             Vector2 velocityDifference = targetVelocity - m_rigidbody.linearVelocity;
             float accelerationRate = targetVelocity.magnitude > EPSILON ? m_acceleration : m_decceleration;
@@ -38,7 +27,6 @@ namespace MagmaHeart.Core.Entities
 
             Vector2 movement = new Vector2(movementX, movementY);
             m_rigidbody.AddForce(movement);
-            
         }
     }
 }

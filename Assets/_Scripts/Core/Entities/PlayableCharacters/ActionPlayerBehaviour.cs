@@ -5,23 +5,29 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class ActionPlayerBehaviour : IPlayerBehaviour
     {
-        private UserInput m_userInput;
-        private RigidbodyMovement m_movement;
+        private readonly Player m_player;
+        private readonly Rigidbody2D m_rigidbody;
+        private readonly UserInput m_userInput;
+        private readonly RigidbodyMovement m_movement;
+        private readonly PlayerAnimation m_animation;
+        private readonly Facing m_facing;
 
         private IInteractable m_currentInteractableObject;
-        private Player m_player;
-        private Rigidbody2D m_rigidbody;
 
         public ActionPlayerBehaviour(Player player, UserInput userInput)
         {
             m_userInput = userInput;
             m_player = player;
+            m_animation = player.GetComponent<PlayerAnimation>();
             m_movement = player.GetComponent<RigidbodyMovement>();
+            m_facing = player.GetComponent<Facing>();
             m_rigidbody = player.GetComponent<Rigidbody2D>();
         }
 
         public void Enable()
         {
+            m_animation.PlayIdleAnimation();
+
             m_userInput.Controls.ActionPlayer.Interaction.performed += Interact;
             m_userInput.Controls.ActionPlayer.Enable();
 
@@ -43,7 +49,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Update()
         {
             Vector2 movement = m_userInput.Controls.ActionPlayer.Move.ReadValue<Vector2>();
+            m_facing.TryUpdateFacing(movement.x);
             m_movement.Move(movement);
+
+            if (movement.magnitude > 0)
+                m_animation.PlayRunAnimation();
+            else
+                m_animation.PlayIdleAnimation();
+
+            m_animation.PlayAnimations();
         }
 
         private void Interact(InputAction.CallbackContext context)

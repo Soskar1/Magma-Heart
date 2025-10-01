@@ -27,9 +27,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Initialize(UserInput userInput, DungeonGrid grid, EnergyHUD energyHUD)
         {
-            AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
-            m_controllingEntity = new Entity(m_data, transform, animationPlayer);
-
+            m_controllingEntity = new Entity(m_data, transform);
             m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
 
             MouseControl mouseControl = new MouseControl(userInput, grid);
@@ -39,17 +37,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour = m_actionBehaviour;
         }
 
-        public void Enable()
-        {
-            m_currentBehaviour.Enable();
-            ControllingEntity.Enable();
-        }
-
-        public void Disable()
-        {
-            m_currentBehaviour.Disable();
-            ControllingEntity.Disable();
-        }
+        public void Enable() => m_currentBehaviour.Enable();
+        public void Disable() => m_currentBehaviour.Disable();
 
         public void EnterCombat() => SwitchState(m_turnBasedBehaviour);
         public void ExitCombat() => SwitchState(m_actionBehaviour);
@@ -61,7 +50,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour.Enable();
         }
 
-        private void Update() => ControllingEntity.RunAnimations();
 
         private void FixedUpdate() => m_currentBehaviour.Update();
 

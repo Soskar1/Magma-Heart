@@ -4,40 +4,32 @@ using UnityEngine;
 namespace MagmaHeart.Core
 {
     [RequireComponent(typeof(Animator))]
-    public abstract class AnimationPlayer : MonoBehaviour
+    public class AnimationPlayer : MonoBehaviour
     {
         public Action<string> OnAnimationEnded;
-        private Animator m_animator;
+
+        public Animator Animator { get; private set; }
+
         private int m_currentAnimationState;
+        public int CurrentAnimationState
+        {
+            get => m_currentAnimationState;
+            set => m_currentAnimationState = value;
+        }
 
-        public Animator Animator => m_animator;
-        public int CurrentAnimationState => m_currentAnimationState;
-
-        public virtual void Awake() => m_animator = GetComponent<Animator>();
-        public abstract void Enable();
-        public abstract void Disable();
-
-        public void SetAnimationState(int animationState) => m_currentAnimationState = animationState;
+        public void Awake() => Animator = GetComponent<Animator>();
 
         public void PlayAnimations()
         {
-            int stateToPlay = GetAnimationState();
-
-            if (stateToPlay == m_currentAnimationState)
-                return;
-
-            m_animator.CrossFade(stateToPlay, 0);
-            m_currentAnimationState = stateToPlay;
+            Animator.CrossFade(CurrentAnimationState, 0);
         }
-
-        public abstract int GetAnimationState();
 
         public bool DoesCurrentAnimationEnded() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
 
         public void IncreaseAnimationSpeed(string animationParameter, float amount)
         {
-            float currentAmount = m_animator.GetFloat(animationParameter);
-            m_animator.SetFloat(animationParameter, currentAmount + amount);
+            float currentAmount = Animator.GetFloat(animationParameter);
+            Animator.SetFloat(animationParameter, currentAmount + amount);
         }
     }
 }
