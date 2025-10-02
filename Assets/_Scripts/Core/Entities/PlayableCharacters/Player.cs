@@ -53,7 +53,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour.Enable();
         }
 
-
         private void FixedUpdate()
         {
             m_currentBehaviour.Update();
