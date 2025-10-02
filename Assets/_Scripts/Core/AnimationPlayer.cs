@@ -6,7 +6,7 @@ namespace MagmaHeart.Core
     [RequireComponent(typeof(Animator))]
     public class AnimationPlayer : MonoBehaviour
     {
-        public Action<string> OnAnimationEnded;
+        public EventHandler<OnAnimationEndedEventArgs> OnAnimationEnded;
 
         public Animator Animator { get; private set; }
 
@@ -14,14 +14,24 @@ namespace MagmaHeart.Core
         public int CurrentAnimationState
         {
             get => m_currentAnimationState;
-            set => m_currentAnimationState = value;
+            set
+            {
+                m_currentAnimationState = value;
+                Animator.CrossFade(CurrentAnimationState, 0);
+            }
         }
 
         public void Awake() => Animator = GetComponent<Animator>();
 
         public void PlayAnimations()
         {
-            Animator.CrossFade(CurrentAnimationState, 0);
+            if (DoesCurrentAnimationEnded())
+            {
+                Animator.CrossFade(CurrentAnimationState, 0, 0, 0);
+
+                OnAnimationEndedEventArgs args = new OnAnimationEndedEventArgs(CurrentAnimationState);
+                OnAnimationEnded?.Invoke(this, args);
+            }
         }
 
         public bool DoesCurrentAnimationEnded() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
