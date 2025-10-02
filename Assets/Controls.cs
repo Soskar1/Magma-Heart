@@ -220,6 +220,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraMovement"",
+                    ""type"": ""Value"",
+                    ""id"": ""7198be77-2390-4238-91e7-3cca29fb350e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -244,6 +253,61 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""MouseClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""c050298f-0638-41c4-99c8-71196202669a"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""97d1161b-d988-467f-9d46-0c4ac5efc6e2"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""8f82f137-dce8-44ff-b494-01b6f5319984"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""9f3fb238-33d4-4db0-a09b-39cc52403bb3"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""74b021b9-daa5-4658-8ff2-50b21aa8d87c"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -836,6 +900,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_TurnBasedPlayer = asset.FindActionMap("TurnBasedPlayer", throwIfNotFound: true);
         m_TurnBasedPlayer_MousePosition = m_TurnBasedPlayer.FindAction("MousePosition", throwIfNotFound: true);
         m_TurnBasedPlayer_MouseClick = m_TurnBasedPlayer.FindAction("MouseClick", throwIfNotFound: true);
+        m_TurnBasedPlayer_CameraMovement = m_TurnBasedPlayer.FindAction("CameraMovement", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1050,6 +1115,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<ITurnBasedPlayerActions> m_TurnBasedPlayerActionsCallbackInterfaces = new List<ITurnBasedPlayerActions>();
     private readonly InputAction m_TurnBasedPlayer_MousePosition;
     private readonly InputAction m_TurnBasedPlayer_MouseClick;
+    private readonly InputAction m_TurnBasedPlayer_CameraMovement;
     /// <summary>
     /// Provides access to input actions defined in input action map "TurnBasedPlayer".
     /// </summary>
@@ -1069,6 +1135,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "TurnBasedPlayer/MouseClick".
         /// </summary>
         public InputAction @MouseClick => m_Wrapper.m_TurnBasedPlayer_MouseClick;
+        /// <summary>
+        /// Provides access to the underlying input action "TurnBasedPlayer/CameraMovement".
+        /// </summary>
+        public InputAction @CameraMovement => m_Wrapper.m_TurnBasedPlayer_CameraMovement;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1101,6 +1171,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @MouseClick.started += instance.OnMouseClick;
             @MouseClick.performed += instance.OnMouseClick;
             @MouseClick.canceled += instance.OnMouseClick;
+            @CameraMovement.started += instance.OnCameraMovement;
+            @CameraMovement.performed += instance.OnCameraMovement;
+            @CameraMovement.canceled += instance.OnCameraMovement;
         }
 
         /// <summary>
@@ -1118,6 +1191,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @MouseClick.started -= instance.OnMouseClick;
             @MouseClick.performed -= instance.OnMouseClick;
             @MouseClick.canceled -= instance.OnMouseClick;
+            @CameraMovement.started -= instance.OnCameraMovement;
+            @CameraMovement.performed -= instance.OnCameraMovement;
+            @CameraMovement.canceled -= instance.OnCameraMovement;
         }
 
         /// <summary>
@@ -1461,6 +1537,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMouseClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CameraMovement" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCameraMovement(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

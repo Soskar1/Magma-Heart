@@ -81,11 +81,14 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Player SpawnPlayer(RoomTileData startRoom, EnergyHUD energyHUD)
         {
+            ActionUserInput actionUserInput = new ActionUserInput(m_userInput);
+            TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(m_userInput, m_grid);
+
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(m_userInput, m_grid, energyHUD);
+            playerInstance.Initialize(actionUserInput, turnBasedUserInput, energyHUD);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
-            m_camera.Initialize(playerInstance.transform);
+            m_camera.Initialize(playerInstance.transform, turnBasedUserInput);
 
             playerInstance.Enable();
 

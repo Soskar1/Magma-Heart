@@ -1,26 +1,32 @@
+using MagmaHeart.Core.Dungeon;
+using UnityEngine;
+
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class TurnBasedUserInput
     {
         private UserInput m_userInput;
+        
+        public MouseControl MouseControl { get; init; }
 
-        public MouseControl MouseControl { get; private set; }
+        public Controls.TurnBasedPlayerActions TurnBasedPlayer => m_userInput.Controls.TurnBasedPlayer;
+        public Vector2 CameraMovement => TurnBasedPlayer.CameraMovement.ReadValue<Vector2>();
 
-        public TurnBasedUserInput(UserInput userInput, MouseControl mouseControl)
+        public TurnBasedUserInput(UserInput userInput, DungeonGrid grid)
         {
             m_userInput = userInput;
-            MouseControl = mouseControl;
+            MouseControl = new MouseControl(m_userInput, grid);
         }
 
         public void Enable()
         {
-            m_userInput.Controls.TurnBasedPlayer.Enable();
+            TurnBasedPlayer.Enable();
             MouseControl.Enable();
         }
 
         public void Disable()
         {
-            m_userInput.Controls.TurnBasedPlayer.Disable();
+            TurnBasedPlayer.Disable();
             MouseControl.Disable();
         }
     }

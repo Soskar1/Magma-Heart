@@ -5,14 +5,16 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour
     {
+        [SerializeField] private int m_speed;
+
         private ICameraBehaviour m_currentBehaviour;
         private ActionCameraBehaviour m_actionCameraBehaviour;
         private TurnBasedCameraBehaviour m_turnBasedCameraBehaviour;
 
-        public void Initialize(Transform objectToTrack)
+        public void Initialize(Transform objectToTrack, TurnBasedUserInput userInput)
         {
             m_actionCameraBehaviour = new ActionCameraBehaviour(transform, objectToTrack);
-            m_turnBasedCameraBehaviour = new TurnBasedCameraBehaviour();
+            m_turnBasedCameraBehaviour = new TurnBasedCameraBehaviour(transform, userInput, m_speed);
             SwitchToActionCamera();
         }
 
