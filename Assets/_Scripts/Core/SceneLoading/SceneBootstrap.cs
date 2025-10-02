@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.Cameras;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;

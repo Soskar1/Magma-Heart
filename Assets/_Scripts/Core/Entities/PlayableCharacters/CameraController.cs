@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MagmaHeart.Core.Cameras
+namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour

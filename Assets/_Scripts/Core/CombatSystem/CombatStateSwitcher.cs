@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using MagmaHeart.Core.Cameras;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.UI;

@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core.Cameras
+namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public interface ICameraBehaviour
     {
