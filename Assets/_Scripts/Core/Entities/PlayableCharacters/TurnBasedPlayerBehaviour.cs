@@ -72,22 +72,25 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Enable()
         {
-            m_animation.PlayIdleAnimation();
+            m_userInput.Enable();
+            m_movementAction.Enable();
 
             m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
             m_movement.OnMovementStarted += HandleOnMovementStarted;
             m_movement.OnMovementEnded += HandleOnMovementEnded;
 
-            m_movementAction.Enable();
+            m_animation.PlayIdleAnimation();
         }
 
         public void Disable()
         {
+            m_userInput.Disable();
+            m_movementAction.Disable();
+
             m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
             m_movement.OnMovementStarted -= HandleOnMovementStarted;
             m_movement.OnMovementEnded -= HandleOnMovementEnded;
 
-            m_movementAction.Disable();
         }
 
         public void Update()
@@ -112,7 +115,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void StartTurn()
         {
-            m_userInput.Enable();
             m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
 
@@ -128,7 +130,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void EndTurn()
         {
-            m_userInput.Disable();
             m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
 
