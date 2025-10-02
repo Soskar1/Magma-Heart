@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public Transform Transform => transform;
         public Health Health => ControllingEntity.Health;
 
-        public EventHandler<OnMovedEventArgs> OnMoved { get; set; }
+        public EventHandler<OnMovementEventArgs> OnMoved { get; set; }
 
         public void Initialize()
         {

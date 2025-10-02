@@ -1,6 +1,8 @@
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -13,15 +15,18 @@ namespace MagmaHeart.Core.Entities
         private bool m_canMove = false;
         private List<RoomTile> m_currentPath = new List<RoomTile>();
 
-        public event EventHandler OnMovementStarted;
-        public event EventHandler OnMovementEnded;
+        public event EventHandler<OnMovementEventArgs> OnMovementStarted;
+        public event EventHandler<OnMovementEventArgs> OnMovementEnded;
+        private OnMovementEventArgs m_currentArgs;
 
         public void StartMovement(List<RoomTile> path)
         {
             m_currentPath = path;
             m_targetIndex = 0;
             m_canMove = true;
-            OnMovementStarted?.Invoke(this, EventArgs.Empty);
+
+            m_currentArgs = new OnMovementEventArgs(path.First().Position, path.Last().Position);
+            OnMovementStarted?.Invoke(this, m_currentArgs);
         }
 
         public void Update()
@@ -42,7 +47,7 @@ namespace MagmaHeart.Core.Entities
             if (m_targetIndex == m_currentPath.Count)
             {
                 m_canMove = false;
-                OnMovementEnded?.Invoke(this, EventArgs.Empty);
+                OnMovementEnded?.Invoke(this, m_currentArgs);
             }
         }
     }

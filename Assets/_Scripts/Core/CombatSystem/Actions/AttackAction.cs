@@ -1,5 +1,6 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -15,6 +16,8 @@ namespace MagmaHeart.Core.CombatSystem
 
         public IHittableTile EntityToHit { get; set; }
 
+        public EventHandler<OnAttackEventArgs> OnAttackTriggered;
+
         public AttackAction(Energy energy, ITilePosition tilePosition)
         {
             m_tilePosition = tilePosition;
@@ -26,7 +29,17 @@ namespace MagmaHeart.Core.CombatSystem
             if (CanAttack(EntityToHit))
             {
                 m_energy.Spend(ENERGY_COST);
-                EntityToHit.Hit(ATTACK_DAMAGE);
+
+                if (OnAttackTriggered == null)
+                {
+                    Debug.LogWarning("No one is subscribed to the OnAttackTriggered event. Executing Hit()");
+                    Hit();
+                }
+                else
+                {
+                    OnAttackEventArgs attackArgs = new OnAttackEventArgs(EntityToHit.CurrentTilePosition);
+                    OnAttackTriggered?.Invoke(this, attackArgs);
+                }
             }
         }
 
@@ -47,5 +60,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             return true;
         }
+
+        public void Hit() => EntityToHit.Hit(ATTACK_DAMAGE);
     }
 }

@@ -14,6 +14,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private Entity m_controllingEntity;
 
+        private PlayerAnimation m_animation;
+
         public Entity ControllingEntity => m_controllingEntity;
         public Health Health => ControllingEntity.Health;
         public Energy Energy => ControllingEntity.Energy;
@@ -27,9 +29,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Initialize(UserInput userInput, DungeonGrid grid, EnergyHUD energyHUD)
         {
-            AnimationPlayer animationPlayer = GetComponent<AnimationPlayer>();
-            m_controllingEntity = new Entity(m_data, transform, animationPlayer);
-
+            m_animation = GetComponent<PlayerAnimation>();
+            m_controllingEntity = new Entity(m_data, transform);
             m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
 
             MouseControl mouseControl = new MouseControl(userInput, grid);
@@ -39,17 +40,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour = m_actionBehaviour;
         }
 
-        public void Enable()
-        {
-            m_currentBehaviour.Enable();
-            ControllingEntity.Enable();
-        }
-
-        public void Disable()
-        {
-            m_currentBehaviour.Disable();
-            ControllingEntity.Disable();
-        }
+        public void Enable() => m_currentBehaviour.Enable();
+        public void Disable() => m_currentBehaviour.Disable();
 
         public void EnterCombat() => SwitchState(m_turnBasedBehaviour);
         public void ExitCombat() => SwitchState(m_actionBehaviour);
@@ -61,9 +53,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour.Enable();
         }
 
-        private void Update() => ControllingEntity.RunAnimations();
 
-        private void FixedUpdate() => m_currentBehaviour.Update();
+        private void FixedUpdate()
+        {
+            m_currentBehaviour.Update();
+            m_animation.PlayAnimations();
+        }
 
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 

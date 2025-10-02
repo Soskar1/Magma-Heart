@@ -85,7 +85,7 @@ namespace MagmaHeart.Core.Dungeon
 
         public bool EntityExists(IHittableTile entity) => m_entitiesInCombat.Any(e => e.CurrentTilePosition == entity.CurrentTilePosition);
 
-        private void HandleOnMoved(object obj, OnMovedEventArgs e)
+        private void HandleOnMoved(object obj, OnMovementEventArgs e)
         {
             AStarGraph.ChangeNodeType(e.From.ToVector2(), AStarNodeType.Walkable);
             AStarGraph.ChangeNodeType(e.To.ToVector2(), AStarNodeType.Obstacle);

@@ -12,30 +12,31 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private TurnBasedUserInput m_userInput;
         private RoomTile m_currentMouseTile;
+        private IHittableTile m_currentMouseOverEntity;
 
-        private Room m_currentRoom;
-
-        private Transform m_playerTransform;
         private Health m_health;
+        public Health Health => m_health;
+
         private Energy m_energy;
         private EnergyHUD m_energyHUD;
 
-        private ICombatAction m_currentAction;
+        private PlayerAnimation m_animation;
+        private Facing m_facing;
 
+        private Room m_currentRoom;
+        private ICombatAction m_currentAction;
         private MovementAction m_movementAction;
+        private AttackAction m_attackAction;
+
         private TurnBasedMovement m_movement;
         private PathGizmosRenderer m_aStarPathRenderer;
-        public EventHandler<OnMovedEventArgs> OnMoved { get; set; }
+        public EventHandler<OnMovementEventArgs> OnMoved { get; set; }
 
-        private AttackAction m_attackAction;
-        private IHittableTile m_currentMouseOverEntity;
-
+        private Transform m_playerTransform;
         public Transform Transform => m_playerTransform;
         public Vector3Int CurrentTilePosition => m_currentRoom.Grid.WorldToTilePosition(m_playerTransform.position);
         public EventHandler NextTurn { get; set; }
         public bool IsPlayableCharacter => true;
-
-        public Health Health => m_health;
 
         private bool m_playerTurnIsActive;
         private bool m_canExecuteActions;
@@ -60,6 +61,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energyHUD = energyHUD;
             m_playerTurnIsActive = false;
 
+            m_facing = player.GetComponent<Facing>();
+            m_animation = player.GetComponent<PlayerAnimation>();
             m_movement = player.GetComponent<TurnBasedMovement>();
             m_movementAction = new MovementAction(m_movement, m_energy, this);
             m_attackAction = new AttackAction(m_energy, this);
@@ -69,16 +72,22 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Enable()
         {
+            m_animation.PlayIdleAnimation();
+
             m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
-            m_movement.OnMovementStarted += DisableActionExecution;
-            m_movement.OnMovementEnded += EnableActionExecution;
+            m_movement.OnMovementStarted += HandleOnMovementStarted;
+            m_movement.OnMovementEnded += HandleOnMovementEnded;
+
+            m_movementAction.Enable();
         }
 
         public void Disable()
         {
             m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
-            m_movement.OnMovementStarted -= DisableActionExecution;
-            m_movement.OnMovementEnded -= EnableActionExecution;
+            m_movement.OnMovementStarted -= HandleOnMovementStarted;
+            m_movement.OnMovementEnded -= HandleOnMovementEnded;
+
+            m_movementAction.Disable();
         }
 
         public void Update()
@@ -107,6 +116,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
 
+            m_attackAction.OnAttackTriggered += HandleOnAttackTriggered;
+            m_animation.OnAttackAnimationHitFrameTriggered += HandleOnAttackAnimationHitFrame;
+            m_animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
+
             m_energy.Regenerate();
 
             Debug.Log("Player is doing a move");
@@ -119,6 +132,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
 
+            m_attackAction.OnAttackTriggered -= HandleOnAttackTriggered;
+            m_animation.OnAttackAnimationHitFrameTriggered -= HandleOnAttackAnimationHitFrame;
+            m_animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
+
             Debug.Log("Player ended his move");
             m_playerTurnIsActive = false;
 
@@ -129,9 +146,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
 
             if (m_currentMouseOverEntity != null)
-            {
                 m_currentMouseOverEntity = null;
-            }
 
             NextTurn?.Invoke(this, EventArgs.Empty);
             m_movementAction.Reset();
@@ -192,8 +207,35 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentAction.Execute();
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
+        
+        private void HandleOnMovementStarted(object obj, OnMovementEventArgs e)
+        {
+            CanExecuteAction = false;
+            m_animation.PlayRunAnimation();
 
-        private void EnableActionExecution(object obj, EventArgs e) => CanExecuteAction = true;
-        private void DisableActionExecution(object obj, EventArgs e) => CanExecuteAction = false;
+            m_facing.TryUpdateFacing((e.To - e.From).x);
+        }
+
+        private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
+        {
+            CanExecuteAction = true;
+            m_animation.PlayIdleAnimation();
+        }
+
+        private void HandleOnAttackTriggered(object obj, OnAttackEventArgs e)
+        {
+            CanExecuteAction = false;
+
+            m_facing.TryUpdateFacing(e.EntityPosition.x - Transform.position.x);
+            m_animation.PlayAttackAnimation();
+        }
+
+        private void HandleOnAttackAnimationHitFrame(object obj, EventArgs e) => m_attackAction.Hit();
+
+        private void HandleOnAttackAnimationEnded(object obj, EventArgs e)
+        {
+            CanExecuteAction = true;
+            m_animation.PlayIdleAnimation();
+        }
     }
 }
