@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.UI;
 using MagmaHeart.Navigation;

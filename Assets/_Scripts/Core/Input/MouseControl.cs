@@ -3,7 +3,7 @@ using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.Input
 {
     public class MouseControl
     {

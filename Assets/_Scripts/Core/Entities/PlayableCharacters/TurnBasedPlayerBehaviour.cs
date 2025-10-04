@@ -1,5 +1,6 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using MagmaHeart.Navigation;
 using System;

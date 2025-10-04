@@ -1,3 +1,4 @@
+using MagmaHeart.Core.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

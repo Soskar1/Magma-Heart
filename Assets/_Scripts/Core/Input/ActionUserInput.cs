@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.Input
 {
     public class ActionUserInput
     {

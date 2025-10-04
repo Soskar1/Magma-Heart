@@ -1,4 +1,5 @@
 using System;
+using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 

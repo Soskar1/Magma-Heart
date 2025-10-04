@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.CameraControls
 {
     public class ActionCameraBehaviour : ICameraBehaviour
     {

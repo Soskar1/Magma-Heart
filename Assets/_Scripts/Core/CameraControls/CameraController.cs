@@ -1,6 +1,7 @@
+using MagmaHeart.Core.Input;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.CameraControls
 {
     [RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour
