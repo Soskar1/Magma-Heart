@@ -4,15 +4,16 @@ namespace MagmaHeart.Core.CameraControls
 {
     public class ActionCameraBehaviour : ICameraBehaviour
     {
-        private readonly Transform m_transform;
-        private readonly Transform m_objectToTrack;
+        private readonly CameraTargetTracker m_tracker;
+        private readonly Transform m_player;
 
-        public ActionCameraBehaviour(Transform transform, Transform objectToTrack)
+        public ActionCameraBehaviour(CameraTargetTracker cameraTargetTracker, Transform playerToTrack)
         {
-            m_transform = transform;
-            m_objectToTrack = objectToTrack;
+            m_tracker = cameraTargetTracker;
+            m_player = playerToTrack;
         }
 
-        public void Update() => m_transform.position = new Vector3(m_objectToTrack.position.x, m_objectToTrack.position.y, m_transform.position.z);
+        public void Enable() => m_tracker.Track(m_player);
+        public void Update() => m_tracker.StickWithTarget();
     }
 }

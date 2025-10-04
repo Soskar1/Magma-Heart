@@ -14,7 +14,9 @@ namespace MagmaHeart.Core.CameraControls
 
         public void Initialize(Transform objectToTrack, TurnBasedUserInput userInput)
         {
-            m_actionCameraBehaviour = new ActionCameraBehaviour(transform, objectToTrack);
+            CameraTargetTracker tracker = new CameraTargetTracker(transform);
+
+            m_actionCameraBehaviour = new ActionCameraBehaviour(tracker, objectToTrack);
             m_turnBasedCameraBehaviour = new TurnBasedCameraBehaviour(transform, userInput, m_speed);
             SwitchToActionCamera();
         }
@@ -23,6 +25,11 @@ namespace MagmaHeart.Core.CameraControls
 
         public void SwitchToActionCamera() => SwitchState(m_actionCameraBehaviour);
         public void SwitchToTurnBasedCamera() => SwitchState(m_turnBasedCameraBehaviour);
-        private void SwitchState(ICameraBehaviour behaviour) => m_currentBehaviour = behaviour;
+        
+        private void SwitchState(ICameraBehaviour behaviour)
+        {
+            m_currentBehaviour = behaviour;
+            m_currentBehaviour.Enable();
+        }
     }
 }

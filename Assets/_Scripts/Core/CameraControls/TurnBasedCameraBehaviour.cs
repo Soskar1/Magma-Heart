@@ -16,6 +16,11 @@ namespace MagmaHeart.Core.CameraControls
             m_speed = speed;
         }
 
+        public void Enable()
+        {
+            
+        }
+
         public void Update()
         {
             m_transform.position += (Vector3)m_userInput.CameraMovement * Time.deltaTime * m_speed;
