@@ -8,6 +8,7 @@ namespace MagmaHeart.Core.Input
 
         public Controls.ActionPlayerActions ActionPlayer => m_userInput.Controls.ActionPlayer;
         public Vector2 Movement => ActionPlayer.Move.ReadValue<Vector2>();
+        public float MouseScroll => ActionPlayer.MouseScroll.ReadValue<float>();
 
         public ActionUserInput(UserInput userInput) => m_userInput = userInput;
 

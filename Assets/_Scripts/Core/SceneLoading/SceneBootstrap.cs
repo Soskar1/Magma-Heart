@@ -90,7 +90,7 @@ namespace MagmaHeart.Core.SceneLoading
             playerInstance.Initialize(actionUserInput, turnBasedUserInput, energyHUD);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
-            m_camera.Initialize(playerInstance.transform, turnBasedUserInput);
+            m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);
 
             playerInstance.Enable();
 
