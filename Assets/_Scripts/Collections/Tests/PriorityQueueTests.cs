@@ -133,5 +133,26 @@ namespace MagmaHeart.Tests
             value = queue.Dequeue();
             Assert.That(value, Is.EqualTo(7));
         }
+
+        [Test]
+        public void PriorityQueue_GetEnumerator_PerfectlyIteratesThroughItems()
+        {
+            PriorityQueue<int, int> queue = new PriorityQueue<int, int>();
+
+            queue.Enqueue(1, 1);
+            queue.Enqueue(2, 0);
+            queue.Enqueue(3, 2);
+            queue.Enqueue(4, 4);
+            queue.Enqueue(5, 4);
+            queue.Enqueue(6, 3);
+
+            int i = 0;
+            int[] expectedSequence = { 2, 1, 3, 6, 4, 5};
+            foreach (int item in queue)
+            {
+                Assert.That(item, Is.EqualTo(expectedSequence[i]));
+                ++i;
+            }
+        }
     }
 }

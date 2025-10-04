@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MagmaHeart.Collections
 {
-    public class PriorityQueue<TElement, TPriority> where TPriority : IComparable<TPriority>
+    public class PriorityQueue<TElement, TPriority> : IEnumerable<TElement> where TPriority : IComparable<TPriority>
     {
         private readonly SortedDictionary<TPriority, LinkedList<TElement>> m_storage;
         public int Count { get; private set; }
@@ -65,6 +66,18 @@ namespace MagmaHeart.Collections
         {
             Remove(item);
             Enqueue(item, newPriority);
+        }
+
+        public IEnumerator<TElement> GetEnumerator()
+        {
+            foreach (var keyValuePair in m_storage)
+                foreach (TElement element in keyValuePair.Value)
+                    yield return element;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
