@@ -45,13 +45,21 @@ namespace MagmaHeart.Core.CombatSystem
                 entitiesInCombat.Add(spawnedEntity);
             }
 
-            m_currentBattle = new Battle(room, entitiesInCombat, m_combatUI);
+            TurnOrder turnOrder = TurnOrderBuilder.Build(entitiesInCombat);
+
+            // TODO: Turn on combat HUD
+
+            TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder, m_combatUI);
+            turnSwitcher.OnTurnSwitched += m_cameraController.TurnBasedCameraBehaviour.HandleOnTurnSwitched;
+
+            m_currentBattle = new Battle(room, entitiesInCombat, turnSwitcher);
             m_currentBattle.BattleEnded += ExitCombatState;
             m_currentBattle.Start();
         }
 
         private void ExitCombatState(object obj, BattleEndedEventArgs e)
         {
+            m_currentBattle.TurnSwitcher.OnTurnSwitched -= m_cameraController.TurnBasedCameraBehaviour.HandleOnTurnSwitched;
             m_currentBattle.BattleEnded -= ExitCombatState;
             m_currentBattle = null;
 
