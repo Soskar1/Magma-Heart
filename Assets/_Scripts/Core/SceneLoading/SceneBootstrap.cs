@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.UI;
 using MagmaHeart.Navigation;
@@ -14,7 +16,7 @@ namespace MagmaHeart.Core.SceneLoading
     public class SceneBootstrap : MonoBehaviour
     {
         [SerializeField] private Player m_player;
-        [SerializeField] private CameraMovement m_camera;
+        [SerializeField] private CameraController m_cameraPrefab;
         [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
         [SerializeField] private GameUI m_uiPrefab;
         [SerializeField] private DungeonGrid m_gridPrefab;
@@ -31,6 +33,7 @@ namespace MagmaHeart.Core.SceneLoading
         private LocationRenderer m_renderer;
         private UserInput m_userInput;
         private DungeonGrid m_grid;
+        private CameraController m_camera;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -80,11 +83,14 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Player SpawnPlayer(RoomTileData startRoom, EnergyHUD energyHUD)
         {
+            ActionUserInput actionUserInput = new ActionUserInput(m_userInput);
+            TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(m_userInput, m_grid);
+
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(m_userInput, m_grid, energyHUD);
-            
-            CameraMovement cameraInstance = Instantiate(m_camera, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
-            cameraInstance.ObjectToTrack = playerInstance.transform;
+            playerInstance.Initialize(actionUserInput, turnBasedUserInput, energyHUD);
+
+            m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
+            m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);
 
             playerInstance.Enable();
 
@@ -96,7 +102,7 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
             Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
-            CombatStateSwitcher combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, spawner, combatUI);
+            CombatStateSwitcher combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, m_camera, spawner, combatUI);
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {

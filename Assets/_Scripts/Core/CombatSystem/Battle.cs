@@ -1,5 +1,4 @@
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,25 +10,21 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private Room m_room;
         private List<ICombatController> m_entities;
-        private List<IDisplayable> m_combatUI;
+        private TurnSwitcher m_turnSwitcher;
 
         public EventHandler<BattleEndedEventArgs> BattleEnded;
 
-        public Battle(Room room, List<ICombatController> entities, List<IDisplayable> combatUI)
+        public TurnSwitcher TurnSwitcher => m_turnSwitcher;
+
+        public Battle(Room room, List<ICombatController> entities, TurnSwitcher turnSwitcher)
         {
             m_room = room;
             m_entities = entities;
-            m_combatUI = combatUI;
+            m_turnSwitcher = turnSwitcher;
         }
 
         public void Start()
         {
-            TurnOrder turnOrder = TurnOrderBuilder.Build(m_entities);
-
-            // TODO: Turn on combat HUD
-
-            TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder, m_combatUI);
-
             foreach (ICombatController controller in m_entities)
             {
                 controller.StartCombat(m_room);
@@ -45,7 +40,7 @@ namespace MagmaHeart.Core.CombatSystem
                     }
                     else
                     {
-                        turnOrder.Remove(controller);
+                        m_turnSwitcher.TurnOrder.Remove(controller);
                         m_entities.Remove(controller);
                         m_room.RemoveEntityFromRoom(controller);
 
@@ -64,7 +59,7 @@ namespace MagmaHeart.Core.CombatSystem
                 controller.Health.OnDeath += HandleEntityOnDeathEvent;
             }
 
-            turnSwitcher.Start();
+            m_turnSwitcher.Start();
         }
 
         private void End(bool isPlayerVictory) => BattleEnded?.Invoke(this, new BattleEndedEventArgs(isPlayerVictory, m_entities));

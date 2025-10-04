@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core
+namespace MagmaHeart.Core.Input
 {
     public class UserInput
     {

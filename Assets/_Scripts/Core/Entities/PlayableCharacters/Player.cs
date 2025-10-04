@@ -1,5 +1,5 @@
 using System;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
@@ -27,15 +27,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public TurnBasedPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
 
-        public void Initialize(UserInput userInput, DungeonGrid grid, EnergyHUD energyHUD)
+        public void Initialize(ActionUserInput actionUserInput, TurnBasedUserInput turnBasedUserInput, EnergyHUD energyHUD)
         {
             m_animation = GetComponent<PlayerAnimation>();
             m_controllingEntity = new Entity(m_data, transform);
-            m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
 
-            MouseControl mouseControl = new MouseControl(userInput, grid);
-            TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(userInput, mouseControl);
-
+            m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
             m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(this, turnBasedUserInput, energyHUD);
             m_currentBehaviour = m_actionBehaviour;
         }
@@ -52,7 +49,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour = newState;
             m_currentBehaviour.Enable();
         }
-
 
         private void FixedUpdate()
         {

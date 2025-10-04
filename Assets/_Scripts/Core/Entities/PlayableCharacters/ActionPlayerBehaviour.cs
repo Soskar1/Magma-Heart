@@ -1,3 +1,4 @@
+using MagmaHeart.Core.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,14 +8,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private readonly Player m_player;
         private readonly Rigidbody2D m_rigidbody;
-        private readonly UserInput m_userInput;
+        private readonly ActionUserInput m_userInput;
         private readonly RigidbodyMovement m_movement;
         private readonly PlayerAnimation m_animation;
         private readonly Facing m_facing;
 
         private IInteractable m_currentInteractableObject;
 
-        public ActionPlayerBehaviour(Player player, UserInput userInput)
+        public ActionPlayerBehaviour(Player player, ActionUserInput userInput)
         {
             m_userInput = userInput;
             m_player = player;
@@ -28,8 +29,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             m_animation.PlayIdleAnimation();
 
-            m_userInput.Controls.ActionPlayer.Interaction.performed += Interact;
-            m_userInput.Controls.ActionPlayer.Enable();
+            m_userInput.Enable();
+            m_userInput.ActionPlayer.Interaction.performed += Interact;
 
             m_player.OnTriggerEnter += OnTriggerEnter;
             m_player.OnTriggerExit += OnTriggerExit;
@@ -37,8 +38,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Disable()
         {
-            m_userInput.Controls.ActionPlayer.Interaction.performed -= Interact;
-            m_userInput.Controls.ActionPlayer.Disable();
+            m_userInput.Disable();
+            m_userInput.ActionPlayer.Interaction.performed -= Interact;
 
             m_player.OnTriggerEnter -= OnTriggerEnter;
             m_player.OnTriggerExit -= OnTriggerExit;
@@ -48,7 +49,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Update()
         {
-            Vector2 movement = m_userInput.Controls.ActionPlayer.Move.ReadValue<Vector2>();
+            Vector2 movement = m_userInput.Movement;
             m_facing.TryUpdateFacing(movement.x);
             m_movement.Move(movement);
 
