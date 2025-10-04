@@ -1,11 +1,12 @@
 using System;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, ICombatStateListener
     {
         [SerializeField] private EntityData m_data;
 
@@ -40,8 +41,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Enable() => m_currentBehaviour.Enable();
         public void Disable() => m_currentBehaviour.Disable();
 
-        public void EnterCombat() => SwitchState(m_turnBasedBehaviour);
-        public void ExitCombat() => SwitchState(m_actionBehaviour);
+        public void EnterCombatState() => SwitchState(m_turnBasedBehaviour);
+        public void ExitCombatState() => SwitchState(m_actionBehaviour);
 
         private void SwitchState(IPlayerBehaviour newState)
         {

@@ -78,7 +78,7 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.SetCurrentHealth(savedData.health);
             }
 
-            InitializeCombatSystem(spawnedPlayer, startRoom, uiInstance.CombatRelatedUI);
+            InitializeCombatSystem(spawnedPlayer, startRoom, uiInstance);
         }
 
         private Player SpawnPlayer(RoomTileData startRoom, EnergyHUD energyHUD)
@@ -97,12 +97,21 @@ namespace MagmaHeart.Core.SceneLoading
             return playerInstance;
         }
 
-        private void InitializeCombatSystem(Player player, RoomTileData startRoom, List<IDisplayable> combatUI)
+        private void InitializeCombatSystem(Player player, RoomTileData startRoom, GameUI ui)
         {
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
             Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
-            CombatStateSwitcher combatStateSwitcher = new CombatStateSwitcher(m_grid.Corridors, player, m_camera, spawner, combatUI);
+            List<ICombatStateListener> combatStateListeners = new List<ICombatStateListener>()
+            {
+                player, m_camera, m_grid, ui
+            };
+            List<ICombatTurnSwitchListener> turnSwitchListeners = new List<ICombatTurnSwitchListener>()
+            {
+                m_camera.TurnBasedCameraBehaviour, ui
+            };
+
+            CombatStateSwitcher combatStateSwitcher = new CombatStateSwitcher(player.TurnBasedPlayerBehaviour, spawner, combatStateListeners, turnSwitchListeners);
 
             foreach (RoomTileData roomTileData in m_location.Rooms)
             {

@@ -1,10 +1,11 @@
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Input;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls
 {
     [RequireComponent(typeof(Camera))]
-    public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour, ICombatStateListener
     {
         [SerializeField] private int m_movementSpeed;
 
@@ -36,5 +37,8 @@ namespace MagmaHeart.Core.CameraControls
         public void SwitchToActionCamera() => SwitchState(m_actionCameraBehaviour);
         public void SwitchToTurnBasedCamera() => SwitchState(m_turnBasedCameraBehaviour);
         private void SwitchState(ICameraBehaviour behaviour) => m_currentBehaviour = behaviour;
+
+        public void EnterCombatState() => SwitchToTurnBasedCamera();
+        public void ExitCombatState() => SwitchToActionCamera();
     }
 }

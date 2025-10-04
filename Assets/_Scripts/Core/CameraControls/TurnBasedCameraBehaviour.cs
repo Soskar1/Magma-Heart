@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls
 {
-    public class TurnBasedCameraBehaviour : ICameraBehaviour
+    public class TurnBasedCameraBehaviour : ICameraBehaviour, ICombatTurnSwitchListener
     {
         private readonly CameraTargetTracker m_tracker;
         private readonly CameraZoom m_zoom;

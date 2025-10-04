@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MagmaHeart.Core.UI;
 
 namespace MagmaHeart.Core.CombatSystem
 {
@@ -9,19 +8,17 @@ namespace MagmaHeart.Core.CombatSystem
         public TurnOrder TurnOrder { get; init; }
 
         private ICombatController m_currentTurn;
-        private List<IDisplayable> m_combatUI;
 
         public EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
-        public TurnSwitcher(TurnOrder turnOrder, List<IDisplayable> combatUI)
-        {
-            TurnOrder = turnOrder;
-            m_combatUI = combatUI;
-            m_currentTurn = TurnOrder.First;
-        }
+        public TurnSwitcher() => TurnOrder = new TurnOrder();
 
-        public void Start()
+        public void Start(IEnumerable<ICombatController> entities)
         {
+            TurnOrder.Clear();
+            TurnOrder.AddRange(entities);
+
+            m_currentTurn = TurnOrder.First;
             m_currentTurn.NextTurn = NextTurn;
             StartTurn();
         }
@@ -37,10 +34,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void StartTurn()
         {
-            if (m_currentTurn.IsPlayableCharacter)
-                foreach (IDisplayable ui in m_combatUI)
-                    ui.Show();
-
             OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(m_currentTurn);
             OnTurnSwitched?.Invoke(this, args);
 
@@ -49,10 +42,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void EndTurn()
         {
-            if (m_currentTurn.IsPlayableCharacter)
-                foreach (IDisplayable ui in m_combatUI)
-                    ui.Hide();
-
             m_currentTurn.NextTurn = null;
         }
     }

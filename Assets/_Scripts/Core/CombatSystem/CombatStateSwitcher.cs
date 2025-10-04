@@ -1,43 +1,34 @@
 using System.Collections.Generic;
-using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.UI;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public class CombatStateSwitcher
     {
-        private Tilemap m_corridors;
-        private Room m_currentRoom;
-        private Player m_player;
-        private Spawner m_spawner;
-        private CameraController m_cameraController;
-        private List<IDisplayable> m_combatUI;
+        private readonly TurnBasedPlayerBehaviour m_player;
+        private readonly TurnSwitcher m_turnSwitcher;
+        private readonly Spawner m_spawner;
+        private readonly List<ICombatStateListener> m_combatStateListeners;
+        private readonly List<ICombatTurnSwitchListener> m_turnSwitchListeners;
 
-        private Battle m_currentBattle;
-
-        // TODO: think more about this class. Maybe we can implement it much more easier (use some kind of interface to switch states)
-        public CombatStateSwitcher(Tilemap corridors, Player player, CameraController cameraController, Spawner spawner, List<IDisplayable> combatUI)
+        public CombatStateSwitcher(TurnBasedPlayerBehaviour player, Spawner spawner, List<ICombatStateListener> combatStateListeners, List<ICombatTurnSwitchListener> turnSwitchListeners)
         {
-            m_corridors = corridors;
             m_player = player;
             m_spawner = spawner;
-            m_combatUI = combatUI;
-            m_cameraController = cameraController;
+            m_combatStateListeners = combatStateListeners;
+            m_turnSwitchListeners = turnSwitchListeners;
+
+            m_turnSwitcher = new TurnSwitcher();
         }
 
         public void EnterCombatState(Room room)
         {
-            m_corridors.gameObject.SetActive(true);
-            m_currentRoom = room;
+            foreach (ICombatStateListener listener in m_combatStateListeners)
+                listener.EnterCombatState();
 
-            m_player.EnterCombat();
-            m_cameraController.SwitchToTurnBasedCamera();
-
-            List<ICombatController> entitiesInCombat = new List<ICombatController>() { m_player.TurnBasedPlayerBehaviour };
+            List<ICombatController> entitiesInCombat = new List<ICombatController>() { m_player };
 
             for (int i = 0; i < 3; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
@@ -45,26 +36,24 @@ namespace MagmaHeart.Core.CombatSystem
                 entitiesInCombat.Add(spawnedEntity);
             }
 
-            TurnOrder turnOrder = TurnOrderBuilder.Build(entitiesInCombat);
+            IEnumerable<ICombatController> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entitiesInCombat);
 
-            // TODO: Turn on combat HUD
+            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
+                m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
 
-            TurnSwitcher turnSwitcher = new TurnSwitcher(turnOrder, m_combatUI);
-            turnSwitcher.OnTurnSwitched += m_cameraController.TurnBasedCameraBehaviour.HandleOnTurnSwitched;
-
-            m_currentBattle = new Battle(room, entitiesInCombat, turnSwitcher);
-            m_currentBattle.BattleEnded += ExitCombatState;
-            m_currentBattle.Start();
+            Battle battle = new Battle(room, entitiesInCombat, m_turnSwitcher);
+            battle.BattleEnded += ExitCombatState;
+            battle.Start();
         }
 
         private void ExitCombatState(object obj, BattleEndedEventArgs e)
         {
-            m_currentBattle.TurnSwitcher.OnTurnSwitched -= m_cameraController.TurnBasedCameraBehaviour.HandleOnTurnSwitched;
-            m_currentBattle.BattleEnded -= ExitCombatState;
-            m_currentBattle = null;
+            Battle battle = obj as Battle;
 
-            foreach (IDisplayable displayable in m_combatUI)
-                displayable.Hide();
+            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
+                m_turnSwitcher.OnTurnSwitched -= listener.HandleOnTurnSwitched;
+
+            battle.BattleEnded -= ExitCombatState;
 
             if (e.IsPlayerVictory)
             {
@@ -74,11 +63,6 @@ namespace MagmaHeart.Core.CombatSystem
                     survivor.EndTurn();
                 });
 
-                m_corridors.gameObject.SetActive(false);
-                m_player.ExitCombat();
-
-                m_cameraController.SwitchToActionCamera();
-
                 Debug.Log("Player won the battle!");
             }
             else
@@ -86,6 +70,8 @@ namespace MagmaHeart.Core.CombatSystem
                 // TODO: Handle player defeat
             }
 
+            foreach (ICombatStateListener listener in m_combatStateListeners)
+                listener.ExitCombatState();
         }
     }
 }
