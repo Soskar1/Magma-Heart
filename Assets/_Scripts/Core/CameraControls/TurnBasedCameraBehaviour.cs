@@ -11,6 +11,8 @@ namespace MagmaHeart.Core.CameraControls
         private TurnBasedUserInput m_userInput;
         private int m_speed;
 
+        private bool m_stickCameraWithTarget = true;
+
         public TurnBasedCameraBehaviour(Transform transform, TurnBasedUserInput userInput, int speed)
         {
             m_transform = transform;
@@ -21,13 +23,19 @@ namespace MagmaHeart.Core.CameraControls
 
         public void Update()
         {
-            // m_transform.position += (Vector3)m_userInput.CameraMovement * Time.deltaTime * m_speed;
-            m_tracker.StickWithTarget();
+            if (m_stickCameraWithTarget)
+                m_tracker.StickWithTarget();
+            else
+                m_transform.position += (Vector3)m_userInput.CameraMovement * Time.deltaTime * m_speed;
+
+            if (m_userInput.CameraMovement.magnitude > 0)
+                m_stickCameraWithTarget = false;
         }
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
             m_tracker.Track(args.Entity.Transform);
+            m_stickCameraWithTarget = true;
         }
     }
 }
