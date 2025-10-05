@@ -91,7 +91,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
             m_movement.OnMovementStarted -= HandleOnMovementStarted;
             m_movement.OnMovementEnded -= HandleOnMovementEnded;
-
         }
 
         public void Update()

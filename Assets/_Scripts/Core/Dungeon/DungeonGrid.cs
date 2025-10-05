@@ -1,4 +1,4 @@
-using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 

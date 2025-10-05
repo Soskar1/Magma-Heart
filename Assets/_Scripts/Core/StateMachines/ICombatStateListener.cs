@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core.CombatSystem
+namespace MagmaHeart.Core.StateMachines
 {
     public interface ICombatStateListener
     {

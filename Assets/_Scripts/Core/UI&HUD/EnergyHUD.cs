@@ -1,6 +1,7 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.StateMachines;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

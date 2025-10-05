@@ -1,5 +1,5 @@
-using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Input;
+using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls

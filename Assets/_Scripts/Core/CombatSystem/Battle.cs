@@ -1,5 +1,6 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,30 +10,50 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly Room m_room;
+        private readonly TurnBasedPlayerBehaviour m_player;
+        private readonly List<ICombatTurnSwitchListener> m_turnSwitchListeners;
         private readonly TurnSwitcher m_turnSwitcher;
-        private readonly List<ICombatController> m_entities;
+        private readonly Spawner m_spawner;
 
-        public EventHandler<BattleEndedEventArgs> BattleEnded;
+        private Room m_currentRoom;
+        private List<ICombatController> m_currentEntitiesInBattle;
+        
+        public EventHandler OnPlayerVictory;
 
-        public Battle(Room room, List<ICombatController> entities, TurnSwitcher turnSwitcher)
+        public Battle(TurnBasedPlayerBehaviour player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners)
         {
-            m_room = room;
-            m_entities = entities;
-            m_turnSwitcher = turnSwitcher;
+            m_player = player;
+            m_spawner = spawner;
+
+            m_turnSwitchListeners = turnSwitchListeners;
+            m_turnSwitcher = new TurnSwitcher();
         }
 
-        public void Start()
+        public void Start(Room room)
         {
-            foreach (ICombatController controller in m_entities)
-            {
-                controller.StartCombat(m_room);
-                controller.Health.OnDeath += HandleEntityDeath;
+            m_currentRoom = room;
+            m_currentEntitiesInBattle = new List<ICombatController>() { m_player };
 
-                m_room.AddEntityToInspect(controller);
+            for (int i = 0; i < 3; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            {
+                ICombatController spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
+                m_currentEntitiesInBattle.Add(spawnedEntity);
             }
 
-            m_turnSwitcher.Start(m_entities);
+            IEnumerable<ICombatController> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentEntitiesInBattle);
+
+            foreach (ICombatController controller in sortedEntities)
+            {
+                controller.StartCombat(m_currentRoom);
+                controller.Health.OnDeath += HandleEntityDeath;
+
+                m_currentRoom.AddEntityToInspect(controller);
+            }
+
+            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
+                m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
+
+            m_turnSwitcher.Start(m_currentEntitiesInBattle);
         }
 
         private void HandleEntityDeath(object obj, EventArgs args)
@@ -41,7 +62,7 @@ namespace MagmaHeart.Core.CombatSystem
             health.OnDeath -= HandleEntityDeath;
 
             ICombatController controller = null;
-            foreach (ICombatController entity in m_entities)
+            foreach (ICombatController entity in m_currentEntitiesInBattle)
             {
                 if (entity.Health == health)
                 {
@@ -57,10 +78,10 @@ namespace MagmaHeart.Core.CombatSystem
             else
             {
                 m_turnSwitcher.TurnOrder.Remove(controller);
-                m_entities.Remove(controller);
-                m_room.RemoveEntityFromRoom(controller);
+                m_currentEntitiesInBattle.Remove(controller);
+                m_currentRoom.RemoveEntityFromRoom(controller);
 
-                bool anyEnemiesInRoom = m_entities.Any(e => e.IsPlayableCharacter == false);
+                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Any(e => e.IsPlayableCharacter == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -72,6 +93,28 @@ namespace MagmaHeart.Core.CombatSystem
             GameObject.Destroy(controller.Transform.gameObject); // TODO: Use object pool instead of destroying
         }
 
-        private void End(bool isPlayerVictory) => BattleEnded?.Invoke(this, new BattleEndedEventArgs(isPlayerVictory, m_entities));
+        private void End(bool isPlayerVictory)
+        {
+            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
+                m_turnSwitcher.OnTurnSwitched -= listener.HandleOnTurnSwitched;
+
+            if (isPlayerVictory)
+            {
+                m_currentEntitiesInBattle.ForEach(survivor =>
+                {
+                    survivor.NextTurn = null;
+                    survivor.EndTurn();
+                });
+
+                m_currentEntitiesInBattle.Clear();
+
+                Debug.Log("Player won the battle!");
+                OnPlayerVictory?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                // TODO: Handle player defeat
+            }
+        }
     }
 }
