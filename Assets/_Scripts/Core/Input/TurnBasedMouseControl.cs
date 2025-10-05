@@ -7,7 +7,7 @@ namespace MagmaHeart.Core.Input
 {
     public class TurnBasedMouseControl
     {
-        private TurnBasedUserInput m_userInput;
+        private CombatUserInput m_userInput;
         private DungeonGrid m_grid;
 
         private Vector3Int? m_currentMouseTile;
@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.Input
         public event EventHandler<OnMouseChangedTileEventArgs> OnMouseChangedTile;
         public event EventHandler<EventArgs> OnMouseClicked;
 
-        public TurnBasedMouseControl(TurnBasedUserInput userInput, DungeonGrid grid)
+        public TurnBasedMouseControl(CombatUserInput userInput, DungeonGrid grid)
         {
             m_userInput = userInput;
             m_grid = grid;

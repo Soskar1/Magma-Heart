@@ -80,13 +80,15 @@ namespace MagmaHeart.Core.SceneLoading
             }
 
             GameStateMachine stateMachine = InitializeStateMachine(spawnedPlayer, uiInstance);
+            uiInstance.RewardUI.Initialize(stateMachine);
+
             InitializeCombatSystem(startRoom, stateMachine);
         }
 
         private Player SpawnPlayer(RoomTileData startRoom, EnergyHUD energyHUD)
         {
             ActionUserInput actionUserInput = new ActionUserInput(m_userInput);
-            TurnBasedUserInput turnBasedUserInput = new TurnBasedUserInput(m_userInput, m_grid);
+            CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid);
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             playerInstance.Initialize(actionUserInput, turnBasedUserInput, energyHUD);
@@ -119,7 +121,13 @@ namespace MagmaHeart.Core.SceneLoading
             Battle battle = new Battle(player.TurnBasedPlayerBehaviour, spawner, turnSwitchListeners);
             CombatState combatState = new CombatState(battle, combatStateListeners);
 
-            return new GameStateMachine(actionState, combatState, battle);
+            List<IRewardStateListener> rewardStateListeners = new List<IRewardStateListener>()
+            {
+                player, ui.RewardUI
+            };
+            RewardState rewardState = new RewardState(rewardStateListeners);
+
+            return new GameStateMachine(actionState, combatState, rewardState, battle);
         }
 
         private void InitializeCombatSystem(RoomTileData startRoom, GameStateMachine stateMachine)

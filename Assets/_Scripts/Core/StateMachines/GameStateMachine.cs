@@ -13,18 +13,20 @@ namespace MagmaHeart.Core.StateMachines
 
         private StateMachineStates m_currentState;
         
-        public GameStateMachine(ActionState action, CombatState combat, Battle battle)
+        public GameStateMachine(ActionState action, CombatState combat, RewardState reward, Battle battle)
         {
             m_states = new Dictionary<StateMachineStates, IState>()
             {
                 { StateMachineStates.Action, action },
                 { StateMachineStates.Combat, combat },
+                { StateMachineStates.Reward, reward },
             };
 
             m_validStateSwitch = new Dictionary<StateMachineStates, StateMachineStates>()
             {
                 { StateMachineStates.Action, StateMachineStates.Combat },
-                { StateMachineStates.Combat, StateMachineStates.Action }
+                { StateMachineStates.Combat, StateMachineStates.Reward },
+                { StateMachineStates.Reward, StateMachineStates.Action }
             };
 
             m_stateMachine = new StateMachine(action);
@@ -46,6 +48,6 @@ namespace MagmaHeart.Core.StateMachines
             }
         }
 
-        private void HandleOnPlayerVictory(object obj, EventArgs args) => ChangeState(StateMachineStates.Action, args);
+        private void HandleOnPlayerVictory(object obj, EventArgs args) => ChangeState(StateMachineStates.Reward, args);
     }
 }

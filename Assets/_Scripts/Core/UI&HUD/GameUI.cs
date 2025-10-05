@@ -11,6 +11,7 @@ namespace MagmaHeart.Core.UI
         [SerializeField] private HealthBar m_healthBar;
         [SerializeField] private CombatUI m_combatUI;
         [SerializeField] private EnergyHUD m_energyHUD;
+        [SerializeField] private RewardUI m_rewardUI;
 
         private List<ICombatTurnSwitchListener> m_turnSwitchListeners;
         private List<ICombatStateListener> m_stateListeners;
@@ -18,6 +19,7 @@ namespace MagmaHeart.Core.UI
         public HealthBar HealthBar => m_healthBar;
         public CombatUI CombatUI => m_combatUI;
         public EnergyHUD EnergyHUD => m_energyHUD;
+        public RewardUI RewardUI => m_rewardUI;
 
         public void Initialize(Player player)
         {

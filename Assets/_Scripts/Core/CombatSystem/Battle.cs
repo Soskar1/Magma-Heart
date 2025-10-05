@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly TurnBasedPlayerBehaviour m_player;
+        private readonly CombatPlayerBehaviour m_player;
         private readonly List<ICombatTurnSwitchListener> m_turnSwitchListeners;
         private readonly TurnSwitcher m_turnSwitcher;
         private readonly Spawner m_spawner;
@@ -20,7 +20,7 @@ namespace MagmaHeart.Core.CombatSystem
         
         public EventHandler OnPlayerVictory;
 
-        public Battle(TurnBasedPlayerBehaviour player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners)
+        public Battle(CombatPlayerBehaviour player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners)
         {
             m_player = player;
             m_spawner = spawner;
@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom = room;
             m_currentEntitiesInBattle = new List<ICombatController>() { m_player };
 
-            for (int i = 0; i < 3; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 ICombatController spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 m_currentEntitiesInBattle.Add(spawnedEntity);
