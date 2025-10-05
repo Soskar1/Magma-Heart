@@ -4,17 +4,17 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls
 {
-    public class TurnBasedCameraBehaviour : ICameraBehaviour
+    public class CombatCameraBehaviour : ICameraBehaviour, ICombatTurnSwitchListener
     {
         private readonly CameraTargetTracker m_tracker;
         private readonly CameraZoom m_zoom;
-        private readonly TurnBasedUserInput m_userInput;
+        private readonly CombatUserInput m_userInput;
         private readonly int m_movementSpeed;
         
         private Transform m_transform;
         private bool m_stickCameraWithTarget = true;
 
-        public TurnBasedCameraBehaviour(Transform transform, TurnBasedUserInput userInput, int movementSpeed, CameraZoom zoom)
+        public CombatCameraBehaviour(Transform transform, CombatUserInput userInput, int movementSpeed, CameraZoom zoom)
         {
             m_transform = transform;
             m_userInput = userInput;

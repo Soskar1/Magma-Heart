@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public static class TurnOrderBuilder
+    public static class IniciativeRollSort
     {
-        public static TurnOrder Build(List<ICombatController> entities)
+        public static IEnumerable<ICombatController> SortByRollingIniciative(List<ICombatController> entities)
         {
             TurnOrder turnOrder = new TurnOrder();
             PriorityQueue<ICombatController, int> iniciativePriority = new PriorityQueue<ICombatController, int>();
@@ -17,13 +17,7 @@ namespace MagmaHeart.Core.CombatSystem
                 iniciativePriority.Enqueue(entity, -iniciative);
             }
 
-            while (iniciativePriority.Count > 0)
-            {
-                ICombatController entity = iniciativePriority.Dequeue();
-                turnOrder.Add(entity);
-            }
-
-            return turnOrder;
+            return iniciativePriority;
         }
 
         private static int IniciativeRoll() => Random.Range(1, 21);

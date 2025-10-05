@@ -1,10 +1,11 @@
 using MagmaHeart.Core.Input;
+using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls
 {
     [RequireComponent(typeof(Camera))]
-    public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour, ICombatStateListener
     {
         [SerializeField] private int m_movementSpeed;
 
@@ -17,17 +18,17 @@ namespace MagmaHeart.Core.CameraControls
 
         private ICameraBehaviour m_currentBehaviour;
         private ActionCameraBehaviour m_actionCameraBehaviour;
-        private TurnBasedCameraBehaviour m_turnBasedCameraBehaviour;
+        private CombatCameraBehaviour m_turnBasedCameraBehaviour;
 
-        public TurnBasedCameraBehaviour TurnBasedCameraBehaviour => m_turnBasedCameraBehaviour;
+        public CombatCameraBehaviour TurnBasedCameraBehaviour => m_turnBasedCameraBehaviour;
 
-        public void Initialize(Transform objectToTrack, ActionUserInput actionUserInput, TurnBasedUserInput turnBasedUserInput)
+        public void Initialize(Transform objectToTrack, ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput)
         {
             Camera camera = GetComponent<Camera>();
             CameraZoom zoom = new CameraZoom(camera, m_zoomSpeed, m_minZoom, m_maxZoom, m_smoothTime);
 
             m_actionCameraBehaviour = new ActionCameraBehaviour(actionUserInput, transform, objectToTrack, zoom);
-            m_turnBasedCameraBehaviour = new TurnBasedCameraBehaviour(transform, turnBasedUserInput, m_movementSpeed, zoom);
+            m_turnBasedCameraBehaviour = new CombatCameraBehaviour(transform, turnBasedUserInput, m_movementSpeed, zoom);
             SwitchToActionCamera();
         }
 
@@ -36,5 +37,8 @@ namespace MagmaHeart.Core.CameraControls
         public void SwitchToActionCamera() => SwitchState(m_actionCameraBehaviour);
         public void SwitchToTurnBasedCamera() => SwitchState(m_turnBasedCameraBehaviour);
         private void SwitchState(ICameraBehaviour behaviour) => m_currentBehaviour = behaviour;
+
+        public void EnterCombatState() => SwitchToTurnBasedCamera();
+        public void ExitCombatState() => SwitchToActionCamera();
     }
 }

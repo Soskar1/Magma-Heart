@@ -1,11 +1,12 @@
 using System;
 using MagmaHeart.Core.Input;
+using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
         [SerializeField] private EntityData m_data;
 
@@ -23,25 +24,33 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private IPlayerBehaviour m_currentBehaviour;
         private ActionPlayerBehaviour m_actionBehaviour;
-        private TurnBasedPlayerBehaviour m_turnBasedBehaviour;
+        private CombatPlayerBehaviour m_turnBasedBehaviour;
+        private RewardPlayerBehaviour m_rewardPlayerBehaviour;
 
-        public TurnBasedPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
+        public CombatPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
 
-        public void Initialize(ActionUserInput actionUserInput, TurnBasedUserInput turnBasedUserInput, EnergyHUD energyHUD)
+        public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, EnergyHUD energyHUD)
         {
             m_animation = GetComponent<PlayerAnimation>();
             m_controllingEntity = new Entity(m_data, transform);
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
-            m_turnBasedBehaviour = new TurnBasedPlayerBehaviour(this, turnBasedUserInput, energyHUD);
+            m_turnBasedBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, energyHUD);
+            m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, m_animation);
             m_currentBehaviour = m_actionBehaviour;
         }
 
         public void Enable() => m_currentBehaviour.Enable();
         public void Disable() => m_currentBehaviour.Disable();
 
-        public void EnterCombat() => SwitchState(m_turnBasedBehaviour);
-        public void ExitCombat() => SwitchState(m_actionBehaviour);
+        public void EnterActionState() => SwitchState(m_actionBehaviour);
+        public void ExitActionState() { }
+
+        public void EnterCombatState() => SwitchState(m_turnBasedBehaviour);
+        public void ExitCombatState() { }
+
+        public void EnterRewardState() => SwitchState(m_rewardPlayerBehaviour);
+        public void ExitRewardState() { }
 
         private void SwitchState(IPlayerBehaviour newState)
         {
@@ -59,5 +68,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 
         private void OnTriggerExit2D(Collider2D collision) => OnTriggerExit?.Invoke(collision);
+
+        
     }
 }

@@ -9,9 +9,9 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class TurnBasedPlayerBehaviour : IPlayerBehaviour, ICombatController
+    public class CombatPlayerBehaviour : IPlayerBehaviour, ICombatController
     {
-        private TurnBasedUserInput m_userInput;
+        private CombatUserInput m_userInput;
         private RoomTile m_currentMouseTile;
         private IHittableTile m_currentMouseOverEntity;
 
@@ -53,7 +53,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public TurnBasedPlayerBehaviour(Player player, TurnBasedUserInput userInput, EnergyHUD energyHUD)
+        public CombatPlayerBehaviour(Player player, CombatUserInput userInput, EnergyHUD energyHUD)
         {
             m_playerTransform = player.transform;
             m_energy = player.Energy;
@@ -91,7 +91,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
             m_movement.OnMovementStarted -= HandleOnMovementStarted;
             m_movement.OnMovementEnded -= HandleOnMovementEnded;
-
         }
 
         public void Update()

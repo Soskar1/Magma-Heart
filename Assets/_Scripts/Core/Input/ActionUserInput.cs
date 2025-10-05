@@ -5,6 +5,7 @@ namespace MagmaHeart.Core.Input
     public class ActionUserInput
     {
         private UserInput m_userInput;
+        public UserInput UserInput => m_userInput;
 
         public Controls.ActionPlayerActions ActionPlayer => m_userInput.Controls.ActionPlayer;
         public Vector2 Movement => ActionPlayer.Move.ReadValue<Vector2>();
