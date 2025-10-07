@@ -30,15 +30,12 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 m_energy.Spend(ENERGY_COST);
 
+                OnAttackEventArgs attackArgs = new OnAttackEventArgs(EntityToHit.CurrentTilePosition);
+                OnAttackTriggered?.Invoke(this, attackArgs);
                 if (OnAttackTriggered == null)
                 {
                     Debug.LogWarning("No one is subscribed to the OnAttackTriggered event. Executing Hit()");
                     Hit();
-                }
-                else
-                {
-                    OnAttackEventArgs attackArgs = new OnAttackEventArgs(EntityToHit.CurrentTilePosition);
-                    OnAttackTriggered?.Invoke(this, attackArgs);
                 }
             }
         }

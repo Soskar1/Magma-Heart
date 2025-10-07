@@ -1,6 +1,7 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.StateMachines;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,8 +34,9 @@ namespace MagmaHeart.Core.UI
         }
 
         public void HandleOnMovementStarted(object obj, OnMovementEventArgs args) => Disable();
-
         public void HandleOnMovementEnded(object obj, OnMovementEventArgs args) => Enable();
+        public void HandleOnAttackTriggered(object obj, OnAttackEventArgs args) => Disable();
+        public void HandleOnAttackAnimationEnded(object obj, EventArgs args) => Enable();
     }
 }
 
