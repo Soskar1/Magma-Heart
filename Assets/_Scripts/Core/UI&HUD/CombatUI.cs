@@ -15,8 +15,14 @@ namespace MagmaHeart.Core.UI
             m_nextTurnButton.onClick.AddListener(player.TurnBasedPlayerBehaviour.EndTurn);
         }
 
+        private void Enable() => m_nextTurnButton.enabled = true;
+        private void Disable() => m_nextTurnButton.enabled = false;
+
         public void Show() => m_nextTurnButton.gameObject.SetActive(true);
         public void Hide() => m_nextTurnButton.gameObject.SetActive(false);
+
+        public void EnterCombatState() { }
+        public void ExitCombatState() => Hide();
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
@@ -26,8 +32,9 @@ namespace MagmaHeart.Core.UI
                 Hide();
         }
 
-        public void EnterCombatState() { }
-        public void ExitCombatState() => Hide();
+        public void HandleOnMovementStarted(object obj, OnMovementEventArgs args) => Disable();
+
+        public void HandleOnMovementEnded(object obj, OnMovementEventArgs args) => Enable();
     }
 }
 

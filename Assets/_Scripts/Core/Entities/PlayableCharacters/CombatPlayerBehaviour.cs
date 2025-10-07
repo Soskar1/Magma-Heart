@@ -18,8 +18,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Health m_health;
         public Health Health => m_health;
 
-        private Energy m_energy;
-        private EnergyHUD m_energyHUD;
+        private readonly Energy m_energy;
+        private readonly EnergyHUD m_energyHUD;
+        private readonly CombatUI m_combatUI;
 
         private PlayerAnimation m_animation;
         private Facing m_facing;
@@ -53,13 +54,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public CombatPlayerBehaviour(Player player, CombatUserInput userInput, EnergyHUD energyHUD)
+        public CombatPlayerBehaviour(Player player, CombatUserInput userInput, GameUI gameUI)
         {
             m_playerTransform = player.transform;
             m_energy = player.Energy;
             m_health = player.Health;
             m_userInput = userInput;
-            m_energyHUD = energyHUD;
+            m_energyHUD = gameUI.EnergyHUD;
+            m_combatUI = gameUI.CombatUI;
             m_playerTurnIsActive = false;
 
             m_facing = player.GetComponent<Facing>();
@@ -77,8 +79,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_movementAction.Enable();
 
             m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
+
             m_movement.OnMovementStarted += HandleOnMovementStarted;
+            m_movement.OnMovementStarted += m_combatUI.HandleOnMovementStarted;
             m_movement.OnMovementEnded += HandleOnMovementEnded;
+            m_movement.OnMovementEnded += m_combatUI.HandleOnMovementEnded;
 
             m_animation.PlayIdleAnimation();
         }
@@ -89,8 +94,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_movementAction.Disable();
 
             m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
+
             m_movement.OnMovementStarted -= HandleOnMovementStarted;
+            m_movement.OnMovementStarted -= m_combatUI.HandleOnMovementStarted;
             m_movement.OnMovementEnded -= HandleOnMovementEnded;
+            m_movement.OnMovementEnded -= m_combatUI.HandleOnMovementEnded;
         }
 
         public void Update()
@@ -155,7 +163,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseChangedTile(object obj, OnMouseChangedTileEventArgs e)
         {
-            if (!m_canExecuteActions)
+            if (!CanExecuteAction)
                 return;
 
             if (m_currentMouseTile != null)
@@ -202,7 +210,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseClicked(object obj, EventArgs e)
         {
-            if (m_currentAction == null || !m_canExecuteActions)
+            if (m_currentAction == null || !CanExecuteAction)
                 return;
 
             m_currentAction.Execute();

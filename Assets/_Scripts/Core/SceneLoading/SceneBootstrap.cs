@@ -64,7 +64,7 @@ namespace MagmaHeart.Core.SceneLoading
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             
             GameUI uiInstance = Instantiate(m_uiPrefab);
-            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance.EnergyHUD);
+            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance);
 
             uiInstance.Initialize(spawnedPlayer);
             uiInstance.HealthBar.gameObject.SetActive(true);
@@ -85,13 +85,13 @@ namespace MagmaHeart.Core.SceneLoading
             InitializeCombatSystem(startRoom, stateMachine);
         }
 
-        private Player SpawnPlayer(RoomTileData startRoom, EnergyHUD energyHUD)
+        private Player SpawnPlayer(RoomTileData startRoom, GameUI gameUI)
         {
             ActionUserInput actionUserInput = new ActionUserInput(m_userInput);
             CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid);
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(actionUserInput, turnBasedUserInput, energyHUD);
+            playerInstance.Initialize(actionUserInput, turnBasedUserInput, gameUI);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);

@@ -29,13 +29,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public CombatPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
 
-        public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, EnergyHUD energyHUD)
+        public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI)
         {
             m_animation = GetComponent<PlayerAnimation>();
             m_controllingEntity = new Entity(m_data, transform);
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
-            m_turnBasedBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, energyHUD);
+            m_turnBasedBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI);
             m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, m_animation);
             m_currentBehaviour = m_actionBehaviour;
         }
