@@ -68,7 +68,5 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 
         private void OnTriggerExit2D(Collider2D collision) => OnTriggerExit?.Invoke(collision);
-
-        
     }
 }
