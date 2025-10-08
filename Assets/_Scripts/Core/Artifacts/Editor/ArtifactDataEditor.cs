@@ -57,9 +57,17 @@ namespace MagmaHeart.Core.Artifacts
                     EditorGUILayout.EndVertical();
                 }
 
-                if (GUILayout.Button("Add HealthStatModifier", GUILayout.Width(150)))
+                if (GUILayout.Button("Add Stat Modifier"))
                 {
-                    modifiers.Add(new HealthStatModifier(0f));
+                    int groupIndex = i;
+                    StatModifierWizard.Show(newModifier =>
+                    {
+                        if (newModifier != null)
+                        {
+                            modifiers.Add(newModifier);
+                            EditorUtility.SetDirty(m_data);
+                        }
+                    });
                 }
 
                 EditorGUI.indentLevel--;
