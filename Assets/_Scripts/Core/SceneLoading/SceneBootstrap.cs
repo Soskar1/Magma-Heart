@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
@@ -72,9 +71,6 @@ namespace MagmaHeart.Core.SceneLoading
             if (m_sceneLoader.SavedData != null)
             {
                 SaveData savedData = m_sceneLoader.SavedData;
-
-                if (spawnedPlayer.TryGetComponent(out ArtifactApplier applier))
-                    applier.ApplyArtifacts(savedData.ObtainedArtifacts);
 
                 spawnedPlayer.Health.SetCurrentHealth(savedData.health);
             }
