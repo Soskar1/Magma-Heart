@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,60 +8,70 @@ namespace MagmaHeart.Core.Artifacts
 {
     public class StatModifierWizard : EditorWindow
     {
-        private Action<IStatModifier> _onModifierCreated;
-
-        private int _selectedTypeIndex;
-        private readonly string[] _modifierTypes = new string[]
-        {
-            "HealthStatModifier"
-        };
-
-        private float _healthValue = 0f;
+        private Action<IStatModifier> m_onModifierCreated;
+        private readonly List<Type> m_modifierTypes = new();
+        private Vector2 m_scroll;
 
         public static void Show(Action<IStatModifier> onCreated)
         {
             StatModifierWizard window = CreateInstance<StatModifierWizard>();
-            window.titleContent = new GUIContent("Add Stat Modifier");
-            window._onModifierCreated = onCreated;
-            window.position = new Rect(Screen.width / 2f, Screen.height / 2f, 300f, 160f);
+            window.titleContent = new GUIContent("Stat Modifier Wizard");
+            window.m_onModifierCreated = onCreated;
+            window.position = new Rect(Screen.width / 2f, Screen.height / 2f, 300f, 350f);
+            window.InitializeTypes();
             window.ShowUtility();
+        }
+
+        private void InitializeTypes()
+        {
+            Type interfaceType = typeof(IStatModifier);
+            m_modifierTypes.Clear();
+
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type[] types;
+                try
+                {
+                    types = assembly.GetTypes();
+                }
+                catch
+                {
+                    continue;
+                }
+
+                foreach (Type type in types)
+                    if (interfaceType.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                        m_modifierTypes.Add(type);
+            }
+
+            m_modifierTypes.Sort((a, b) => a.Name.CompareTo(b.Name));
         }
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Select Stat Modifier Type", EditorStyles.boldLabel);
-            _selectedTypeIndex = EditorGUILayout.Popup("Type", _selectedTypeIndex, _modifierTypes);
+            EditorGUILayout.LabelField("Available Stat Modifiers", EditorStyles.boldLabel);
+            EditorGUILayout.Space();
 
-            EditorGUILayout.Space(10);
+            m_scroll = EditorGUILayout.BeginScrollView(m_scroll);
 
-            // Show fields dynamically based on selection
-            if (_modifierTypes[_selectedTypeIndex] == "HealthStatModifier")
+            foreach (Type type in m_modifierTypes)
             {
-                _healthValue = EditorGUILayout.FloatField("Additional Health", _healthValue);
-            }
-
-            EditorGUILayout.Space(10);
-            EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("Cancel"))
-            {
-                Close();
-            }
-
-            if (GUILayout.Button("Create"))
-            {
-                IStatModifier newModifier = null;
-
-                switch (_modifierTypes[_selectedTypeIndex])
+                if (GUILayout.Button(ObjectNames.NicifyVariableName(type.Name), GUILayout.Height(24)))
                 {
-                    case "HealthStatModifier":
-                        newModifier = new HealthStatModifier(_healthValue);
-                        break;
+                    IStatModifier instance = (IStatModifier)Activator.CreateInstance(type);
+                    m_onModifierCreated?.Invoke(instance);
+                    Close();
                 }
-
-                _onModifierCreated?.Invoke(newModifier);
-                Close();
             }
+
+            EditorGUILayout.EndScrollView();
+
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Cancel", GUILayout.Width(100)))
+                Close();
 
             EditorGUILayout.EndHorizontal();
         }
