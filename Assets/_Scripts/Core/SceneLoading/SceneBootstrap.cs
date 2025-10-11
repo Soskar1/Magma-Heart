@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
@@ -117,9 +118,14 @@ namespace MagmaHeart.Core.SceneLoading
             Battle battle = new Battle(player.TurnBasedPlayerBehaviour, spawner, turnSwitchListeners);
             CombatState combatState = new CombatState(battle, combatStateListeners);
 
+            ArtifactDatabase database = new ArtifactDatabase();
+            BattleReward battleReward = new BattleReward(database);
+            // TODO: Unsubscribe somewhere
+            battleReward.OnBattleRewardCalculated += ui.RewardUI.HandleOnBattleRewardCalculated;
+
             List<IRewardStateListener> rewardStateListeners = new List<IRewardStateListener>()
             {
-                player, ui.RewardUI
+                player, ui.RewardUI, battleReward
             };
             RewardState rewardState = new RewardState(rewardStateListeners);
 

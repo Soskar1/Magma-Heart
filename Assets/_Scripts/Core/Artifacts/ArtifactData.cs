@@ -8,7 +8,7 @@ namespace MagmaHeart.Core.Artifacts
     {
         [SerializeField] private Rarity m_rarity;
         [SerializeField] private string m_name;
-        [SerializeField] private string m_description;
+        [SerializeField] private string m_description; 
         [SerializeField] private Sprite m_sprite;
         [SerializeField] private List<List<IStatModifier>> m_statModifiers = new List<List<IStatModifier>>()
         {

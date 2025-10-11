@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.Core.Artifacts
 {
-    public class HealthStatModifier : IStatModifier
+    public class HealthStatModifier :  IStatModifier
     {
         public float AdditionalHealth { get; set; }
 
