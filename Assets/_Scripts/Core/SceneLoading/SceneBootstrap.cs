@@ -73,7 +73,7 @@ namespace MagmaHeart.Core.SceneLoading
             {
                 SaveData savedData = m_sceneLoader.SavedData;
 
-                spawnedPlayer.Health.SetCurrentHealth(savedData.health);
+                spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
             GameStateMachine stateMachine = InitializeStateMachine(spawnedPlayer, uiInstance);

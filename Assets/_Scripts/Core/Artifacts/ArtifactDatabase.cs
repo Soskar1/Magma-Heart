@@ -11,6 +11,10 @@ namespace MagmaHeart.Core.Artifacts
         public ArtifactDatabase()
         {
             ArtifactData[] artifacts = Resources.LoadAll<ArtifactData>("ArtifactData");
+            
+            foreach (ArtifactData artifact in artifacts)
+                artifact.Initialize();
+
             m_artifacts = artifacts.GroupBy(a => a.Rarity)
                                    .ToDictionary(g => g.Key, g => g.ToList());
         }

@@ -1,6 +1,7 @@
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.StateMachines;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,8 @@ namespace MagmaHeart.Core.UI
         [SerializeField] private List<RewardCard> m_rewardCards;
         private GameStateMachine m_stateMachine;
         private ArtifactData m_currentlyPickedArtifact;
+
+        public event EventHandler<OnRewardPickedArgs> OnRewardPicked;
 
         public void Initialize(GameStateMachine stateMachine)
         {
@@ -34,6 +37,9 @@ namespace MagmaHeart.Core.UI
 
         public void GetReward()
         {
+            OnRewardPickedArgs args = new OnRewardPickedArgs(m_currentlyPickedArtifact);
+            OnRewardPicked?.Invoke(this, args);
+
             m_stateMachine.ChangeState(StateMachineStates.Action);
         }
 

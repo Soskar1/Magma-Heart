@@ -8,11 +8,11 @@ namespace MagmaHeart.Core.Artifacts
 {
     public class StatModifierWizard : EditorWindow
     {
-        private Action<IStatModifier> m_onModifierCreated;
+        private Action<StatModifierModel> m_onModifierCreated;
         private readonly List<Type> m_modifierTypes = new();
         private Vector2 m_scroll;
 
-        public static void Show(Action<IStatModifier> onCreated)
+        public static void Show(Action<StatModifierModel> onCreated)
         {
             StatModifierWizard window = CreateInstance<StatModifierWizard>();
             window.titleContent = new GUIContent("Stat Modifier Wizard");
@@ -59,7 +59,7 @@ namespace MagmaHeart.Core.Artifacts
                 if (GUILayout.Button(ObjectNames.NicifyVariableName(type.Name), GUILayout.Height(24)))
                 {
                     IStatModifier instance = (IStatModifier)Activator.CreateInstance(type);
-                    m_onModifierCreated?.Invoke(instance);
+                    m_onModifierCreated?.Invoke(instance.ToModel());
                     Close();
                 }
             }

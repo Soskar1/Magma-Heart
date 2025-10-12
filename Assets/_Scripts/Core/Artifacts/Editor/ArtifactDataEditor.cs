@@ -25,19 +25,14 @@ namespace MagmaHeart.Core.Artifacts
             m_data.Description = EditorGUILayout.TextArea(m_data.Description, GUILayout.Height(80));
 
             EditorGUILayout.LabelField("Per level stats / skills", EditorStyles.boldLabel);
-            if (m_data.Rarity == Rarity.Common || m_data.Rarity == Rarity.Rare)
-                DrawLevels(5);
-            else if (m_data.Rarity == Rarity.Epic || m_data.Rarity == Rarity.Legendary)
-                DrawLevels(3);
-            else
-                DrawLevels(2);
+            DrawLevels(m_data.MaxLevel);
         }
 
         private void DrawLevels(int maxLevel)
         {
             for (int i = 0; i < maxLevel; ++i)
             {
-                List<IStatModifier> modifiers = m_data.StatModifiers[i];
+                List<StatModifierModel> modifiers = m_data.StatModifierModels[i].Models;
                 EditorGUILayout.LabelField($"Level {i + 1}", EditorStyles.boldLabel);
                 EditorGUI.indentLevel++;
 
@@ -78,13 +73,13 @@ namespace MagmaHeart.Core.Artifacts
             }
         }
 
-        private void DrawModifier(IStatModifier modifier)
+        private void DrawModifier(StatModifierModel modifier)
         {
-            // Since IStatModifier is an interface, we need to check type
-            if (modifier is HealthStatModifier health)
+            EditorGUILayout.LabelField(modifier.ModifierName, EditorStyles.boldLabel);
+
+            if (modifier.ModifierName == nameof(HealthStatModifier))
             {
-                EditorGUILayout.LabelField("HealthStatModifier", EditorStyles.boldLabel);
-                health.AdditionalHealth = EditorGUILayout.FloatField("Additional Health", health.AdditionalHealth);
+                modifier.Value = EditorGUILayout.FloatField("Additional Health", modifier.Value);
             }
             else
             {

@@ -12,8 +12,28 @@ namespace MagmaHeart.Core.Entities
         public event EventHandler OnCurrentHealthChanged;
         public event EventHandler OnDeath;
 
-        public float CurrentHealth => m_currentHealth;
-        public float MaxHealth => m_maxHealth;
+        public float CurrentHealth
+        {
+            get => m_currentHealth;
+            set
+            {
+                if (value > m_maxHealth)
+                    value = m_maxHealth;
+
+                m_currentHealth = value;
+                OnCurrentHealthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public float MaxHealth
+        {
+            get => m_maxHealth;
+            set
+            {
+                m_maxHealth = value;
+
+                OnMaxHealthChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public Health(float maxHealth)
         {
@@ -31,21 +51,6 @@ namespace MagmaHeart.Core.Entities
 
             if (m_currentHealth <= 0)
                 OnDeath?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void IncreaseMaxHealth(float amount) 
-        {
-            m_maxHealth += amount;
-            OnMaxHealthChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void SetCurrentHealth(float newHealth)
-        {
-            if (newHealth > m_maxHealth)
-                newHealth = m_maxHealth;
-
-            m_currentHealth = newHealth;
-            OnCurrentHealthChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

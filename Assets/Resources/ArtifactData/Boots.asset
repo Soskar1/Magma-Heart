@@ -16,3 +16,9 @@ MonoBehaviour:
   m_name: Boots
   m_description: Terraria clone?
   m_sprite: {fileID: 21300000, guid: 38a024fbad6276e49b220bbe76e23187, type: 3}
+  m_statModifierModels:
+  - m_models: []
+  - m_models: []
+  - m_models: []
+  - m_models: []
+  - m_models: []

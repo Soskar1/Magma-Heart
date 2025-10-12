@@ -16,3 +16,9 @@ MonoBehaviour:
   m_name: Stone Fist
   m_description: TODO
   m_sprite: {fileID: 21300000, guid: c7006076edb0e36449cc8d628c44b4c8, type: 3}
+  m_statModifierModels:
+  - m_models: []
+  - m_models: []
+  - m_models: []
+  - m_models: []
+  - m_models: []
