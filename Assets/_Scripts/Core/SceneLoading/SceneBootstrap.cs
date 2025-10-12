@@ -73,10 +73,7 @@ namespace MagmaHeart.Core.SceneLoading
             {
                 SaveData savedData = m_sceneLoader.SavedData;
 
-                if (spawnedPlayer.TryGetComponent(out ArtifactApplier applier))
-                    applier.ApplyArtifacts(savedData.ObtainedArtifacts);
-
-                spawnedPlayer.Health.SetCurrentHealth(savedData.health);
+                spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
             GameStateMachine stateMachine = InitializeStateMachine(spawnedPlayer, uiInstance);
@@ -121,9 +118,14 @@ namespace MagmaHeart.Core.SceneLoading
             Battle battle = new Battle(player.TurnBasedPlayerBehaviour, spawner, turnSwitchListeners);
             CombatState combatState = new CombatState(battle, combatStateListeners);
 
+            ArtifactDatabase database = new ArtifactDatabase();
+            BattleReward battleReward = new BattleReward(database);
+            // TODO: Unsubscribe somewhere
+            battleReward.OnBattleRewardCalculated += ui.RewardUI.HandleOnBattleRewardCalculated;
+
             List<IRewardStateListener> rewardStateListeners = new List<IRewardStateListener>()
             {
-                player, ui.RewardUI
+                player, ui.RewardUI, battleReward
             };
             RewardState rewardState = new RewardState(rewardStateListeners);
 

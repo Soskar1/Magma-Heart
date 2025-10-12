@@ -1,4 +1,5 @@
 using System;
+using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
@@ -10,13 +11,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         [SerializeField] private EntityData m_data;
 
+        private Inventory m_inventory;
+        private RewardUI m_rewardUI;
+
         public Action<Collider2D> OnTriggerEnter;
         public Action<Collider2D> OnTriggerExit;
 
-        private Entity m_controllingEntity;
-
         private PlayerAnimation m_animation;
 
+        private Entity m_controllingEntity;
         public Entity ControllingEntity => m_controllingEntity;
         public Health Health => ControllingEntity.Health;
         public Energy Energy => ControllingEntity.Energy;
@@ -31,14 +34,20 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI)
         {
-            m_animation = GetComponent<PlayerAnimation>();
             m_controllingEntity = new Entity(m_data, transform);
+            m_animation = GetComponent<PlayerAnimation>();
+
+            m_inventory = new Inventory(m_controllingEntity);
+            m_rewardUI = gameUI.RewardUI;
+            m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
             m_turnBasedBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI);
             m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, m_animation);
             m_currentBehaviour = m_actionBehaviour;
         }
+
+        public void OnDisable() => m_rewardUI.OnRewardPicked -= HandleOnRewardPicked;
 
         public void Enable() => m_currentBehaviour.Enable();
         public void Disable() => m_currentBehaviour.Disable();
@@ -68,5 +77,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 
         private void OnTriggerExit2D(Collider2D collision) => OnTriggerExit?.Invoke(collision);
+
+        private void HandleOnRewardPicked(object obj, OnRewardPickedArgs args) => m_inventory.Pick(args.ArtifactData);
     }
 }

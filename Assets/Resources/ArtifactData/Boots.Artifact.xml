@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Artifact xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Data/Artifact.xsd">
+	<Name>Boots</Name>
+	<Rarity>Common</Rarity>
+	<Description>TODO</Description>
+	<IconResourcePath>Icons/Boots</IconResourcePath>
+	<Level Tier="1">
+		<StatModifiers>
+		</StatModifiers>
+	</Level>
+	<Level Tier="2">
+		<StatModifiers>
+		</StatModifiers>
+	</Level>
+	<Level Tier="3">
+		<StatModifiers>
+		</StatModifiers>
+	</Level>
+	<Level Tier="4">
+		<StatModifiers>
+		</StatModifiers>
+	</Level>
+	<Level Tier="5">
+		<StatModifiers>
+		</StatModifiers>
+	</Level>
+</Artifact>
