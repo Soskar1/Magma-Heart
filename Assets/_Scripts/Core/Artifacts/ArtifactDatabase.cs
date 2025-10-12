@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random=UnityEngine.Random;
 
 namespace MagmaHeart.Core.Artifacts
 {
@@ -10,13 +12,19 @@ namespace MagmaHeart.Core.Artifacts
 
         public ArtifactDatabase()
         {
-            ArtifactData[] artifacts = Resources.LoadAll<ArtifactData>("ArtifactData");
-            
-            foreach (ArtifactData artifact in artifacts)
-                artifact.Initialize();
+            m_artifacts = new Dictionary<Rarity, List<ArtifactData>>();
 
-            m_artifacts = artifacts.GroupBy(a => a.Rarity)
-                                   .ToDictionary(g => g.Key, g => g.ToList());
+            foreach (Rarity rarity in Enum.GetValues(typeof(Rarity)))
+                m_artifacts.Add(rarity, new List<ArtifactData>());
+
+            TextAsset[] artifactDataFiles = ExternalResources.LoadAddTextAssets("ArtifactData");
+            ArtifactDataDeserializer deserializer = new ArtifactDataDeserializer();
+
+            foreach (TextAsset rawData in artifactDataFiles)
+            {
+                ArtifactData data = deserializer.Deserialize(rawData);
+                m_artifacts[data.Rarity].Add(data);
+            }
         }
 
         public List<ArtifactData> GetRandomArtifacts(Rarity rarity, int count)

@@ -6,6 +6,5 @@ namespace MagmaHeart.Core.Artifacts
     {
         public void Apply(Entity entity);
         public void Revert(Entity entity);
-        public StatModifierModel ToModel();
     }
 }

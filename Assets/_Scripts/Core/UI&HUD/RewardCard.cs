@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.UI
             m_nameText.text = data.Name;
             m_rarityText.text = data.Rarity.ToString();
             m_descriptionText.text = data.Description;
-            m_image.sprite = data.Sprite;
+            m_image.sprite = data.Icon;
         }
 
         public void OnPointerClick(PointerEventData eventData)

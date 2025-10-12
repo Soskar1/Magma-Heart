@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Artifact" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="Level">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="StatModifiers">
+					<xs:complexType>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="HealthModifier" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="AdditionalHealth" type="xs:float" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+			<xs:attribute name="Tier" type="xs:int" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="RarityType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Common"/>
+			<xs:enumeration value="Rare"/>
+			<xs:enumeration value="Epic"/>
+			<xs:enumeration value="Legendary"/>
+			<xs:enumeration value="Magma"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:element name="Artifact">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Rarity" type="RarityType"/>
+				<xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="IconResourcePath" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="Level" maxOccurs="5"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
