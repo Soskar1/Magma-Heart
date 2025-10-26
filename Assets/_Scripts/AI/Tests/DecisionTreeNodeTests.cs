@@ -1,3 +1,4 @@
+using MagmaHeart.AI.Reasoning;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -12,6 +13,11 @@ namespace MagmaHeart.AI.Tests
             {
                 Debug.Log(nameof(TestAction1));
             }
+
+            public StateSnapshot Simulate()
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         private class TestAction2 : IAction
@@ -19,6 +25,11 @@ namespace MagmaHeart.AI.Tests
             public void Execute()
             {
                 Debug.Log(nameof(TestAction2));
+            }
+
+            public StateSnapshot Simulate()
+            {
+                throw new System.NotImplementedException();
             }
         }
 
