@@ -4,7 +4,7 @@ using MagmaHeart.Collections;
 using MagmaHeart.Extensions;
 using UnityEngine;
 
-namespace MagmaHeart.Navigation
+namespace MagmaHeart.AI.Pathifinding
 {
     public class AStar
     {

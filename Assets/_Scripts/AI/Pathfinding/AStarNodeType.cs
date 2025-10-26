@@ -1,4 +1,4 @@
-namespace MagmaHeart.Navigation
+namespace MagmaHeart.AI.Pathifinding
 {
     public enum AStarNodeType
     {

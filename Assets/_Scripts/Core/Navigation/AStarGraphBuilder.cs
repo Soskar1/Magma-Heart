@@ -1,6 +1,6 @@
 using MagmaHeart.BreadthFirstSearch;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Navigation;
+using MagmaHeart.AI.Pathifinding;
 using System.Linq;
 
 namespace MagmaHeart.Core.Navigation

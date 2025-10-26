@@ -1,6 +1,6 @@
 using MagmaHeart.Extensions;
 
-namespace MagmaHeart.Navigation
+namespace MagmaHeart.AI.Pathifinding
 {
     public class AStarEdge
     {

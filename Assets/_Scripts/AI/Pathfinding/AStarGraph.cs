@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using MagmaHeart.Extensions;
 
-namespace MagmaHeart.Navigation
+namespace MagmaHeart.AI.Pathifinding
 {
     public class AStarGraph
     {

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using MagmaHeart.Navigation;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace MagmaHeart.Tests
+namespace MagmaHeart.AI.Pathifinding.Tests
 {
     public class AStarTests
     {

@@ -1,7 +1,6 @@
-using MagmaHeart.Navigation;
 using UnityEngine;
 
-namespace MagmaHeart.Tests
+namespace MagmaHeart.AI.Pathifinding.Tests
 {
     public static class AStarGraphCreator
     {
