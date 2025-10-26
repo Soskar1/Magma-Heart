@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      AStar_FindPathWithCostDecisions_ShouldReturnPath_0: 7582429551665663287
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

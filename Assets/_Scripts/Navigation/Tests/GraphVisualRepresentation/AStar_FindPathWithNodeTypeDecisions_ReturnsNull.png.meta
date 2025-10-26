@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      AStar_FindPathWithNodeTypeDecisions_ReturnsNull_0: -8707081859710931352
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
