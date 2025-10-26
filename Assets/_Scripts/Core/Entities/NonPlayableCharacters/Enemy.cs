@@ -54,5 +54,16 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         }
 
         public void Hit(float damage) => Health.TakeDamage(damage);
+
+        public bool Equals(ICombatController other)
+        {
+            if (other == null)
+                return false;
+
+            if (ReferenceEquals(this, other))
+                return true;
+
+            return false;
+        }
     }
 }

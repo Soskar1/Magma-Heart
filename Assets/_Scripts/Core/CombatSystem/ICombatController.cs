@@ -3,7 +3,7 @@ using MagmaHeart.Core.Dungeon;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public interface ICombatController : IHittableTile
+    public interface ICombatController : IHittableTile, IEquatable<ICombatController>
     {
         public bool IsPlayableCharacter { get; }
         public EventHandler NextTurn { get; set; }
