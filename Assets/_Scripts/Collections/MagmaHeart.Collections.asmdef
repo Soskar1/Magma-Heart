@@ -1,7 +1,9 @@
 {
     "name": "MagmaHeart.Collections",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:80a5bf9362ac37640a3609e7abc0650d"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
