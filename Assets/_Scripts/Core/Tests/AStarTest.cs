@@ -1,4 +1,4 @@
-using MagmaHeart.Navigation;
+using MagmaHeart.AI.Pathifinding;
 using System;
 using System.Collections.Generic;
 using System.Text;

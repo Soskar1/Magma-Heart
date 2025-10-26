@@ -1,6 +1,6 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Extensions;
-using MagmaHeart.Navigation;
+using MagmaHeart.AI.Pathifinding;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

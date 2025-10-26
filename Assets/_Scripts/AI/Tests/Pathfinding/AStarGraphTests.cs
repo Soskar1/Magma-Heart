@@ -1,12 +1,11 @@
 using NUnit.Framework;
 using UnityEngine;
-using MagmaHeart.Navigation;
 using System;
 using UnityEngine.TestTools;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagmaHeart.Tests
+namespace MagmaHeart.AI.Pathifinding.Tests
 {
     public class AStarGraphTests
     {
