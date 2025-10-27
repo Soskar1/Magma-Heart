@@ -105,5 +105,35 @@ namespace MagmaHeart.Collections.Tests
 
             Assert.That(list.Count, Is.EqualTo(3));
         }
+
+        [Test]
+        public void CircularList_NextTo_ReturnsNextElement()
+        {
+            CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5 };
+
+            int value = list.NextTo(4);
+
+            Assert.That(value, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void CircularList_NextTo_ReturnsHeadElement()
+        {
+            CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5 };
+
+            int value = list.NextTo(5);
+
+            Assert.That(value, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CircularList_NextTo_ReturnsDuplicateElement()
+        {
+            CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5, 5 };
+
+            int value = list.NextTo(5);
+
+            Assert.That(value, Is.EqualTo(5));
+        }
     }
 }

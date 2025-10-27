@@ -7,7 +7,7 @@ namespace MagmaHeart.AI.Reasoning
 
         public CommanderAI(DecisionTreeNode root)
         {
-            m_tacticianAI = new TacticianAI();
+            //m_tacticianAI = new TacticianAI();
             m_decisionTreeRoot = root;
 
             DecideWithStrategy();

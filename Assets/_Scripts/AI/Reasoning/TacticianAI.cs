@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Collections;
+﻿using System;
+using MagmaHeart.Collections;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -9,25 +10,54 @@ namespace MagmaHeart.AI.Reasoning
 
         public TacticianAI(int depth) => m_depth = depth;
 
-        public IAction StartReasoning(CircularList<IAIUnit> unitsToConsider, StateSnapshot snapshot)
+        //public IAction StartReasoning(ChainNode<IAIUnit> unitsToConsider, StateSnapshot snapshot)
+        //{
+        //    StateSnapshot stateSnapshot = snapshot;
+
+
+
+        //    //return ChooseBestAction(unitsToConsider, snapshot);
+        //}
+
+        private float Minimax(StateSnapshot position, int currentDepth, float alpha, float beta, ChainNode<IAIUnit> units)
         {
-            StateSnapshot stateSnapshot = snapshot;
+            if (currentDepth >= m_depth || position.IsGameOver)
+                return position.StaticEvaluation();
 
-            return ChooseBestAction(unitsToConsider, snapshot);
-        }
-
-        private IAction ChooseBestAction(CircularList<IAIUnit> unitsToConsider, StateSnapshot currentSnapshot, int currentDepth = 0)
-        {
-            IAIUnit unit = unitsToConsider.Head;
-
-            foreach (IAction action in unitsToConsider)
+            IAIUnit currentUnit = units.Value;
+            if (currentUnit.IsPlayer)
             {
-                StateSnapshot newSnapshot = action.Simulate(currentSnapshot);
-                
-                if (currentDepth > m_depth)
+                float maxEvaluation = float.MinValue;
+                foreach (IAction action in currentUnit.PossibleActions)
                 {
+                    StateSnapshot newPosition = action.Simulate(position);
+
+                    float evaluation = Minimax(newPosition, currentDepth + 1, alpha, beta, units.Next);
+                    maxEvaluation = Math.Max(maxEvaluation, evaluation);
+                    alpha = Math.Max(alpha, evaluation);
                     
+                    if (beta <= alpha)
+                        break;
                 }
+
+                return maxEvaluation;
+            }
+            else
+            {
+                float minEvaluation = float.MaxValue;
+                foreach (IAction action in currentUnit.PossibleActions)
+                {
+                    StateSnapshot newPosition = action.Simulate(position);
+
+                    float evaluation = Minimax(newPosition, currentDepth + 1, alpha, beta, units.Next);
+                    minEvaluation = Math.Min(minEvaluation, evaluation);
+                    beta = Math.Min(beta, evaluation);
+
+                    if (beta <= alpha)
+                        break;
+                }
+
+                return minEvaluation;
             }
         }
     }

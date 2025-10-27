@@ -14,7 +14,7 @@ namespace MagmaHeart.AI.Tests
                 Debug.Log(nameof(TestAction1));
             }
 
-            public StateSnapshot Simulate()
+            public StateSnapshot Simulate(StateSnapshot state)
             {
                 throw new System.NotImplementedException();
             }
@@ -27,7 +27,7 @@ namespace MagmaHeart.AI.Tests
                 Debug.Log(nameof(TestAction2));
             }
 
-            public StateSnapshot Simulate()
+            public StateSnapshot Simulate(StateSnapshot state)
             {
                 throw new System.NotImplementedException();
             }

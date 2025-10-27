@@ -45,6 +45,16 @@ namespace MagmaHeart.Collections
             return m_currentNode.Value;
         }
 
+        public T NextTo(T item)
+        {
+            LinkedListNode<T> node = m_list.Find(item);
+            
+            if (node.Next == null)
+                return m_list.First.Value;
+
+            return node.Next.Value;
+        }
+
         private void SetNext()
         {
             if (m_currentNode.Next == null)
@@ -66,14 +76,8 @@ namespace MagmaHeart.Collections
             throw new System.NotImplementedException();
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            throw new System.NotImplementedException();
-        }
+        public IEnumerator<T> GetEnumerator() => m_list.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
