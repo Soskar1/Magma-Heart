@@ -15,7 +15,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Position = position;
 
             IsPlayer = isPlayer;
-            PossibleActions = new IAction[] {
+            PossibleActions = new Action[] {
                     new AttackAction(this, 4),
                     new MoveAction(this, 3),
                     new EngageAction(this, 4, 1)

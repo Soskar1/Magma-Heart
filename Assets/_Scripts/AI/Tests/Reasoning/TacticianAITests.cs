@@ -51,7 +51,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity enemy = new Entity(5, Vector2.zero, false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
-            IAction bestAction = tactician.ChooseBestMove(circularList);
+            Action bestAction = tactician.ChooseBestMove(circularList);
 
             Assert.That(bestAction, Is.TypeOf<MoveAction>());
         }
@@ -63,7 +63,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity enemy = new Entity(5, new Vector2(5, 3), false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
-            IAction bestAction = tactician.ChooseBestMove(circularList);
+            Action bestAction = tactician.ChooseBestMove(circularList);
 
             Assert.That(bestAction, Is.TypeOf<EngageAction>());
         }

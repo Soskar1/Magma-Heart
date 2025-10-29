@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class MoveAction : IAction
+    internal class MoveAction : Action
     {
-        public AIUnit ActionPossessor { get; }
         public float m_speed;
 
-        public MoveAction(AIUnit actionPossessor, float speed)
+        public MoveAction(AIUnit actionPossessor, float speed) : base(actionPossessor)
         {
-            ActionPossessor = actionPossessor;
             m_speed = speed;
         }
 
-        public void Execute() { }
+        public override void Execute() { }
 
-        public bool CanSimulate(StateSnapshot state, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, AIUnit target)
         {
-            Position possessorPosition = (Position)state.GetProperty(ActionPossessor, typeof(Position));
-            Position targetPosition = (Position)state.GetProperty(target, typeof(Position));
+            Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
+            Position targetPosition = state.GetProperty<Position>(target);
 
             if (possessorPosition.Distance(targetPosition) <= 1)
                 return false;
@@ -29,8 +26,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
+            StateSnapshot newState = base.Simulate(state, target);
+
             Position targetPosition = state.GetProperty<Position>(target);
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
 
@@ -49,18 +48,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 tmpPosition.y += yMovement;
             else if (direction.y < 0)
                 tmpPosition.y -= yMovement;
-
-
-            StateSnapshot newState = state with
-            {
-                StateProperties = state.StateProperties.ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => kvp.Value.ToDictionary(
-                        inner => inner.Key,
-                        inner => inner.Value
-                    )
-                )
-            };
 
             float pointsForDistance = Math.Max(targetPosition.Distance(tmpPosition), 0.5f);
             DistanceToTarget distanceToTarget = new DistanceToTarget(4 / pointsForDistance);

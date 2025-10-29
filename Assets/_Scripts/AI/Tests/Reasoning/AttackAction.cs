@@ -1,21 +1,17 @@
-﻿using System.Linq;
-
-namespace MagmaHeart.AI.Reasoning.Tests
+﻿namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class AttackAction : IAction
+    internal class AttackAction : Action
     {
         public float Damage { get; init; }
-        public AIUnit ActionPossessor { get; }
 
-        public AttackAction(AIUnit actionPossessor, float damage)
+        public AttackAction(AIUnit actionPossessor, float damage) : base(actionPossessor)
         {
-            ActionPossessor = actionPossessor;
             Damage = damage;
         }
 
-        public void Execute() { }
+        public override void Execute() { }
 
-        public bool CanSimulate(StateSnapshot state, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, AIUnit target)
         {
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
             Position targetPosition = state.GetProperty<Position>(target);
@@ -26,18 +22,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
-            StateSnapshot newState = state with
-            {
-                StateProperties = state.StateProperties.ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => kvp.Value.ToDictionary(
-                        inner => inner.Key,
-                        inner => inner.Value
-                    )
-                )
-            };
+            StateSnapshot newState = base.Simulate(state, target);
 
             DamageToTarget damageToTarget = new DamageToTarget(Damage);
             newState.Add(ActionPossessor, damageToTarget);

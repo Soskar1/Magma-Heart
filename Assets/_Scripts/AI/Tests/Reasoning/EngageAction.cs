@@ -1,24 +1,21 @@
 ﻿namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class EngageAction : IAction
+    internal class EngageAction : Action
     {
         private MoveAction m_moveAction;
         private AttackAction m_damageAction;
         private float m_speed;
 
-        public AIUnit ActionPossessor { get; }
-
-        public EngageAction(AIUnit actionPossessor, float damage, float speed)
+        public EngageAction(AIUnit actionPossessor, float damage, float speed) : base(actionPossessor)
         {
             m_speed = speed;
-            ActionPossessor = actionPossessor;
             m_moveAction = new MoveAction(actionPossessor, speed);
             m_damageAction = new AttackAction(actionPossessor, damage);
         }
 
-        public void Execute() { }
+        public override void Execute() { }
 
-        public bool CanSimulate(StateSnapshot state, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, AIUnit target)
         {
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
             Position targetPosition = state.GetProperty<Position>(target);
@@ -30,7 +27,7 @@
             return true;
         }
 
-        public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
             StateSnapshot moveState = m_moveAction.Simulate(state, target);
             return m_damageAction.Simulate(moveState, target);

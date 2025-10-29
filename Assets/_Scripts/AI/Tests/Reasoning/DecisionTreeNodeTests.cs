@@ -1,59 +1,43 @@
-using MagmaHeart.AI.Reasoning;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace MagmaHeart.AI.Tests
+namespace MagmaHeart.AI.Reasoning.Tests
 {
     public class DecisionTreeNodeTests
     {
-        private class TestAction1 : IAction
+        private class TestAction1 : Action
         {
-            public AIUnit ActionPossessor => throw new System.NotImplementedException();
+            public TestAction1(AIUnit actionPossessor) : base(actionPossessor) { }
 
-            public bool CanSimulate(StateSnapshot state, AIUnit target)
+            public override bool CanSimulate(StateSnapshot state, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }
 
-            public void Execute()
+            public override void Execute()
             {
                 Debug.Log(nameof(TestAction1));
             }
 
-            public StateSnapshot Simulate(StateSnapshot state)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+            public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }
         }
 
-        private class TestAction2 : IAction
+        private class TestAction2 : Action
         {
-            public AIUnit ActionPossessor => throw new System.NotImplementedException();
+            public TestAction2(AIUnit actionPossessor) : base(actionPossessor) { }
 
-            public bool CanSimulate(StateSnapshot state, AIUnit target)
+            public override bool CanSimulate(StateSnapshot state, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }
 
-            public void Execute()
+            public override void Execute()
             {
                 Debug.Log(nameof(TestAction2));
-            }
-
-            public StateSnapshot Simulate(StateSnapshot state)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
-            {
-                throw new System.NotImplementedException();
             }
         }
 
@@ -63,8 +47,8 @@ namespace MagmaHeart.AI.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            m_first = new ActionNode(new TestAction1());
-            m_second = new ActionNode(new TestAction2());
+            m_first = new ActionNode(new TestAction1(null));
+            m_second = new ActionNode(new TestAction2(null));
         }
 
         [Test]

@@ -6,7 +6,7 @@ namespace MagmaHeart.AI.Reasoning
     public class AIUnit : IEquatable<AIUnit>
     {
         public bool IsPlayer { get; init; }
-        public IAction[] PossibleActions { get; init; }
+        public Action[] PossibleActions { get; init; }
 
         public bool Equals(AIUnit other)
         {

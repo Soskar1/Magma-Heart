@@ -17,7 +17,7 @@ namespace MagmaHeart.AI.Reasoning
             m_targetSelection = targetSelection;
         }
 
-        public IAction ChooseBestMove(CircularList<AIUnit> unitsToConsider)
+        public Action ChooseBestMove(CircularList<AIUnit> unitsToConsider)
         {  
             // TODO: Only from the AI entity we can start this method. Check head for player
 
@@ -29,9 +29,9 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             // TODO: filter moves according to current strategy
-            IAction bestMove = null;
+            Action bestMove = null;
 
-            foreach (IAction action in head.Value.PossibleActions)
+            foreach (Action action in head.Value.PossibleActions)
             {
                 if (!action.CanSimulate(stateSnapshot, m_playerUnit))
                     continue;
@@ -63,7 +63,7 @@ namespace MagmaHeart.AI.Reasoning
             if (currentUnit.IsPlayer)
             {
                 float maxEvaluation = float.MinValue;
-                foreach (IAction action in currentUnit.PossibleActions)
+                foreach (Action action in currentUnit.PossibleActions)
                 {
                     if (!action.CanSimulate(position, currentUnit))
                         continue;
@@ -83,7 +83,7 @@ namespace MagmaHeart.AI.Reasoning
             else
             {
                 float minEvaluation = float.MaxValue;
-                foreach (IAction action in currentUnit.PossibleActions)
+                foreach (Action action in currentUnit.PossibleActions)
                 {
                     if (!action.CanSimulate(position, currentUnit))
                         continue;

@@ -2,8 +2,8 @@
 {
     public class Strategy
     {
-        public IAction[] ActionsToConsider { get; init; }
+        public Action[] ActionsToConsider { get; init; }
 
-        public Strategy(IAction[] actionsToConsider) => ActionsToConsider = actionsToConsider; 
+        public Strategy(Action[] actionsToConsider) => ActionsToConsider = actionsToConsider; 
     }
 }

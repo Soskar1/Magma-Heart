@@ -2,9 +2,9 @@
 {
     public class ActionNode : DecisionTreeNode
     {
-        public IAction Action { get; init; }
+        public Action Action { get; init; }
 
-        public ActionNode(IAction action) => Action = action;
+        public ActionNode(Action action) => Action = action;
 
         public override DecisionTreeNode MakeDecision() => this;
     }
