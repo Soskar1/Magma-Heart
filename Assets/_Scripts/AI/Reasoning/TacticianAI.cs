@@ -19,6 +19,8 @@ namespace MagmaHeart.AI.Reasoning
 
         public IAction ChooseBestMove(CircularList<AIUnit> unitsToConsider)
         {  
+            // TODO: Only from the AI entity we can start this method. Check head for player
+
             StateSnapshot stateSnapshot = StateSnapshotMaker.CreateStateSnapshot(unitsToConsider);
 
             ChainNode<AIUnit> head = (ChainNode<AIUnit>)unitsToConsider;
@@ -27,13 +29,16 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             // TODO: filter moves according to current strategy
-            IAction bestMove = head.Value.PossibleActions[0];
+            IAction bestMove = null;
 
             foreach (IAction action in head.Value.PossibleActions)
             {
-                StateSnapshot newState = action.Simulate(stateSnapshot, m_playerUnit);
+                if (!action.CanSimulate(stateSnapshot, m_playerUnit))
+                    continue;
 
-                float evaluation = Minimax(newState, m_depth - 1, alpha, beta, head.Next);
+                StateSnapshot actionState = action.Simulate(stateSnapshot, m_playerUnit);
+
+                float evaluation = Minimax(actionState, m_depth - 1, alpha, beta, head.Next);
 
                 if (evaluation > bestValue)
                 {
@@ -50,7 +55,7 @@ namespace MagmaHeart.AI.Reasoning
         private float Minimax(StateSnapshot position, int currentDepth, float alpha, float beta, ChainNode<AIUnit> units)
         {
             AIUnit currentUnit = units.Value;
-            IsAliveProperty isAlive = (IsAliveProperty)position.GetProperty(currentUnit, typeof(IsAliveProperty));
+            IsAliveProperty isAlive = position.GetProperty<IsAliveProperty>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
                 return position.StaticEvaluation();
@@ -60,6 +65,9 @@ namespace MagmaHeart.AI.Reasoning
                 float maxEvaluation = float.MinValue;
                 foreach (IAction action in currentUnit.PossibleActions)
                 {
+                    if (!action.CanSimulate(position, currentUnit))
+                        continue;
+
                     StateSnapshot newPosition = action.Simulate(position, m_targetSelection(position));
 
                     float evaluation = Minimax(newPosition, currentDepth - 1, alpha, beta, units.Next);
@@ -77,6 +85,9 @@ namespace MagmaHeart.AI.Reasoning
                 float minEvaluation = float.MaxValue;
                 foreach (IAction action in currentUnit.PossibleActions)
                 {
+                    if (!action.CanSimulate(position, currentUnit))
+                        continue;
+
                     StateSnapshot newPosition = action.Simulate(position, m_playerUnit);
 
                     float evaluation = Minimax(newPosition, currentDepth - 1, alpha, beta, units.Next);

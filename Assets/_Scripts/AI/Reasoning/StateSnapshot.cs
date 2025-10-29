@@ -23,7 +23,7 @@ namespace MagmaHeart.AI.Reasoning
                 }
             }
 
-            return playerStaticEvaluation - aiStaticEvaluation;
+            return aiStaticEvaluation - playerStaticEvaluation;
         }
 
         public void Add(AIUnit unit, List<PropertySnapshot> properties)
@@ -35,21 +35,23 @@ namespace MagmaHeart.AI.Reasoning
             }
 
             foreach (PropertySnapshot property in properties)
+                Add(unit, property);
+        }
+
+        public void Add(AIUnit unit, PropertySnapshot property)
+        {
+            Type type = property.GetType();
+
+            Dictionary<Type, PropertySnapshot> properties = StateProperties[unit];
+            if (properties.TryGetValue(type, out PropertySnapshot existing))
             {
-                Type type = property.GetType();
-
-                if (snapshots.TryGetValue(type, out PropertySnapshot existing))
-                {
-                    PropertySnapshot merged = existing.Merge(property);
-                    snapshots[type] = merged;
-                }
-                else
-                {
-                    snapshots[type] = property;
-                }
+                PropertySnapshot merged = existing.Merge(property);
+                properties[type] = merged;
             }
-
-            StateProperties[unit] = snapshots;
+            else
+            {
+                properties[type] = property;
+            }
         }
 
         public void Replace(AIUnit unit, PropertySnapshot property)

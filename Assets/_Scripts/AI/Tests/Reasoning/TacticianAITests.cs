@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MagmaHeart.Collections;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,14 +9,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
     internal class TacticianAITests
     {
         private Entity m_player;
-        private Entity m_enemy1;
-        private Entity m_enemy2;
-        private Entity m_enemy3;
+        private Func<StateSnapshot, AIUnit> m_enemySelection;
 
+        [SetUp]
         public void SetUp()
         {
             m_player = new Entity(10, new Vector2(5, 5), true);
-            Func<StateSnapshot, AIUnit> enemySelection = (state) =>
+            m_enemySelection = (state) =>
             {
                 AIUnit nearestUnit = null;
                 float minDistance = float.MaxValue;
@@ -25,11 +26,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
                     if (unit.IsPlayer)
                         continue;
 
-                    IsAliveProperty isAlive = (IsAliveProperty)state.GetProperty(unit, typeof(IsAliveProperty));
+                    IsAliveProperty isAlive = state.GetProperty<IsAliveProperty>(unit);
                     if (!isAlive)
                         continue;
 
-                    Position unitPosition = (Position)state.GetProperty(unit, typeof(Position));
+                    Position unitPosition = state.GetProperty<Position>(unit);
 
                     float distance = unitPosition.Distance(m_player.Position);
                     if (distance < minDistance)
@@ -41,24 +42,30 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
                 return nearestUnit;
             };
-
-            m_enemy1 = new Entity(4, new Vector2(0, 0), false);
-            m_enemy2 = new Entity(4, new Vector2(2, 2), false);
-            m_enemy3 = new Entity(4, new Vector2(9, 9), false);
         }
 
+        [Test]
+        public void TacticianAI_ChooseBestMoveDepth1_ConsidersOnlyMoveAction()
+        {
+            TacticianAI tactician = new TacticianAI(1, m_player, m_enemySelection);
+            Entity enemy = new Entity(5, Vector2.zero, false);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
+            IAction bestAction = tactician.ChooseBestMove(circularList);
 
-        //[Test]
-        //public void TacticianAI_ChooseBestMoveDepth1_ChoosesBestMoveBetweenMultipleActions()
-        //{
-        //    TacticianAI tactician = new TacticianAI(1, player, enemySelection);
+            Assert.That(bestAction, Is.TypeOf<MoveAction>());
+        }
 
-        //    CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy1, enemy2, enemy3, player };
-        //    ChainNode<AIUnit> moveOrder = (ChainNode<AIUnit>)circularList;
+        [Test]
+        public void TacticianAI_ChooseBestMoveFrom2PossibleActionsDepth1_ChoosesEngageAction()
+        {
+            TacticianAI tactician = new TacticianAI(1, m_player, m_enemySelection);
+            Entity enemy = new Entity(5, new Vector2(5, 3), false);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
-        //    StateSnapshot state = StateSnapshotMaker.CreateStateSnapshot(circularList);
-        //    tactician.ChooseBestMove(moveOrder, state);
-        //}
+            IAction bestAction = tactician.ChooseBestMove(circularList);
+
+            Assert.That(bestAction, Is.TypeOf<EngageAction>());
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
@@ -30,8 +31,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
-            Position targetPosition = (Position)state.GetProperty(target, typeof(Position));
-            Position possessorPosition = (Position)state.GetProperty(ActionPossessor, typeof(Position));
+            Position targetPosition = state.GetProperty<Position>(target);
+            Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
@@ -52,7 +53,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             StateSnapshot newState = state with
             {
-                StateProperties = state.StateProperties
+                StateProperties = state.StateProperties.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.ToDictionary(
+                        inner => inner.Key,
+                        inner => inner.Value
+                    )
+                )
             };
 
             float pointsForDistance = Math.Max(targetPosition.Distance(tmpPosition), 0.5f);

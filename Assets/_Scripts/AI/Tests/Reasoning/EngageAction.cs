@@ -20,10 +20,11 @@
 
         public bool CanSimulate(StateSnapshot state, AIUnit target)
         {
-            Position possessorPosition = (Position)state.GetProperty(ActionPossessor, typeof(Position));
-            Position targetPosition = (Position)state.GetProperty(target, typeof(Position));
+            Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
+            Position targetPosition = state.GetProperty<Position>(target);
 
-            if (possessorPosition.Distance(targetPosition) > m_speed)
+            float distance = possessorPosition.Distance(targetPosition);
+            if (distance > m_speed + 1 || distance <= 1)
                 return false;
 
             return true;

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
@@ -17,8 +19,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public bool CanSimulate(StateSnapshot state, AIUnit target)
         {
-            Position possessorPosition = (Position)state.GetProperty(ActionPossessor, typeof(Position));
-            Position targetPosition = (Position)state.GetProperty(target, typeof(Position));
+            Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
+            Position targetPosition = state.GetProperty<Position>(target);
 
             if (possessorPosition.Distance(targetPosition) > 1)
                 return false;
@@ -28,29 +30,32 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
-            List<PropertySnapshot> propertiesToAdd = new List<PropertySnapshot>();
-            DamageToTarget damageToTarget = new DamageToTarget(Damage);
-            propertiesToAdd.Add(damageToTarget);
+            StateSnapshot newState = state with
+            {
+                StateProperties = state.StateProperties.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.ToDictionary(
+                        inner => inner.Key,
+                        inner => inner.Value
+                    )
+                )
+            };
 
-            Health targetHealth = (Health)state.GetProperty(target, typeof(Health));
+            DamageToTarget damageToTarget = new DamageToTarget(Damage);
+            newState.Add(ActionPossessor, damageToTarget);
+
+            Health targetHealth = state.GetProperty<Health>(target);
             IsAliveProperty isAliveProperty = null;
 
             if (targetHealth.Value < Damage)
             {
-                isAliveProperty = new IsAliveProperty(false);
-                propertiesToAdd.Add(new Health(-100));
+                newState.Replace(target, new Health(-100));
+                newState.Replace(target, new IsAliveProperty(false));
             }
             else
             {
-                propertiesToAdd.Add(new Health(targetHealth.Value - Damage));
+                newState.Replace(target, new Health(targetHealth.Value - Damage));
             }
-
-            StateSnapshot newState = state with
-            {
-                StateProperties = state.StateProperties
-            };
-
-            newState.Add(target, propertiesToAdd);
 
             if (isAliveProperty != null)
                 newState.Replace(target, isAliveProperty);
