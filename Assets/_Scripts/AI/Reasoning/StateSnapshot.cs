@@ -1,9 +1,71 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public record StateSnapshot(PropertySnapshot[] PropertySnapshots, bool IsGameOver)
+    public record StateSnapshot(Dictionary<AIUnit, Dictionary<Type, PropertySnapshot>> StateProperties)
     {
-        public float StaticEvaluation() => PropertySnapshots.Sum(x => x.Value * x.Weight);
+        public float StaticEvaluation()
+        {
+            float playerStaticEvaluation = 0;
+            float aiStaticEvaluation = 0;
+
+            foreach (var keyValuePair in StateProperties)
+            {
+                if (keyValuePair.Key.IsPlayer)
+                {
+                    playerStaticEvaluation += keyValuePair.Value.Sum(x => x.Value.Value * x.Value.Weight);
+                }
+                else
+                {
+                    aiStaticEvaluation += keyValuePair.Value.Sum(x => x.Value.Value * x.Value.Weight);
+                }
+            }
+
+            return playerStaticEvaluation - aiStaticEvaluation;
+        }
+
+        public void Add(AIUnit unit, List<PropertySnapshot> properties)
+        {
+            if (!StateProperties.TryGetValue(unit, out var snapshots))
+            {
+                snapshots = new Dictionary<Type, PropertySnapshot>();
+                StateProperties[unit] = snapshots;
+            }
+
+            foreach (PropertySnapshot property in properties)
+            {
+                Type type = property.GetType();
+
+                if (snapshots.TryGetValue(type, out PropertySnapshot existing))
+                {
+                    PropertySnapshot merged = existing.Merge(property);
+                    snapshots[type] = merged;
+                }
+                else
+                {
+                    snapshots[type] = property;
+                }
+            }
+
+            StateProperties[unit] = snapshots;
+        }
+
+        public void Replace(AIUnit unit, PropertySnapshot property)
+        {
+            Type type = property.GetType();
+            StateProperties[unit][type] = property;
+        }
+
+        public void Replace(AIUnit unit, List<PropertySnapshot> properties)
+        {
+            foreach (PropertySnapshot property in properties)
+                Replace(unit, property);
+        }
+
+        public PropertySnapshot GetProperty(AIUnit unit, Type propertyType) => StateProperties[unit][propertyType];
+
+        public List<AIUnit> GetAllUnits() => StateProperties.Keys.ToList();
     }
 }

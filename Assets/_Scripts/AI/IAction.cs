@@ -4,7 +4,10 @@ namespace MagmaHeart.AI
 {
     public interface IAction
     {
-        public StateSnapshot Simulate(StateSnapshot state);
+        public AIUnit ActionPossessor { get; }
+
+        public bool CanSimulate(StateSnapshot state, AIUnit target);
+        public StateSnapshot Simulate(StateSnapshot state, AIUnit target);
         public void Execute();
     }
 }
