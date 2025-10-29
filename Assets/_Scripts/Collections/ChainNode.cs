@@ -15,26 +15,20 @@ namespace MagmaHeart.Collections
 
         public static implicit operator ChainNode<T>(CircularList<T> circularList)
         {
-            ChainNode<T> head = null;
-            ChainNode<T> current = head;
-            ChainNode<T> previous = null;
+            ChainNode<T> head = new ChainNode<T>(circularList.Head);
+            ChainNode<T> current = head.Next;
+            ChainNode<T> previous = head;
 
-            foreach (T value in circularList)
+            circularList.Next();
+            while (!circularList.Head.Equals(head.Value))
             {
-                if (head == null)
-                {
-                    head = new ChainNode<T>(value);
-                    current = head.Next;
-                    previous = head;
-                }
-                else
-                {
-                    current = new ChainNode<T>(value);
-                    previous.Next = current;
+                current = new ChainNode<T>(circularList.Head);
+                previous.Next = current;
 
-                    previous = current;
-                    current = current.Next;
-                }
+                previous = current;
+                current = current.Next;
+
+                circularList.Next();
             }
 
             previous.Next = head;
