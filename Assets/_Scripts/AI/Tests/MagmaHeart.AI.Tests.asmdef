@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "MagmaHeart.AI",
-        "MagmaHeart.Extensions"
+        "MagmaHeart.Extensions",
+        "MagmaHeart.Collections"
     ],
     "includePlatforms": [
         "Editor"

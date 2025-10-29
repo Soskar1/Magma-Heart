@@ -17,11 +17,11 @@ namespace MagmaHeart.AI.Reasoning
             m_targetSelection = targetSelection;
         }
 
-        public IAction ChooseBestMove(ChainNode<AIUnit> unitsToConsider, StateSnapshot snapshot)
+        public IAction ChooseBestMove(CircularList<AIUnit> unitsToConsider)
         {  
-            StateSnapshot stateSnapshot = snapshot;
+            StateSnapshot stateSnapshot = StateSnapshotMaker.CreateStateSnapshot(unitsToConsider);
 
-            ChainNode<AIUnit> head = unitsToConsider;
+            ChainNode<AIUnit> head = (ChainNode<AIUnit>)unitsToConsider;
             float alpha = float.MinValue;
             float beta = float.MaxValue;
             float bestValue = float.MinValue;

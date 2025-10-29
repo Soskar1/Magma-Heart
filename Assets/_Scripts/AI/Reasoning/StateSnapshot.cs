@@ -65,6 +65,7 @@ namespace MagmaHeart.AI.Reasoning
         }
 
         public PropertySnapshot GetProperty(AIUnit unit, Type propertyType) => StateProperties[unit][propertyType];
+        public T GetProperty<T>(AIUnit unit) where T : PropertySnapshot => (T)GetProperty(unit, typeof(T));
 
         public List<AIUnit> GetAllUnits() => StateProperties.Keys.ToList();
     }

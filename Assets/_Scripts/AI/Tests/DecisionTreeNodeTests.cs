@@ -9,6 +9,13 @@ namespace MagmaHeart.AI.Tests
     {
         private class TestAction1 : IAction
         {
+            public AIUnit ActionPossessor => throw new System.NotImplementedException();
+
+            public bool CanSimulate(StateSnapshot state, AIUnit target)
+            {
+                throw new System.NotImplementedException();
+            }
+
             public void Execute()
             {
                 Debug.Log(nameof(TestAction1));
@@ -18,16 +25,33 @@ namespace MagmaHeart.AI.Tests
             {
                 throw new System.NotImplementedException();
             }
+
+            public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         private class TestAction2 : IAction
         {
+            public AIUnit ActionPossessor => throw new System.NotImplementedException();
+
+            public bool CanSimulate(StateSnapshot state, AIUnit target)
+            {
+                throw new System.NotImplementedException();
+            }
+
             public void Execute()
             {
                 Debug.Log(nameof(TestAction2));
             }
 
             public StateSnapshot Simulate(StateSnapshot state)
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public StateSnapshot Simulate(StateSnapshot state, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }
