@@ -4,27 +4,18 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class MoveAction : Action
+    internal class RunAwayAction : Action
     {
         public float m_speed;
 
-        public MoveAction(AIUnit actionPossessor, float speed) : base(actionPossessor)
+        public RunAwayAction(AIUnit actionPossessor, float speed) : base(actionPossessor)
         {
             m_speed = speed;
         }
 
         public override void Execute() { }
 
-        public override bool CanSimulate(StateSnapshot state, AIUnit target)
-        {
-            Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
-            Position targetPosition = state.GetProperty<Position>(target);
-
-            if (possessorPosition.Distance(targetPosition) <= 1)
-                return false;
-
-            return true;
-        }
+        public override bool CanSimulate(StateSnapshot state, AIUnit target) => true;
 
         public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
@@ -35,9 +26,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
-            Vector2 direction = targetPosition.CurrentPosition - tmpPosition;
-            float xMovement = Mathf.Min(Mathf.Abs(direction.x), m_speed);
-            float yMovement = Mathf.Min(Mathf.Abs(direction.y), m_speed);
+            Vector2 direction = -(targetPosition.CurrentPosition - tmpPosition);
+            float xMovement = Mathf.Abs(direction.x) * m_speed;
+            float yMovement = Mathf.Abs(direction.y) * m_speed;
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;

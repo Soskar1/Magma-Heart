@@ -16,11 +16,7 @@ namespace MagmaHeart.AI
             {
                 StateProperties = state.StateProperties.ToDictionary(
                     kvp => kvp.Key,
-                    kvp => kvp.Value.ToDictionary(
-                        inner => inner.Key,
-                        inner => inner.Value
-                    )
-                )
+                    kvp => kvp.Value.DeepCopy())
             };
 
             return newState;

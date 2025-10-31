@@ -7,11 +7,11 @@ namespace MagmaHeart.AI.Reasoning
     {
         public static StateSnapshot CreateStateSnapshot(ICollection<AIUnit> units)
         {
-            Dictionary<AIUnit, Dictionary<Type, PropertySnapshot>> stateProperties = new Dictionary<AIUnit, Dictionary<Type, PropertySnapshot>>();
+            Dictionary<AIUnit, PropertyList> stateProperties = new Dictionary<AIUnit, PropertyList>();
 
             foreach (AIUnit unit in units)
             {
-                Dictionary<Type, PropertySnapshot> unitProperties = unit.GetPropertySnapshots();
+                PropertyList unitProperties = unit.GetPropertySnapshots();
                 stateProperties[unit] = unitProperties;
             }
 

@@ -4,54 +4,26 @@ using System.Linq;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public record StateSnapshot(Dictionary<AIUnit, Dictionary<Type, PropertySnapshot>> StateProperties)
+    public record StateSnapshot(Dictionary<AIUnit, PropertyList> StateProperties)
     {
         public float StaticEvaluation()
         {
-            float playerStaticEvaluation = 0;
-            float aiStaticEvaluation = 0;
-
+            float evaluation = 0;
             foreach (var keyValuePair in StateProperties)
-            {
-                if (keyValuePair.Key.IsPlayer)
-                {
-                    playerStaticEvaluation += keyValuePair.Value.Sum(x => x.Value.Value * x.Value.Weight);
-                }
-                else
-                {
-                    aiStaticEvaluation += keyValuePair.Value.Sum(x => x.Value.Value * x.Value.Weight);
-                }
-            }
+                evaluation += keyValuePair.Key.EvaluateProperties(keyValuePair.Value);
 
-            return aiStaticEvaluation - playerStaticEvaluation;
-        }
-
-        public void Add(AIUnit unit, List<PropertySnapshot> properties)
-        {
-            if (!StateProperties.TryGetValue(unit, out var snapshots))
-            {
-                snapshots = new Dictionary<Type, PropertySnapshot>();
-                StateProperties[unit] = snapshots;
-            }
-
-            foreach (PropertySnapshot property in properties)
-                Add(unit, property);
+            return evaluation;
         }
 
         public void Add(AIUnit unit, PropertySnapshot property)
         {
             Type type = property.GetType();
+            PropertyList list = StateProperties[unit];
 
-            Dictionary<Type, PropertySnapshot> properties = StateProperties[unit];
-            if (properties.TryGetValue(type, out PropertySnapshot existing))
-            {
-                PropertySnapshot merged = existing.Merge(property);
-                properties[type] = merged;
-            }
-            else
-            {
-                properties[type] = property;
-            }
+            if (list.TryGet(type, out PropertySnapshot existing))
+                property = existing.Merge(property);
+
+            list[type] = property;
         }
 
         public void Replace(AIUnit unit, PropertySnapshot property)

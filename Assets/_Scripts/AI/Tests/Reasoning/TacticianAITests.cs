@@ -45,10 +45,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
         }
 
         [Test]
-        public void TacticianAI_ChooseBestMoveDepth1_ConsidersOnlyMoveAction()
+        public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
             TacticianAI tactician = new TacticianAI(1, m_player, m_enemySelection);
-            Entity enemy = new Entity(5, Vector2.zero, false);
+            Entity enemy = new Entity(10, Vector2.zero, false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
             Action bestAction = tactician.ChooseBestMove(circularList);
@@ -57,15 +57,29 @@ namespace MagmaHeart.AI.Reasoning.Tests
         }
 
         [Test]
-        public void TacticianAI_ChooseBestMoveFrom2PossibleActionsDepth1_ChoosesEngageAction()
+        [TestCase(1)]
+        [TestCase(2)]
+        public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            TacticianAI tactician = new TacticianAI(1, m_player, m_enemySelection);
-            Entity enemy = new Entity(5, new Vector2(5, 3), false);
+            TacticianAI tactician = new TacticianAI(depth, m_player, m_enemySelection);
+            Entity enemy = new Entity(10, new Vector2(5, 3), false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
             Action bestAction = tactician.ChooseBestMove(circularList);
 
             Assert.That(bestAction, Is.TypeOf<EngageAction>());
+        }
+
+        [Test]
+        public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
+        {
+            TacticianAI tactician = new TacticianAI(2, m_player, m_enemySelection);
+            Entity enemy = new Entity(1, new Vector2(4, 5), false);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
+
+            Action bestAction = tactician.ChooseBestMove(circularList);
+
+            Assert.That(bestAction, Is.TypeOf<RunAwayAction>());
         }
     }
 }

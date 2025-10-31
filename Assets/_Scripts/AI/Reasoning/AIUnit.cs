@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public class AIUnit : IEquatable<AIUnit>
+    public abstract class AIUnit : IEquatable<AIUnit>
     {
         public bool IsPlayer { get; init; }
         public Action[] PossibleActions { get; init; }
@@ -19,10 +18,16 @@ namespace MagmaHeart.AI.Reasoning
             return false;
         }
 
-        public virtual Dictionary<Type, PropertySnapshot> GetPropertySnapshots()
+        public virtual PropertyList GetPropertySnapshots()
         {
+            PropertyList list = new PropertyList();
             IsAliveProperty isAliveProperty = new IsAliveProperty(true);
-            return new Dictionary<Type, PropertySnapshot> { { typeof(IsAliveProperty), isAliveProperty } };
+
+            list.Add(isAliveProperty);
+
+            return list;
         }
+
+        public abstract float EvaluateProperties(PropertyList propertyList);
     }
 }

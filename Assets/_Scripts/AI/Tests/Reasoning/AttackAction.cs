@@ -26,24 +26,14 @@
         {
             StateSnapshot newState = base.Simulate(state, target);
 
-            DamageToTarget damageToTarget = new DamageToTarget(Damage);
-            newState.Add(ActionPossessor, damageToTarget);
-
             Health targetHealth = state.GetProperty<Health>(target);
-            IsAliveProperty isAliveProperty = null;
 
             if (targetHealth.Value < Damage)
-            {
-                newState.Replace(target, new Health(-100));
                 newState.Replace(target, new IsAliveProperty(false));
-            }
-            else
-            {
-                newState.Replace(target, new Health(targetHealth.Value - Damage));
-            }
 
-            if (isAliveProperty != null)
-                newState.Replace(target, isAliveProperty);
+            DamageToTarget damageToTarget = new DamageToTarget(Damage);
+            newState.Add(ActionPossessor, damageToTarget);
+            newState.Replace(target, new Health(targetHealth.Value - Damage));
 
             return newState;
         }

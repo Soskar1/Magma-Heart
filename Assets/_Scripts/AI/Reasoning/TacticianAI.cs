@@ -19,8 +19,6 @@ namespace MagmaHeart.AI.Reasoning
 
         public Action ChooseBestMove(CircularList<AIUnit> unitsToConsider)
         {  
-            // TODO: Only from the AI entity we can start this method. Check head for player
-
             StateSnapshot stateSnapshot = StateSnapshotMaker.CreateStateSnapshot(unitsToConsider);
 
             ChainNode<AIUnit> head = (ChainNode<AIUnit>)unitsToConsider;
@@ -65,10 +63,12 @@ namespace MagmaHeart.AI.Reasoning
                 float maxEvaluation = float.MinValue;
                 foreach (Action action in currentUnit.PossibleActions)
                 {
-                    if (!action.CanSimulate(position, currentUnit))
+                    AIUnit target = m_targetSelection(position);
+
+                    if (!action.CanSimulate(position, target))
                         continue;
 
-                    StateSnapshot newPosition = action.Simulate(position, m_targetSelection(position));
+                    StateSnapshot newPosition = action.Simulate(position, target);
 
                     float evaluation = Minimax(newPosition, currentDepth - 1, alpha, beta, units.Next);
                     maxEvaluation = Math.Max(maxEvaluation, evaluation);

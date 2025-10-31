@@ -6,5 +6,7 @@
             => GetType() == other.GetType()
                 ? this with { Value = Value + other.Value }
                 : this;
+
+        public float Evaluation => Value * Weight;
     }
 }
