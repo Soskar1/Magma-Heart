@@ -8,20 +8,12 @@ namespace MagmaHeart.AI.Reasoning
         private int m_depth;
         private AIUnit m_playerUnit;
         private Func<StateSnapshot, AIUnit> m_targetSelection;
+        private Strategy m_strategy;
 
-        private Strategy m_currentStrategy;
-        public Strategy CurrentStrategy
+        public TacticianAI(Strategy strategy, AIUnit playerUnit, Func<StateSnapshot, AIUnit> targetSelection)
         {
-            get => m_currentStrategy;
-            set
-            {
-                m_currentStrategy = value;
-                m_depth = value.LookAhead;
-            }
-        }
-
-        public TacticianAI(AIUnit playerUnit, Func<StateSnapshot, AIUnit> targetSelection)
-        {
+            m_strategy = strategy;
+            m_depth = m_strategy.LookAhead;
             m_playerUnit = playerUnit;
             m_targetSelection = targetSelection;
         }
@@ -65,7 +57,7 @@ namespace MagmaHeart.AI.Reasoning
             IsAliveProperty isAlive = position.GetProperty<IsAliveProperty>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
-                return CurrentStrategy.EvaluateState(position);
+                return m_strategy.EvaluateState(position);
 
             if (!currentUnit.IsPlayer)
             {

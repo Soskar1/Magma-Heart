@@ -1,5 +1,4 @@
-﻿
-using MagmaHeart.AI.Reasoning.Tests;
+﻿using MagmaHeart.AI.Reasoning.Tests;
 using System;
 
 namespace MagmaHeart.AI.Reasoning

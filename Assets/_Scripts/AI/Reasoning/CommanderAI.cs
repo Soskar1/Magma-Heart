@@ -1,5 +1,6 @@
 namespace MagmaHeart.AI.Reasoning
 {
+    // TODO: Try to implement it in the future
     public class CommanderAI
     {
         private readonly DecisionTreeNode m_decisionTreeRoot;
@@ -17,7 +18,7 @@ namespace MagmaHeart.AI.Reasoning
         {
             StrategyNode node = m_decisionTreeRoot.MakeDecision() as StrategyNode;
 
-            m_tacticianAI.CurrentStrategy = node.Strategy;
+            // m_tacticianAI.CurrentStrategy = node.Strategy;
         }
     }
 }
