@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
@@ -13,7 +14,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Position = position;
 
             IsPlayer = isPlayer;
-            PossibleActions = new Action[] {
+            PossibleActions = new HashSet<Action> {
                     new AttackAction(this, 4),
                     new MoveAction(this, 3),
                     new EngageAction(this, 4, 1),

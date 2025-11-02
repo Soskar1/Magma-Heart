@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public void Initialize()
         {
-            m_controllingEntity = new Entity(m_data, transform);
+            m_controllingEntity = new Entity(m_data, transform, false);
         }
 
         public void StartCombat(Room room)

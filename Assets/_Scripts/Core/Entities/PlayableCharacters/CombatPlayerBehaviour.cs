@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Facing m_facing;
 
         private Room m_currentRoom;
-        private ICombatAction m_currentAction;
+        private AI.Action m_currentAction;
         private MovementAction m_movementAction;
         private AttackAction m_attackAction;
 
@@ -67,8 +67,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_facing = player.GetComponent<Facing>();
             m_animation = player.GetComponent<PlayerAnimation>();
             m_movement = player.GetComponent<TurnBasedMovement>();
-            m_movementAction = new MovementAction(m_movement, m_energy, this);
-            m_attackAction = new AttackAction(m_energy, this);
+            m_movementAction = new MovementAction(m_movement, player.ControllingEntity, this);
+            m_attackAction = new AttackAction(player.ControllingEntity, this);
 
             m_aStarPathRenderer = player.GetComponent<PathGizmosRenderer>(); // For debug purposes
         }

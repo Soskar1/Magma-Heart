@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using MagmaHeart.AI.Reasoning;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class MovementAction : ICombatAction
+    public class MovementAction : AI.Action
     {
         private TurnBasedMovement m_movement;
         private ITilePosition m_tilePosition;
@@ -42,10 +43,10 @@ namespace MagmaHeart.Core.CombatSystem
         }
         public RoomTile TileToMove { get; set; }
 
-        public MovementAction(TurnBasedMovement movement, Energy energy, ITilePosition tilePosition)
+        public MovementAction(TurnBasedMovement movement, Entity actionPossessor, ITilePosition tilePosition) : base(actionPossessor)
         {
             m_movement = movement;
-            m_energy = energy;
+            m_energy = actionPossessor.Energy;
             m_tilePosition = tilePosition;
             m_aStar = new AStar(AStar.ManhattanDistance);
             CurrentPath = new List<RoomTile>();
@@ -75,7 +76,17 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
-        public void Execute()
+        public override bool CanSimulate(StateSnapshot state, AIUnit target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        {
+            return base.Simulate(state, target);
+        }
+
+        public override void Execute()
         {
             if (CanMoveToTile(TileToMove))
             {

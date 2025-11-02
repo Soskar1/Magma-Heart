@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI)
         {
-            m_controllingEntity = new Entity(m_data, transform);
+            m_controllingEntity = new Entity(m_data, transform, true);
             m_animation = GetComponent<PlayerAnimation>();
 
             m_inventory = new Inventory(m_controllingEntity);

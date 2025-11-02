@@ -1,3 +1,5 @@
+using MagmaHeart.AI;
+using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using System;
@@ -5,7 +7,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class AttackAction : ICombatAction
+    public class AttackAction : AI.Action
     {
         public const int ENERGY_COST = 2;
         public const int ATTACK_DISTANCE = 1;
@@ -18,13 +20,23 @@ namespace MagmaHeart.Core.CombatSystem
 
         public EventHandler<OnAttackEventArgs> OnAttackTriggered;
 
-        public AttackAction(Energy energy, ITilePosition tilePosition)
+        public AttackAction(Entity actionPossessor, ITilePosition tilePosition) : base(actionPossessor)
         {
             m_tilePosition = tilePosition;
-            m_energy = energy;
+            m_energy = actionPossessor.Energy;
         }
 
-        public void Execute()
+        public override bool CanSimulate(StateSnapshot state, AIUnit target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        {
+            return base.Simulate(state, target);
+        }
+
+        public override void Execute()
         {
             if (CanAttack(EntityToHit))
             {
