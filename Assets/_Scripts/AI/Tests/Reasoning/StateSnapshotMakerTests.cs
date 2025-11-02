@@ -28,7 +28,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 Assert.That((bool)isAlive, Is.True);
 
                 Health health = snapshot.GetProperty<Health>(entity);
-                Assert.That((float)health, Is.EqualTo(expectedHealth));
+                Assert.That(health.CurrentHealth, Is.EqualTo(expectedHealth));
 
                 Position position = snapshot.GetProperty<Position>(entity);
                 Assert.That((Vector2)position, Is.EqualTo(expectedPosition));

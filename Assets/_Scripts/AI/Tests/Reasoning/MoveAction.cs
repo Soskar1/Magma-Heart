@@ -49,9 +49,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             else if (direction.y < 0)
                 tmpPosition.y -= yMovement;
 
-            float pointsForDistance = Math.Max(targetPosition.Distance(tmpPosition), 0.5f);
-            DistanceToTarget distanceToTarget = new DistanceToTarget(pointsForDistance);
-            newState.Replace(ActionPossessor, new List<PropertySnapshot> { distanceToTarget, new Position(tmpPosition) });
+            newState.Update(ActionPossessor, new Position(tmpPosition));
 
             return newState;
         }

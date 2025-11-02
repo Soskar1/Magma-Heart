@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public abstract class AIUnit : IEquatable<AIUnit>
+    public class AIUnit : IEquatable<AIUnit>
     {
         public bool IsPlayer { get; init; }
         public Action[] PossibleActions { get; init; }
@@ -27,7 +27,5 @@ namespace MagmaHeart.AI.Reasoning
 
             return list;
         }
-
-        public abstract float EvaluateProperties(PropertyList propertyList);
     }
 }

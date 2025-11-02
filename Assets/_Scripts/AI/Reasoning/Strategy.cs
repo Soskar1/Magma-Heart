@@ -1,9 +1,16 @@
 ﻿namespace MagmaHeart.AI.Reasoning
 {
-    public class Strategy
+    public abstract class Strategy
     {
-        public Action[] ActionsToConsider { get; init; }
+        // public Action[] ActionsToConsider { get; init; }
+        public int LookAhead { get; init; }
 
-        public Strategy(Action[] actionsToConsider) => ActionsToConsider = actionsToConsider; 
+        public Strategy(int lookAhead)
+        {
+            // ActionsToConsider = actionsToConsider;
+            LookAhead = lookAhead;
+        }
+
+        public abstract float EvaluateState(StateSnapshot state);
     }
 }

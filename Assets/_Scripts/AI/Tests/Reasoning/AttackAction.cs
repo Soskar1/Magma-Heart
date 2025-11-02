@@ -28,12 +28,11 @@
 
             Health targetHealth = state.GetProperty<Health>(target);
 
-            if (targetHealth.Value < Damage)
-                newState.Replace(target, new IsAliveProperty(false));
+            if (targetHealth.CurrentHealth < Damage)
+                newState.Update(target, new IsAliveProperty(false));
 
-            DamageToTarget damageToTarget = new DamageToTarget(Damage);
-            newState.Add(ActionPossessor, damageToTarget);
-            newState.Replace(target, new Health(targetHealth.Value - Damage));
+            targetHealth = new Health(targetHealth.CurrentHealth - Damage, targetHealth.MaxHealth);
+            newState.Update(target, targetHealth);
 
             return newState;
         }
