@@ -12,12 +12,6 @@ namespace MagmaHeart.AI.Reasoning
             StateProperties[unit][type] = property;
         }
 
-        public void Update(AIUnit unit, List<PropertySnapshot> properties)
-        {
-            foreach (PropertySnapshot property in properties)
-                Update(unit, property);
-        }
-
         public PropertySnapshot GetProperty(AIUnit unit, Type propertyType) => StateProperties[unit][propertyType];
         public T GetProperty<T>(AIUnit unit) where T : PropertySnapshot => (T)GetProperty(unit, typeof(T));
 
