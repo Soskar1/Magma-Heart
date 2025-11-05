@@ -8,7 +8,7 @@ namespace MagmaHeart.AI.Reasoning
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public BasicStrategy(int lookAhead) : base(lookAhead) { }
+        public BasicStrategy(int lookAhead, Func<StateSnapshot, AIUnit> playerTargetSelection) : base(lookAhead, playerTargetSelection) { }
 
         public override float EvaluateState(StateSnapshot state)
         {

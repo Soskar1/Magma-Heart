@@ -7,15 +7,13 @@ namespace MagmaHeart.AI.Reasoning
     {
         private int m_depth;
         private AIUnit m_playerUnit;
-        private Func<StateSnapshot, AIUnit> m_targetSelection;
         private Strategy m_strategy;
 
-        public TacticianAI(Strategy strategy, AIUnit playerUnit, Func<StateSnapshot, AIUnit> targetSelection)
+        public TacticianAI(Strategy strategy, AIUnit playerUnit)
         {
             m_strategy = strategy;
             m_depth = m_strategy.LookAhead;
             m_playerUnit = playerUnit;
-            m_targetSelection = targetSelection;
         }
 
         public Action ChooseBestMove(CircularList<AIUnit> unitsToConsider)
@@ -83,7 +81,7 @@ namespace MagmaHeart.AI.Reasoning
             else
             {
                 // PLAYER
-                AIUnit target = m_targetSelection(position);
+                AIUnit target = m_strategy.PlayerTargetSelection(position);
 
                 float minEvaluation = float.MaxValue;
                 foreach (Action action in currentUnit.PossibleActions)

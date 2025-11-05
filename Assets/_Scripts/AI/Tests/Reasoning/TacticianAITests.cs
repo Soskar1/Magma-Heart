@@ -47,8 +47,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
-            BasicStrategy strategy = new BasicStrategy(1);
-            TacticianAI tactician = new TacticianAI(strategy, m_player, m_enemySelection);
+            BasicStrategy strategy = new BasicStrategy(1, m_enemySelection);
+            TacticianAI tactician = new TacticianAI(strategy, m_player);
 
             Entity enemy = new Entity(10, Vector2.zero, false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
@@ -63,8 +63,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [TestCase(2)]
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            BasicStrategy strategy = new BasicStrategy(depth);
-            TacticianAI tactician = new TacticianAI(strategy, m_player, m_enemySelection);
+            BasicStrategy strategy = new BasicStrategy(depth, m_enemySelection);
+            TacticianAI tactician = new TacticianAI(strategy, m_player);
 
             Entity enemy = new Entity(10, new Vector2(5, 3), false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
@@ -77,8 +77,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
-            BasicStrategy strategy = new BasicStrategy(2);
-            TacticianAI tactician = new TacticianAI(strategy, m_player, m_enemySelection);
+            BasicStrategy strategy = new BasicStrategy(2, m_enemySelection);
+            TacticianAI tactician = new TacticianAI(strategy, m_player);
             Entity enemy = new Entity(1, new Vector2(4, 5), false);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
