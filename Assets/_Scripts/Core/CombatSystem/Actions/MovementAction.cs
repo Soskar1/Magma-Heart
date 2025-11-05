@@ -7,10 +7,11 @@ using UnityEngine;
 using System.Linq;
 using System;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Entities.Properties;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class MovementAction : AI.Action
+    public class MovementAction : MagmaHeart.AI.Action
     {
         private readonly TurnBasedMovement m_movement;
         private readonly Entity m_entity;
@@ -77,12 +78,26 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override bool CanSimulate(StateSnapshot state, AIUnit target)
         {
-            throw new NotImplementedException();
+            EnergyProperty possessorEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
+            if (possessorEnergy.CurrentEnergy <= 0)
+                return false;
+
+            PositionProperty possessorPosition = state.GetProperty<PositionProperty>(ActionPossessor);
+            PositionProperty targetPosition = state.GetProperty<PositionProperty>(target);
+
+            if (possessorPosition.ManhattanDistance(targetPosition) <= 1)
+                return false;
+
+            return true;
         }
 
         public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
-            return base.Simulate(state, target);
+            StateSnapshot newState = base.Simulate(state, target);
+
+
+
+            return newState;
         }
 
         public override void Execute()
