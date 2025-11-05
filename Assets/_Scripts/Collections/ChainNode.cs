@@ -1,8 +1,6 @@
-using System;
-
 namespace MagmaHeart.Collections
 {
-    public class ChainNode<T> where T : IEquatable<T>
+    public class ChainNode<T>
     {
         public T Value { get; set; }
 
