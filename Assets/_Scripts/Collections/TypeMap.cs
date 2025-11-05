@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Collections
 {
-    public class TypeMap<TBase>
+    public class TypeMap<TBase> : IEnumerable<TBase>
     {
         private readonly Dictionary<Type, TBase> m_items = new();
 
@@ -42,5 +43,9 @@ namespace MagmaHeart.Collections
 
             return copy;
         }
+
+        public IEnumerator<TBase> GetEnumerator() => m_items.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
