@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Facing m_facing;
 
         private Room m_currentRoom;
-        private AI.Action m_currentAction;
+        private MagmaHeart.AI.Action m_currentAction;
         private MovementAction m_movementAction;
         private AttackAction m_attackAction;
 
