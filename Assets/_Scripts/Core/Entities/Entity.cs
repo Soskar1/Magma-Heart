@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.Entities
         {
             m_grid = grid;
             CombatController = new CombatController();
-            Model = new EntityModel(m_data, isPlayer);
+            Model = new EntityModel(m_data, transform, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
             Model.PossibleActions.Add(new MovementAction(this));
