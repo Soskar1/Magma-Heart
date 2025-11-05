@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Collections
 {
-    public class CircularList<T> : ICollection<T> where T : IEquatable<T>
+    public class CircularList<T> : ICollection<T>
     {
         private readonly LinkedList<T> m_list;
         private LinkedListNode<T> m_currentNode;
