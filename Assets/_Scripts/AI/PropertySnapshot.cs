@@ -1,4 +1,4 @@
-﻿namespace MagmaHeart.AI.Reasoning
+﻿namespace MagmaHeart.AI
 {
     public abstract record PropertySnapshot();
 }

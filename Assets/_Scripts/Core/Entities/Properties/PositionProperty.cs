@@ -1,4 +1,4 @@
-﻿using MagmaHeart.AI.Reasoning;
+﻿using MagmaHeart.AI;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 

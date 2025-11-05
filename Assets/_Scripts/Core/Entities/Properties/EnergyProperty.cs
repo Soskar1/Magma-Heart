@@ -1,4 +1,4 @@
-﻿using MagmaHeart.AI.Reasoning;
+﻿using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.Entities.Properties
 {

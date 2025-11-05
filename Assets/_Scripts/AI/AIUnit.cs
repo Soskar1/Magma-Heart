@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.Collections;
 
-namespace MagmaHeart.AI.Reasoning
+namespace MagmaHeart.AI
 {
     public class AIUnit
     {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
-using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI;
 using MagmaHeart.Core.Entities.Properties;
 
 namespace MagmaHeart.Core.CombatSystem

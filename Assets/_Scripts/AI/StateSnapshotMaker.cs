@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.Collections;
 using System.Collections.Generic;
 
-namespace MagmaHeart.AI.Reasoning
+namespace MagmaHeart.AI
 {
     internal static class StateSnapshotMaker
     {

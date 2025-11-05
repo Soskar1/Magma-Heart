@@ -1,4 +1,4 @@
-using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.Entities.Properties;
 using UnityEngine;
