@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void StartTurn()
         {
-            OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(m_currentEntity);
+            OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(TurnOrder);
             OnTurnSwitched?.Invoke(this, args);
 
             m_currentEntity.CombatController.StartTurn();
