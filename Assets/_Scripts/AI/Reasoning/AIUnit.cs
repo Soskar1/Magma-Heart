@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MagmaHeart.Collections;
+using System;
 
 namespace MagmaHeart.AI.Reasoning
 {
     public class AIUnit : IEquatable<AIUnit>
     {
         public bool IsPlayer { get; init; }
-        public HashSet<Action> PossibleActions { get; init; }
+        public TypeMap<Action> PossibleActions { get; init; }
 
         public bool Equals(AIUnit other)
         {
