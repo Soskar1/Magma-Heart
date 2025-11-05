@@ -1,12 +1,13 @@
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.Properties;
 using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class AttackAction : AI.Action
+    public class AttackAction : MagmaHeart.AI.Action
     {
         public const int ENERGY_COST = 2;
         public const int ATTACK_DISTANCE = 1;
@@ -27,12 +28,39 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override bool CanSimulate(StateSnapshot state, AIUnit target)
         {
-            throw new NotImplementedException();
+            EnergyProperty energy = state.GetProperty<EnergyProperty>(ActionPossessor);
+
+            if (energy.CurrentEnergy < ENERGY_COST)
+                return false;
+
+            PositionProperty possessorPosition = state.GetProperty<PositionProperty>(ActionPossessor);
+            PositionProperty targetPosition = state.GetProperty<PositionProperty>(target);
+
+            if (possessorPosition.ManhattanDistance(targetPosition) != ATTACK_DISTANCE)
+                return false;
+
+            return true;
         }
 
         public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
         {
-            return base.Simulate(state, target);
+            StateSnapshot newState = base.Simulate(state, target);
+
+            EnergyProperty currentEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
+            EnergyProperty newEnergy = new EnergyProperty(currentEnergy.CurrentEnergy - ENERGY_COST);
+            newState.Update(ActionPossessor, newEnergy);
+
+            HealthProperty targetHealth = state.GetProperty<HealthProperty>(target);
+            HealthProperty newHealth = new HealthProperty(targetHealth.CurrentHealth - ATTACK_DAMAGE, targetHealth.MaxHealth);
+            newState.Update(target, newHealth);
+
+            if (newHealth.CurrentHealth <= 0)
+            {
+                IsAliveProperty isAliveProperty = new IsAliveProperty(false);
+                newState.Update(target, isAliveProperty);
+            }
+
+            return newState;
         }
 
         public override void Execute()
