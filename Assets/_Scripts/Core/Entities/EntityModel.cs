@@ -24,9 +24,9 @@ namespace MagmaHeart.Core.Entities
             Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
         }
 
-        public override PropertyList GetPropertySnapshots()
+        public override TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
-            PropertyList properties = base.GetPropertySnapshots();
+            TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
 
             properties.Add(new HealthProperty(Health.CurrentHealth, Health.MaxHealth));
             properties.Add(new EnergyProperty(Energy.CurrentEnergy));

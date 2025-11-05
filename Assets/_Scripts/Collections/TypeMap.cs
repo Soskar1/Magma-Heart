@@ -14,6 +14,12 @@ namespace MagmaHeart.Collections
         public void Add<T>(T item) where T : TBase
             => m_items[typeof(T)] = item;
 
+        public TBase this[Type type]
+        {
+            get => m_items[type];
+            set => m_items[type] = value;
+        }
+
         public T Get<T>() where T : TBase
             => (T)m_items[typeof(T)];
 

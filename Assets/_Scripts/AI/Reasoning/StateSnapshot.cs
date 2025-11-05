@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MagmaHeart.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public record StateSnapshot(Dictionary<AIUnit, PropertyList> StateProperties)
+    public record StateSnapshot(Dictionary<AIUnit, TypeMap<PropertySnapshot>> StateProperties)
     {
         public void Update(AIUnit unit, PropertySnapshot property)
         {

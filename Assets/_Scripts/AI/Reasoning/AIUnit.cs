@@ -7,14 +7,14 @@ namespace MagmaHeart.AI.Reasoning
         public bool IsPlayer { get; init; }
         public TypeMap<Action> PossibleActions { get; init; }
 
-        public virtual PropertyList GetPropertySnapshots()
+        public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
-            PropertyList list = new PropertyList();
+            TypeMap<PropertySnapshot> properties = new TypeMap<PropertySnapshot>();
             IsAliveProperty isAliveProperty = new IsAliveProperty(true);
 
-            list.Add(isAliveProperty);
+            properties.Add(isAliveProperty);
 
-            return list;
+            return properties;
         }
     }
 }

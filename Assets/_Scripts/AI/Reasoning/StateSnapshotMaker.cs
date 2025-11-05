@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MagmaHeart.Collections;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -6,11 +7,11 @@ namespace MagmaHeart.AI.Reasoning
     {
         public static StateSnapshot CreateStateSnapshot(ICollection<AIUnit> units)
         {
-            Dictionary<AIUnit, PropertyList> stateProperties = new Dictionary<AIUnit, PropertyList>();
+            Dictionary<AIUnit, TypeMap<PropertySnapshot>> stateProperties = new Dictionary<AIUnit, TypeMap<PropertySnapshot>>();
 
             foreach (AIUnit unit in units)
             {
-                PropertyList unitProperties = unit.GetPropertySnapshots();
+                TypeMap<PropertySnapshot> unitProperties = unit.GetPropertySnapshots();
                 stateProperties[unit] = unitProperties;
             }
 

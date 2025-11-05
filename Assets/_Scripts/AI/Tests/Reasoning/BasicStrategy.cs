@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Reasoning.Tests;
+using MagmaHeart.Collections;
 using System;
 
 namespace MagmaHeart.AI.Reasoning
@@ -37,7 +38,7 @@ namespace MagmaHeart.AI.Reasoning
             foreach (var aiUnitWithProperties in state.StateProperties)
             {
                 AIUnit unit = aiUnitWithProperties.Key;
-                PropertyList unitProperties = aiUnitWithProperties.Value;
+                TypeMap<PropertySnapshot> unitProperties = aiUnitWithProperties.Value;
                 Health health = unitProperties.Get<Health>();
                 Position position = unitProperties.Get<Position>();
                 IsAliveProperty isAlive = unitProperties.Get<IsAliveProperty>();

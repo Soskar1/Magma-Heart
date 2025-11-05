@@ -23,9 +23,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             };
         }
 
-        public override PropertyList GetPropertySnapshots()
+        public override TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
-            PropertyList properties = base.GetPropertySnapshots();
+            TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
             Health healthLeft = new Health(m_health, m_health);
             Position position = new Position(Position);
 
