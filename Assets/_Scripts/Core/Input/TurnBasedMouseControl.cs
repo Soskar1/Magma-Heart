@@ -44,7 +44,11 @@ namespace MagmaHeart.Core.Input
             }
         }
 
-        public void ForceTriggerOnMouseChangedTile() => OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(m_currentMouseTile.Value));
+        public void ForceTriggerOnMouseChangedTile()
+        {
+            UpdateMousePosition();
+            OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(m_currentMouseTile.Value));
+        }
 
         private Vector2 GetMouseWorldPosition()
         {

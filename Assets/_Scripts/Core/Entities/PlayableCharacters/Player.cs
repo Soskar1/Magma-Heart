@@ -1,5 +1,6 @@
 using System;
 using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
@@ -7,37 +8,27 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : MonoBehaviour, IActionStateListener, ICombatStateListener, IRewardStateListener
+    public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
-        [SerializeField] private EntityData m_data;
-
+        private PlayerAnimation m_animation;
         private Inventory m_inventory;
         private RewardUI m_rewardUI;
 
-        public Action<Collider2D> OnTriggerEnter;
-        public Action<Collider2D> OnTriggerExit;
-
-        private PlayerAnimation m_animation;
-
-        private Entity m_controllingEntity;
-        public Entity ControllingEntity => m_controllingEntity;
-        public Health Health => ControllingEntity.Health;
-        public Energy Energy => ControllingEntity.Energy;
-        public EntityStats Stats => ControllingEntity.Stats;
+        public event Action<Collider2D> OnTriggerEnter;
+        public event Action<Collider2D> OnTriggerExit;
 
         private IPlayerBehaviour m_currentBehaviour;
         private ActionPlayerBehaviour m_actionBehaviour;
         private CombatPlayerBehaviour m_turnBasedBehaviour;
         private RewardPlayerBehaviour m_rewardPlayerBehaviour;
 
-        public CombatPlayerBehaviour TurnBasedPlayerBehaviour => m_turnBasedBehaviour;
-
-        public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI)
+        public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI, DungeonGrid grid)
         {
-            m_controllingEntity = new Entity(m_data, transform, true);
+            base.Initialize(grid, true);
+
             m_animation = GetComponent<PlayerAnimation>();
 
-            m_inventory = new Inventory(m_controllingEntity);
+            m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
@@ -68,11 +59,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour.Enable();
         }
 
-        private void FixedUpdate()
-        {
-            m_currentBehaviour.Update();
-            m_animation.PlayAnimations();
-        }
+        private void Update() => m_animation.PlayAnimations();
+        private void FixedUpdate() => m_currentBehaviour.Update();
 
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 

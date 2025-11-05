@@ -16,13 +16,13 @@ namespace MagmaHeart.Core.Artifacts
             m_currentLevel = 1;
         }
 
-        public void Revert(Entity entity)
+        public void Revert(EntityModel entity)
         {
             foreach (IStatModifier modifier in Data.StatModifiers[m_currentLevel - 1])
                 modifier.Revert(entity);
         }
 
-        public void Apply(Entity entity)
+        public void Apply(EntityModel entity)
         {
             foreach (IStatModifier modifier in Data.StatModifiers[m_currentLevel - 1])
                 modifier.Apply(entity);

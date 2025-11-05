@@ -6,9 +6,9 @@ namespace MagmaHeart.Core.Artifacts
     public class Inventory
     {
         private readonly Dictionary<ArtifactData, Artifact> m_artifacts;
-        private readonly Entity m_owner;
+        private readonly EntityModel m_owner;
 
-        public Inventory(Entity owner)
+        public Inventory(EntityModel owner)
         {
             m_artifacts = new Dictionary<ArtifactData, Artifact>();
             m_owner = owner;

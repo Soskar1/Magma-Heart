@@ -6,21 +6,22 @@ using MagmaHeart.AI.Pathifinding;
 using System;
 using System.Linq;
 using UnityEngine;
+using MagmaHeart.Core.Entities.CombatSystem;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class CombatPlayerBehaviour : IPlayerBehaviour, ICombatController
+    public class CombatPlayerBehaviour : IPlayerBehaviour
     {
         private CombatUserInput m_userInput;
         private RoomTile m_currentMouseTile;
-        private IHittableTile m_currentMouseOverEntity;
+        private Entity m_currentMouseOverEntity;
 
-        private Health m_health;
-        public Health Health => m_health;
-
+        private readonly Player m_player;
         private readonly Energy m_energy;
+        private readonly Transform m_transform;
         private readonly EnergyHUD m_energyHUD;
         private readonly CombatUI m_combatUI;
+        private readonly CombatController m_combatController;
 
         private PlayerAnimation m_animation;
         private Facing m_facing;
@@ -32,18 +33,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private TurnBasedMovement m_movement;
         private PathGizmosRenderer m_aStarPathRenderer;
-        public EventHandler<OnMovementEventArgs> OnMoved { get; set; }
 
-        private Transform m_playerTransform;
-        public Transform Transform => m_playerTransform;
-        public Vector3Int CurrentTilePosition => m_currentRoom.Grid.WorldToTilePosition(m_playerTransform.position);
-        public EventHandler NextTurn { get; set; }
-        public bool IsPlayableCharacter => true;
-
-        private bool m_playerTurnIsActive;
         private bool m_canExecuteActions;
 
-        private bool CanExecuteAction
+        public bool CanExecuteAction
         {
             get => m_canExecuteActions;
             set
@@ -56,19 +49,20 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public CombatPlayerBehaviour(Player player, CombatUserInput userInput, GameUI gameUI)
         {
-            m_playerTransform = player.transform;
-            m_energy = player.Energy;
-            m_health = player.Health;
+            m_player = player;
+            m_energy = m_player.Energy;
+            m_transform = player.transform;
+            m_combatController = player.CombatController;
             m_userInput = userInput;
             m_energyHUD = gameUI.EnergyHUD;
             m_combatUI = gameUI.CombatUI;
-            m_playerTurnIsActive = false;
 
             m_facing = player.GetComponent<Facing>();
             m_animation = player.GetComponent<PlayerAnimation>();
             m_movement = player.GetComponent<TurnBasedMovement>();
-            m_movementAction = new MovementAction(m_movement, player.ControllingEntity, this);
-            m_attackAction = new AttackAction(player.ControllingEntity, this);
+
+            m_movementAction = m_player.Model.PossibleActions.Get<MovementAction>();
+            m_attackAction = m_player.Model.PossibleActions.Get<AttackAction>();
 
             m_aStarPathRenderer = player.GetComponent<PathGizmosRenderer>(); // For debug purposes
         }
@@ -92,6 +86,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
             m_animation.OnAttackAnimationEnded += m_combatUI.HandleOnAttackAnimationEnded;
 
+            m_combatController.OnCombatStarted += HandleOnCombatStarted;
+            m_combatController.OnTurnStarted += HandleOnTurnStarted;
+            m_combatController.OnTurnEnded += HandleOnTurnEnded;
+
             m_animation.PlayIdleAnimation();
         }
 
@@ -113,29 +111,31 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_animation.OnAttackAnimationHitFrameTriggered -= HandleOnAttackAnimationHitFrame;
             m_animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
             m_animation.OnAttackAnimationEnded -= m_combatUI.HandleOnAttackAnimationEnded;
+
+            m_combatController.OnCombatStarted -= HandleOnCombatStarted;
+            m_combatController.OnTurnStarted -= HandleOnTurnStarted;
+            m_combatController.OnTurnEnded -= HandleOnTurnEnded;
         }
 
         public void Update()
         {
-            if (!m_playerTurnIsActive)
+            if (!CanExecuteAction)
                 return;
 
             m_userInput.MouseControl.UpdateMousePosition();
         }
 
-        public void Hit(float damage) => m_health.TakeDamage(damage);
-
-        public void StartCombat(Room room)
+        private void HandleOnCombatStarted(object obj, OnCombatStartedEventArgs args)
         {
-            m_currentRoom = room;
+            m_currentRoom = args.Room;
             m_movementAction.SetCurrentRoom(m_currentRoom);
 
             // Move player at the center of the current standing tile
-            RoomTile roomTile = m_currentRoom.GetRoomTile(m_playerTransform.position);
+            RoomTile roomTile = m_currentRoom.GetRoomTile(m_transform.position);
             m_movementAction.MoveWithoutEnergyUsage(roomTile);
         }
 
-        public void StartTurn()
+        private void HandleOnTurnStarted(object obj, EventArgs args)
         {
             m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
@@ -143,15 +143,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_energy.Regenerate();
 
             Debug.Log("Player is doing a move");
-            m_playerTurnIsActive = true;
         }
 
-        public void EndTurn()
+        private void HandleOnTurnEnded(object obj, EventArgs args)
         {
             m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
-
-            m_playerTurnIsActive = false;
 
             if (m_currentMouseTile != null)
             {
@@ -162,7 +159,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentMouseOverEntity != null)
                 m_currentMouseOverEntity = null;
 
-            NextTurn?.Invoke(this, EventArgs.Empty);
             m_movementAction.Reset();
         }
 
@@ -176,10 +172,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             RoomTile roomTile = m_currentRoom.GetRoomTile(e.TilePosition);
 
-            if (m_currentRoom.EntityIsOnTile(roomTile, out IHittableTile entity))
+            if (m_currentRoom.EntityIsOnTile(roomTile, out Entity entity))
             {
                 m_currentMouseOverEntity = entity;
-                if (entity != this && m_attackAction.CanAttack(entity))
+                if (entity != m_player && m_attackAction.CanAttack(entity))
                 {
                     // TODO: Outline the entity that can be attacked or display some kind of visual feedback
                     m_attackAction.EntityToHit = entity;
@@ -240,7 +236,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             CanExecuteAction = false;
 
-            m_facing.TryUpdateFacing(e.EntityPosition.x - Transform.position.x);
+            m_facing.TryUpdateFacing(e.EntityPosition.x - m_transform.position.x);
             m_animation.PlayAttackAnimation();
         }
 
@@ -250,17 +246,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             CanExecuteAction = true;
             m_animation.PlayIdleAnimation();
-        }
-
-        public bool Equals(ICombatController other)
-        {
-            if (other == null)
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
-            return false;
         }
     }
 }

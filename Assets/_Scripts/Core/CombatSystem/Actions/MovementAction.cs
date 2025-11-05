@@ -12,14 +12,15 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class MovementAction : AI.Action
     {
-        private TurnBasedMovement m_movement;
-        private ITilePosition m_tilePosition;
-        private Energy m_energy;
+        private readonly TurnBasedMovement m_movement;
+        private readonly Entity m_entity;
+        private readonly Energy m_energy;
+        private readonly AStar m_aStar;
+        
         private Room m_currentRoom;
-        private AStar m_aStar;
+        private List<RoomTile> m_currentPath;
         private int m_freeDistanceToMove;
         private int m_currentTheoreticalFreeDistanceToMove;
-        private List<RoomTile> m_currentPath;
         private bool m_isEnabled;
 
         public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
@@ -43,11 +44,11 @@ namespace MagmaHeart.Core.CombatSystem
         }
         public RoomTile TileToMove { get; set; }
 
-        public MovementAction(TurnBasedMovement movement, Entity actionPossessor, ITilePosition tilePosition) : base(actionPossessor)
+        public MovementAction(Entity actionPossessor) : base(actionPossessor.Model)
         {
-            m_movement = movement;
-            m_energy = actionPossessor.Energy;
-            m_tilePosition = tilePosition;
+            m_entity = actionPossessor;
+            m_energy = m_entity.Model.Energy;
+            m_movement = m_entity.TurnBasedMovement;
             m_aStar = new AStar(AStar.ManhattanDistance);
             CurrentPath = new List<RoomTile>();
         }
@@ -57,13 +58,11 @@ namespace MagmaHeart.Core.CombatSystem
             if (m_isEnabled)
                 return;
 
-            m_movement.OnMovementEnded += HandleOnMovementEnded;
             m_isEnabled = true;
         }
 
         public void Disable()
         {
-            m_movement.OnMovementEnded -= HandleOnMovementEnded;
             m_isEnabled = false;
         }
 
@@ -131,11 +130,9 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void CalculatePath(RoomTile targetTile)
         {
-            Vector3Int currentTile = m_tilePosition.CurrentTilePosition;
+            Vector3Int currentTile = m_entity.CurrentTilePosition;
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.AStarGraph, currentTile.ToVector2(), targetTile.Position.ToVector2());
             CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
         }
-
-        private void HandleOnMovementEnded(object obj, OnMovementEventArgs args) => m_tilePosition.OnMoved?.Invoke(this, args);
     }
 }

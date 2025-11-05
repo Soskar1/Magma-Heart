@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using MagmaHeart.Collections;
+using MagmaHeart.Core.Entities;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public static class IniciativeRollSort
     {
-        public static IEnumerable<ICombatController> SortByRollingIniciative(List<ICombatController> entities)
+        public static IEnumerable<Entity> SortByRollingIniciative(List<Entity> entities)
         {
-            TurnOrder turnOrder = new TurnOrder();
-            PriorityQueue<ICombatController, int> iniciativePriority = new PriorityQueue<ICombatController, int>();
+            PriorityQueue<Entity, int> iniciativePriority = new PriorityQueue<Entity, int>();
 
-            foreach (ICombatController entity in entities)
+            foreach (Entity entity in entities)
             {
                 int iniciative = IniciativeRoll();
                 iniciativePriority.Enqueue(entity, -iniciative);

@@ -1,4 +1,3 @@
-using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
@@ -13,17 +12,17 @@ namespace MagmaHeart.Core.CombatSystem
         public const int ATTACK_DISTANCE = 1;
         public const int ATTACK_DAMAGE = 1;
 
-        private Energy m_energy;
-        private ITilePosition m_tilePosition;
+        private readonly Energy m_energy;
+        private readonly Entity m_entity;
 
-        public IHittableTile EntityToHit { get; set; }
+        public Entity EntityToHit { get; set; }
 
         public EventHandler<OnAttackEventArgs> OnAttackTriggered;
 
-        public AttackAction(Entity actionPossessor, ITilePosition tilePosition) : base(actionPossessor)
+        public AttackAction(Entity actionPossessor) : base(actionPossessor.Model)
         {
-            m_tilePosition = tilePosition;
-            m_energy = actionPossessor.Energy;
+            m_entity = actionPossessor;
+            m_energy = actionPossessor.Model.Energy;
         }
 
         public override bool CanSimulate(StateSnapshot state, AIUnit target)
@@ -52,7 +51,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
         }
 
-        public bool CanAttack(IHittableTile hittable)
+        public bool CanAttack(Entity entity)
         {
             if (!m_energy.HasEnough(ENERGY_COST))
             {
@@ -60,7 +59,7 @@ namespace MagmaHeart.Core.CombatSystem
                 return false;
             }
 
-            int distance = DungeonGrid.ManhattanDistance(m_tilePosition.CurrentTilePosition, hittable.CurrentTilePosition);
+            int distance = DungeonGrid.ManhattanDistance(m_entity.CurrentTilePosition, entity.CurrentTilePosition);
             if (distance > ATTACK_DISTANCE)
             {
                 Debug.Log($"Distance between entities: {distance}. Can't attack");

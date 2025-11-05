@@ -1,32 +1,38 @@
 using System;
 using System.Collections;
-using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class Enemy : MonoBehaviour, ICombatController
+    public class Enemy : Entity
     {
-        [SerializeField] private EntityData m_data;
         private Room m_currentRoom;
 
-        private Entity m_controllingEntity;
-        public Entity ControllingEntity => m_controllingEntity;
-
-        public EventHandler NextTurn { get; set; }
-        public bool IsPlayableCharacter => false;
-
         private Vector3Int m_currentTilePosition; // TODO: Use MovementAction
-        public Vector3Int CurrentTilePosition => m_currentTilePosition;
-        public Transform Transform => transform;
-        public Health Health => ControllingEntity.Health;
 
-        public EventHandler<OnMovementEventArgs> OnMoved { get; set; }
-
-        public void Initialize()
+        public void Initialize(DungeonGrid grid)
         {
-            m_controllingEntity = new Entity(m_data, transform, false);
+            base.Initialize(grid, false);
+            CombatController.OnTurnStarted += HandleOnTurnStarted;
+            CombatController.OnTurnEnded += HandleOnTurnEnded;
+        }
+
+        public void OnDisable()
+        {
+            CombatController.OnTurnStarted -= HandleOnTurnStarted;
+            CombatController.OnTurnEnded -= HandleOnTurnEnded;
+        }
+
+        public void HandleOnTurnStarted(object obj, EventArgs args)
+        {
+            Debug.Log($"{gameObject.name} ({gameObject.transform.position}) is doing a move");
+            StartCoroutine(MakingThinkingMove());
+        }
+
+        public void HandleOnTurnEnded(object obj, EventArgs args)
+        {
+            Debug.Log($"{gameObject.name} ({gameObject.transform.position}) ended his move");
         }
 
         public void StartCombat(Room room)
@@ -35,35 +41,10 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_currentTilePosition = m_currentRoom.GetRoomTile(transform.position).Position;
         }
 
-        public void StartTurn()
-        {
-            Debug.Log($"{gameObject.name} ({gameObject.transform.position}) is doing a move");
-            StartCoroutine(MakingThinkingMove());
-        }
-
-        public void EndTurn()
-        {
-            Debug.Log($"{gameObject.name} ({gameObject.transform.position}) ended his move");
-            NextTurn?.Invoke(this, EventArgs.Empty);
-        }
-
         private IEnumerator MakingThinkingMove()
         {
             yield return new WaitForSeconds(1);
-            EndTurn();
-        }
-
-        public void Hit(float damage) => Health.TakeDamage(damage);
-
-        public bool Equals(ICombatController other)
-        {
-            if (other == null)
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
-            return false;
+            CombatController.EndTurn();
         }
     }
 }

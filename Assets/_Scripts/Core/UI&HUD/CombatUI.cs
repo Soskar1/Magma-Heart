@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.UI
 
         public void Initialize(Player player)
         {
-            m_nextTurnButton.onClick.AddListener(player.TurnBasedPlayerBehaviour.EndTurn);
+            m_nextTurnButton.onClick.AddListener(player.CombatController.EndTurn);
         }
 
         private void Enable() => m_nextTurnButton.enabled = true;
@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.UI
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            if (args.Entity.IsPlayableCharacter)
+            if (args.CurrentEntity.Model.IsPlayer)
                 Show();
             else
                 Hide();

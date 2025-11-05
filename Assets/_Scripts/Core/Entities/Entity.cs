@@ -1,29 +1,36 @@
-using MagmaHeart.AI;
-using MagmaHeart.AI.Reasoning;
-using System.Collections.Generic;
+﻿using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.CombatSystem;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class Entity : AIUnit
+    [RequireComponent(typeof(TurnBasedMovement))]
+    public class Entity : MonoBehaviour
     {
-        public Transform Transform { get; init; }
-        public Health Health { get; init; }
-        public Energy Energy { get; init; }
-        public EntityData Data { get; init; }
-        public EntityStats Stats => Data.Stats;
+        [SerializeField] private EntityData m_data;
+        private DungeonGrid m_grid;
 
-        public Entity(EntityData data, Transform transform, bool isPlayer)
+        public EntityModel Model { get; private set; }
+        public Health Health => Model.Health;
+        public Energy Energy => Model.Energy;
+        public EntityStats Stats => Model.Stats;
+        public Transform Transform => transform;
+        public Vector3Int CurrentTilePosition => m_grid.WorldToTilePosition(transform.position);
+        public CombatController CombatController { get; private set; }
+        public TurnBasedMovement TurnBasedMovement { get; private set; }
+
+        public virtual void Initialize(DungeonGrid grid, bool isPlayer)
         {
-            Data = data;
-            IsPlayer = isPlayer;
-            PossibleActions = new HashSet<Action>();
+            m_grid = grid;
+            CombatController = new CombatController();
+            Model = new EntityModel(m_data, isPlayer);
 
-            Transform = transform;
-            Health = new Health(Stats.MaxHealth);
-            Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            TurnBasedMovement = GetComponent<TurnBasedMovement>();
+            Model.PossibleActions.Add(new MovementAction(this));
+            Model.PossibleActions.Add(new AttackAction(this));
         }
 
-        public void Reset() => Health.Reset();
+        public void Hit(float damage) => Model.Health.TakeDamage(damage);
     }
 }

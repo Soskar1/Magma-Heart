@@ -1,3 +1,5 @@
+using MagmaHeart.Collections;
+using MagmaHeart.Core.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -5,44 +7,49 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class TurnSwitcher
     {
-        public TurnOrder TurnOrder { get; init; }
+        public CircularList<Entity> TurnOrder { get; init; }
 
-        private ICombatController m_currentTurn;
+        private Entity m_currentEntity;
 
-        public EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
+        public event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
-        public TurnSwitcher() => TurnOrder = new TurnOrder();
+        public TurnSwitcher() => TurnOrder = new CircularList<Entity>();
 
-        public void Start(IEnumerable<ICombatController> entities)
+        public void Start(IEnumerable<Entity> entities)
         {
             TurnOrder.Clear();
             TurnOrder.AddRange(entities);
 
-            m_currentTurn = TurnOrder.First;
-            m_currentTurn.NextTurn = NextTurn;
+            m_currentEntity = TurnOrder.Head;
+            m_currentEntity.CombatController.NextTurn += NextTurn;
             StartTurn();
         }
 
         private void NextTurn(object obj, EventArgs e)
         {
-            EndTurn();
-
-            m_currentTurn = TurnOrder.Next();
-            m_currentTurn.NextTurn = NextTurn;
+            m_currentEntity.CombatController.NextTurn -= NextTurn;
+            m_currentEntity = TurnOrder.Next();
+            m_currentEntity.CombatController.NextTurn += NextTurn;
             StartTurn();
         }
 
         private void StartTurn()
         {
-            OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(m_currentTurn);
+            OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(m_currentEntity);
             OnTurnSwitched?.Invoke(this, args);
 
-            m_currentTurn.StartTurn();
+            m_currentEntity.CombatController.StartTurn();
         }
 
-        private void EndTurn()
+        public void Clear()
         {
-            m_currentTurn.NextTurn = null;
+            foreach (Entity entity in TurnOrder)
+            {
+                entity.CombatController.NextTurn -= NextTurn;
+                entity.CombatController.EndTurn();
+            }
+
+            TurnOrder.Clear();
         }
     }
 }

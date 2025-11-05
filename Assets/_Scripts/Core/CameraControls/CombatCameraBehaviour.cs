@@ -38,7 +38,7 @@ namespace MagmaHeart.Core.CameraControls
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            m_tracker.Track(args.Entity.Transform);
+            m_tracker.Track(args.CurrentEntity.Transform);
             m_stickCameraWithTarget = true;
         }
     }

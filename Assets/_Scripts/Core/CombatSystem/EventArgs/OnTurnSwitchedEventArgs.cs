@@ -1,11 +1,12 @@
+using MagmaHeart.Core.Entities;
 using System;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public class OnTurnSwitchedEventArgs : EventArgs
     {
-        public ICombatController Entity { get; init; }
+        public Entity CurrentEntity { get; init; }
 
-        public OnTurnSwitchedEventArgs(ICombatController entity) => Entity = entity;
+        public OnTurnSwitchedEventArgs(Entity entity) => CurrentEntity = entity;
     }
 }

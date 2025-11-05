@@ -56,7 +56,7 @@ namespace MagmaHeart.Core.UI
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            if (args.Entity.IsPlayableCharacter)
+            if (args.CurrentEntity.Model.IsPlayer)
                 Show();
             else
                 Hide();

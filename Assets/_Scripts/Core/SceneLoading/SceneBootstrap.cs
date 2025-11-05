@@ -88,7 +88,7 @@ namespace MagmaHeart.Core.SceneLoading
             CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid);
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(actionUserInput, turnBasedUserInput, gameUI);
+            playerInstance.Initialize(actionUserInput, turnBasedUserInput, gameUI, m_grid);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);
@@ -114,8 +114,8 @@ namespace MagmaHeart.Core.SceneLoading
                 m_camera.TurnBasedCameraBehaviour, ui
             };
 
-            Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
-            Battle battle = new Battle(player.TurnBasedPlayerBehaviour, spawner, turnSwitchListeners);
+            Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer, m_grid);
+            Battle battle = new Battle(player, spawner, turnSwitchListeners);
             CombatState combatState = new CombatState(battle, combatStateListeners);
 
             ArtifactDatabase database = new ArtifactDatabase();
