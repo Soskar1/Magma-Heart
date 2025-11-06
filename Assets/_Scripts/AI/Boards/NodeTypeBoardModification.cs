@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Pathifinding;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MagmaHeart.AI.Boards
 {

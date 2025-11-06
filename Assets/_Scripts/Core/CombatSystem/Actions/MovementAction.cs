@@ -1,6 +1,6 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.AI.Pathifinding;
+using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;

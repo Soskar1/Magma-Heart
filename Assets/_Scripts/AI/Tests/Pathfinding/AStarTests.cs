@@ -3,7 +3,7 @@ using MagmaHeart.AI.Boards;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace MagmaHeart.AI.Pathifinding.Tests
+namespace MagmaHeart.AI.Pathfinding.Tests
 {
     public class AStarTests
     {

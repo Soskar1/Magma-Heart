@@ -1,7 +1,7 @@
 using MagmaHeart.AI.Boards;
 using UnityEngine;
 
-namespace MagmaHeart.AI.Pathifinding.Tests
+namespace MagmaHeart.AI.Pathfinding.Tests
 {
     public static class BoardGraphCreator
     {

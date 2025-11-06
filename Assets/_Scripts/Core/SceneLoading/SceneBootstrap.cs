@@ -9,7 +9,6 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
-using MagmaHeart.AI.Pathifinding;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 

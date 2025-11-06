@@ -5,7 +5,7 @@ using MagmaHeart.Collections;
 using MagmaHeart.Extensions;
 using UnityEngine;
 
-namespace MagmaHeart.AI.Pathifinding
+namespace MagmaHeart.AI.Pathfinding
 {
     public class AStar
     {
