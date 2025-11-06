@@ -4,12 +4,12 @@ using System.Linq;
 using UnityEngine;
 using MagmaHeart.Extensions;
 
-namespace MagmaHeart.AI.Pathifinding
+namespace MagmaHeart.AI.Boards
 {
-    public class AStarGraph
+    public class BoardGraph
     {
-        private Dictionary<Vector2, AStarNode> m_nodes;
-        private Dictionary<Vector2, HashSet<AStarEdge>> m_edges;
+        private Dictionary<Vector2, BoardNode> m_nodes;
+        private Dictionary<Vector2, HashSet<BoardEdge>> m_edges;
         public const float NOT_VALID_COST = -1;
 
         internal readonly Func<Vector2, string> m_addNodeWarningMessage = (Vector2 pos) => $"Node {pos} already exists in the map.";
@@ -31,13 +31,13 @@ namespace MagmaHeart.AI.Pathifinding
         public int NodeCount => m_nodes.Count;
         public int EdgeCount { get; private set; }
 
-        public AStarGraph()
+        public BoardGraph()
         {
-            m_nodes = new Dictionary<Vector2, AStarNode>();
-            m_edges = new Dictionary<Vector2, HashSet<AStarEdge>>();
+            m_nodes = new Dictionary<Vector2, BoardNode>();
+            m_edges = new Dictionary<Vector2, HashSet<BoardEdge>>();
         }
 
-        public void AddNode(AStarNode node)
+        public void AddNode(BoardNode node)
         {
             node.ThrowIfNull(nameof(node));
 
@@ -50,15 +50,15 @@ namespace MagmaHeart.AI.Pathifinding
             m_nodes[node.Position] = node;
         }
 
-        public void AddNode(Vector2 position, AStarNodeType nodeType)
+        public void AddNode(Vector2 position, BoardNodeType nodeType)
         {
-            AStarNode node = new AStarNode(position, nodeType);
+            BoardNode node = new BoardNode(position, nodeType);
             AddNode(node);
         }
 
-        public AStarNode GetNode(Vector2 position)
+        internal BoardNode GetNode(Vector2 position)
         {
-            if (m_nodes.TryGetValue(position, out AStarNode node))
+            if (m_nodes.TryGetValue(position, out BoardNode node))
                 return node;
             else
                 return null;
@@ -72,9 +72,9 @@ namespace MagmaHeart.AI.Pathifinding
                 Debug.LogWarning(m_removeNodeWarningMessage(position));
         }
 
-        public void ChangeNodeType(Vector2 position, AStarNodeType newType)
+        public void ChangeNodeType(Vector2 position, BoardNodeType newType)
         {
-            AStarNode node = GetNode(position);
+            BoardNode node = GetNode(position);
             if (node == null)
             {
                 Debug.LogWarning(m_changeNodeTypeWarningMessage(position));
@@ -99,18 +99,16 @@ namespace MagmaHeart.AI.Pathifinding
             }
 
             if (!m_edges.ContainsKey(node1))
-                m_edges[node1] = new HashSet<AStarEdge>();
+                m_edges[node1] = new HashSet<BoardEdge>();
 
             if (!m_edges.ContainsKey(node2))
-                m_edges[node2] = new HashSet<AStarEdge>();
+                m_edges[node2] = new HashSet<BoardEdge>();
 
-            AStarEdge edge = new AStarEdge(m_nodes[node1], m_nodes[node2], cost);
+            BoardEdge edge = new BoardEdge(m_nodes[node1], m_nodes[node2], cost);
             m_edges[node1].Add(edge);
             m_edges[node2].Add(edge);
             ++EdgeCount;
         }
-
-        public void ConnectNodes(AStarNode node1, AStarNode node2, float cost) => ConnectNodes(node1.Position, node2.Position, cost);
 
         public void RemoveEdge(Vector2 node1, Vector2 node2)
         {
@@ -126,7 +124,7 @@ namespace MagmaHeart.AI.Pathifinding
                 return;
             }
 
-            AStarEdge edgeToRemove = GetEdge(node1, node2);
+            BoardEdge edgeToRemove = GetEdge(node1, node2);
             m_edges[node1].Remove(edgeToRemove);
             m_edges[node2].Remove(edgeToRemove);
 
@@ -153,11 +151,11 @@ namespace MagmaHeart.AI.Pathifinding
                 return;
             }
 
-            AStarEdge edgeToUpdate = GetEdge(node1, node2);
+            BoardEdge edgeToUpdate = GetEdge(node1, node2);
             edgeToUpdate.Cost = newCost;
         }
 
-        public AStarEdge GetEdge(Vector2 node1, Vector2 node2)
+        internal BoardEdge GetEdge(Vector2 node1, Vector2 node2)
         {
             if (!ContainsEdge(node1, node2))
                 return null;
@@ -165,11 +163,11 @@ namespace MagmaHeart.AI.Pathifinding
             return GetEdgeBetweenNodes(node1, node2);
         }
 
-        public IEnumerable<AStarNode> GetAdjacentNodes(Vector2 node)
+        internal IEnumerable<BoardNode> GetAdjacentNodes(Vector2 node)
         {
             if (m_edges.ContainsKey(node))
             {
-                foreach (AStarEdge edge in m_edges[node])
+                foreach (BoardEdge edge in m_edges[node])
                 {
                     if (edge.First.Position == node)
                         yield return edge.Second;
@@ -179,8 +177,6 @@ namespace MagmaHeart.AI.Pathifinding
             }
         }
 
-        public IEnumerable<AStarNode> GetAdjacentNodes(AStarNode node) => GetAdjacentNodes(node.Position);
-
         public float GetCost(Vector2 node1, Vector2 node2)
         {
             if (!ContainsEdge(node1, node2))
@@ -189,7 +185,7 @@ namespace MagmaHeart.AI.Pathifinding
             return GetEdge(node1, node2).Cost;
         }
 
-        public float GetCost(AStarNode node1, AStarNode node2) => GetCost(node1.Position, node2.Position);
+        internal float GetCost(BoardNode node1, BoardNode node2) => GetCost(node1.Position, node2.Position);
 
         public bool ContainsNode(Vector2 position) => m_nodes.ContainsKey(position);
 
@@ -204,7 +200,7 @@ namespace MagmaHeart.AI.Pathifinding
             return GetEdgeBetweenNodes(node1, node2) != null;
         }
 
-        private AStarEdge GetEdgeBetweenNodes(Vector2 node1, Vector2 node2)
+        private BoardEdge GetEdgeBetweenNodes(Vector2 node1, Vector2 node2)
         {
             return m_edges[node1].Where(e =>
                 (e.First.Position == node1 && e.Second.Position == node2) ||

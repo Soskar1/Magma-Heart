@@ -1,14 +1,14 @@
 using MagmaHeart.Extensions;
 
-namespace MagmaHeart.AI.Pathifinding
+namespace MagmaHeart.AI.Boards
 {
-    public class AStarEdge
+    internal class BoardEdge
     {
         public float Cost { get; set; }
-        public AStarNode First { get; private set; }
-        public AStarNode Second { get; private set; }
+        public BoardNode First { get; private set; }
+        public BoardNode Second { get; private set; }
 
-        public AStarEdge(AStarNode first, AStarNode second, float cost)
+        public BoardEdge(BoardNode first, BoardNode second, float cost)
         {
             first.ThrowIfNull(nameof(first));
             second.ThrowIfNull(nameof(second));

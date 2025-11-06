@@ -1,31 +1,29 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Extensions;
-using MagmaHeart.AI.Pathifinding;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.AI.Boards;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class Room
+    public class Room : Board
     {
         private CombatTilemapRenderer m_renderer;
         public RoomTileData RoomTileData { get; init; }
         public DungeonGrid Grid { get; init; }
-        public AStarGraph AStarGraph { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
         private List<Entity> m_entitiesInCombat;
 
-        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, AStarGraph aStarGraph)
+        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
             m_entitiesInCombat = new List<Entity>();
-            AStarGraph = aStarGraph;
         }
 
         public void AddEntityToInspect(Entity entity)
@@ -33,7 +31,7 @@ namespace MagmaHeart.Core.Dungeon
             m_entitiesInCombat.Add(entity);
             entity.TurnBasedMovement.OnMovementEnded += HandleOnMovementEnded;
 
-            AStarGraph.ChangeNodeType(entity.CurrentTilePosition.ToVector2(), AStarNodeType.Obstacle);
+            ChangeNodeType(entity.CurrentTilePosition.ToVector2(), BoardNodeType.Obstacle);
         }
 
         public void RemoveEntityFromRoom(Entity entity)
@@ -41,7 +39,7 @@ namespace MagmaHeart.Core.Dungeon
             entity.TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
             m_entitiesInCombat.Remove(entity);
 
-            AStarGraph.ChangeNodeType(entity.CurrentTilePosition.ToVector2(), AStarNodeType.Walkable);
+            ChangeNodeType(entity.CurrentTilePosition.ToVector2(), BoardNodeType.Walkable);
         }
 
         public RoomTile GetRoomTile(Vector3 worldPosition)
@@ -86,8 +84,8 @@ namespace MagmaHeart.Core.Dungeon
 
         private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
         {
-            AStarGraph.ChangeNodeType(e.From.ToVector2(), AStarNodeType.Walkable);
-            AStarGraph.ChangeNodeType(e.To.ToVector2(), AStarNodeType.Obstacle);
+            ChangeNodeType(e.From.ToVector2(), BoardNodeType.Walkable);
+            ChangeNodeType(e.To.ToVector2(), BoardNodeType.Obstacle);
         }
     }
 

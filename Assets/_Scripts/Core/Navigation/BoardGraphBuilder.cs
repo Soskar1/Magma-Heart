@@ -1,24 +1,24 @@
 using MagmaHeart.BreadthFirstSearch;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.AI.Pathifinding;
+using MagmaHeart.AI.Boards;
 using System.Linq;
 
 namespace MagmaHeart.Core.Navigation
 {
-    public static class AStarGraphBuilder
+    public static class BoardGraphBuilder
     {
-        public static AStarGraph GenerateAStarGraph(RoomTileData roomTileData)
+        public static BoardGraph GenerateBoardGraph(RoomTileData roomTileData)
         {
-            AStarGraph graph = new AStarGraph();
+            BoardGraph graph = new BoardGraph();
 
             foreach (DungeonTile tile in roomTileData)
             {
-                AStarNode node = new AStarNode(tile.Position, AStarNodeType.None);
+                BoardNode node = new BoardNode(tile.Position, BoardNodeType.None);
 
                 if (tile.Type == TileType.Floor)
-                    node.Type = AStarNodeType.Walkable;
+                    node.Type = BoardNodeType.Walkable;
                 else
-                    node.Type = AStarNodeType.Obstacle;
+                    node.Type = BoardNodeType.Obstacle;
 
                 graph.AddNode(node);
             }

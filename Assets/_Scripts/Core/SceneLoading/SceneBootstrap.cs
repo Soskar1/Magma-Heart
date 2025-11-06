@@ -11,6 +11,7 @@ using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
 using MagmaHeart.AI.Pathifinding;
 using UnityEngine;
+using MagmaHeart.AI.Boards;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -141,8 +142,8 @@ namespace MagmaHeart.Core.SceneLoading
                 if (roomTileData != startRoom)
                 {
                     CombatTilemapRenderer renderer = Instantiate(m_combatTilemapRendererPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    AStarGraph aStarGraph = AStarGraphBuilder.GenerateAStarGraph(roomTileData);
-                    Room room = new Room(roomTileData, m_grid, renderer, aStarGraph);
+                    BoardGraph graph = BoardGraphBuilder.GenerateBoardGraph(roomTileData);
+                    Room room = new Room(roomTileData, m_grid, renderer, graph);
 
                     if (roomTileData != bossRoom)
                     {
