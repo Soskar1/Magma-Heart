@@ -2,5 +2,5 @@
 
 namespace MagmaHeart.Core.Entities.Properties
 {
-    public record EnergyProperty(float CurrentEnergy) : PropertySnapshot;
+    public record EnergyProperty(int CurrentEnergy) : PropertySnapshot;
 }
