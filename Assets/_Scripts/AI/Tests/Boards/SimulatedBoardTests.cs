@@ -6,21 +6,6 @@ namespace MagmaHeart.AI.Boards.Tests
 {
     internal class SimulatedBoardTests
     {
-        private class TestAction : Action
-        {
-            public TestAction(AIUnit actionPossessor) : base(actionPossessor) { }
-
-            public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public override void Execute()
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-
         private SimulatedBoard m_board;
 
         [SetUp]
@@ -40,7 +25,7 @@ namespace MagmaHeart.AI.Boards.Tests
         {
             NodeTypeBoardModification modification = new NodeTypeBoardModification(Vector2.zero, BoardNodeType.Walkable);
 
-            m_board.ApplyBoardModification(new TestAction(null), modification);
+            m_board.ApplyBoardModification(0, modification);
 
             Assert.That(m_board.Graph.GetNode(Vector2.zero).Type, Is.EqualTo(BoardNodeType.Walkable));
         }
@@ -49,24 +34,35 @@ namespace MagmaHeart.AI.Boards.Tests
         public void UndoBoardModification_OneModification_RemovesBoardModification()
         {
             NodeTypeBoardModification modification = new NodeTypeBoardModification(Vector2.zero, BoardNodeType.Walkable);
-            TestAction action = new TestAction(null);
-            m_board.ApplyBoardModification(action, modification);
+            m_board.ApplyBoardModification(0, modification);
 
-            m_board.UndoBoardModification(action);
+            m_board.UndoBoardModification(0);
 
             Assert.That(m_board.Graph.GetNode(Vector2.zero).Type, Is.EqualTo(BoardNodeType.Obstacle));
         }
 
         [Test]
-        public void UndoBoardModification_TwoModificationApplied_RemovesLastBoardModification()
+        public void UndoBoardModification_TwoModificationApplied_RemovesAllBoardModifications()
         {
             NodeTypeBoardModification modification1 = new NodeTypeBoardModification(Vector2.zero, BoardNodeType.Walkable);
             NodeTypeBoardModification modification2 = new NodeTypeBoardModification(Vector2.zero, BoardNodeType.None);
-            TestAction action = new TestAction(null);
-            m_board.ApplyBoardModification(action, modification1);
-            m_board.ApplyBoardModification(action, modification2);
+            m_board.ApplyBoardModification(0, modification1);
+            m_board.ApplyBoardModification(0, modification2);
 
-            m_board.UndoBoardModification(action);
+            m_board.UndoBoardModification(0);
+
+            Assert.That(m_board.Graph.GetNode(Vector2.zero).Type, Is.EqualTo(BoardNodeType.Obstacle));
+        }
+
+        [Test]
+        public void UndoBoardModification_TwoDifferentActions_RemovesOneActionsModifications()
+        {
+            NodeTypeBoardModification modification1 = new NodeTypeBoardModification(Vector2.zero, BoardNodeType.Walkable);
+            NodeTypeBoardModification modification2 = new NodeTypeBoardModification(Vector2.zero, BoardNodeType.None);
+            m_board.ApplyBoardModification(0, modification1);
+            m_board.ApplyBoardModification(1, modification2);
+
+            m_board.UndoBoardModification(1);
 
             Assert.That(m_board.Graph.GetNode(Vector2.zero).Type, Is.EqualTo(BoardNodeType.Walkable));
         }

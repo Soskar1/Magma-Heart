@@ -17,20 +17,20 @@ namespace MagmaHeart.AI.Boards
             Units = new Dictionary<Vector2, AIUnit>(units);
         }
 
-        public void ApplyBoardModification(Action action, BoardModification boardModification)
+        public void ApplyBoardModification(int simulationDepth, BoardModification boardModification)
         {
-            BoardRecord record = new BoardRecord(action, boardModification);
+            BoardRecord record = new BoardRecord(simulationDepth, boardModification);
             m_history.Push(record);
 
             boardModification.Apply(this);
         }
 
-        internal void UndoBoardModification(Action action)
+        internal void UndoBoardModification(int simulationDepth)
         {
-            if (m_history.Count > 0 && m_history.Peek().Action == action)
+            while (m_history.Count > 0 && m_history.Peek().SimulationDepth == simulationDepth)
             {
                 BoardRecord record = m_history.Pop();
-                record.boardModification.Undo(this);
+                record.BoardModification.Undo(this);
             }
         }
 

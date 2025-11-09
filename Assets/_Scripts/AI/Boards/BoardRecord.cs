@@ -1,4 +1,4 @@
 ﻿namespace MagmaHeart.AI.Boards
 {
-    internal record BoardRecord(Action Action, BoardModification boardModification);
+    internal record BoardRecord(int SimulationDepth, BoardModification BoardModification);
 }

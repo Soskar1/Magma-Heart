@@ -16,7 +16,8 @@ namespace MagmaHeart.AI
             {
                 StateProperties = state.StateProperties.ToDictionary(
                     kvp => kvp.Key,
-                    kvp => kvp.Value.DeepCopy())
+                    kvp => kvp.Value.DeepCopy()),
+                CurrentSimulationDepth = state.CurrentSimulationDepth + 1
             };
 
             return newState;

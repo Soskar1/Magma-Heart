@@ -15,7 +15,7 @@ namespace MagmaHeart.AI
                 stateProperties[unit] = unitProperties;
             }
 
-            return new StateSnapshot(stateProperties);
+            return new StateSnapshot(stateProperties, 0);
         }
     }
 }

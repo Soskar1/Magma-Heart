@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MagmaHeart.AI
 {
-    public record StateSnapshot(Dictionary<AIUnit, TypeMap<PropertySnapshot>> StateProperties)
+    public record StateSnapshot(Dictionary<AIUnit, TypeMap<PropertySnapshot>> StateProperties, int CurrentSimulationDepth)
     {
         public void Update(AIUnit unit, PropertySnapshot property)
         {

@@ -38,7 +38,7 @@ namespace MagmaHeart.AI.Reasoning
                 StateSnapshot actionState = action.Simulate(stateSnapshot, simulatedBoard, m_playerUnit);
 
                 float evaluation = Minimax(actionState, head.Next, simulatedBoard, m_depth - 1, alpha, beta);
-                simulatedBoard.UndoBoardModification(action);
+                simulatedBoard.UndoBoardModification(actionState.CurrentSimulationDepth);
 
                 if (evaluation > bestValue)
                 {
@@ -72,7 +72,7 @@ namespace MagmaHeart.AI.Reasoning
                     StateSnapshot newPosition = action.Simulate(position, board, m_playerUnit);
 
                     float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
-                    board.UndoBoardModification(action);
+                    board.UndoBoardModification(newPosition.CurrentSimulationDepth);
 
                     maxEvaluation = Math.Max(maxEvaluation, evaluation);
                     alpha = Math.Max(alpha, evaluation);
@@ -97,7 +97,7 @@ namespace MagmaHeart.AI.Reasoning
                     StateSnapshot newPosition = action.Simulate(position, board,target);
 
                     float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
-                    board.UndoBoardModification(action);
+                    board.UndoBoardModification(newPosition.CurrentSimulationDepth);
 
                     minEvaluation = Math.Min(minEvaluation, evaluation);
                     beta = Math.Min(beta, evaluation);
