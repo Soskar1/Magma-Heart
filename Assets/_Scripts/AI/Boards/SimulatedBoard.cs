@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.AI.Boards
 {
     public class SimulatedBoard
     {
-        internal BoardGraph Graph { get; init; }
+        public BoardGraph Graph { get; init; }
+        public Dictionary<Vector2, AIUnit> Units { get; init; }
 
         private Stack<BoardRecord> m_history;
 
-        internal SimulatedBoard(BoardGraph graph)
+        internal SimulatedBoard(BoardGraph graph, Dictionary<Vector2, AIUnit> units)
         {
             Graph = graph;
             m_history = new Stack<BoardRecord>();
+            Units = new Dictionary<Vector2, AIUnit>(units);
         }
 
         public void ApplyBoardModification(Action action, BoardModification boardModification)
@@ -29,6 +32,14 @@ namespace MagmaHeart.AI.Boards
                 BoardRecord record = m_history.Pop();
                 record.boardModification.Undo(this);
             }
+        }
+
+        public bool TryGetUnitOnPosition(Vector2 position, out AIUnit unit)
+        {
+            if (Units.TryGetValue(position, out unit))
+                return true;
+
+            return false;
         }
     }
 }
