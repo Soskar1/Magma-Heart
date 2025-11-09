@@ -10,7 +10,7 @@ namespace MagmaHeart.AI.Boards.Tests
     public class BoardGraphTests
     {
         [Test]
-        public void BoardGraph_AddOneNode_Success()
+        public void AddNode_OneNode_Success()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -25,7 +25,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_AddNodePassNull_ShouldThrowException()
+        public void AddNode_PassNull_ShouldThrowException()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -33,7 +33,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_AddDuplicateNode_WillNotAddItAndLogWarning()
+        public void AddNode_DuplicateNode_WillNotAddItAndLogWarning()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -52,7 +52,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_AddMultipleDistinctNodes_AllNodesAdded()
+        public void AddNode_MultipleDistinctNodes_AllNodesAdded()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -70,7 +70,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_GetNodePassNonExistingPositionInGraph_ReturnsNull()
+        public void GetNode_PassNonExistingPositionInGraph_ReturnsNull()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -79,7 +79,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_RemoveExistingNode_Success()
+        public void RemoveNode_ExistingNode_Success()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -92,7 +92,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_RemoveNonExistingNode_LogsWarning()
+        public void RemoveNode_NonExistingNode_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             graph.RemoveNode(Vector2.zero);
@@ -101,7 +101,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ChangeNodeTypeOnExistingNode_Success()
+        public void ChangeNodeType_ExistingNode_Success()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -113,7 +113,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ChangeNodeTypeOnNonExistingNode_LogsWarning()
+        public void ChangeNodeType_NonExistingNode_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             graph.ChangeNodeType(Vector2.zero, BoardNodeType.Walkable);
@@ -122,7 +122,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ConnectNodes_AddsNewEdgeToTheGraph()
+        public void ConnectNodes_AddsNewEdgeToTheGraph()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -141,7 +141,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ConnectMultipleValidEdges_AddsAllNewEdges()
+        public void ConnectNodes_MultipleValidEdges_AddsAllNewEdges()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -163,7 +163,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ConnectNonExistingNodeWithExistingNode_LogsWarning()
+        public void ConnectNodes_NonExistingNodeWithExistingNode_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -176,7 +176,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ConnectNonExistingNodes_LogsWarning()
+        public void ConnectNodes_NonExistingNodes_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             graph.ConnectNodes(Vector2.zero, Vector2.up, 1);
@@ -186,7 +186,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_ConnectSameNodesMultipleTime_LogsWarning()
+        public void ConnectNodes_SameNodesMultipleTime_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -208,7 +208,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_RemoveExistingEdge_EdgeRemovedSuccessfully()
+        public void RemoveEdge_ExistingEdge_EdgeRemovedSuccessfully()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -227,7 +227,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_RemoveEdgeOneNodeDoesNotExist_LogsWarning()
+        public void RemoveEdge_OneNodeDoesNotExist_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -240,7 +240,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_RemoveEdgeNodesDoNotExist_LogsWarning()
+        public void RemoveEdge_NodesDoNotExist_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -251,7 +251,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_RemoveNonExistingEdge_LogsWarning()
+        public void RemoveEdge_NonExistingEdge_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -266,7 +266,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_UpdateCostOnExistingEdge_CostUpdated()
+        public void UpdateCost_ExistingEdge_CostUpdated()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -283,7 +283,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_UpdateCostOneNodeDoesNotExist_LogsWarning()
+        public void UpdateCost_OneNodeDoesNotExist_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -295,7 +295,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_UpdateCostNodesDoNotExist_LogsWarning()
+        public void UpdateCost_NodesDoNotExist_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
 
@@ -305,7 +305,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_UpdateCostOnNonExistingEdge_LogsWarning()
+        public void UpdateCost_NonExistingEdge_LogsWarning()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -319,7 +319,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_GetAdjacentNodesFromNodeWithMultipleAdjacentNodes_AllAdjacentNodesExist()
+        public void GetAdjacentNodes_FromNodeWithMultipleAdjacentNodes_AllAdjacentNodesExist()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -356,7 +356,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_GetAdjacentNodesPassedIsolatedNode_IsolatedNodeWillNotGiveAnyAdjacentNodes()
+        public void GetAdjacentNodes_PassedIsolatedNode_IsolatedNodeWillNotGiveAnyAdjacentNodes()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -374,7 +374,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_GetAdjacentNodesOnNodeThatDoNotHaveConnectionWithIsolatedNode_IsolatedNodeIgnored()
+        public void GetAdjacentNodes_OnNodeThatDoNotHaveConnectionWithIsolatedNode_IsolatedNodeIgnored()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -393,7 +393,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_GetCostOnExistingEdge_ReturnsCost()
+        public void GetCost_ExistingEdge_ReturnsCost()
         {
             BoardGraph graph = new BoardGraph();
             BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
@@ -408,12 +408,57 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void BoardGraph_GetCostOnNonExistingEdge_ReturnsNotValidCost()
+        public void GetCost_NonExistingEdge_ReturnsNotValidCost()
         {
             BoardGraph graph = new BoardGraph();
 
             float cost = graph.GetCost(Vector2.zero, Vector2.up);
             Assert.That(cost, Is.EqualTo(BoardGraph.NOT_VALID_COST));
+        }
+
+        [Test]
+        public void DeepCopy_ReturnsGraphCopy()
+        {
+            BoardGraph graph = new BoardGraph();
+            BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
+            BoardNode node2 = new BoardNode(Vector2.up, BoardNodeType.Obstacle);
+            BoardNode node3 = new BoardNode(Vector2.right, BoardNodeType.Obstacle);
+            BoardNode node4 = new BoardNode(Vector2.up + Vector2.right, BoardNodeType.None);
+            graph.AddNode(node1);
+            graph.AddNode(node2);
+            graph.AddNode(node3);
+            graph.AddNode(node4);
+            graph.ConnectNodes(node1.Position, node2.Position, 1);
+            graph.ConnectNodes(node1.Position, node3.Position, 2);
+            graph.ConnectNodes(node1.Position, node4.Position, 3);
+            graph.ConnectNodes(node2.Position, node4.Position, 4);
+            graph.ConnectNodes(node3.Position, node4.Position, 5);
+
+            BoardGraph copy = graph.DeepCopy();
+
+            BoardNode nodeCopy1 = copy.GetNode(Vector2.zero);
+            BoardNode nodeCopy2 = copy.GetNode(Vector2.up);
+            BoardNode nodeCopy3 = copy.GetNode(Vector2.right);
+            BoardNode nodeCopy4 = copy.GetNode(Vector2.up + Vector2.right);
+            BoardEdge edgeCopy1 = copy.GetEdge(nodeCopy1.Position, nodeCopy2.Position);
+            BoardEdge edgeCopy2 = copy.GetEdge(nodeCopy1.Position, nodeCopy3.Position);
+            BoardEdge edgeCopy3 = copy.GetEdge(nodeCopy1.Position, nodeCopy4.Position);
+            BoardEdge edgeCopy4 = copy.GetEdge(nodeCopy2.Position, nodeCopy4.Position);
+            BoardEdge edgeCopy5 = copy.GetEdge(nodeCopy3.Position, nodeCopy4.Position);
+            Assert.That(nodeCopy1.Type, Is.EqualTo(BoardNodeType.Walkable));
+            Assert.That(nodeCopy2.Type, Is.EqualTo(BoardNodeType.Obstacle));
+            Assert.That(nodeCopy3.Type, Is.EqualTo(BoardNodeType.Obstacle));
+            Assert.That(nodeCopy4.Type, Is.EqualTo(BoardNodeType.None));
+            Assert.That(edgeCopy1.Cost, Is.EqualTo(1));
+            Assert.That(edgeCopy2.Cost, Is.EqualTo(2));
+            Assert.That(edgeCopy3.Cost, Is.EqualTo(3));
+            Assert.That(edgeCopy4.Cost, Is.EqualTo(4));
+            Assert.That(edgeCopy5.Cost, Is.EqualTo(5));
+            Assert.That(copy.GetEdge(nodeCopy2.Position, nodeCopy3.Position), Is.Null);
+            Assert.That(ReferenceEquals(nodeCopy1, node1), Is.False);
+            Assert.That(ReferenceEquals(nodeCopy2, node2), Is.False);
+            Assert.That(ReferenceEquals(nodeCopy3, node3), Is.False);
+            Assert.That(ReferenceEquals(nodeCopy4, node4), Is.False);
         }
     }
 }

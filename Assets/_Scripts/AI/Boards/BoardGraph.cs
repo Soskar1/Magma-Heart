@@ -207,5 +207,22 @@ namespace MagmaHeart.AI.Boards
                 (e.First.Position == node2 && e.Second.Position == node1))
                 .FirstOrDefault();
         }
+
+        public BoardGraph DeepCopy()
+        {
+            BoardGraph result = new BoardGraph();
+
+            foreach (BoardNode node in m_nodes.Values)
+            {
+                BoardNode copy = new BoardNode(node.Position, node.Type);
+                result.AddNode(copy);
+            }
+
+            foreach (HashSet<BoardEdge> hashSet in m_edges.Values)
+                foreach (BoardEdge edge in hashSet)
+                    result.ConnectNodes(edge.First.Position, edge.Second.Position, edge.Cost);
+
+            return result;
+        }
     }
 }
