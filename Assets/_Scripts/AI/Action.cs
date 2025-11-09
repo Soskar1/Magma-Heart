@@ -23,6 +23,7 @@ namespace MagmaHeart.AI
             return newState;
         }
 
+        // TODO: Add abstract arguments
         public abstract void Execute();
     }
 }

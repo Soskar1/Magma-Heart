@@ -2,6 +2,7 @@
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +11,12 @@ namespace MagmaHeart.Core.AI
     public class CombatAI : ICombatTurnSwitchListener
     {
         private readonly TacticianAI m_tactician;
+        private readonly Room m_room;
 
-        public CombatAI(TacticianAI tactician)
+        public CombatAI(TacticianAI tactician, Room room)
         {
             m_tactician = tactician;
+            m_room = room;
         }
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
@@ -27,8 +30,8 @@ namespace MagmaHeart.Core.AI
             foreach (AIUnit unit in units)
                 turnOrder.Add(unit);
 
-            // Action action = m_tactician.ChooseBestMove(turnOrder);
-            // action.Execute();
+            Action action = m_tactician.ChooseBestMove(turnOrder, m_room);
+            action.Execute();
 
             args.CurrentEntity.CombatController.EndTurn();
         }
