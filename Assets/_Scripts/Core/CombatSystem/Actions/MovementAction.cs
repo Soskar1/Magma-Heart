@@ -21,6 +21,7 @@ namespace MagmaHeart.Core.CombatSystem
         
         private Room m_currentRoom;
         private List<RoomTile> m_currentPath;
+        private List<RoomTile> m_currentSimulationPath;
         private int m_freeDistanceToMove;
         private int m_currentTheoreticalFreeDistanceToMove;
         private bool m_isEnabled;
@@ -77,7 +78,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard room, AIUnit target)
         {
             EnergyProperty possessorEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
             if (possessorEnergy.CurrentEnergy <= 0)
@@ -89,14 +90,40 @@ namespace MagmaHeart.Core.CombatSystem
             if (possessorPosition.ManhattanDistance(targetPosition) <= 1)
                 return false;
 
+            List<Vector2> path = m_aStar.FindPath(room.Graph, possessorPosition.Position.ToVector2(), targetPosition.Position.ToVector2());
+            m_currentSimulationPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
+
+            if (!path.Any())
+                return false;
+
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard room, AIUnit target)
         {
-            StateSnapshot newState = base.Simulate(state, board, target);
+            StateSnapshot newState = base.Simulate(state, room, target);
 
+            EnergyProperty possessorEnergy = newState.GetProperty<EnergyProperty>(ActionPossessor);
+            int distanceToMove = possessorEnergy.CurrentEnergy * MovementDistanceInTilesForOneEnergy;
+            distanceToMove = Math.Min(distanceToMove, m_currentSimulationPath.Count);
 
+            RoomTile currentMovementTarget = m_currentSimulationPath[distanceToMove];
+            
+            if (room.TryGetUnitOnPosition(currentMovementTarget.Position.ToVector2(), out AIUnit _))
+            {
+                --distanceToMove;
+                currentMovementTarget = m_currentSimulationPath[distanceToMove];
+            }
+
+            // TODO: calculate free movement. Save it as a property.
+
+            PositionProperty newPosition = new PositionProperty(currentMovementTarget.Position);
+            newState.Update(ActionPossessor, newPosition);
+
+            NodeTypeBoardModification sourceNodeModification = new NodeTypeBoardModification(m_currentSimulationPath.First().Position.ToVector2(), BoardNodeType.Walkable);
+            NodeTypeBoardModification targetNodeModification = new NodeTypeBoardModification(currentMovementTarget.Position.ToVector2(), BoardNodeType.Obstacle);
+            room.ApplyBoardModification(newState.CurrentSimulationDepth, sourceNodeModification);
+            room.ApplyBoardModification(newState.CurrentSimulationDepth, targetNodeModification);
 
             return newState;
         }
