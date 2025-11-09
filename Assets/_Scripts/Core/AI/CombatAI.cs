@@ -27,8 +27,8 @@ namespace MagmaHeart.Core.AI
             foreach (AIUnit unit in units)
                 turnOrder.Add(unit);
 
-            Action action = m_tactician.ChooseBestMove(turnOrder);
-            action.Execute();
+            // Action action = m_tactician.ChooseBestMove(turnOrder);
+            // action.Execute();
 
             args.CurrentEntity.CombatController.EndTurn();
         }

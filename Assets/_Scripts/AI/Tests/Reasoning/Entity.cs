@@ -14,13 +14,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Position = position;
 
             IsPlayer = isPlayer;
-            PossibleActions = new TypeMap<Action>()
-            {
-                new AttackAction(this, 4),
-                new MoveAction(this, 3),
-                new EngageAction(this, 4, 1),
-                new RunAwayAction(this, 3)
-            };
+            PossibleActions = new TypeMap<Action>();
         }
 
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()

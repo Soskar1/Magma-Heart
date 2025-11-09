@@ -1,4 +1,6 @@
-﻿namespace MagmaHeart.AI.Reasoning.Tests
+﻿using MagmaHeart.AI.Boards;
+
+namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class EngageAction : Action
     {
@@ -15,7 +17,7 @@
 
         public override void Execute() { }
 
-        public override bool CanSimulate(StateSnapshot state, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
             Position targetPosition = state.GetProperty<Position>(target);
@@ -27,10 +29,10 @@
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
-            StateSnapshot moveState = m_moveAction.Simulate(state, target);
-            return m_damageAction.Simulate(moveState, target);
+            StateSnapshot moveState = m_moveAction.Simulate(state, board, target);
+            return m_damageAction.Simulate(moveState, board, target);
         }
     }
 }

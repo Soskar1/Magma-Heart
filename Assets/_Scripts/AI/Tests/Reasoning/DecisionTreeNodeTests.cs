@@ -1,3 +1,4 @@
+using MagmaHeart.AI.Boards;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -10,7 +11,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             public TestAction1(AIUnit actionPossessor) : base(actionPossessor) { }
 
-            public override bool CanSimulate(StateSnapshot state, AIUnit target)
+            public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }
@@ -20,7 +21,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 Debug.Log(nameof(TestAction1));
             }
 
-            public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+            public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }
@@ -30,7 +31,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             public TestAction2(AIUnit actionPossessor) : base(actionPossessor) { }
 
-            public override bool CanSimulate(StateSnapshot state, AIUnit target)
+            public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
             {
                 throw new System.NotImplementedException();
             }

@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Collections;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,28 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         private Entity m_player;
         private Func<StateSnapshot, AIUnit> m_enemySelection;
+        private Board m_board;
+
+        private Func<int, Vector2, bool, Entity> Entity = (health, position, isPlayer) =>
+        {
+            Entity entity = new Entity(health, position, isPlayer);
+            entity.PossibleActions.Add(new AttackAction(entity, 4));
+            entity.PossibleActions.Add(new MoveAction(entity, 3));
+            entity.PossibleActions.Add(new EngageAction(entity, 4, 1));
+            entity.PossibleActions.Add(new RunAwayAction(entity, 3));
+            return entity;
+        };
 
         [SetUp]
         public void SetUp()
         {
-            m_player = new Entity(10, new Vector2(5, 5), true);
+            BoardGraph graph = new BoardGraph();
+            for (int i = 0; i < 5; ++i)
+                for (int j = 0; j < 5; ++j)
+                    graph.AddNode(new Vector2(i, j), BoardNodeType.Walkable);
+
+            m_board = new Board(graph);
+            m_player = Entity(10, new Vector2(5, 5), true);
             m_enemySelection = (state) =>
             {
                 AIUnit nearestUnit = null;
@@ -47,13 +65,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
-            BasicStrategy strategy = new BasicStrategy(1, m_enemySelection);
-            TacticianAI tactician = new TacticianAI(strategy, m_player);
+            BasicStrategy strategy = new BasicStrategy(1, m_enemySelection, m_player);
+            TacticianAI tactician = new TacticianAI(strategy);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(10, Vector2.zero, false), m_player };
 
-            Entity enemy = new Entity(10, Vector2.zero, false);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
-
-            Action bestAction = tactician.ChooseBestMove(circularList);
+            Action bestAction = tactician.ChooseBestMove(circularList, m_board);
 
             Assert.That(bestAction, Is.TypeOf<MoveAction>());
         }
@@ -63,13 +79,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [TestCase(2)]
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            BasicStrategy strategy = new BasicStrategy(depth, m_enemySelection);
-            TacticianAI tactician = new TacticianAI(strategy, m_player);
+            BasicStrategy strategy = new BasicStrategy(depth, m_enemySelection, m_player);
+            TacticianAI tactician = new TacticianAI(strategy);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(10, new Vector2(5, 3), false), m_player };
 
-            Entity enemy = new Entity(10, new Vector2(5, 3), false);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
-
-            Action bestAction = tactician.ChooseBestMove(circularList);
+            Action bestAction = tactician.ChooseBestMove(circularList, m_board);
 
             Assert.That(bestAction, Is.TypeOf<EngageAction>());
         }
@@ -77,12 +91,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
-            BasicStrategy strategy = new BasicStrategy(2, m_enemySelection);
-            TacticianAI tactician = new TacticianAI(strategy, m_player);
-            Entity enemy = new Entity(1, new Vector2(4, 5), false);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
+            BasicStrategy strategy = new BasicStrategy(2, m_enemySelection, m_player);
+            TacticianAI tactician = new TacticianAI(strategy);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(1, new Vector2(4, 5), false), m_player };
 
-            Action bestAction = tactician.ChooseBestMove(circularList);
+            Action bestAction = tactician.ChooseBestMove(circularList, m_board);
 
             Assert.That(bestAction, Is.TypeOf<RunAwayAction>());
         }

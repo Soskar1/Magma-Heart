@@ -1,4 +1,5 @@
 using MagmaHeart.AI;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
@@ -26,7 +27,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_energy = actionPossessor.Model.Energy;
         }
 
-        public override bool CanSimulate(StateSnapshot state, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
             EnergyProperty energy = state.GetProperty<EnergyProperty>(ActionPossessor);
 
@@ -42,9 +43,9 @@ namespace MagmaHeart.Core.CombatSystem
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
-            StateSnapshot newState = base.Simulate(state, target);
+            StateSnapshot newState = base.Simulate(state, board, target);
 
             EnergyProperty currentEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
             EnergyProperty newEnergy = new EnergyProperty(currentEnergy.CurrentEnergy - ENERGY_COST);

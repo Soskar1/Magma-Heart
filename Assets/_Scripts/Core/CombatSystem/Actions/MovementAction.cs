@@ -8,6 +8,7 @@ using System.Linq;
 using System;
 using MagmaHeart.AI;
 using MagmaHeart.Core.Entities.Properties;
+using MagmaHeart.AI.Boards;
 
 namespace MagmaHeart.Core.CombatSystem
 {
@@ -76,7 +77,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
-        public override bool CanSimulate(StateSnapshot state, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
             EnergyProperty possessorEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
             if (possessorEnergy.CurrentEnergy <= 0)
@@ -91,9 +92,9 @@ namespace MagmaHeart.Core.CombatSystem
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
-            StateSnapshot newState = base.Simulate(state, target);
+            StateSnapshot newState = base.Simulate(state, board, target);
 
 
 

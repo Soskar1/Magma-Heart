@@ -1,4 +1,4 @@
-﻿using MagmaHeart.AI.Reasoning;
+﻿using MagmaHeart.AI.Boards;
 using System.Linq;
 
 namespace MagmaHeart.AI
@@ -9,8 +9,8 @@ namespace MagmaHeart.AI
 
         public Action(AIUnit actionPossessor) => ActionPossessor = actionPossessor;
 
-        public abstract bool CanSimulate(StateSnapshot state, AIUnit target);
-        public virtual StateSnapshot Simulate(StateSnapshot state, AIUnit target)
+        public abstract bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target);
+        public virtual StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
             StateSnapshot newState = state with
             {
