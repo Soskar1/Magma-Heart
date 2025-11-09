@@ -31,7 +31,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Health targetHealth = state.GetProperty<Health>(target);
 
             if (targetHealth.CurrentHealth < Damage)
-                newState.Update(target, new IsAliveProperty(false));
+                newState.Update(target, new IsAlivePropertySnapshot(false));
 
             targetHealth = new Health(targetHealth.CurrentHealth - Damage, targetHealth.MaxHealth);
             newState.Update(target, targetHealth);

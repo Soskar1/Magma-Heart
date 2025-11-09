@@ -24,7 +24,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             {
                 Assert.That(snapshot.StateProperties.ContainsKey(entity), Is.True);
 
-                IsAliveProperty isAlive = snapshot.GetProperty<IsAliveProperty>(entity);
+                IsAlivePropertySnapshot isAlive = snapshot.GetProperty<IsAlivePropertySnapshot>(entity);
                 Assert.That((bool)isAlive, Is.True);
 
                 Health health = snapshot.GetProperty<Health>(entity);

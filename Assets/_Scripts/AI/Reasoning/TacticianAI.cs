@@ -55,7 +55,7 @@ namespace MagmaHeart.AI.Reasoning
         private float Minimax(StateSnapshot position, ChainNode<AIUnit> units, SimulatedBoard board, int currentDepth, float alpha, float beta)
         {
             AIUnit currentUnit = units.Value;
-            IsAliveProperty isAlive = position.GetProperty<IsAliveProperty>(currentUnit);
+            IsAlivePropertySnapshot isAlive = position.GetProperty<IsAlivePropertySnapshot>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
                 return m_strategy.EvaluateState(position);

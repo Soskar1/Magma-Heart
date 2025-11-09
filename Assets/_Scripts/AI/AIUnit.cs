@@ -10,7 +10,7 @@ namespace MagmaHeart.AI
         public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
             TypeMap<PropertySnapshot> properties = new TypeMap<PropertySnapshot>();
-            IsAliveProperty isAliveProperty = new IsAliveProperty(true);
+            IsAlivePropertySnapshot isAliveProperty = new IsAlivePropertySnapshot(true);
 
             properties.Add(isAliveProperty);
 

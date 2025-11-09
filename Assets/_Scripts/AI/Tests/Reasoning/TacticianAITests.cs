@@ -44,7 +44,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
                     if (unit.IsPlayer)
                         continue;
 
-                    IsAliveProperty isAlive = state.GetProperty<IsAliveProperty>(unit);
+                    IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
                     if (!isAlive)
                         continue;
 

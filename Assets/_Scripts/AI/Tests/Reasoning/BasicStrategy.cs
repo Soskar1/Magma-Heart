@@ -40,7 +40,7 @@ namespace MagmaHeart.AI.Reasoning
                 TypeMap<PropertySnapshot> unitProperties = aiUnitWithProperties.Value;
                 Health health = unitProperties.Get<Health>();
                 Position position = unitProperties.Get<Position>();
-                IsAliveProperty isAlive = unitProperties.Get<IsAliveProperty>();
+                IsAlivePropertySnapshot isAlive = unitProperties.Get<IsAlivePropertySnapshot>();
 
                 if (unit.IsPlayer)
                 {
@@ -72,7 +72,7 @@ namespace MagmaHeart.AI.Reasoning
                     if (aiUnit.IsPlayer)
                         continue;
 
-                    IsAliveProperty isAlive = state.StateProperties[aiUnit].Get<IsAliveProperty>();
+                    IsAlivePropertySnapshot isAlive = state.StateProperties[aiUnit].Get<IsAlivePropertySnapshot>();
                     if (!isAlive)
                         continue;
 

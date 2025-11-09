@@ -57,7 +57,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             if (newHealth.CurrentHealth <= 0)
             {
-                IsAliveProperty isAliveProperty = new IsAliveProperty(false);
+                IsAlivePropertySnapshot isAliveProperty = new IsAlivePropertySnapshot(false);
                 newState.Update(target, isAliveProperty);
             }
 
