@@ -69,9 +69,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             TacticianAI tactician = new TacticianAI(strategy);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(10, Vector2.zero, false), m_player };
 
-            Action bestAction = tactician.ChooseBestMove(circularList, m_board);
+            BestAction bestAction = tactician.ChooseBestMove(circularList, m_board);
 
-            Assert.That(bestAction, Is.TypeOf<MoveAction>());
+            Assert.That(bestAction.Action, Is.TypeOf<MoveAction>());
         }
 
         [Test]
@@ -83,9 +83,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             TacticianAI tactician = new TacticianAI(strategy);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(10, new Vector2(5, 3), false), m_player };
 
-            Action bestAction = tactician.ChooseBestMove(circularList, m_board);
+            BestAction bestAction = tactician.ChooseBestMove(circularList, m_board);
 
-            Assert.That(bestAction, Is.TypeOf<EngageAction>());
+            Assert.That(bestAction.Action, Is.TypeOf<EngageAction>());
         }
 
         [Test]
@@ -95,9 +95,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             TacticianAI tactician = new TacticianAI(strategy);
             CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(1, new Vector2(4, 5), false), m_player };
 
-            Action bestAction = tactician.ChooseBestMove(circularList, m_board);
+            BestAction bestAction = tactician.ChooseBestMove(circularList, m_board);
 
-            Assert.That(bestAction, Is.TypeOf<RunAwayAction>());
+            Assert.That(bestAction.Action, Is.TypeOf<RunAwayAction>());
         }
     }
 }

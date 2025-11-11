@@ -17,7 +17,7 @@ namespace MagmaHeart.AI.Reasoning
             m_playerUnit = strategy.Player;
         }
 
-        public Action ChooseBestMove(CircularList<AIUnit> unitsToConsider, Board board)
+        public BestAction ChooseBestMove(CircularList<AIUnit> unitsToConsider, Board board)
         {  
             StateSnapshot stateSnapshot = StateSnapshotMaker.CreateStateSnapshot(unitsToConsider);
             SimulatedBoard simulatedBoard = board.CreateSimulatedBoard();
@@ -28,30 +28,34 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             // TODO: filter moves according to current strategy
-            Action bestMove = null;
+            BestAction bestAction = null;
 
             foreach (Action action in head.Value.PossibleActions)
             {
-                if (!action.CanSimulate(stateSnapshot,simulatedBoard, m_playerUnit))
-                    continue;
-
-                StateSnapshot actionState = action.Simulate(stateSnapshot, simulatedBoard, m_playerUnit);
-
-                float evaluation = Minimax(actionState, head.Next, simulatedBoard, m_depth - 1, alpha, beta);
-                simulatedBoard.UndoBoardModification(actionState.CurrentSimulationDepth);
-
-                if (evaluation > bestValue)
+                foreach (ActionArgs args in action.SimulationArgs)
                 {
-                    bestValue = evaluation;
-                    bestMove = action;
-                }
+                    if (!action.CanSimulate(stateSnapshot, simulatedBoard, m_playerUnit, args))
+                        continue;
 
-                alpha = Math.Max(alpha, bestValue);
+                    StateSnapshot actionState = action.Simulate(stateSnapshot, simulatedBoard, m_playerUnit, args);
+
+                    float evaluation = Minimax(actionState, head.Next, simulatedBoard, m_depth - 1, alpha, beta);
+                    simulatedBoard.UndoBoardModification(actionState.CurrentSimulationDepth);
+
+                    if (evaluation > bestValue)
+                    {
+                        bestValue = evaluation;
+                        bestAction = new BestAction(action, args);
+                    }
+
+                    alpha = Math.Max(alpha, bestValue);
+                }
             }
 
-            return bestMove;
+            return bestAction;
         }
 
+        // TODO: Remove code duplication
         private float Minimax(StateSnapshot position, ChainNode<AIUnit> units, SimulatedBoard board, int currentDepth, float alpha, float beta)
         {
             AIUnit currentUnit = units.Value;
@@ -66,19 +70,22 @@ namespace MagmaHeart.AI.Reasoning
                 float maxEvaluation = float.MinValue;
                 foreach (Action action in currentUnit.PossibleActions)
                 {
-                    if (!action.CanSimulate(position, board, m_playerUnit))
-                        continue;
+                    foreach (ActionArgs args in action.SimulationArgs)
+                    {
+                        if (!action.CanSimulate(position, board, m_playerUnit, args))
+                            continue;
 
-                    StateSnapshot newPosition = action.Simulate(position, board, m_playerUnit);
+                        StateSnapshot newPosition = action.Simulate(position, board, m_playerUnit, args);
 
-                    float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
-                    board.UndoBoardModification(newPosition.CurrentSimulationDepth);
+                        float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
+                        board.UndoBoardModification(newPosition.CurrentSimulationDepth);
 
-                    maxEvaluation = Math.Max(maxEvaluation, evaluation);
-                    alpha = Math.Max(alpha, evaluation);
-                    
-                    if (beta <= alpha)
-                        break;
+                        maxEvaluation = Math.Max(maxEvaluation, evaluation);
+                        alpha = Math.Max(alpha, evaluation);
+
+                        if (beta <= alpha)
+                            break;
+                    }
                 }
 
                 return maxEvaluation;
@@ -91,19 +98,22 @@ namespace MagmaHeart.AI.Reasoning
                 float minEvaluation = float.MaxValue;
                 foreach (Action action in currentUnit.PossibleActions)
                 {
-                    if (!action.CanSimulate(position, board, target))
-                        continue;
+                    foreach (ActionArgs args in action.SimulationArgs)
+                    {
+                        if (!action.CanSimulate(position, board, target, args))
+                            continue;
 
-                    StateSnapshot newPosition = action.Simulate(position, board,target);
+                        StateSnapshot newPosition = action.Simulate(position, board, target, args);
 
-                    float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
-                    board.UndoBoardModification(newPosition.CurrentSimulationDepth);
+                        float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
+                        board.UndoBoardModification(newPosition.CurrentSimulationDepth);
 
-                    minEvaluation = Math.Min(minEvaluation, evaluation);
-                    beta = Math.Min(beta, evaluation);
+                        minEvaluation = Math.Min(minEvaluation, evaluation);
+                        beta = Math.Min(beta, evaluation);
 
-                    if (beta <= alpha)
-                        break;
+                        if (beta <= alpha)
+                            break;
+                    }
                 }
 
                 return minEvaluation;

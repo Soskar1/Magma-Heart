@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class MoveAction : Action
+    internal class MoveAction : Action<MoveActionArgs>
     {
         public float m_speed;
 
@@ -12,29 +12,27 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_speed = speed;
         }
 
-        public override void Execute() { }
+        public override void Execute(MoveActionArgs args) { }
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, MoveActionArgs args)
         {
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
-            Position targetPosition = state.GetProperty<Position>(target);
 
-            if (possessorPosition.Distance(targetPosition) <= 1)
+            if (possessorPosition.Distance(args.Target) <= 1)
                 return false;
 
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, MoveActionArgs args)
         {
-            StateSnapshot newState = base.Simulate(state, board, target);
+            StateSnapshot newState = base.Simulate(state, board, args);
 
-            Position targetPosition = state.GetProperty<Position>(target);
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
-            Vector2 direction = targetPosition.CurrentPosition - tmpPosition;
+            Vector2 direction = args.Target - tmpPosition;
             float xMovement = Mathf.Min(Mathf.Abs(direction.x), m_speed);
             float yMovement = Mathf.Min(Mathf.Abs(direction.y), m_speed);
 

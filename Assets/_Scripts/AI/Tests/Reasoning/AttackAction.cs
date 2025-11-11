@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class AttackAction : Action
+    internal class AttackAction : Action<AttackActionArgs>
     {
         public float Damage { get; init; }
 
@@ -11,12 +11,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Damage = damage;
         }
 
-        public override void Execute() { }
+        public override void Execute(AttackActionArgs args) { }
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AttackActionArgs args)
         {
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
-            Position targetPosition = state.GetProperty<Position>(target);
+            Position targetPosition = state.GetProperty<Position>(args.Target);
 
             if (possessorPosition.Distance(targetPosition) > 1)
                 return false;
@@ -24,17 +24,17 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AttackActionArgs args)
         {
-            StateSnapshot newState = base.Simulate(state, board, target);
+            StateSnapshot newState = base.Simulate(state, board, args);
 
-            Health targetHealth = state.GetProperty<Health>(target);
+            Health targetHealth = state.GetProperty<Health>(args.Target);
 
             if (targetHealth.CurrentHealth < Damage)
-                newState.Update(target, new IsAlivePropertySnapshot(false));
+                newState.Update(args.Target, new IsAlivePropertySnapshot(false));
 
             targetHealth = new Health(targetHealth.CurrentHealth - Damage, targetHealth.MaxHealth);
-            newState.Update(target, targetHealth);
+            newState.Update(args.Target, targetHealth);
 
             return newState;
         }

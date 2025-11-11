@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class EngageAction : Action
+    internal class EngageAction : Action<EngageActionArgs>
     {
         private MoveAction m_moveAction;
         private AttackAction m_damageAction;
@@ -15,12 +15,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_damageAction = new AttackAction(actionPossessor, damage);
         }
 
-        public override void Execute() { }
+        public override void Execute(EngageActionArgs args) { }
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, EngageActionArgs args)
         {
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
-            Position targetPosition = state.GetProperty<Position>(target);
+            Position targetPosition = state.GetProperty<Position>(args.Target);
 
             float distance = possessorPosition.Distance(targetPosition);
             if (distance > m_speed + 1 || distance <= 1)
@@ -29,10 +29,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, EngageActionArgs args)
         {
-            StateSnapshot moveState = m_moveAction.Simulate(state, board, target);
-            return m_damageAction.Simulate(moveState, board, target);
+            Position targetPosition = state.GetProperty<Position>(args.Target);
+
+            MoveActionArgs moveArgs = new MoveActionArgs(targetPosition.CurrentPosition);
+            StateSnapshot moveState = m_moveAction.Simulate(state, board, moveArgs);
+
+            AttackActionArgs attackArgs = new AttackActionArgs(args.Target);
+            return m_damageAction.Simulate(moveState, board, attackArgs);
         }
     }
 }
