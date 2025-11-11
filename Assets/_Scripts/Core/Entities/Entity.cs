@@ -31,7 +31,5 @@ namespace MagmaHeart.Core.Entities
             Model.PossibleActions.Add(new MovementAction(this));
             Model.PossibleActions.Add(new AttackAction(this));
         }
-
-        public void Hit(float damage) => Model.Health.TakeDamage(damage);
     }
 }
