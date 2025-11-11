@@ -15,7 +15,6 @@ namespace MagmaHeart.Core.Entities
         public Health Health => Model.Health;
         public Energy Energy => Model.Energy;
         public EntityStats Stats => Model.Stats;
-        public Transform Transform => transform;
         public Vector3Int CurrentTilePosition => m_grid.WorldToTilePosition(transform.position);
         public CombatController CombatController { get; private set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
