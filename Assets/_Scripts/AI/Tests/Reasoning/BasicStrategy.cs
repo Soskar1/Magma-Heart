@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Reasoning.Tests;
+using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 
@@ -9,7 +10,7 @@ namespace MagmaHeart.AI.Reasoning
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public BasicStrategy(int lookAhead, Func<StateSnapshot, AIUnit> playerTargetSelection, AIUnit player) : base(lookAhead, playerTargetSelection, player) { }
+        public BasicStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
 
         public override float EvaluateState(StateSnapshot state)
         {

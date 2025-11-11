@@ -1,4 +1,6 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
@@ -10,6 +12,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             Damage = damage;
         }
+
+        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit) => new AttackActionArgs(unit);
 
         public override void Execute(AttackActionArgs args) { }
 
@@ -38,5 +42,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return newState;
         }
+
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args) => CanSimulate(state, board, (AttackActionArgs)args);
+        public override void Execute(ActionArgs args) => Execute((AttackActionArgs)args);
     }
 }

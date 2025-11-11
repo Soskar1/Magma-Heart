@@ -1,20 +1,23 @@
-﻿using System;
+﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Action = MagmaHeart.AI.Actions.Action;
 
 namespace MagmaHeart.AI.Reasoning
 {
     public class TacticianAI
     {
         private int m_depth;
-        private AIUnit m_playerUnit;
         private Strategy m_strategy;
 
         public TacticianAI(Strategy strategy)
         {
             m_strategy = strategy;
             m_depth = m_strategy.LookAhead;
-            m_playerUnit = strategy.Player;
         }
 
         public BestAction ChooseBestMove(CircularList<AIUnit> unitsToConsider, Board board)
@@ -27,27 +30,25 @@ namespace MagmaHeart.AI.Reasoning
             float beta = float.MaxValue;
             float bestValue = float.MinValue;
 
-            // TODO: filter moves according to current strategy
             BestAction bestAction = null;
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(stateSnapshot, simulatedBoard, head.Value.PossibleActions.ToList());
 
-            foreach (Action action in head.Value.PossibleActions)
+            foreach (ActionSimulation simulation in possibleSimulations)
             {
-                foreach (ActionArgs args in action.SimulationArgs)
+                Action action = simulation.Action;
+                foreach (ActionArgs args in simulation.SimulationArgs)
                 {
-                    if (!action.CanSimulate(stateSnapshot, simulatedBoard, m_playerUnit, args))
-                        continue;
-
-                    StateSnapshot actionState = action.Simulate(stateSnapshot, simulatedBoard, m_playerUnit, args);
-
+                    StateSnapshot actionState = action.Simulate(stateSnapshot, simulatedBoard, args);
+                    
                     float evaluation = Minimax(actionState, head.Next, simulatedBoard, m_depth - 1, alpha, beta);
                     simulatedBoard.UndoBoardModification(actionState.CurrentSimulationDepth);
-
+                    
                     if (evaluation > bestValue)
                     {
                         bestValue = evaluation;
                         bestAction = new BestAction(action, args);
                     }
-
+                    
                     alpha = Math.Max(alpha, bestValue);
                 }
             }
@@ -56,30 +57,30 @@ namespace MagmaHeart.AI.Reasoning
         }
 
         // TODO: Remove code duplication
-        private float Minimax(StateSnapshot position, ChainNode<AIUnit> units, SimulatedBoard board, int currentDepth, float alpha, float beta)
+        private float Minimax(StateSnapshot state, ChainNode<AIUnit> units, SimulatedBoard board, int currentDepth, float alpha, float beta)
         {
             AIUnit currentUnit = units.Value;
-            IsAlivePropertySnapshot isAlive = position.GetProperty<IsAlivePropertySnapshot>(currentUnit);
+            IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
-                return m_strategy.EvaluateState(position);
+                return m_strategy.EvaluateState(state);
+
+            List<ActionSimulation> simulations = ActionSimulationFilter.GetActionSimulations(state, board, currentUnit.PossibleActions.ToList());
 
             if (!currentUnit.IsPlayer)
             {
                 // AI
                 float maxEvaluation = float.MinValue;
-                foreach (Action action in currentUnit.PossibleActions)
+                foreach (ActionSimulation simulation in simulations)
                 {
-                    foreach (ActionArgs args in action.SimulationArgs)
+                    Action action = simulation.Action;
+                    foreach (ActionArgs args in simulation.SimulationArgs)
                     {
-                        if (!action.CanSimulate(position, board, m_playerUnit, args))
-                            continue;
-
-                        StateSnapshot newPosition = action.Simulate(position, board, m_playerUnit, args);
-
-                        float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
-                        board.UndoBoardModification(newPosition.CurrentSimulationDepth);
-
+                        StateSnapshot newState = action.Simulate(state, board, args);
+                        float evaluation = Minimax(newState, units.Next, board, currentDepth - 1, alpha, beta);
+                        
+                        board.UndoBoardModification(newState.CurrentSimulationDepth);
+                        
                         maxEvaluation = Math.Max(maxEvaluation, evaluation);
                         alpha = Math.Max(alpha, evaluation);
 
@@ -93,17 +94,13 @@ namespace MagmaHeart.AI.Reasoning
             else
             {
                 // PLAYER
-                AIUnit target = m_strategy.PlayerTargetSelection(position);
-
                 float minEvaluation = float.MaxValue;
-                foreach (Action action in currentUnit.PossibleActions)
+                foreach (ActionSimulation simulation in simulations)
                 {
-                    foreach (ActionArgs args in action.SimulationArgs)
+                    Action action = simulation.Action;
+                    foreach (ActionArgs args in simulation.SimulationArgs)
                     {
-                        if (!action.CanSimulate(position, board, target, args))
-                            continue;
-
-                        StateSnapshot newPosition = action.Simulate(position, board, target, args);
+                        StateSnapshot newPosition = action.Simulate(state, board, args);
 
                         float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
                         board.UndoBoardModification(newPosition.CurrentSimulationDepth);

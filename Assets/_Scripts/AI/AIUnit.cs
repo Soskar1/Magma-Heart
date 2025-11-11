@@ -1,4 +1,6 @@
-﻿using MagmaHeart.Collections;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.States;
+using MagmaHeart.Collections;
 
 namespace MagmaHeart.AI
 {

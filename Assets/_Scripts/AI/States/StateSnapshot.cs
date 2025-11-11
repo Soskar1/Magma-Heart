@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagmaHeart.AI
+namespace MagmaHeart.AI.States
 {
     public record StateSnapshot(Dictionary<AIUnit, TypeMap<PropertySnapshot>> StateProperties, int CurrentSimulationDepth)
     {

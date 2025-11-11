@@ -1,9 +1,11 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class RunAwayAction : Action
+    internal class RunAwayAction : Action<RunAwayActionArgs>
     {
         public float m_speed;
 
@@ -12,15 +14,17 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_speed = speed;
         }
 
-        public override void Execute() { }
+        public override void Execute(RunAwayActionArgs args) { }
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target) => true;
+        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit) => new RunAwayActionArgs(unit);
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, RunAwayActionArgs args) => true;
+
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, RunAwayActionArgs args)
         {
-            StateSnapshot newState = base.Simulate(state, board, target);
+            StateSnapshot newState = base.Simulate(state, board, args);
 
-            Position targetPosition = state.GetProperty<Position>(target);
+            Position targetPosition = state.GetProperty<Position>(args.RunAwayFrom);
             Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
@@ -43,5 +47,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return newState;
         }
+
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args) => CanSimulate(state, board, (RunAwayActionArgs)args);
+        public override void Execute(ActionArgs args) => Execute((RunAwayActionArgs)args);
     }
 }

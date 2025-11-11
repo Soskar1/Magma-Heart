@@ -1,4 +1,6 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
@@ -13,6 +15,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
         }
 
         public override void Execute(MoveActionArgs args) { }
+
+        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit)
+        {
+            Position position = state.GetProperty<Position>(unit);
+
+            return new MoveActionArgs(position.CurrentPosition);
+        }
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, MoveActionArgs args)
         {
@@ -50,5 +59,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return newState;
         }
+
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args) => CanSimulate(state, board, (MoveActionArgs)args);
+        public override void Execute(ActionArgs args) => Execute((MoveActionArgs)args);
     }
 }
