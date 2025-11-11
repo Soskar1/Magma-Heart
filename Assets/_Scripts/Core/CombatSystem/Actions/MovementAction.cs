@@ -80,12 +80,12 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard room, AIUnit target)
         {
-            EnergyProperty possessorEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
+            EnergyPropertySnapshot possessorEnergy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
             if (possessorEnergy.CurrentEnergy <= 0)
                 return false;
 
-            PositionProperty possessorPosition = state.GetProperty<PositionProperty>(ActionPossessor);
-            PositionProperty targetPosition = state.GetProperty<PositionProperty>(target);
+            PositionPropertySnapshot possessorPosition = state.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+            PositionPropertySnapshot targetPosition = state.GetProperty<PositionPropertySnapshot>(target);
 
             if (possessorPosition.ManhattanDistance(targetPosition) <= 1)
                 return false;
@@ -103,7 +103,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             StateSnapshot newState = base.Simulate(state, room, target);
 
-            EnergyProperty possessorEnergy = newState.GetProperty<EnergyProperty>(ActionPossessor);
+            EnergyPropertySnapshot possessorEnergy = newState.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
             int distanceToMove = possessorEnergy.CurrentEnergy * MovementDistanceInTilesForOneEnergy;
             distanceToMove = Math.Min(distanceToMove, m_currentSimulationPath.Count);
 
@@ -117,7 +117,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             // TODO: calculate free movement. Save it as a property.
 
-            PositionProperty newPosition = new PositionProperty(currentMovementTarget.Position);
+            PositionPropertySnapshot newPosition = new PositionPropertySnapshot(currentMovementTarget.Position);
             newState.Update(ActionPossessor, newPosition);
 
             NodeTypeBoardModification sourceNodeModification = new NodeTypeBoardModification(m_currentSimulationPath.First().Position.ToVector2(), BoardNodeType.Walkable);
@@ -173,7 +173,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void CalculatePath(RoomTile targetTile)
         {
-            Vector3Int currentTile = m_entity.CurrentTilePosition;
+            Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
             CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
         }

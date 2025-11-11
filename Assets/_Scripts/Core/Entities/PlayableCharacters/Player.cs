@@ -1,5 +1,6 @@
 using System;
 using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
@@ -19,8 +20,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private IPlayerBehaviour m_currentBehaviour;
         private ActionPlayerBehaviour m_actionBehaviour;
-        private CombatPlayerBehaviour m_turnBasedBehaviour;
+        private CombatPlayerBehaviour m_combatBehaviour;
         private RewardPlayerBehaviour m_rewardPlayerBehaviour;
+
+        public IBattleStartedListener BattleStartedListener => m_combatBehaviour;
 
         public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI, DungeonGrid grid)
         {
@@ -33,7 +36,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
-            m_turnBasedBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI);
+            m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI);
             m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, m_animation);
             m_currentBehaviour = m_actionBehaviour;
         }
@@ -46,7 +49,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void EnterActionState() => SwitchState(m_actionBehaviour);
         public void ExitActionState() { }
 
-        public void EnterCombatState() => SwitchState(m_turnBasedBehaviour);
+        public void EnterCombatState() => SwitchState(m_combatBehaviour);
         public void ExitCombatState() { }
 
         public void EnterRewardState() => SwitchState(m_rewardPlayerBehaviour);

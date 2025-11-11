@@ -17,7 +17,8 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly Energy m_energy;
         private readonly Entity m_entity;
 
-        public Entity EntityToHit { get; set; }
+        // TODO: REMOVE THIS SHIT
+        public AIUnit EntityToHit { get; set; }
 
         public EventHandler<OnAttackEventArgs> OnAttackTriggered;
 
@@ -29,13 +30,13 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AIUnit target)
         {
-            EnergyProperty energy = state.GetProperty<EnergyProperty>(ActionPossessor);
+            EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
 
             if (energy.CurrentEnergy < ENERGY_COST)
                 return false;
 
-            PositionProperty possessorPosition = state.GetProperty<PositionProperty>(ActionPossessor);
-            PositionProperty targetPosition = state.GetProperty<PositionProperty>(target);
+            PositionPropertySnapshot possessorPosition = state.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+            PositionPropertySnapshot targetPosition = state.GetProperty<PositionPropertySnapshot>(target);
 
             if (possessorPosition.ManhattanDistance(targetPosition) != ATTACK_DISTANCE)
                 return false;
@@ -47,12 +48,12 @@ namespace MagmaHeart.Core.CombatSystem
         {
             StateSnapshot newState = base.Simulate(state, board, target);
 
-            EnergyProperty currentEnergy = state.GetProperty<EnergyProperty>(ActionPossessor);
-            EnergyProperty newEnergy = new EnergyProperty(currentEnergy.CurrentEnergy - ENERGY_COST);
+            EnergyPropertySnapshot currentEnergy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
+            EnergyPropertySnapshot newEnergy = new EnergyPropertySnapshot(currentEnergy.CurrentEnergy - ENERGY_COST);
             newState.Update(ActionPossessor, newEnergy);
 
-            HealthProperty targetHealth = state.GetProperty<HealthProperty>(target);
-            HealthProperty newHealth = new HealthProperty(targetHealth.CurrentHealth - ATTACK_DAMAGE, targetHealth.MaxHealth);
+            HealthPropertySnapshot targetHealth = state.GetProperty<HealthPropertySnapshot>(target);
+            HealthPropertySnapshot newHealth = new HealthPropertySnapshot(targetHealth.CurrentHealth - ATTACK_DAMAGE, targetHealth.MaxHealth);
             newState.Update(target, newHealth);
 
             if (newHealth.CurrentHealth <= 0)
@@ -66,11 +67,13 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override void Execute()
         {
-            if (CanAttack(EntityToHit))
+            EntityModel model = (EntityModel)EntityToHit;
+
+            if (CanAttack(model))
             {
                 m_energy.Spend(ENERGY_COST);
 
-                OnAttackEventArgs attackArgs = new OnAttackEventArgs(EntityToHit.CurrentTilePosition);
+                OnAttackEventArgs attackArgs = new OnAttackEventArgs(model.GetCurrentTilePosition());
                 OnAttackTriggered?.Invoke(this, attackArgs);
                 if (OnAttackTriggered == null)
                 {
@@ -80,7 +83,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
         }
 
-        public bool CanAttack(Entity entity)
+        public bool CanAttack(EntityModel model)
         {
             if (!m_energy.HasEnough(ENERGY_COST))
             {
@@ -88,7 +91,7 @@ namespace MagmaHeart.Core.CombatSystem
                 return false;
             }
 
-            int distance = DungeonGrid.ManhattanDistance(m_entity.CurrentTilePosition, entity.CurrentTilePosition);
+            int distance = DungeonGrid.ManhattanDistance(m_entity.Model.GetCurrentTilePosition(), model.GetCurrentTilePosition());
             if (distance > ATTACK_DISTANCE)
             {
                 Debug.Log($"Distance between entities: {distance}. Can't attack");
@@ -98,6 +101,6 @@ namespace MagmaHeart.Core.CombatSystem
             return true;
         }
 
-        public void Hit() => EntityToHit.Hit(ATTACK_DAMAGE);
+        public void Hit() => ((EntityModel)EntityToHit).Health.TakeDamage(ATTACK_DAMAGE);
     }
 }

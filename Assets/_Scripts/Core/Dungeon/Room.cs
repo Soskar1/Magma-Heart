@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.AI.Boards;
+using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -16,30 +17,31 @@ namespace MagmaHeart.Core.Dungeon
         public DungeonGrid Grid { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
-        private List<Entity> m_entitiesInCombat;
-
         public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
-            m_entitiesInCombat = new List<Entity>();
         }
 
         public void AddEntityToInspect(Entity entity)
         {
-            m_entitiesInCombat.Add(entity);
+            Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
+
+            Units.Add(position, entity.Model);
             entity.TurnBasedMovement.OnMovementEnded += HandleOnMovementEnded;
 
-            ChangeNodeType(entity.CurrentTilePosition.ToVector2(), BoardNodeType.Obstacle);
+            ChangeNodeType(position, BoardNodeType.Obstacle);
         }
 
         public void RemoveEntityFromRoom(Entity entity)
         {
-            entity.TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
-            m_entitiesInCombat.Remove(entity);
+            Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
-            ChangeNodeType(entity.CurrentTilePosition.ToVector2(), BoardNodeType.Walkable);
+            entity.TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
+            Units.Remove(position);
+
+            ChangeNodeType(position, BoardNodeType.Walkable);
         }
 
         public RoomTile GetRoomTile(Vector3 worldPosition)
@@ -73,19 +75,31 @@ namespace MagmaHeart.Core.Dungeon
             return true;
         }
 
-        public bool EntityIsOnTile(RoomTile roomTile, out Entity entity)
+        public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit)
         {
-            entity = m_entitiesInCombat.FirstOrDefault(e => e.CurrentTilePosition == roomTile.Position);
-            if (entity == null)
-                return false;
+            Vector2 position = Units.Keys.FirstOrDefault(pos => pos == roomTile.Position.ToVector2());
 
-            return true;
+            if (Units.TryGetValue(position, out AIUnit aiUnit))
+            {
+                unit = (EntityModel)aiUnit;
+                return true;
+            }
+
+            unit = null;
+            return false;
         }
 
         private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
         {
-            ChangeNodeType(e.From.ToVector2(), BoardNodeType.Walkable);
-            ChangeNodeType(e.To.ToVector2(), BoardNodeType.Obstacle);
+            Vector2 from = e.From.ToVector2();
+            Vector2 to = e.To.ToVector2();
+
+            AIUnit unit = Units[from];
+            Units.Remove(from);
+            Units.Add(to, unit);
+
+            ChangeNodeType(from, BoardNodeType.Walkable);
+            ChangeNodeType(to, BoardNodeType.Obstacle);
         }
     }
 

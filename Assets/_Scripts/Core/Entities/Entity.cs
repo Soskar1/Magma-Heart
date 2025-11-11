@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.CombatSystem;
+﻿using System;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.CombatSystem;
 using UnityEngine;
@@ -15,7 +16,6 @@ namespace MagmaHeart.Core.Entities
         public Health Health => Model.Health;
         public Energy Energy => Model.Energy;
         public EntityStats Stats => Model.Stats;
-        public Vector3Int CurrentTilePosition => m_grid.WorldToTilePosition(transform.position);
         public CombatController CombatController { get; private set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
 
@@ -23,7 +23,9 @@ namespace MagmaHeart.Core.Entities
         {
             m_grid = grid;
             CombatController = new CombatController();
-            Model = new EntityModel(m_data, transform, isPlayer);
+
+            Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
+            Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
             Model.PossibleActions.Add(new MovementAction(this));

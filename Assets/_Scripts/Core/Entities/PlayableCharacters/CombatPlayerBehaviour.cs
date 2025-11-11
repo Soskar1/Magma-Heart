@@ -7,14 +7,15 @@ using System;
 using System.Linq;
 using UnityEngine;
 using MagmaHeart.Core.Entities.CombatSystem;
+using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class CombatPlayerBehaviour : IPlayerBehaviour
+    public class CombatPlayerBehaviour : IPlayerBehaviour, IBattleStartedListener
     {
         private CombatUserInput m_userInput;
         private RoomTile m_currentMouseTile;
-        private Entity m_currentMouseOverEntity;
+        private AIUnit m_currentMouseOverEntity;
 
         private readonly Player m_player;
         private readonly Energy m_energy;
@@ -86,7 +87,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
             m_animation.OnAttackAnimationEnded += m_combatUI.HandleOnAttackAnimationEnded;
 
-            m_combatController.OnCombatStarted += HandleOnCombatStarted;
             m_combatController.OnTurnStarted += HandleOnTurnStarted;
             m_combatController.OnTurnEnded += HandleOnTurnEnded;
 
@@ -112,7 +112,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
             m_animation.OnAttackAnimationEnded -= m_combatUI.HandleOnAttackAnimationEnded;
 
-            m_combatController.OnCombatStarted -= HandleOnCombatStarted;
             m_combatController.OnTurnStarted -= HandleOnTurnStarted;
             m_combatController.OnTurnEnded -= HandleOnTurnEnded;
         }
@@ -125,7 +124,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.UpdateMousePosition();
         }
 
-        private void HandleOnCombatStarted(object obj, OnCombatStartedEventArgs args)
+        public void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args)
         {
             m_currentRoom = args.Room;
             m_movementAction.SetCurrentRoom(m_currentRoom);
@@ -172,10 +171,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             RoomTile roomTile = m_currentRoom.GetRoomTile(e.TilePosition);
 
-            if (m_currentRoom.EntityIsOnTile(roomTile, out Entity entity))
+            if (m_currentRoom.EntityIsOnTile(roomTile, out EntityModel entity))
             {
                 m_currentMouseOverEntity = entity;
-                if (entity != m_player && m_attackAction.CanAttack(entity))
+                if (!entity.IsPlayer && m_attackAction.CanAttack(entity))
                 {
                     // TODO: Outline the entity that can be attacked or display some kind of visual feedback
                     m_attackAction.EntityToHit = entity;

@@ -8,15 +8,19 @@ using System.Linq;
 
 namespace MagmaHeart.Core.AI
 {
-    public class CombatAI : ICombatTurnSwitchListener
+    public class CombatAI : ICombatTurnSwitchListener, IBattleStartedListener
     {
         private readonly TacticianAI m_tactician;
-        private readonly Room m_room;
+        private Room m_room;
 
-        public CombatAI(TacticianAI tactician, Room room)
+        public CombatAI(Strategy strategy)
         {
-            m_tactician = tactician;
-            m_room = room;
+            m_tactician = new TacticianAI(strategy);
+        }
+
+        public void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args)
+        {
+            m_room = args.Room;
         }
 
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)

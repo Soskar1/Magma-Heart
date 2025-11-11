@@ -3,9 +3,9 @@ using System;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class OnCombatStartedEventArgs : EventArgs
+    public class OnBattleStartedEventArgs : EventArgs
     {
         public Room Room { get; init; }
-        public OnCombatStartedEventArgs(Room room) => Room = room;
+        public OnBattleStartedEventArgs(Room room) => Room = room;
     }
 }

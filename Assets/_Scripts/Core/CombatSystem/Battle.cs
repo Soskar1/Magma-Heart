@@ -11,21 +11,37 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly Entity m_player;
         private readonly List<ICombatTurnSwitchListener> m_turnSwitchListeners;
+        private readonly List<IBattleStartedListener> m_battleStartedListeners;
         private readonly TurnSwitcher m_turnSwitcher;
         private readonly Spawner m_spawner;
 
         private Room m_currentRoom;
         private List<Entity> m_currentEntitiesInBattle;
         
-        public EventHandler OnPlayerVictory;
+        public event EventHandler OnPlayerVictory;
+        public event EventHandler<OnBattleStartedEventArgs> OnCombatStarted;
 
-        public Battle(Entity player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners)
+        public Battle(Entity player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners, List<IBattleStartedListener> battleStartedListeners)
         {
             m_player = player;
             m_spawner = spawner;
 
             m_turnSwitchListeners = turnSwitchListeners;
             m_turnSwitcher = new TurnSwitcher();
+
+            Enable();
+        }
+
+        public void Enable()
+        {
+            foreach (IBattleStartedListener listener in m_turnSwitchListeners)
+                OnCombatStarted += listener.HandleOnBattleStarted;
+        }
+
+        public void Disable()
+        {
+            foreach (IBattleStartedListener listener in m_turnSwitchListeners)
+                OnCombatStarted -= listener.HandleOnBattleStarted;
         }
 
         public void Start(Room room)
@@ -43,9 +59,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             foreach (Entity entity in sortedEntities)
             {
-                entity.CombatController.StartCombat(m_currentRoom);
                 entity.Health.OnDeath += HandleEntityDeath;
-
                 m_currentRoom.AddEntityToInspect(entity);
             }
 
@@ -53,6 +67,9 @@ namespace MagmaHeart.Core.CombatSystem
                 m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
 
             m_turnSwitcher.Start(m_currentEntitiesInBattle);
+
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(room);
+            OnCombatStarted?.Invoke(this, args);
         }
 
         private void HandleEntityDeath(object obj, EventArgs args)

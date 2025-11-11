@@ -1,3 +1,4 @@
+using System;
 using MagmaHeart.AI;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.Entities.Properties;
@@ -7,19 +8,18 @@ namespace MagmaHeart.Core.Entities
 {
     public class EntityModel : AIUnit
     {
-        public Transform Transform { get; init; }
+        public Func<Vector3Int> GetCurrentTilePosition { get; init; }
         public Health Health { get; init; }
         public Energy Energy { get; init; }
         public EntityData Data { get; init; }
         public EntityStats Stats => Data.Stats;
 
-        public EntityModel(EntityData data, Transform transform, bool isPlayer)
+        public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base()
         {
             Data = data;
             IsPlayer = isPlayer;
-            PossibleActions = new TypeMap<MagmaHeart.AI.Action>();
 
-            Transform = transform;
+            GetCurrentTilePosition = getCurrentTilePosition;
             Health = new Health(Stats.MaxHealth);
             Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
         }
@@ -28,9 +28,9 @@ namespace MagmaHeart.Core.Entities
         {
             TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
 
-            properties.Add(new HealthProperty(Health.CurrentHealth, Health.MaxHealth));
-            properties.Add(new EnergyProperty(Energy.CurrentEnergy));
-            properties.Add(new PositionProperty(Transform.position.ToVector3Int()));
+            properties.Add(new HealthPropertySnapshot(Health.CurrentHealth, Health.MaxHealth));
+            properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy));
+            properties.Add(new PositionPropertySnapshot(GetCurrentTilePosition()));
 
             return properties;
         }
