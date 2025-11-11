@@ -7,6 +7,11 @@ namespace MagmaHeart.AI
         public bool IsPlayer { get; init; }
         public TypeMap<Action> PossibleActions { get; init; }
 
+        public AIUnit()
+        {
+            PossibleActions = new TypeMap<Action>();
+        }
+
         public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
             TypeMap<PropertySnapshot> properties = new TypeMap<PropertySnapshot>();
