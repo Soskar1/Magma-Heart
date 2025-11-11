@@ -1,5 +1,6 @@
 using System;
 using MagmaHeart.AI;
+using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.Entities.Properties;
 using UnityEngine;

@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities.Properties;
 using System;
 
@@ -10,7 +11,7 @@ namespace MagmaHeart.Core.AI
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public AggressiveStrategy(int lookAhead, Func<StateSnapshot, AIUnit> playerTargetSelection, AIUnit player) : base(lookAhead, playerTargetSelection, player) { }
+        public AggressiveStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
 
         public override float EvaluateState(StateSnapshot state)
         {

@@ -9,8 +9,8 @@ namespace MagmaHeart.Core.Entities
         private readonly int m_runAnimationID = Animator.StringToHash("Run");
         private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
 
-        public EventHandler OnAttackAnimationHitFrameTriggered;
-        public EventHandler OnAttackAnimationEnded;
+        public event EventHandler OnAttackAnimationHitFrameTriggered;
+        public event EventHandler OnAttackAnimationEnded;
 
         public void OnEnable() => OnAnimationEnded += HandleOnAnimationEnded;
         public void OnDisable() => OnAnimationEnded -= HandleOnAnimationEnded;

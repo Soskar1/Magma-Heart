@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine;
 using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.AI;
+using MagmaHeart.AI.Actions;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
@@ -15,7 +16,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private CombatUserInput m_userInput;
         private RoomTile m_currentMouseTile;
+
         private AIUnit m_currentMouseOverEntity;
+        private EntityModel m_currentTargetedEntity;
 
         private readonly Player m_player;
         private readonly Energy m_energy;
@@ -28,7 +31,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private Facing m_facing;
 
         private Room m_currentRoom;
-        private MagmaHeart.AI.Action m_currentAction;
+
+        private MagmaHeart.AI.Actions.Action m_currentAction;
+        private ActionArgs m_currentActionArgs;
         private MovementAction m_movementAction;
         private AttackAction m_attackAction;
 
@@ -177,8 +182,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 if (!entity.IsPlayer && m_attackAction.CanAttack(entity))
                 {
                     // TODO: Outline the entity that can be attacked or display some kind of visual feedback
-                    m_attackAction.EntityToHit = entity;
                     m_currentAction = m_attackAction;
+                    m_currentActionArgs = new AttackActionArgs(entity);
+
                     m_energyHUD.DisplayEnergyPrice(AttackAction.ENERGY_COST);
                 }
                 else
@@ -190,8 +196,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             else if (m_movementAction.CanMoveToTile(roomTile))
             {
                 m_currentMouseOverEntity = null;
-                m_movementAction.TileToMove = roomTile;
+
                 m_currentAction = m_movementAction;
+                m_currentActionArgs = new MovementActionArgs(roomTile);
 
                 m_currentRoom.TryDisplayCombatTile(roomTile);
                 m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
@@ -213,7 +220,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentAction == null || !CanExecuteAction)
                 return;
 
-            m_currentAction.Execute();
+            m_currentAction.Execute(m_currentActionArgs);
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
         
@@ -235,16 +242,18 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             CanExecuteAction = false;
 
-            m_facing.TryUpdateFacing(e.EntityPosition.x - m_transform.position.x);
+            m_currentTargetedEntity = e.Target;
+            m_facing.TryUpdateFacing(m_currentTargetedEntity.GetCurrentTilePosition().x - m_transform.position.x);
             m_animation.PlayAttackAnimation();
         }
 
-        private void HandleOnAttackAnimationHitFrame(object obj, EventArgs e) => m_attackAction.Hit();
+        private void HandleOnAttackAnimationHitFrame(object obj, EventArgs e) => m_attackAction.Hit(m_currentTargetedEntity);
 
         private void HandleOnAttackAnimationEnded(object obj, EventArgs e)
         {
             CanExecuteAction = true;
             m_animation.PlayIdleAnimation();
+            m_currentTargetedEntity = null;
         }
     }
 }

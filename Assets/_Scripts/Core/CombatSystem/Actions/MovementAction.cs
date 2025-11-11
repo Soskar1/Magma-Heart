@@ -7,12 +7,14 @@ using UnityEngine;
 using System.Linq;
 using System;
 using MagmaHeart.AI;
-using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
+using MagmaHeart.AI.Actions;
+using MagmaHeart.Core.Entities.Properties;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class MovementAction : MagmaHeart.AI.Action
+    public class MovementAction : MagmaHeart.AI.Actions.Action<MovementActionArgs>
     {
         private readonly TurnBasedMovement m_movement;
         private readonly Entity m_entity;
@@ -45,7 +47,6 @@ namespace MagmaHeart.Core.CombatSystem
                 m_currentPath = value;
             }
         }
-        public RoomTile TileToMove { get; set; }
 
         public MovementAction(Entity actionPossessor) : base(actionPossessor.Model)
         {
@@ -76,21 +77,29 @@ namespace MagmaHeart.Core.CombatSystem
             CurrentPath.Clear();
         }
 
+        // TODO: Use IBattleStartedListener to set the current room
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard room, AIUnit target)
+        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit)
+        {
+            PositionPropertySnapshot position = state.GetProperty<PositionPropertySnapshot>(unit);
+            RoomTile roomTile = m_currentRoom.GetRoomTile(position.Position);
+
+            return new MovementActionArgs(roomTile);
+        }
+
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard room, MovementActionArgs args)
         {
             EnergyPropertySnapshot possessorEnergy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
             if (possessorEnergy.CurrentEnergy <= 0)
                 return false;
 
             PositionPropertySnapshot possessorPosition = state.GetProperty<PositionPropertySnapshot>(ActionPossessor);
-            PositionPropertySnapshot targetPosition = state.GetProperty<PositionPropertySnapshot>(target);
 
-            if (possessorPosition.ManhattanDistance(targetPosition) <= 1)
+            if (DungeonGrid.ManhattanDistance(possessorPosition.Position, args.TileToMove.Position) <= 1)
                 return false;
 
-            List<Vector2> path = m_aStar.FindPath(room.Graph, possessorPosition.Position.ToVector2(), targetPosition.Position.ToVector2());
+            List<Vector2> path = m_aStar.FindPath(room.Graph, possessorPosition.Position.ToVector2(), args.TileToMove.Position.ToVector2());
             m_currentSimulationPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
 
             if (!path.Any())
@@ -99,16 +108,18 @@ namespace MagmaHeart.Core.CombatSystem
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard room, AIUnit target)
+        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args) => CanSimulate(state, board, args as MovementActionArgs);
+
+        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard room, MovementActionArgs args)
         {
-            StateSnapshot newState = base.Simulate(state, room, target);
+            StateSnapshot newState = base.Simulate(state, room, args);
 
             EnergyPropertySnapshot possessorEnergy = newState.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
             int distanceToMove = possessorEnergy.CurrentEnergy * MovementDistanceInTilesForOneEnergy;
             distanceToMove = Math.Min(distanceToMove, m_currentSimulationPath.Count);
 
             RoomTile currentMovementTarget = m_currentSimulationPath[distanceToMove];
-            
+
             if (room.TryGetUnitOnPosition(currentMovementTarget.Position.ToVector2(), out AIUnit _))
             {
                 --distanceToMove;
@@ -128,15 +139,17 @@ namespace MagmaHeart.Core.CombatSystem
             return newState;
         }
 
-        public override void Execute()
+        public override void Execute(MovementActionArgs args)
         {
-            if (CanMoveToTile(TileToMove))
+            if (CanMoveToTile(args.TileToMove))
             {
                 m_energy.Spend(CurrentTheoreticalEnergyUsage);
                 Move();
                 m_freeDistanceToMove = m_currentTheoreticalFreeDistanceToMove;
             }
         }
+
+        public override void Execute(ActionArgs args) => Execute(args as MovementActionArgs);
 
         public bool CanMoveToTile(RoomTile targetTile)
         {

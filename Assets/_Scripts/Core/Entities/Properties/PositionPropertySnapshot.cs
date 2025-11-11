@@ -1,4 +1,4 @@
-﻿using MagmaHeart.AI;
+﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 

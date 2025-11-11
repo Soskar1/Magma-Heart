@@ -15,6 +15,7 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
 using MagmaHeart.AI;
 using System;
+using MagmaHeart.AI.States;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -111,36 +112,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         private CombatAI InitializeAI(Player player)
         {
-            Func<StateSnapshot, AIUnit> targetSelection = (state) =>
-            {
-                AIUnit nearestUnit = null;
-                float minDistance = float.MaxValue;
-
-                PositionPropertySnapshot playerPosition = state.GetProperty<PositionPropertySnapshot>(player.Model);
-                List<AIUnit> allUnits = state.GetAllUnits();
-                foreach (AIUnit unit in allUnits)
-                {
-                    if (unit.IsPlayer)
-                        continue;
-
-                    IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
-                    if (!isAlive)
-                        continue;
-
-                    PositionPropertySnapshot unitPosition = state.GetProperty<PositionPropertySnapshot>(unit);
-
-                    float distance = unitPosition.ManhattanDistance(playerPosition);
-                    if (distance < minDistance)
-                    {
-                        nearestUnit = unit;
-                        minDistance = distance;
-                    }
-                }
-
-                return nearestUnit;
-            };
-
-            AggressiveStrategy strategy = new AggressiveStrategy(3, targetSelection, player.Model);
+            AggressiveStrategy strategy = new AggressiveStrategy(3, player.Model);
             return new CombatAI(strategy);
         }
 

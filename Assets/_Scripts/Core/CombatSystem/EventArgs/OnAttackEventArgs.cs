@@ -1,12 +1,12 @@
+using MagmaHeart.Core.Entities;
 using System;
-using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public class OnAttackEventArgs : EventArgs
     {
-        public Vector3Int EntityPosition { get; init; }
+        public EntityModel Target { get; init; }
 
-        public OnAttackEventArgs(Vector3Int entityPosition) => EntityPosition = entityPosition;
+        public OnAttackEventArgs(EntityModel target) => Target = target;
     }
 }
