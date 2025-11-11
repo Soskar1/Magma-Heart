@@ -27,6 +27,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_spawner = spawner;
 
             m_turnSwitchListeners = turnSwitchListeners;
+            m_battleStartedListeners = battleStartedListeners;
             m_turnSwitcher = new TurnSwitcher();
 
             Enable();
@@ -34,13 +35,13 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void Enable()
         {
-            foreach (IBattleStartedListener listener in m_turnSwitchListeners)
+            foreach (IBattleStartedListener listener in m_battleStartedListeners)
                 OnCombatStarted += listener.HandleOnBattleStarted;
         }
 
         public void Disable()
         {
-            foreach (IBattleStartedListener listener in m_turnSwitchListeners)
+            foreach (IBattleStartedListener listener in m_battleStartedListeners)
                 OnCombatStarted -= listener.HandleOnBattleStarted;
         }
 
