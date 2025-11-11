@@ -1,11 +1,13 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MagmaHeart.Collections.Tests
 {
     internal class CircularListTests
     {
         [Test]
-        public void CircularList_Constructor_CreatesEmptyList()
+        public void Constructor_CreatesEmptyList()
         {
             CircularList<int> list = new CircularList<int>();
 
@@ -13,17 +15,17 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_Add_AddsElement()
+        public void Add_AddsElement()
         {
             CircularList<int> list = new CircularList<int>();
-            
+
             list.Add(1);
 
             Assert.That(list.Count, Is.EqualTo(1));
         }
 
         [Test]
-        public void CircularList_Remove_RemovesElement()
+        public void Remove_RemovesElement()
         {
             CircularList<int> list = new CircularList<int>();
             list.Add(1);
@@ -34,7 +36,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_Clear_ClearsElements()
+        public void Clear_ClearsElements()
         {
             CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5 };
 
@@ -44,7 +46,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_Contains_ReturnsTrue()
+        public void Contains_ReturnsTrue()
         {
             CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5 };
 
@@ -54,7 +56,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_Contains_ReturnsFalse()
+        public void Contains_ReturnsFalse()
         {
             CircularList<int> list = new CircularList<int> { 1, 2, 3 };
 
@@ -64,7 +66,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_Next_ReturnsNextElement()
+        public void Next_ReturnsNextElement()
         {
             CircularList<int> list = new CircularList<int> { 1, 2, 3 };
 
@@ -79,7 +81,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_Head_ReturnsCurrentElement()
+        public void Head_ReturnsCurrentElement()
         {
             CircularList<int> list = new CircularList<int> { 1, 2, 3 };
 
@@ -107,7 +109,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_NextTo_ReturnsNextElement()
+        public void NextTo_ReturnsNextElement()
         {
             CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5 };
 
@@ -117,7 +119,7 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_NextTo_ReturnsHeadElement()
+        public void NextTo_ReturnsHeadElement()
         {
             CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5 };
 
@@ -127,13 +129,35 @@ namespace MagmaHeart.Collections.Tests
         }
 
         [Test]
-        public void CircularList_NextTo_ReturnsDuplicateElement()
+        public void NextTo_ReturnsDuplicateElement()
         {
             CircularList<int> list = new CircularList<int>() { 1, 2, 3, 4, 5, 5 };
 
             int value = list.NextTo(5);
 
             Assert.That(value, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void IEnumerable_FromStart_WorksAsExpected()
+        {
+            CircularList<int> circularList = new CircularList<int>() { 1, 2, 3, 4, 5 };
+
+            List<int> list = circularList.ToList();
+
+            Assert.That(list, Is.EqualTo(new[] { 1, 2, 3, 4, 5 }));
+        }
+
+        [Test]
+        public void IEnumerable_AfterNext_WorksAsExpected()
+        {
+            CircularList<int> circularList = new CircularList<int>() { 1, 2, 3, 4, 5 };
+            circularList.Next();
+            circularList.Next();
+
+            List<int> list = circularList.ToList();
+
+            Assert.That(list, Is.EqualTo(new[] { 3, 4, 5, 1, 2 }));
         }
     }
 }

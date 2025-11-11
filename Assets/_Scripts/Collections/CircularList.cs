@@ -3,14 +3,12 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Collections
 {
-    public class CircularList<T> : ICollection<T>
+    public class CircularList<T> : IEnumerable<T>
     {
         private readonly LinkedList<T> m_list;
         private LinkedListNode<T> m_currentNode;
 
         public int Count => m_list.Count;
-
-        public bool IsReadOnly => false;
 
         public T Head => m_currentNode.Value;
 
@@ -70,12 +68,20 @@ namespace MagmaHeart.Collections
 
         public bool Contains(T item) => m_list.Contains(item);
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public IEnumerator<T> GetEnumerator()
         {
-            throw new System.NotImplementedException();
-        }
+            LinkedListNode<T> tmpNode = m_currentNode;
 
-        public IEnumerator<T> GetEnumerator() => m_list.GetEnumerator();
+            do
+            {
+                yield return tmpNode.Value;
+                tmpNode = tmpNode.Next;
+
+                if (tmpNode == null)
+                    tmpNode = m_list.First;
+
+            } while (tmpNode != m_currentNode);
+        }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

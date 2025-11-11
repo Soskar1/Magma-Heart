@@ -5,7 +5,7 @@ namespace MagmaHeart.AI.States
 {
     internal static class StateSnapshotMaker
     {
-        public static StateSnapshot CreateStateSnapshot(ICollection<AIUnit> units)
+        public static StateSnapshot CreateStateSnapshot(CircularList<AIUnit> units)
         {
             Dictionary<AIUnit, TypeMap<PropertySnapshot>> stateProperties = new Dictionary<AIUnit, TypeMap<PropertySnapshot>>();
 
