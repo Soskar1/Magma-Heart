@@ -5,7 +5,6 @@ using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.StateMachines;
@@ -13,9 +12,6 @@ using MagmaHeart.Core.UI;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
-using MagmaHeart.AI;
-using System;
-using MagmaHeart.AI.States;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -89,8 +85,13 @@ namespace MagmaHeart.Core.SceneLoading
             AggressiveStrategy strategy = new AggressiveStrategy(3, spawnedPlayer.Model);
             CombatAI combatAI = new CombatAI(strategy);
 
+            List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
+            {
+                m_camera.TurnSwitchListener
+            };
+
             Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, combatAI);
-            m_battle = new Battle(spawnedPlayer, spawner);
+            m_battle = new Battle(spawnedPlayer, spawner, turnListeners);
 
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_stateMachine);
@@ -165,6 +166,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         public void OnDisable()
         {
+            m_battle.Disable();
             m_battle.OnPlayerVictory -= m_stateMachine.HandleOnPlayerVictory;
             m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
         }

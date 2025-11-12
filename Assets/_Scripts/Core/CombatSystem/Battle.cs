@@ -15,20 +15,37 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly Entity m_player;
         private readonly Spawner m_spawner;
         private readonly CircularList<Entity> m_turnOrder;
+        private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
 
         private Room m_currentRoom;
         private List<Entity> m_currentEntitiesInBattle;
         
         public event EventHandler OnPlayerVictory;
+        private event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
         private bool m_battleEnded = false;
 
-        public Battle(Entity player, Spawner spawner)
+        public Battle(Entity player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
         {
             m_player = player;
             m_spawner = spawner;
 
             m_turnOrder = new CircularList<Entity>();
+            m_turnSwitchListeners = turnSwitchListeners;
+
+            Enable();
+        }
+
+        public void Enable()
+        {
+            foreach (ITurnSwitchListener listener in m_turnSwitchListeners)
+                OnTurnSwitched += listener.HandleOnTurnSwitched;
+        }
+
+        public void Disable()
+        {
+            foreach (ITurnSwitchListener listener in m_turnSwitchListeners)
+                OnTurnSwitched -= listener.HandleOnTurnSwitched;
         }
 
         public async Task Start(Room room)
@@ -66,7 +83,11 @@ namespace MagmaHeart.Core.CombatSystem
                 Entity entity = m_turnOrder.Head;
 
                 Debug.Log($"{entity.gameObject.name} started it's turn");
+
+                OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
+                OnTurnSwitched?.Invoke(this, args);
                 await entity.CombatController.StartTurn();
+
                 Debug.Log($"{entity.gameObject.name} ended it's turn");
 
                 m_turnOrder.Next();
