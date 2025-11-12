@@ -1,6 +1,6 @@
-namespace MagmaHeart.Core.CombatSystem
+﻿namespace MagmaHeart.Core.CombatSystem
 {
-    public interface ICombatTurnSwitchListener
+    public interface ITurnSwitchListener
     {
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args);
     }

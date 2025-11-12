@@ -16,13 +16,12 @@ namespace MagmaHeart.Core.Entities
         public Health Health => Model.Health;
         public Energy Energy => Model.Energy;
         public EntityStats Stats => Model.Stats;
-        public CombatController CombatController { get; private set; }
+        public CombatController CombatController { get; protected set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
 
         public virtual void Initialize(DungeonGrid grid, bool isPlayer)
         {
             m_grid = grid;
-            CombatController = new CombatController();
 
             Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
             Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);

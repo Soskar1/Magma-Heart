@@ -1,6 +1,5 @@
 using System;
 using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
@@ -23,12 +22,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private CombatPlayerBehaviour m_combatBehaviour;
         private RewardPlayerBehaviour m_rewardPlayerBehaviour;
 
-        public IBattleStartedListener BattleStartedListener => m_combatBehaviour;
-
         public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI, DungeonGrid grid)
         {
             base.Initialize(grid, true);
 
+            CombatController = new PlayerCombatController(this, gameUI, turnBasedUserInput);
             m_animation = GetComponent<EntityAnimation>();
 
             m_inventory = new Inventory(Model);
@@ -36,7 +34,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
-            m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI);
+            m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI.CombatUI);
             m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, m_animation);
             m_currentBehaviour = m_actionBehaviour;
         }

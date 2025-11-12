@@ -23,11 +23,9 @@ namespace MagmaHeart.Core.CombatSystem
         
         private Room m_currentRoom;
         private List<RoomTile> m_currentPath;
-        private int m_freeDistanceToMove;
-        private int m_currentTheoreticalFreeDistanceToMove;
 
-        public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
-        public int MovementDistanceInTilesForOneEnergy { get; private set; } = 2;
+        private const int m_movementDistanceInTilesForOneEnergy = 2;
+
         public List<RoomTile> CurrentPath
         {
             get
@@ -57,12 +55,9 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void Reset()
         {
-            m_freeDistanceToMove = 0;
-            CurrentTheoreticalEnergyUsage = 0;
             CurrentPath.Clear();
         }
 
-        // TODO: Use IBattleStartedListener to set the current room
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
         public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit)
@@ -135,7 +130,7 @@ namespace MagmaHeart.Core.CombatSystem
                 .ToList();
 
             EnergyPropertySnapshot possessorEnergy = newState.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
-            int distanceToMove = (possessorEnergy.CurrentEnergy + 5) * MovementDistanceInTilesForOneEnergy;
+            int distanceToMove = (possessorEnergy.CurrentEnergy + 5) * m_movementDistanceInTilesForOneEnergy;
             distanceToMove = Math.Min(distanceToMove, path.Count) - 1;
             RoomTile currentMovementTarget = path[distanceToMove];
 
@@ -154,14 +149,19 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override void Execute(MovementActionArgs args)
         {
+            if (m_energy.CurrentEnergy <= 0)
+            {
+                Debug.Log("Not enough energy to move.");
+                return;
+            }
+
             CalculatePath(args.TileToMove);
 
-            int distanceToMove = m_entity.Model.Energy.CurrentEnergy * MovementDistanceInTilesForOneEnergy;
-            distanceToMove = Math.Min(distanceToMove, CurrentPath.Count) - 1 - m_freeDistanceToMove;
-            RoomTile currentMovementTarget = CurrentPath[distanceToMove];
+            int maxDistanceToMove = m_energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy + 1;
+            maxDistanceToMove = Math.Min(maxDistanceToMove, CurrentPath.Count);
+            CurrentPath = CurrentPath.Take(maxDistanceToMove).ToList();
 
-            int energyUsage = Mathf.CeilToInt(distanceToMove / (float)MovementDistanceInTilesForOneEnergy);
-            m_freeDistanceToMove = distanceToMove % MovementDistanceInTilesForOneEnergy;
+            int energyUsage = Mathf.CeilToInt((maxDistanceToMove - 1) / (float)m_movementDistanceInTilesForOneEnergy);
             m_energy.Spend(energyUsage);
 
             Move();
@@ -169,18 +169,12 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override void Execute(ActionArgs args) => Execute(args as MovementActionArgs);
 
-        public bool CanExecute(RoomTile targetTile)
+        public int GetEnergyUsage(RoomTile targetTile)
         {
-            if (m_entity.Energy.CurrentEnergy <= 0)
-                return false;
-
             CalculatePath(targetTile);
 
-            int distance = CurrentPath.Count - 1 - m_freeDistanceToMove;
-            CurrentTheoreticalEnergyUsage = Mathf.CeilToInt(distance / (float)MovementDistanceInTilesForOneEnergy);
-            m_currentTheoreticalFreeDistanceToMove = distance % MovementDistanceInTilesForOneEnergy;
-
-            return m_energy.HasEnough(CurrentTheoreticalEnergyUsage);
+            int distance = CurrentPath.Count - 1;
+            return Mathf.CeilToInt(distance / (float)m_movementDistanceInTilesForOneEnergy);
         }
 
         private void Move()
@@ -203,10 +197,6 @@ namespace MagmaHeart.Core.CombatSystem
         private void CalculatePath(RoomTile targetTile)
         {
             // TODO: implement cache
-
-            if (!m_currentRoom.TileIsAccessable(targetTile))
-                targetTile = PickAdjacentFreeTile(targetTile, m_currentRoom.TileIsAccessable);
-
             Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
 

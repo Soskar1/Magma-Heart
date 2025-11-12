@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         private EntityModel m_currentTargetedEntity;
 
-        public void Initialize(DungeonGrid grid)
+        public void Initialize(DungeonGrid grid, CombatAI ai)
         {
             base.Initialize(grid, false);
 
@@ -28,6 +28,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
             m_movementAction = Model.PossibleActions.Get<MovementAction>();
             m_attackAction = Model.PossibleActions.Get<AttackAction>();
+
+            CombatController = new EnemyCombatController(this, ai);
 
             m_movement.OnMovementStarted += HandleOnMovementStarted;
             m_movement.OnMovementEnded += HandleOnMovementEnded;
@@ -48,9 +50,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_animation.OnAttackAnimationHitFrameTriggered -= HandleOnAttackAnimationHitFrame;
             m_animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
         }
-
-        // TODO: Try to think more about this. Maybe we can have a better way to set the current room for enemies
-        public void StartCombat(Room room) => m_movementAction.SetCurrentRoom(room);
 
         private void HandleOnMovementStarted(object obj, OnMovementEventArgs e)
         {

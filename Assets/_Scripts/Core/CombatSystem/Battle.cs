@@ -5,6 +5,7 @@ using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -12,42 +13,42 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Entity m_player;
-        private readonly List<ICombatTurnSwitchListener> m_turnSwitchListeners;
-        private readonly List<IBattleStartedListener> m_battleStartedListeners;
-        private readonly TurnSwitcher m_turnSwitcher;
         private readonly Spawner m_spawner;
+        private readonly CircularList<Entity> m_turnOrder;
+        private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
 
         private Room m_currentRoom;
         private List<Entity> m_currentEntitiesInBattle;
         
         public event EventHandler OnPlayerVictory;
-        public event EventHandler<OnBattleStartedEventArgs> OnCombatStarted;
+        private event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
-        public Battle(Entity player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners, List<IBattleStartedListener> battleStartedListeners)
+        private bool m_battleEnded = false;
+
+        public Battle(Entity player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
         {
             m_player = player;
             m_spawner = spawner;
 
+            m_turnOrder = new CircularList<Entity>();
             m_turnSwitchListeners = turnSwitchListeners;
-            m_battleStartedListeners = battleStartedListeners;
-            m_turnSwitcher = new TurnSwitcher();
 
             Enable();
         }
 
         public void Enable()
         {
-            foreach (IBattleStartedListener listener in m_battleStartedListeners)
-                OnCombatStarted += listener.HandleOnBattleStarted;
+            foreach (ITurnSwitchListener listener in m_turnSwitchListeners)
+                OnTurnSwitched += listener.HandleOnTurnSwitched;
         }
 
         public void Disable()
         {
-            foreach (IBattleStartedListener listener in m_battleStartedListeners)
-                OnCombatStarted -= listener.HandleOnBattleStarted;
+            foreach (ITurnSwitchListener listener in m_turnSwitchListeners)
+                OnTurnSwitched -= listener.HandleOnTurnSwitched;
         }
 
-        public void Start(Room room)
+        public async Task Start(Room room)
         {
             m_currentRoom = room;
             m_currentEntitiesInBattle = new List<Entity>() { m_player };
@@ -56,9 +57,6 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 m_currentEntitiesInBattle.Add(spawnedEntity);
-
-                // TODO: Try to think more about this. Maybe we can have a better way to set the current room for enemies
-                spawnedEntity.StartCombat(room);
             }
 
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentEntitiesInBattle);
@@ -69,13 +67,31 @@ namespace MagmaHeart.Core.CombatSystem
                 m_currentRoom.AddEntityToInspect(entity);
             }
 
-            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
-                m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
+            m_turnOrder.Clear();
+            m_turnOrder.AddRange(m_currentEntitiesInBattle);
 
-            m_turnSwitcher.Start(m_currentEntitiesInBattle);
+            foreach (Entity entity in m_currentEntitiesInBattle)
+                entity.CombatController.StartBattle(room);
 
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(room);
-            OnCombatStarted?.Invoke(this, args);
+            await ProcessBattle();
+        }
+
+        private async Task ProcessBattle()
+        {
+            while (!m_battleEnded)
+            {
+                Entity entity = m_turnOrder.Head;
+
+                Debug.Log($"{entity.gameObject.name} started it's turn");
+
+                OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
+                OnTurnSwitched?.Invoke(this, args);
+                await entity.CombatController.StartTurn();
+
+                Debug.Log($"{entity.gameObject.name} ended it's turn");
+
+                m_turnOrder.Next();
+            }
         }
 
         private void HandleEntityDeath(object obj, EventArgs args)
@@ -99,7 +115,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
             else
             {
-                m_turnSwitcher.TurnOrder.Remove(entity);
+                m_turnOrder.Remove(entity);
                 m_currentEntitiesInBattle.Remove(entity);
                 m_currentRoom.RemoveEntityFromRoom(entity);
 
@@ -117,12 +133,9 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void End(bool isPlayerVictory)
         {
-            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
-                m_turnSwitcher.OnTurnSwitched -= listener.HandleOnTurnSwitched;
-
             if (isPlayerVictory)
             {
-                m_turnSwitcher.Clear();
+                m_turnOrder.Clear();
                 m_currentEntitiesInBattle.Clear();
 
                 Debug.Log("Player won the battle!");
@@ -132,6 +145,8 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 // TODO: Handle player defeat
             }
+
+            m_battleEnded = true;
         }
     }
 }

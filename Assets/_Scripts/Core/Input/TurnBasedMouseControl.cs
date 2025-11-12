@@ -26,6 +26,9 @@ namespace MagmaHeart.Core.Input
 
         public void UpdateMousePosition()
         {
+            if (!m_userInput.TurnBasedPlayer.enabled)
+                Debug.LogWarning("Combat user input is not enabled. Cannot update mouse position.");
+
             Vector2 mouseWorldPosition = GetMouseWorldPosition();
             Vector3Int mouseOverTilePosition = m_grid.WorldToTilePosition(mouseWorldPosition);
 

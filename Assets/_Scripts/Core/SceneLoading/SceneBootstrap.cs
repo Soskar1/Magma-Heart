@@ -5,7 +5,6 @@ using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.StateMachines;
@@ -13,9 +12,6 @@ using MagmaHeart.Core.UI;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
-using MagmaHeart.AI;
-using System;
-using MagmaHeart.AI.States;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -86,8 +82,17 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
-            CombatAI ai = InitializeAI(spawnedPlayer);
-            InitializeBattle(spawnedPlayer, ai);
+            AggressiveStrategy strategy = new AggressiveStrategy(3, spawnedPlayer.Model);
+            CombatAI combatAI = new CombatAI(strategy);
+
+            List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
+            {
+                m_camera.TurnSwitchListener
+            };
+
+            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, combatAI);
+            m_battle = new Battle(spawnedPlayer, spawner, turnListeners);
+
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_stateMachine);
 
@@ -108,27 +113,6 @@ namespace MagmaHeart.Core.SceneLoading
             playerInstance.Enable();
 
             return playerInstance;
-        }
-
-        private CombatAI InitializeAI(Player player)
-        {
-            AggressiveStrategy strategy = new AggressiveStrategy(3, player.Model);
-            return new CombatAI(strategy);
-        }
-
-        private void InitializeBattle(Player player, CombatAI ai)
-        {
-            List<ICombatTurnSwitchListener> turnSwitchListeners = new List<ICombatTurnSwitchListener>()
-            {
-                m_camera.TurnBasedCameraBehaviour, m_gameUI, ai
-            };
-            List<IBattleStartedListener> battleStartedListeners = new List<IBattleStartedListener>()
-            {
-                player.BattleStartedListener, ai
-            };
-
-            Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer, m_grid);
-            m_battle = new Battle(player, spawner, turnSwitchListeners, battleStartedListeners);
         }
 
         private void InitializeStateMachine(Player player)
