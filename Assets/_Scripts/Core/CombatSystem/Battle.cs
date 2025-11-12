@@ -13,42 +13,25 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Entity m_player;
-        private readonly List<IBattleStartedListener> m_battleStartedListeners;
-        private CircularList<Entity> m_turnOrder;
         private readonly Spawner m_spawner;
+        private readonly CircularList<Entity> m_turnOrder;
 
         private Room m_currentRoom;
         private List<Entity> m_currentEntitiesInBattle;
         
         public event EventHandler OnPlayerVictory;
-        public event EventHandler<OnBattleStartedEventArgs> OnCombatStarted;
 
         private bool m_battleEnded = false;
 
-        public Battle(Entity player, Spawner spawner, List<IBattleStartedListener> battleStartedListeners)
+        public Battle(Entity player, Spawner spawner)
         {
             m_player = player;
             m_spawner = spawner;
 
-            m_battleStartedListeners = battleStartedListeners;
             m_turnOrder = new CircularList<Entity>();
-
-            Enable();
         }
 
-        public void Enable()
-        {
-            foreach (IBattleStartedListener listener in m_battleStartedListeners)
-                OnCombatStarted += listener.HandleOnBattleStarted;
-        }
-
-        public void Disable()
-        {
-            foreach (IBattleStartedListener listener in m_battleStartedListeners)
-                OnCombatStarted -= listener.HandleOnBattleStarted;
-        }
-
-        public void Start(Room room)
+        public async Task Start(Room room)
         {
             m_currentRoom = room;
             m_currentEntitiesInBattle = new List<Entity>() { m_player };
@@ -57,9 +40,6 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 m_currentEntitiesInBattle.Add(spawnedEntity);
-
-                // TODO: Try to think more about this. Maybe we can have a better way to set the current room for enemies
-                spawnedEntity.StartCombat(room);
             }
 
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentEntitiesInBattle);
@@ -70,21 +50,13 @@ namespace MagmaHeart.Core.CombatSystem
                 m_currentRoom.AddEntityToInspect(entity);
             }
 
-            //foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
-            //    m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
-
-            // m_turnSwitcher.Start(m_currentEntitiesInBattle);
             m_turnOrder.Clear();
             m_turnOrder.AddRange(m_currentEntitiesInBattle);
 
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(room);
-            OnCombatStarted?.Invoke(this, args);
+            foreach (Entity entity in m_currentEntitiesInBattle)
+                entity.CombatController.StartBattle(room);
 
-            //foreach (Entity entity in m_currentEntitiesInBattle)
-            //    entity.CombatController.StartBattle(room);
-            m_player.CombatController.StartBattle(room);
-
-            _ = ProcessBattle();
+            await ProcessBattle();
         }
 
         private async Task ProcessBattle()
@@ -92,14 +64,13 @@ namespace MagmaHeart.Core.CombatSystem
             while (!m_battleEnded)
             {
                 Entity entity = m_turnOrder.Head;
-                await ProcessTurn(entity);
-            }
-        }
 
-        private async Task ProcessTurn(Entity entity)
-        {
-            await entity.CombatController.StartTurn();
-            entity.CombatController.EndTurn();
+                Debug.Log($"{entity.gameObject.name} started it's turn");
+                await entity.CombatController.StartTurn();
+                Debug.Log($"{entity.gameObject.name} ended it's turn");
+
+                m_turnOrder.Next();
+            }
         }
 
         private void HandleEntityDeath(object obj, EventArgs args)
@@ -141,9 +112,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void End(bool isPlayerVictory)
         {
-            //foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
-            //    m_turnSwitcher.OnTurnSwitched -= listener.HandleOnTurnSwitched;
-
             if (isPlayerVictory)
             {
                 m_turnOrder.Clear();

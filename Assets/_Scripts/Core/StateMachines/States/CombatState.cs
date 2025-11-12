@@ -15,14 +15,14 @@ namespace MagmaHeart.Core.StateMachines
             m_combatStateListeners = combatStateListeners;
         }
 
-        public void Enter(params object[] args)
+        public async void Enter(params object[] args)
         {
             Room room = args[0] as Room;
 
             foreach (ICombatStateListener listener in m_combatStateListeners)
                 listener.EnterCombatState();
 
-            m_battle.Start(room);
+            await m_battle.Start(room);
         }
 
         public void Exit()

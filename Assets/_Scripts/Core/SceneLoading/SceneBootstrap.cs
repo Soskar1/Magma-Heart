@@ -86,8 +86,12 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
-            CombatAI ai = InitializeAI(spawnedPlayer);
-            InitializeBattle(spawnedPlayer, ai);
+            AggressiveStrategy strategy = new AggressiveStrategy(3, spawnedPlayer.Model);
+            CombatAI combatAI = new CombatAI(strategy);
+
+            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, combatAI);
+            m_battle = new Battle(spawnedPlayer, spawner);
+
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_stateMachine);
 
@@ -108,27 +112,6 @@ namespace MagmaHeart.Core.SceneLoading
             playerInstance.Enable();
 
             return playerInstance;
-        }
-
-        private CombatAI InitializeAI(Player player)
-        {
-            AggressiveStrategy strategy = new AggressiveStrategy(3, player.Model);
-            return new CombatAI(strategy);
-        }
-
-        private void InitializeBattle(Player player, CombatAI ai)
-        {
-            List<ICombatTurnSwitchListener> turnSwitchListeners = new List<ICombatTurnSwitchListener>()
-            {
-                m_camera.TurnBasedCameraBehaviour, ai
-            };
-            List<IBattleStartedListener> battleStartedListeners = new List<IBattleStartedListener>()
-            {
-                ai
-            };
-
-            Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer, m_grid);
-            m_battle = new Battle(player, spawner, battleStartedListeners);
         }
 
         private void InitializeStateMachine(Player player)
@@ -182,7 +165,6 @@ namespace MagmaHeart.Core.SceneLoading
 
         public void OnDisable()
         {
-            m_battle.Disable();
             m_battle.OnPlayerVictory -= m_stateMachine.HandleOnPlayerVictory;
             m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
         }

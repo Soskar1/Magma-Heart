@@ -82,7 +82,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
 
             CanExecuteAction = true;
-            Debug.Log(CanExecuteAction);
 
             return task;
         }

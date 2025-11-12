@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace MagmaHeart.Core.UI
 {
-    public class EnergyHUD : MonoBehaviour, IDisplayable, ICombatStateListener, ICombatTurnSwitchListener
+    public class EnergyHUD : MonoBehaviour, IDisplayable, ICombatStateListener
     {
         [SerializeField] private GameObject m_energyHUD;
         [SerializeField] private GameObject m_energyCrystalPrefab;
@@ -53,14 +53,6 @@ namespace MagmaHeart.Core.UI
         public void Show() => m_energyHUD.gameObject.SetActive(true);
 
         public void Hide() => m_energyHUD.gameObject.SetActive(false);
-
-        public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
-        {
-            if (args.CurrentEntity.Model.IsPlayer)
-                Show();
-            else
-                Hide();
-        }
 
         public void EnterCombatState() { }
         public void ExitCombatState() => Hide();
