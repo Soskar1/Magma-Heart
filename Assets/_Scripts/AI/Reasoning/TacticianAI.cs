@@ -5,6 +5,7 @@ using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Action = MagmaHeart.AI.Actions.Action;
 
 namespace MagmaHeart.AI.Reasoning
@@ -32,6 +33,8 @@ namespace MagmaHeart.AI.Reasoning
 
             BestAction bestAction = null;
             List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(stateSnapshot, simulatedBoard, head.Value.PossibleActions.ToList());
+
+            Debug.Log($"[ROOT] Got all possible simulations. Count: {possibleSimulations.Count}");
 
             foreach (ActionSimulation simulation in possibleSimulations)
             {
@@ -66,6 +69,7 @@ namespace MagmaHeart.AI.Reasoning
                 return m_strategy.EvaluateState(state);
 
             List<ActionSimulation> simulations = ActionSimulationFilter.GetActionSimulations(state, board, currentUnit.PossibleActions.ToList());
+            Debug.Log($"[{currentDepth}] Got all possible simulations. Count: {simulations.Count}");
 
             if (!currentUnit.IsPlayer)
             {

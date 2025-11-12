@@ -19,7 +19,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override void Execute(EngageActionArgs args) { }
 
-        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit) => new EngageActionArgs(unit);
+        public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit) => new EngageActionArgs(unit);
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, EngageActionArgs args)
         {

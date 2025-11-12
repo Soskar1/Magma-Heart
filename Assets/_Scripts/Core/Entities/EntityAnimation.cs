@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public sealed class PlayerAnimation : AnimationPlayer
+    public sealed class EntityAnimation : AnimationPlayer
     {
         private readonly int m_idleAnimationID = Animator.StringToHash("Idle");
         private readonly int m_runAnimationID = Animator.StringToHash("Run");

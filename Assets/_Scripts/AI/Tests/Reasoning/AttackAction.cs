@@ -13,7 +13,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Damage = damage;
         }
 
-        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit) => new AttackActionArgs(unit);
+        public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit) => new AttackActionArgs(unit);
 
         public override void Execute(AttackActionArgs args) { }
 

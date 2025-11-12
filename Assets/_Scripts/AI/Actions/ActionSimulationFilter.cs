@@ -12,7 +12,7 @@ namespace MagmaHeart.AI.Actions
             foreach (Action action in possibleActions)
             {
                 ActionSimulation actionSimulation = new ActionSimulation(action);
-                List<ActionArgs> possibleSimulations = action.GetSimulationArguments(state);
+                List<ActionArgs> possibleSimulations = action.GetSimulationArguments(state, board);
 
                 foreach (ActionArgs args in possibleSimulations)
                     if (action.CanSimulate(state, board, args))

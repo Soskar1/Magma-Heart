@@ -1,16 +1,16 @@
+using MagmaHeart.AI;
+using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Pathfinding;
+using MagmaHeart.AI.States;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.AI.Pathfinding;
-using MagmaHeart.Extensions;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using System;
-using MagmaHeart.AI;
-using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
-using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.Entities.Properties;
+using MagmaHeart.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
@@ -23,10 +23,8 @@ namespace MagmaHeart.Core.CombatSystem
         
         private Room m_currentRoom;
         private List<RoomTile> m_currentPath;
-        private List<RoomTile> m_currentSimulationPath;
         private int m_freeDistanceToMove;
         private int m_currentTheoreticalFreeDistanceToMove;
-        private bool m_isEnabled;
 
         public int CurrentTheoreticalEnergyUsage { get; private set; } = 0;
         public int MovementDistanceInTilesForOneEnergy { get; private set; } = 2;
@@ -57,19 +55,6 @@ namespace MagmaHeart.Core.CombatSystem
             CurrentPath = new List<RoomTile>();
         }
 
-        public void Enable()
-        {
-            if (m_isEnabled)
-                return;
-
-            m_isEnabled = true;
-        }
-
-        public void Disable()
-        {
-            m_isEnabled = false;
-        }
-
         public void Reset()
         {
             m_freeDistanceToMove = 0;
@@ -80,31 +65,59 @@ namespace MagmaHeart.Core.CombatSystem
         // TODO: Use IBattleStartedListener to set the current room
         public void SetCurrentRoom(Room room) => m_currentRoom = room;
 
-        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit)
+        public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit)
         {
-            PositionPropertySnapshot position = state.GetProperty<PositionPropertySnapshot>(unit);
-            RoomTile roomTile = m_currentRoom.GetRoomTile(position.Position);
+            //Vector3Int source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position;
+            Vector3Int targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position;
 
-            return new MovementActionArgs(roomTile);
+            //// Target tile is an obstacle. Need to get closest (to the possessor) adjacent tile
+            //Vector3Int[] adjacentTiles = new Vector3Int[]
+            //{
+            //    target + Vector3Int.up,
+            //    target + Vector3Int.down,
+            //    target + Vector3Int.left,
+            //    target + Vector3Int.right
+            //};
+
+            //Vector3Int closest = adjacentTiles
+            //    .OrderBy(tile => DungeonGrid.ManhattanDistance(tile, source))
+            //    .First();
+
+            //RoomTile roomTile = m_currentRoom.GetRoomTile(closest);
+
+            RoomTile target = m_currentRoom.GetRoomTile(targetPosition);
+            Func<RoomTile, bool> tileIsFree = (tile) =>
+            {
+                Vector2 tileVector2 = tile.Position.ToVector2();
+                return board.IsBoardNodeEmpty(tileVector2);
+            };
+            target = PickAdjacentFreeTile(target, tileIsFree);
+
+            return new MovementActionArgs(target);
         }
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard room, MovementActionArgs args)
         {
-            EnergyPropertySnapshot possessorEnergy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
-            if (possessorEnergy.CurrentEnergy <= 0)
-                return false;
-
             PositionPropertySnapshot possessorPosition = state.GetProperty<PositionPropertySnapshot>(ActionPossessor);
 
-            if (DungeonGrid.ManhattanDistance(possessorPosition.Position, args.TileToMove.Position) <= 1)
+            float distanceToTarget = DungeonGrid.ManhattanDistance(possessorPosition.Position, args.TileToMove.Position);
+            Debug.Log($"[{state.CurrentSimulationDepth}-MovementAction-{args.TileToMove.Position}-({m_entity.gameObject.name})] Manhattan distance to target: {distanceToTarget}");
+
+            if (distanceToTarget <= 1)
+            {
+                Debug.Log($"[{state.CurrentSimulationDepth}-MovementAction-{args.TileToMove.Position}-({m_entity.gameObject.name})] In this simulation entity is too close to the target!");
                 return false;
+            }
 
             List<Vector2> path = m_aStar.FindPath(room.Graph, possessorPosition.Position.ToVector2(), args.TileToMove.Position.ToVector2());
-            m_currentSimulationPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
 
             if (!path.Any())
+            {
+                Debug.Log($"[{state.CurrentSimulationDepth}-MovementAction-{args.TileToMove.Position}-({m_entity.gameObject.name})] In this simulation path to the target does not exist! (From {possessorPosition.Position}, to {args.TileToMove.Position})");
                 return false;
+            }
 
+            Debug.Log($"[{state.CurrentSimulationDepth}-MovementAction-{args.TileToMove.Position}-({m_entity.gameObject.name})] It is possible to simulate MovementAction");
             return true;
         }
 
@@ -114,24 +127,24 @@ namespace MagmaHeart.Core.CombatSystem
         {
             StateSnapshot newState = base.Simulate(state, room, args);
 
+            PositionPropertySnapshot possessorPosition = state.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+
+            // TODO: Is it possible to not culate the whole path again?
+            List<RoomTile> path = m_aStar.FindPath(room.Graph, possessorPosition.Position.ToVector2(), args.TileToMove.Position.ToVector2())
+                .Select(v => m_currentRoom.GetRoomTile(v))
+                .ToList();
+
             EnergyPropertySnapshot possessorEnergy = newState.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
-            int distanceToMove = possessorEnergy.CurrentEnergy * MovementDistanceInTilesForOneEnergy;
-            distanceToMove = Math.Min(distanceToMove, m_currentSimulationPath.Count);
+            int distanceToMove = (possessorEnergy.CurrentEnergy + 5) * MovementDistanceInTilesForOneEnergy;
+            distanceToMove = Math.Min(distanceToMove, path.Count) - 1;
+            RoomTile currentMovementTarget = path[distanceToMove];
 
-            RoomTile currentMovementTarget = m_currentSimulationPath[distanceToMove];
-
-            if (room.TryGetUnitOnPosition(currentMovementTarget.Position.ToVector2(), out AIUnit _))
-            {
-                --distanceToMove;
-                currentMovementTarget = m_currentSimulationPath[distanceToMove];
-            }
-
-            // TODO: calculate free movement. Save it as a property.
+            // TODO: Calculate free movement. Save it as a property.
 
             PositionPropertySnapshot newPosition = new PositionPropertySnapshot(currentMovementTarget.Position);
             newState.Update(ActionPossessor, newPosition);
 
-            NodeTypeBoardModification sourceNodeModification = new NodeTypeBoardModification(m_currentSimulationPath.First().Position.ToVector2(), BoardNodeType.Walkable);
+            NodeTypeBoardModification sourceNodeModification = new NodeTypeBoardModification(path.First().Position.ToVector2(), BoardNodeType.Walkable);
             NodeTypeBoardModification targetNodeModification = new NodeTypeBoardModification(currentMovementTarget.Position.ToVector2(), BoardNodeType.Obstacle);
             room.ApplyBoardModification(newState.CurrentSimulationDepth, sourceNodeModification);
             room.ApplyBoardModification(newState.CurrentSimulationDepth, targetNodeModification);
@@ -141,21 +154,24 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override void Execute(MovementActionArgs args)
         {
-            if (CanMoveToTile(args.TileToMove))
-            {
-                m_energy.Spend(CurrentTheoreticalEnergyUsage);
-                Move();
-                m_freeDistanceToMove = m_currentTheoreticalFreeDistanceToMove;
-            }
+            CalculatePath(args.TileToMove);
+
+            int distanceToMove = m_entity.Model.Energy.CurrentEnergy * MovementDistanceInTilesForOneEnergy;
+            distanceToMove = Math.Min(distanceToMove, CurrentPath.Count) - 1 - m_freeDistanceToMove;
+            RoomTile currentMovementTarget = CurrentPath[distanceToMove];
+
+            int energyUsage = Mathf.CeilToInt(distanceToMove / (float)MovementDistanceInTilesForOneEnergy);
+            m_freeDistanceToMove = distanceToMove % MovementDistanceInTilesForOneEnergy;
+            m_energy.Spend(energyUsage);
+
+            Move();
         }
 
         public override void Execute(ActionArgs args) => Execute(args as MovementActionArgs);
 
-        public bool CanMoveToTile(RoomTile targetTile)
+        public bool CanExecute(RoomTile targetTile)
         {
-            // TODO: implement cache
-
-            if (!m_currentRoom.TileIsAccessable(targetTile))
+            if (m_entity.Energy.CurrentEnergy <= 0)
                 return false;
 
             CalculatePath(targetTile);
@@ -169,11 +185,11 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void Move()
         {
-            if (!m_isEnabled)
-                throw new InvalidOperationException("Movement action is not enabled");
-
-            if (CurrentPath.Count == 0)
+            if (CurrentPath.Count <= 0)
+            {
+                Debug.Log("Path is empty. Can't move.");
                 return;
+            }
 
             m_movement.StartMovement(CurrentPath);
         }
@@ -186,9 +202,44 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void CalculatePath(RoomTile targetTile)
         {
+            // TODO: implement cache
+
+            if (!m_currentRoom.TileIsAccessable(targetTile))
+                targetTile = PickAdjacentFreeTile(targetTile, m_currentRoom.TileIsAccessable);
+
             Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
             List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
-            CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
+
+            if (path != null && path.Count > 0)
+                CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
+        }
+
+        private RoomTile PickAdjacentFreeTile(RoomTile targetTile, Func<RoomTile, bool> tileIsAccessable)
+        {
+            RoomTile tile = targetTile;
+            Vector3Int[] adjacentTiles = new Vector3Int[]
+            {
+                targetTile.Position + Vector3Int.up,
+                targetTile.Position + Vector3Int.down,
+                targetTile.Position + Vector3Int.left,
+                targetTile.Position + Vector3Int.right
+            };
+
+            List<RoomTile> roomTiles =
+                adjacentTiles.OrderBy(tile => DungeonGrid.ManhattanDistance(tile, m_entity.Model.GetCurrentTilePosition()))
+                .Select(v => m_currentRoom.GetRoomTile(v))
+                .ToList();
+
+            foreach (RoomTile roomTile in roomTiles)
+            {
+                if (tileIsAccessable(roomTile))
+                {
+                    tile = roomTile;
+                    break;
+                }
+            }
+
+            return tile;
         }
     }
 }

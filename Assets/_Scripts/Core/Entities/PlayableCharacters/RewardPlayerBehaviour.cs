@@ -5,9 +5,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class RewardPlayerBehaviour : IPlayerBehaviour
     {
         private readonly UserInput m_userInput;
-        private readonly PlayerAnimation m_animation;
+        private readonly EntityAnimation m_animation;
 
-        public RewardPlayerBehaviour(UserInput userInput, PlayerAnimation animation)
+        public RewardPlayerBehaviour(UserInput userInput, EntityAnimation animation)
         {
             m_userInput = userInput;
             m_animation = animation;

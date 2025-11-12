@@ -1,5 +1,7 @@
+using MagmaHeart.Collections;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,10 +52,13 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom = room;
             m_currentEntitiesInBattle = new List<Entity>() { m_player };
 
-            for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            for (int i = 0; i < 1; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
-                Entity spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
+                Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 m_currentEntitiesInBattle.Add(spawnedEntity);
+
+                // TODO: Try to think more about this. Maybe we can have a better way to set the current room for enemies
+                spawnedEntity.StartCombat(room);
             }
 
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentEntitiesInBattle);

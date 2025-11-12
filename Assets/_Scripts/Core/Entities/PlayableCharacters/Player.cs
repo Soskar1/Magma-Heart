@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
-        private PlayerAnimation m_animation;
+        private EntityAnimation m_animation;
         private Inventory m_inventory;
         private RewardUI m_rewardUI;
 
@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             base.Initialize(grid, true);
 
-            m_animation = GetComponent<PlayerAnimation>();
+            m_animation = GetComponent<EntityAnimation>();
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;

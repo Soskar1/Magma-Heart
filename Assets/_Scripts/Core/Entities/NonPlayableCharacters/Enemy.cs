@@ -1,39 +1,89 @@
-using System;
-using System.Collections;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.CombatSystem;
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class Enemy : Entity
     {
+        private EntityAnimation m_animation;
+
+        private MovementAction m_movementAction;
+        private AttackAction m_attackAction;
+
+        private TurnBasedMovement m_movement;
+        private Facing m_facing;
+
+        private EntityModel m_currentTargetedEntity;
+
         public void Initialize(DungeonGrid grid)
         {
             base.Initialize(grid, false);
-            CombatController.OnTurnStarted += HandleOnTurnStarted;
-            CombatController.OnTurnEnded += HandleOnTurnEnded;
+
+            m_animation = GetComponent<EntityAnimation>();
+            m_movement = GetComponent<TurnBasedMovement>();
+            m_facing = GetComponent<Facing>();
+
+            m_movementAction = Model.PossibleActions.Get<MovementAction>();
+            m_attackAction = Model.PossibleActions.Get<AttackAction>();
+
+            m_movement.OnMovementStarted += HandleOnMovementStarted;
+            m_movement.OnMovementEnded += HandleOnMovementEnded;
+
+            m_attackAction.OnAttackTriggered += HandleOnAttackTriggered;
+
+            m_animation.OnAttackAnimationHitFrameTriggered += HandleOnAttackAnimationHitFrame;
+            m_animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
         }
 
-        public void OnDisable()
+        private void OnDisable()
         {
-            CombatController.OnTurnStarted -= HandleOnTurnStarted;
-            CombatController.OnTurnEnded -= HandleOnTurnEnded;
+            m_movement.OnMovementStarted -= HandleOnMovementStarted;
+            m_movement.OnMovementEnded -= HandleOnMovementEnded;
+
+            m_attackAction.OnAttackTriggered -= HandleOnAttackTriggered;
+
+            m_animation.OnAttackAnimationHitFrameTriggered -= HandleOnAttackAnimationHitFrame;
+            m_animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
         }
 
-        public void HandleOnTurnStarted(object obj, EventArgs args)
+        // TODO: Try to think more about this. Maybe we can have a better way to set the current room for enemies
+        public void StartCombat(Room room) => m_movementAction.SetCurrentRoom(room);
+
+        private void HandleOnMovementStarted(object obj, OnMovementEventArgs e)
         {
-            Debug.Log($"{gameObject.name} ({gameObject.transform.position}) is doing a move");
-            StartCoroutine(MakingThinkingMove());
+            m_animation.PlayRunAnimation();
+
+            m_facing.TryUpdateFacing((e.To - e.From).x);
         }
 
-        public void HandleOnTurnEnded(object obj, EventArgs args)
+        private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
         {
-            Debug.Log($"{gameObject.name} ({gameObject.transform.position}) ended his move");
+            m_animation.PlayIdleAnimation();
+
+            // TODO: Consider enemy AI for more complex behavior. Need to add ActionEndedEvent to properly handle this
+            Debug.Log($"{gameObject.name} {transform.position} is ending it's move after the movement action");
+            CombatController.EndTurn();
         }
 
-        private IEnumerator MakingThinkingMove()
+        private void HandleOnAttackTriggered(object obj, OnAttackEventArgs e)
         {
-            yield return new WaitForSeconds(1);
+            m_currentTargetedEntity = e.Target;
+            m_facing.TryUpdateFacing(m_currentTargetedEntity.GetCurrentTilePosition().x - transform.position.x);
+            m_animation.PlayAttackAnimation();
+        }
+
+        private void HandleOnAttackAnimationHitFrame(object obj, EventArgs e) => m_attackAction.Hit(m_currentTargetedEntity);
+
+        private void HandleOnAttackAnimationEnded(object obj, EventArgs e)
+        {
+            m_animation.PlayIdleAnimation();
+            m_currentTargetedEntity = null;
+
+            // TODO: Consider enemy AI for more complex behavior. Need to add ActionEndedEvent to properly handle this
+            Debug.Log($"{gameObject.name} {transform.position} is ending it's move after the attack action");
             CombatController.EndTurn();
         }
     }

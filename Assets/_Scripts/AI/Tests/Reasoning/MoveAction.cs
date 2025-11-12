@@ -16,7 +16,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override void Execute(MoveActionArgs args) { }
 
-        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit)
+        public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit)
         {
             Position position = state.GetProperty<Position>(unit);
 

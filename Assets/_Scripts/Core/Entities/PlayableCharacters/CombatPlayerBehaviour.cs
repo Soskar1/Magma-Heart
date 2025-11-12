@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly CombatUI m_combatUI;
         private readonly CombatController m_combatController;
 
-        private PlayerAnimation m_animation;
+        private EntityAnimation m_animation;
         private Facing m_facing;
 
         private Room m_currentRoom;
@@ -64,7 +64,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_combatUI = gameUI.CombatUI;
 
             m_facing = player.GetComponent<Facing>();
-            m_animation = player.GetComponent<PlayerAnimation>();
+            m_animation = player.GetComponent<EntityAnimation>();
             m_movement = player.GetComponent<TurnBasedMovement>();
 
             m_movementAction = m_player.Model.PossibleActions.Get<MovementAction>();
@@ -76,7 +76,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Enable()
         {
             m_userInput.Enable();
-            m_movementAction.Enable();
 
             m_energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
 
@@ -101,7 +100,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void Disable()
         {
             m_userInput.Disable();
-            m_movementAction.Disable();
 
             m_energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
 
@@ -193,7 +191,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                     m_energyHUD.DisplayEnergyPrice(0);
                 }
             }
-            else if (m_movementAction.CanMoveToTile(roomTile))
+            else if (m_movementAction.CanExecute(roomTile))
             {
                 m_currentMouseOverEntity = null;
 
@@ -202,7 +200,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
                 m_currentRoom.TryDisplayCombatTile(roomTile);
                 m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
-                m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
+                // m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
             }
             else
             {

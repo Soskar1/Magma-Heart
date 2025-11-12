@@ -41,5 +41,17 @@ namespace MagmaHeart.AI.Boards
 
             return false;
         }
+
+        public bool IsBoardNodeEmpty(Vector2 position)
+        {
+            if (Units.ContainsKey(position))
+                return false;
+
+            BoardNode node = Graph.GetNode(position);
+            if (node.Type == BoardNodeType.Walkable)
+                return true;
+
+            return false;
+        }
     }
 }

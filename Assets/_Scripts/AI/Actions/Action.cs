@@ -11,7 +11,7 @@ namespace MagmaHeart.AI.Actions
 
         public Action(AIUnit actionPossessor) => ActionPossessor = actionPossessor;
 
-        internal List<ActionArgs> GetSimulationArguments(StateSnapshot state)
+        internal List<ActionArgs> GetSimulationArguments(StateSnapshot state, SimulatedBoard board)
         {
             List<ActionArgs> args = new List<ActionArgs>();
 
@@ -23,14 +23,14 @@ namespace MagmaHeart.AI.Actions
                 if ((ActionPossessor.IsPlayer && !unit.IsPlayer) ||
                     (!ActionPossessor.IsPlayer && unit.IsPlayer))
                 {
-                    args.Add(CreateActionArgs(state, unit));
+                    args.Add(CreateActionArgs(state, board, unit));
                 }
             }
 
             return args;
         }
 
-        public abstract ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit);
+        public abstract ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit);
         public abstract bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args);
         public virtual StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, ActionArgs args)
         {

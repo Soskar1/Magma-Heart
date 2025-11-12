@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly Rigidbody2D m_rigidbody;
         private readonly ActionUserInput m_userInput;
         private readonly RigidbodyMovement m_movement;
-        private readonly PlayerAnimation m_animation;
+        private readonly EntityAnimation m_animation;
         private readonly Facing m_facing;
 
         private IInteractable m_currentInteractableObject;
@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             m_userInput = userInput;
             m_player = player;
-            m_animation = player.GetComponent<PlayerAnimation>();
+            m_animation = player.GetComponent<EntityAnimation>();
             m_movement = player.GetComponent<RigidbodyMovement>();
             m_facing = player.GetComponent<Facing>();
             m_rigidbody = player.GetComponent<Rigidbody2D>();

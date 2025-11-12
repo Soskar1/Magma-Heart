@@ -27,14 +27,14 @@ namespace MagmaHeart.Core.CombatSystem
             m_energy = actionPossessor.Model.Energy;
         }
 
-        public override ActionArgs CreateActionArgs(StateSnapshot state, AIUnit unit) => new AttackActionArgs(unit);
+        public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit) => new AttackActionArgs(unit);
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AttackActionArgs args)
         {
-            EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
+            //EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
 
-            if (energy.CurrentEnergy < ENERGY_COST)
-                return false;
+            //if (energy.CurrentEnergy < ENERGY_COST)
+            //    return false;
 
             PositionPropertySnapshot possessorPosition = state.GetProperty<PositionPropertySnapshot>(ActionPossessor);
             PositionPropertySnapshot targetPosition = state.GetProperty<PositionPropertySnapshot>(args.Target);
@@ -49,9 +49,9 @@ namespace MagmaHeart.Core.CombatSystem
         {
             StateSnapshot newState = base.Simulate(state, board, args);
 
-            EnergyPropertySnapshot currentEnergy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
-            EnergyPropertySnapshot newEnergy = new EnergyPropertySnapshot(currentEnergy.CurrentEnergy - ENERGY_COST);
-            newState.Update(ActionPossessor, newEnergy);
+            //EnergyPropertySnapshot currentEnergy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
+            //EnergyPropertySnapshot newEnergy = new EnergyPropertySnapshot(currentEnergy.CurrentEnergy - ENERGY_COST);
+            //newState.Update(ActionPossessor, newEnergy);
 
             HealthPropertySnapshot targetHealth = state.GetProperty<HealthPropertySnapshot>(args.Target);
             HealthPropertySnapshot newHealth = new HealthPropertySnapshot(targetHealth.CurrentHealth - ATTACK_DAMAGE, targetHealth.MaxHealth);
