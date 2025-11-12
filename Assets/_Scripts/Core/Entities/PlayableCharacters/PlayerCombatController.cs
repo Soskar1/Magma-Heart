@@ -135,7 +135,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                     m_energyHUD.DisplayEnergyPrice(0);
                 }
             }
-            else if (m_movementAction.CanExecute(roomTile))
+            else
             {
                 m_currentMouseOverEntity = null;
 
@@ -143,14 +143,16 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 m_currentActionArgs = new MovementActionArgs(roomTile);
 
                 CurrentRoom.TryDisplayCombatTile(roomTile);
-                m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
-                // m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
-            }
-            else
-            {
-                m_currentAction = null;
 
-                // TODO: Display some kind of warning (tooltip) that player doesn't have enough energy to move
+                int energyUsage = m_movementAction.GetEnergyUsage(roomTile);
+                m_energyHUD.DisplayEnergyPrice(Math.Min(energyUsage, Entity.Energy.CurrentEnergy));
+                if (!Entity.Energy.HasEnough(energyUsage))
+                {
+                    // TODO: Display some kind of visual feedback that the player can't move there
+                }
+
+                // m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
+                // m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
             }
 
             m_currentMouseTile = roomTile;
