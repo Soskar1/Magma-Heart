@@ -19,6 +19,7 @@ namespace MagmaHeart.Core.AI
 
         public void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args) => m_room = args.Room;
 
+        // TODO: Move to the AICombatController
         public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
             if (args.CurrentEntity.Model.IsPlayer)

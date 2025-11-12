@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace MagmaHeart.Core.UI
 {
-    public class CombatUI : MonoBehaviour, IDisplayable, ICombatStateListener, ICombatTurnSwitchListener
+    public class CombatUI : MonoBehaviour, IDisplayable, ICombatStateListener
     {
         [SerializeField] private Button m_nextTurnButton;
 
@@ -24,14 +24,6 @@ namespace MagmaHeart.Core.UI
 
         public void EnterCombatState() { }
         public void ExitCombatState() => Hide();
-
-        public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
-        {
-            if (args.CurrentEntity.Model.IsPlayer)
-                Show();
-            else
-                Hide();
-        }
 
         public void HandleOnMovementStarted(object obj, OnMovementEventArgs args) => Disable();
         public void HandleOnMovementEnded(object obj, OnMovementEventArgs args) => Enable();

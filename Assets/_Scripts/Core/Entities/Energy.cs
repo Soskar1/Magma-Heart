@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.Entities
         public Energy(int maxEnergy, int energyRegenerationPerTurn)
         {
             m_maxEnergy = maxEnergy;
-            m_currentEnergy = energyRegenerationPerTurn;
+            m_currentEnergy = 0;
             m_energyRegenerationPerTurn = energyRegenerationPerTurn;
         }
 

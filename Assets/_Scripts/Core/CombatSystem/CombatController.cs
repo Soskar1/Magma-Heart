@@ -1,19 +1,40 @@
-﻿using System;
+﻿using MagmaHeart.Core.Dungeon;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.CombatSystem
 {
-    public class CombatController
+    public abstract class CombatController
     {
-        public event EventHandler NextTurn;
-        public event EventHandler OnTurnStarted;
-        public event EventHandler OnTurnEnded;
+        public Entity Entity { get; init; }
+        public Room CurrentRoom { get; private set; }
 
-        public void StartTurn() => OnTurnStarted?.Invoke(this, EventArgs.Empty);
-        public void EndTurn()
+        private TaskCompletionSource<bool> m_turnFinished;
+
+        public CombatController(Entity entity)
         {
-            OnTurnEnded?.Invoke(this, EventArgs.Empty);
-            NextTurn?.Invoke(this, EventArgs.Empty);
+            Entity = entity;
+        }
+
+        public virtual void StartBattle(Room room)
+        {
+            CurrentRoom = room;
+        }
+
+        public virtual void EndBattle()
+        {
+            CurrentRoom = null;
+        }
+
+        public virtual Task StartTurn()
+        {
+            Entity.Energy.Regenerate();
+            m_turnFinished = new TaskCompletionSource<bool>();
+            return m_turnFinished.Task;
+        }
+
+        public virtual void EndTurn()
+        {
+            m_turnFinished.SetResult(true);
         }
     }
 }

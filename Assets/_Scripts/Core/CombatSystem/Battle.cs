@@ -5,6 +5,7 @@ using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -12,9 +13,8 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Entity m_player;
-        private readonly List<ICombatTurnSwitchListener> m_turnSwitchListeners;
         private readonly List<IBattleStartedListener> m_battleStartedListeners;
-        private readonly TurnSwitcher m_turnSwitcher;
+        private CircularList<Entity> m_turnOrder;
         private readonly Spawner m_spawner;
 
         private Room m_currentRoom;
@@ -23,14 +23,15 @@ namespace MagmaHeart.Core.CombatSystem
         public event EventHandler OnPlayerVictory;
         public event EventHandler<OnBattleStartedEventArgs> OnCombatStarted;
 
-        public Battle(Entity player, Spawner spawner, List<ICombatTurnSwitchListener> turnSwitchListeners, List<IBattleStartedListener> battleStartedListeners)
+        private bool m_battleEnded = false;
+
+        public Battle(Entity player, Spawner spawner, List<IBattleStartedListener> battleStartedListeners)
         {
             m_player = player;
             m_spawner = spawner;
 
-            m_turnSwitchListeners = turnSwitchListeners;
             m_battleStartedListeners = battleStartedListeners;
-            m_turnSwitcher = new TurnSwitcher();
+            m_turnOrder = new CircularList<Entity>();
 
             Enable();
         }
@@ -69,13 +70,36 @@ namespace MagmaHeart.Core.CombatSystem
                 m_currentRoom.AddEntityToInspect(entity);
             }
 
-            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
-                m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
+            //foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
+            //    m_turnSwitcher.OnTurnSwitched += listener.HandleOnTurnSwitched;
 
-            m_turnSwitcher.Start(m_currentEntitiesInBattle);
+            // m_turnSwitcher.Start(m_currentEntitiesInBattle);
+            m_turnOrder.Clear();
+            m_turnOrder.AddRange(m_currentEntitiesInBattle);
 
             OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(room);
             OnCombatStarted?.Invoke(this, args);
+
+            //foreach (Entity entity in m_currentEntitiesInBattle)
+            //    entity.CombatController.StartBattle(room);
+            m_player.CombatController.StartBattle(room);
+
+            _ = ProcessBattle();
+        }
+
+        private async Task ProcessBattle()
+        {
+            while (!m_battleEnded)
+            {
+                Entity entity = m_turnOrder.Head;
+                await ProcessTurn(entity);
+            }
+        }
+
+        private async Task ProcessTurn(Entity entity)
+        {
+            await entity.CombatController.StartTurn();
+            entity.CombatController.EndTurn();
         }
 
         private void HandleEntityDeath(object obj, EventArgs args)
@@ -99,7 +123,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
             else
             {
-                m_turnSwitcher.TurnOrder.Remove(entity);
+                m_turnOrder.Remove(entity);
                 m_currentEntitiesInBattle.Remove(entity);
                 m_currentRoom.RemoveEntityFromRoom(entity);
 
@@ -117,12 +141,12 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void End(bool isPlayerVictory)
         {
-            foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
-                m_turnSwitcher.OnTurnSwitched -= listener.HandleOnTurnSwitched;
+            //foreach (ICombatTurnSwitchListener listener in m_turnSwitchListeners)
+            //    m_turnSwitcher.OnTurnSwitched -= listener.HandleOnTurnSwitched;
 
             if (isPlayerVictory)
             {
-                m_turnSwitcher.Clear();
+                m_turnOrder.Clear();
                 m_currentEntitiesInBattle.Clear();
 
                 Debug.Log("Player won the battle!");
@@ -132,6 +156,8 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 // TODO: Handle player defeat
             }
+
+            m_battleEnded = true;
         }
     }
 }
