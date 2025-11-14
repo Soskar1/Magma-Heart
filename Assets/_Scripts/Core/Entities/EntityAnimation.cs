@@ -12,19 +12,16 @@ namespace MagmaHeart.Core.Entities
         public event EventHandler OnAttackAnimationHitFrameTriggered;
         public event EventHandler OnAttackAnimationEnded;
 
-        public void OnEnable() => OnAnimationEnded += HandleOnAnimationEnded;
-        public void OnDisable() => OnAnimationEnded -= HandleOnAnimationEnded;
-
         public void PlayIdleAnimation() => CurrentAnimationState = m_idleAnimationID;
         public void PlayRunAnimation() => CurrentAnimationState = m_runAnimationID;
         public void PlayAttackAnimation() => CurrentAnimationState = m_attackAnimationID;
 
         public void OnAttackAnimationHitFrame() => OnAttackAnimationHitFrameTriggered?.Invoke(this, EventArgs.Empty);
 
-        private void HandleOnAnimationEnded(object obj, OnAnimationEndedEventArgs args)
+        public override void FireOnAnimationEndedEvent()
         {
-            if (args.AnimationStateHash == m_attackAnimationID)
-                OnAttackAnimationEnded?.Invoke(obj, EventArgs.Empty);
-        }
+            if (CurrentAnimationState == m_attackAnimationID)
+                OnAttackAnimationEnded?.Invoke(this, EventArgs.Empty);
+        }  
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
+using MagmaHeart.Collections;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.CombatSystem;
@@ -20,7 +21,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private RoomTile m_currentMouseTile;
         private AIUnit m_currentMouseOverEntity;
 
-        private readonly MovementAction m_movementAction;
         private readonly AttackAction m_attackAction;
         private MagmaHeart.AI.Actions.Action m_currentAction;
         private ActionArgs m_currentActionArgs;
@@ -44,18 +44,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_combatUI = gameUI.CombatUI;
             m_userInput = userInput;
 
-            m_movementAction = Entity.Model.PossibleActions.Get<MovementAction>();
             m_attackAction = Entity.Model.PossibleActions.Get<AttackAction>();
         }
 
-        public override void StartBattle(Room room)
+        public override void StartBattle(Room room, CircularList<Entity> turnOrder)
         {
-            base.StartBattle(room);
+            base.StartBattle(room, turnOrder);
             m_userInput.Enable();
 
             Entity.Energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
-
-            m_movementAction.SetCurrentRoom(CurrentRoom);
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
@@ -103,8 +100,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentMouseOverEntity != null)
                 m_currentMouseOverEntity = null;
 
-            m_movementAction.Reset();
-
             base.EndTurn();
         }
 
@@ -135,7 +130,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                     m_energyHUD.DisplayEnergyPrice(0);
                 }
             }
-            else
+            else if (CurrentRoom.TileIsAccessable(roomTile))
             {
                 m_currentMouseOverEntity = null;
 
@@ -153,6 +148,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
                 // m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
                 // m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
+            }
+            else
+            {
+                m_currentAction = null;
+                m_currentActionArgs = null;
+                m_currentMouseOverEntity = null;
             }
 
             m_currentMouseTile = roomTile;

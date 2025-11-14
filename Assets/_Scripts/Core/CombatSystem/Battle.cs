@@ -71,7 +71,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_turnOrder.AddRange(m_currentEntitiesInBattle);
 
             foreach (Entity entity in m_currentEntitiesInBattle)
-                entity.CombatController.StartBattle(room);
+                entity.CombatController.StartBattle(room, m_turnOrder);
 
             await ProcessBattle();
         }

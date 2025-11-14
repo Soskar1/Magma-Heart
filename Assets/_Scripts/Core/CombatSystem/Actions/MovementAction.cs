@@ -130,11 +130,9 @@ namespace MagmaHeart.Core.CombatSystem
                 .ToList();
 
             EnergyPropertySnapshot possessorEnergy = newState.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
-            int distanceToMove = (possessorEnergy.CurrentEnergy + 5) * m_movementDistanceInTilesForOneEnergy;
+            int distanceToMove = (possessorEnergy.CurrentEnergy) * m_movementDistanceInTilesForOneEnergy;
             distanceToMove = Math.Min(distanceToMove, path.Count) - 1;
             RoomTile currentMovementTarget = path[distanceToMove];
-
-            // TODO: Calculate free movement. Save it as a property.
 
             PositionPropertySnapshot newPosition = new PositionPropertySnapshot(currentMovementTarget.Position);
             newState.Update(ActionPossessor, newPosition);

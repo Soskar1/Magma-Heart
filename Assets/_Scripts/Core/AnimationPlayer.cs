@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core
@@ -6,8 +5,6 @@ namespace MagmaHeart.Core
     [RequireComponent(typeof(Animator))]
     public class AnimationPlayer : MonoBehaviour
     {
-        public EventHandler<OnAnimationEndedEventArgs> OnAnimationEnded;
-
         public Animator Animator { get; private set; }
 
         private int m_currentAnimationState;
@@ -29,8 +26,7 @@ namespace MagmaHeart.Core
             {
                 Animator.CrossFade(CurrentAnimationState, 0, 0, 0);
 
-                OnAnimationEndedEventArgs args = new OnAnimationEndedEventArgs(CurrentAnimationState);
-                OnAnimationEnded?.Invoke(this, args);
+                FireOnAnimationEndedEvent();
             }
         }
 
@@ -41,5 +37,7 @@ namespace MagmaHeart.Core
             float currentAmount = Animator.GetFloat(animationParameter);
             Animator.SetFloat(animationParameter, currentAmount + amount);
         }
+
+        public virtual void FireOnAnimationEndedEvent() { }
     }
 }

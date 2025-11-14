@@ -82,7 +82,7 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
-            AggressiveStrategy strategy = new AggressiveStrategy(3, spawnedPlayer.Model);
+            AggressiveStrategy strategy = new AggressiveStrategy(1, spawnedPlayer.Model);
             CombatAI combatAI = new CombatAI(strategy);
 
             List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()

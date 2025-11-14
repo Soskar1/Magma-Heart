@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.Entities.CombatSystem;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.Core.Entities.CombatSystem;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
@@ -14,7 +15,12 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public override Task StartTurn()
         {
-            return Task.CompletedTask;
+            Task task = base.StartTurn();
+
+            BestAction action = m_ai.GetBestAction(CurrentTurnOrder, CurrentRoom);
+            action.Action.Execute(action.Args);
+
+            return task;
         }
     }
 }

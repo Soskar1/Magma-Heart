@@ -10,7 +10,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
     {
         private EntityAnimation m_animation;
 
-        private MovementAction m_movementAction;
         private AttackAction m_attackAction;
 
         private TurnBasedMovement m_movement;
@@ -26,7 +25,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_movement = GetComponent<TurnBasedMovement>();
             m_facing = GetComponent<Facing>();
 
-            m_movementAction = Model.PossibleActions.Get<MovementAction>();
             m_attackAction = Model.PossibleActions.Get<AttackAction>();
 
             CombatController = new EnemyCombatController(this, ai);
@@ -39,6 +37,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_animation.OnAttackAnimationHitFrameTriggered += HandleOnAttackAnimationHitFrame;
             m_animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
         }
+
+        private void Update() => m_animation.PlayAnimations();
 
         private void OnDisable()
         {
