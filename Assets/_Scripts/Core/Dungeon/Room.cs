@@ -1,46 +1,46 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Extensions;
-using MagmaHeart.AI.Pathifinding;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using MagmaHeart.Core.Entities;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class Room
+    public class Room : Board
     {
         private CombatTilemapRenderer m_renderer;
         public RoomTileData RoomTileData { get; init; }
         public DungeonGrid Grid { get; init; }
-        public AStarGraph AStarGraph { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
-        private List<ICombatController> m_entitiesInCombat;
-
-        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, AStarGraph aStarGraph)
+        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
-            m_entitiesInCombat = new List<ICombatController>();
-            AStarGraph = aStarGraph;
         }
 
-        public void AddEntityToInspect(ICombatController combatController)
+        public void AddEntityToInspect(Entity entity)
         {
-            m_entitiesInCombat.Add(combatController);
-            combatController.OnMoved += HandleOnMoved;
+            Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
-            AStarGraph.ChangeNodeType(combatController.CurrentTilePosition.ToVector2(), AStarNodeType.Obstacle);
+            Units.Add(position, entity.Model);
+            entity.TurnBasedMovement.OnMovementEnded += HandleOnMovementEnded;
+
+            ChangeNodeType(position, BoardNodeType.Obstacle);
         }
 
-        public void RemoveEntityFromRoom(ICombatController combatController)
+        public void RemoveEntityFromRoom(Entity entity)
         {
-            combatController.OnMoved -= HandleOnMoved;
-            m_entitiesInCombat.Remove(combatController);
+            Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
-            AStarGraph.ChangeNodeType(combatController.CurrentTilePosition.ToVector2(), AStarNodeType.Walkable);
+            entity.TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
+            Units.Remove(position);
+
+            ChangeNodeType(position, BoardNodeType.Walkable);
         }
 
         public RoomTile GetRoomTile(Vector3 worldPosition)
@@ -74,21 +74,31 @@ namespace MagmaHeart.Core.Dungeon
             return true;
         }
 
-        public bool EntityIsOnTile(RoomTile roomTile, out IHittableTile entity)
+        public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit)
         {
-            entity = m_entitiesInCombat.FirstOrDefault(e => e.CurrentTilePosition == roomTile.Position);
-            if (entity == null)
-                return false;
+            Vector2 position = Units.Keys.FirstOrDefault(pos => pos == roomTile.Position.ToVector2());
 
-            return true;
+            if (Units.TryGetValue(position, out AIUnit aiUnit))
+            {
+                unit = (EntityModel)aiUnit;
+                return true;
+            }
+
+            unit = null;
+            return false;
         }
 
-        public bool EntityExists(IHittableTile entity) => m_entitiesInCombat.Any(e => e.CurrentTilePosition == entity.CurrentTilePosition);
-
-        private void HandleOnMoved(object obj, OnMovementEventArgs e)
+        private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
         {
-            AStarGraph.ChangeNodeType(e.From.ToVector2(), AStarNodeType.Walkable);
-            AStarGraph.ChangeNodeType(e.To.ToVector2(), AStarNodeType.Obstacle);
+            Vector2 from = e.From.ToVector2();
+            Vector2 to = e.To.ToVector2();
+
+            AIUnit unit = Units[from];
+            Units.Remove(from);
+            Units.Add(to, unit);
+
+            ChangeNodeType(from, BoardNodeType.Walkable);
+            ChangeNodeType(to, BoardNodeType.Obstacle);
         }
     }
 

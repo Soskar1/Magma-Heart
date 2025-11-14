@@ -1,24 +1,34 @@
+﻿using System;
+using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.CombatSystem;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class Entity
+    [RequireComponent(typeof(TurnBasedMovement))]
+    public class Entity : MonoBehaviour
     {
-        public Transform Transform { get; private set; }
-        public Health Health { get; private set; }
-        public Energy Energy { get; private set; }
-        public EntityData Data { get; private set; }
-        public EntityStats Stats => Data.Stats;
+        [SerializeField] private EntityData m_data;
+        private DungeonGrid m_grid;
 
-        public Entity(EntityData data, Transform transform)
+        public EntityModel Model { get; private set; }
+        public Health Health => Model.Health;
+        public Energy Energy => Model.Energy;
+        public EntityStats Stats => Model.Stats;
+        public CombatController CombatController { get; protected set; }
+        public TurnBasedMovement TurnBasedMovement { get; private set; }
+
+        public virtual void Initialize(DungeonGrid grid, bool isPlayer)
         {
-            Data = data;
-            Transform = transform;
+            m_grid = grid;
 
-            Health = new Health(Stats.MaxHealth);
-            Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
+            Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
+
+            TurnBasedMovement = GetComponent<TurnBasedMovement>();
+            Model.PossibleActions.Add(new MovementAction(this));
+            Model.PossibleActions.Add(new AttackAction(this));
         }
-
-        public void Reset() => Health.Reset();
     }
 }

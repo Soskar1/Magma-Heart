@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using MagmaHeart.AI.Boards;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace MagmaHeart.AI.Pathifinding.Tests
+namespace MagmaHeart.AI.Pathfinding.Tests
 {
     public class AStarTests
     {
@@ -11,8 +12,8 @@ namespace MagmaHeart.AI.Pathifinding.Tests
         {
             Vector2 start = Vector2.zero;
 
-            AStarGraph graph = new AStarGraph();
-            AStarNode node = new AStarNode(start, AStarNodeType.Walkable);
+            BoardGraph graph = new BoardGraph();
+            BoardNode node = new BoardNode(start, BoardNodeType.Walkable);
             graph.AddNode(node);
 
             AStar aStar = new AStar(AStar.ManhattanDistance);
@@ -29,9 +30,9 @@ namespace MagmaHeart.AI.Pathifinding.Tests
             Vector2 start = Vector2.zero;
             Vector2 end = Vector2.up;
 
-            AStarGraph graph = new AStarGraph();
-            graph.AddNode(start, AStarNodeType.Walkable);
-            graph.AddNode(end, AStarNodeType.Walkable);
+            BoardGraph graph = new BoardGraph();
+            graph.AddNode(start, BoardNodeType.Walkable);
+            graph.AddNode(end, BoardNodeType.Walkable);
             graph.ConnectNodes(start, end, 3);
 
             AStar aStar = new AStar(AStar.ManhattanDistance);
@@ -49,9 +50,9 @@ namespace MagmaHeart.AI.Pathifinding.Tests
             Vector2 start = Vector2.zero;
             Vector2 end = Vector2.up;
 
-            AStarGraph graph = new AStarGraph();
-            graph.AddNode(start, AStarNodeType.Walkable);
-            graph.AddNode(end, AStarNodeType.Obstacle);
+            BoardGraph graph = new BoardGraph();
+            graph.AddNode(start, BoardNodeType.Walkable);
+            graph.AddNode(end, BoardNodeType.Obstacle);
             graph.ConnectNodes(start, end, 3);
 
             AStar aStar = new AStar(AStar.ManhattanDistance);
@@ -63,7 +64,7 @@ namespace MagmaHeart.AI.Pathifinding.Tests
         [Test]
         public void AStar_FindPathWithCostDecisions_ShouldReturnPath()
         {
-            (AStarGraph graph, Vector2[,] nodes) = AStarGraphCreator.Create3x3Graph();
+            (BoardGraph graph, Vector2[,] nodes) = BoardGraphCreator.Create3x3Graph();
 
             float newCost = 10;
             graph.UpdateCost(nodes[0, 0], nodes[1, 0], newCost);
@@ -90,11 +91,11 @@ namespace MagmaHeart.AI.Pathifinding.Tests
         [Test]
         public void AStar_FindPathWithNodeTypeDecisions_ReturnsNull()
         {
-            (AStarGraph graph, Vector2[,] nodes) = AStarGraphCreator.Create3x3Graph();
+            (BoardGraph graph, Vector2[,] nodes) = BoardGraphCreator.Create3x3Graph();
 
-            graph.ChangeNodeType(nodes[1, 0], AStarNodeType.Obstacle);
-            graph.ChangeNodeType(nodes[1, 1], AStarNodeType.Obstacle);
-            graph.ChangeNodeType(nodes[1, 2], AStarNodeType.Obstacle);
+            graph.ChangeNodeType(nodes[1, 0], BoardNodeType.Obstacle);
+            graph.ChangeNodeType(nodes[1, 1], BoardNodeType.Obstacle);
+            graph.ChangeNodeType(nodes[1, 2], BoardNodeType.Obstacle);
 
             AStar aStar = new AStar(AStar.ManhattanDistance);
             List<Vector2> path = aStar.FindPath(graph, nodes[0, 0], nodes[2, 2]);
@@ -105,10 +106,10 @@ namespace MagmaHeart.AI.Pathifinding.Tests
         [Test]
         public void AStar_FindPathWithNodeTypeDecisions_ReturnsPath()
         {
-            (AStarGraph graph, Vector2[,] nodes) = AStarGraphCreator.Create3x3Graph();
+            (BoardGraph graph, Vector2[,] nodes) = BoardGraphCreator.Create3x3Graph();
 
-            graph.ChangeNodeType(nodes[1, 0], AStarNodeType.Obstacle);
-            graph.ChangeNodeType(nodes[1, 2], AStarNodeType.Obstacle);
+            graph.ChangeNodeType(nodes[1, 0], BoardNodeType.Obstacle);
+            graph.ChangeNodeType(nodes[1, 2], BoardNodeType.Obstacle);
 
             AStar aStar = new AStar(AStar.ManhattanDistance);
             List<Vector2> path = aStar.FindPath(graph, nodes[0, 0], nodes[2, 2]);

@@ -4,7 +4,7 @@ namespace MagmaHeart.Core.Artifacts
 {
     public interface IStatModifier
     {
-        public void Apply(Entity entity);
-        public void Revert(Entity entity);
+        public void Apply(EntityModel entity);
+        public void Revert(EntityModel entity);
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Collections
 {
-    public class TypeMap<TBase>
+    public class TypeMap<TBase> : IEnumerable<TBase>
     {
         private readonly Dictionary<Type, TBase> m_items = new();
 
@@ -12,6 +13,12 @@ namespace MagmaHeart.Collections
 
         public void Add<T>(T item) where T : TBase
             => m_items[typeof(T)] = item;
+
+        public TBase this[Type type]
+        {
+            get => m_items[type];
+            set => m_items[type] = value;
+        }
 
         public T Get<T>() where T : TBase
             => (T)m_items[typeof(T)];
@@ -42,5 +49,9 @@ namespace MagmaHeart.Collections
 
             return copy;
         }
+
+        public IEnumerator<TBase> GetEnumerator() => m_items.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

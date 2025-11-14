@@ -9,12 +9,12 @@ namespace MagmaHeart.Core.Artifacts
         public HealthStatModifier() => AdditionalHealth = 0;
         public HealthStatModifier(float additionalHealth) => AdditionalHealth = additionalHealth;
 
-        public void Apply(Entity entity)
+        public void Apply(EntityModel entity)
         {
             entity.Health.MaxHealth += AdditionalHealth;
             entity.Health.CurrentHealth += AdditionalHealth;
         }
 
-        public void Revert(Entity entity) => entity.Health.MaxHealth -= AdditionalHealth;
+        public void Revert(EntityModel entity) => entity.Health.MaxHealth -= AdditionalHealth;
     }
 }

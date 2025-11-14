@@ -1,3 +1,4 @@
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace MagmaHeart.Core.CameraControls
         private ActionCameraBehaviour m_actionCameraBehaviour;
         private CombatCameraBehaviour m_turnBasedCameraBehaviour;
 
-        public CombatCameraBehaviour TurnBasedCameraBehaviour => m_turnBasedCameraBehaviour;
+        public ITurnSwitchListener TurnSwitchListener => m_turnBasedCameraBehaviour;
 
         public void Initialize(Transform objectToTrack, ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput)
         {

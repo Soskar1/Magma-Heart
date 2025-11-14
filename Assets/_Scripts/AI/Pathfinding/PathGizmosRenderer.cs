@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MagmaHeart.AI.Pathifinding
+namespace MagmaHeart.AI.Pathfinding
 {
     public class PathGizmosRenderer : MonoBehaviour
     {

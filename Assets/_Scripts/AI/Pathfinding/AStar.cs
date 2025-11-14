@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.Collections;
 using MagmaHeart.Extensions;
 using UnityEngine;
 
-namespace MagmaHeart.AI.Pathifinding
+namespace MagmaHeart.AI.Pathfinding
 {
     public class AStar
     {
@@ -20,15 +21,15 @@ namespace MagmaHeart.AI.Pathifinding
             m_heuristic = heuristic;
         }
 
-        private class ComputationalAStarNode
+        private class ComputationalBoardNode
         {
-            public AStarNode Node { get; init; }
-            public ComputationalAStarNode Parent { get; set; }
+            public BoardNode Node { get; init; }
+            public ComputationalBoardNode Parent { get; set; }
             public float PathCost { get; set; }
             public float HeuristicCost { get; set; }
             public float TotalCost => PathCost + HeuristicCost;
 
-            public ComputationalAStarNode(AStarNode node, float pathCost, float heuristicCost, ComputationalAStarNode parent = null)
+            public ComputationalBoardNode(BoardNode node, float pathCost, float heuristicCost, ComputationalBoardNode parent = null)
             {
                 Node = node;
                 PathCost = pathCost;
@@ -37,7 +38,7 @@ namespace MagmaHeart.AI.Pathifinding
             }
         }
 
-        public List<Vector2> FindPath(AStarGraph graph, Vector2 start, Vector2 target)
+        public List<Vector2> FindPath(BoardGraph graph, Vector2 start, Vector2 target)
         {
             if (!graph.ContainsNode(start) || !graph.ContainsNode(target))
             {
@@ -45,44 +46,44 @@ namespace MagmaHeart.AI.Pathifinding
                 return null;
             }
 
-            AStarNode startNode = graph.GetNode(start);
-            ComputationalAStarNode startComputationalNode = new ComputationalAStarNode(startNode, 0, m_heuristic(start, target));
+            BoardNode startNode = graph.GetNode(start);
+            ComputationalBoardNode startComputationalNode = new ComputationalBoardNode(startNode, 0, m_heuristic(start, target));
 
-            HashSet<AStarNode> visitedNodes = new HashSet<AStarNode>();
+            HashSet<BoardNode> visitedNodes = new HashSet<BoardNode>();
             
-            Dictionary<AStarNode, ComputationalAStarNode> nodesInProcess = new Dictionary<AStarNode, ComputationalAStarNode>();
+            Dictionary<BoardNode, ComputationalBoardNode> nodesInProcess = new Dictionary<BoardNode, ComputationalBoardNode>();
             nodesInProcess.Add(startNode, startComputationalNode);
 
-            PriorityQueue<ComputationalAStarNode, float> nodeQueue = new PriorityQueue<ComputationalAStarNode, float>();
+            PriorityQueue<ComputationalBoardNode, float> nodeQueue = new PriorityQueue<ComputationalBoardNode, float>();
             nodeQueue.Enqueue(startComputationalNode, startComputationalNode.TotalCost);
 
             while (nodeQueue.Count > 0)
             {
-                ComputationalAStarNode current = nodeQueue.Dequeue();
+                ComputationalBoardNode current = nodeQueue.Dequeue();
 
                 if (current.Node.Position == target)
                     return ReconstructPath(current);
 
                 visitedNodes.Add(current.Node);
 
-                IEnumerable<AStarNode> adjacentNodes = graph.GetAdjacentNodes(current.Node);
-                foreach (AStarNode adjacentNode in adjacentNodes)
+                IEnumerable<BoardNode> adjacentNodes = graph.GetAdjacentNodes(current.Node.Position);
+                foreach (BoardNode adjacentNode in adjacentNodes)
                 {
-                    if (!visitedNodes.Contains(adjacentNode) && adjacentNode.Type == AStarNodeType.Walkable)
+                    if (!visitedNodes.Contains(adjacentNode) && adjacentNode.Type == BoardNodeType.Walkable)
                     {
                         float pathCost = current.PathCost + graph.GetCost(current.Node, adjacentNode);
 
                         if (!nodesInProcess.ContainsKey(adjacentNode))
                         {
-                            ComputationalAStarNode computationalAdjacentNode =
-                                new ComputationalAStarNode(adjacentNode, pathCost, m_heuristic(adjacentNode.Position, target), current);
+                            ComputationalBoardNode computationalAdjacentNode =
+                                new ComputationalBoardNode(adjacentNode, pathCost, m_heuristic(adjacentNode.Position, target), current);
 
                             nodeQueue.Enqueue(computationalAdjacentNode, computationalAdjacentNode.TotalCost);
                             nodesInProcess.Add(adjacentNode, computationalAdjacentNode);
                         }
                         else
                         {
-                            ComputationalAStarNode computationalAdjacentNode = nodesInProcess[adjacentNode];
+                            ComputationalBoardNode computationalAdjacentNode = nodesInProcess[adjacentNode];
                             computationalAdjacentNode.Parent = current;
                             computationalAdjacentNode.PathCost = pathCost;
                             computationalAdjacentNode.HeuristicCost = m_heuristic(adjacentNode.Position, target);
@@ -97,7 +98,7 @@ namespace MagmaHeart.AI.Pathifinding
             return null;
         }
 
-        private List<Vector2> ReconstructPath(ComputationalAStarNode current)
+        private List<Vector2> ReconstructPath(ComputationalBoardNode current)
         {
             List<Vector2> path = new List<Vector2>();
             while (current != null)

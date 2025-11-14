@@ -7,13 +7,13 @@ using UnityEngine.UI;
 
 namespace MagmaHeart.Core.UI
 {
-    public class CombatUI : MonoBehaviour, IDisplayable, ICombatStateListener, ICombatTurnSwitchListener
+    public class CombatUI : MonoBehaviour, IDisplayable, ICombatStateListener
     {
         [SerializeField] private Button m_nextTurnButton;
 
         public void Initialize(Player player)
         {
-            m_nextTurnButton.onClick.AddListener(player.TurnBasedPlayerBehaviour.EndTurn);
+            m_nextTurnButton.onClick.AddListener(player.CombatController.EndTurn);
         }
 
         private void Enable() => m_nextTurnButton.enabled = true;
@@ -24,14 +24,6 @@ namespace MagmaHeart.Core.UI
 
         public void EnterCombatState() { }
         public void ExitCombatState() => Hide();
-
-        public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
-        {
-            if (args.Entity.IsPlayableCharacter)
-                Show();
-            else
-                Hide();
-        }
 
         public void HandleOnMovementStarted(object obj, OnMovementEventArgs args) => Disable();
         public void HandleOnMovementEnded(object obj, OnMovementEventArgs args) => Enable();

@@ -26,6 +26,9 @@ namespace MagmaHeart.Core.Input
 
         public void UpdateMousePosition()
         {
+            if (!m_userInput.TurnBasedPlayer.enabled)
+                Debug.LogWarning("Combat user input is not enabled. Cannot update mouse position.");
+
             Vector2 mouseWorldPosition = GetMouseWorldPosition();
             Vector3Int mouseOverTilePosition = m_grid.WorldToTilePosition(mouseWorldPosition);
 
@@ -44,7 +47,11 @@ namespace MagmaHeart.Core.Input
             }
         }
 
-        public void ForceTriggerOnMouseChangedTile() => OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(m_currentMouseTile.Value));
+        public void ForceTriggerOnMouseChangedTile()
+        {
+            UpdateMousePosition();
+            OnMouseChangedTile?.Invoke(this, new OnMouseChangedTileEventArgs(m_currentMouseTile.Value));
+        }
 
         private Vector2 GetMouseWorldPosition()
         {

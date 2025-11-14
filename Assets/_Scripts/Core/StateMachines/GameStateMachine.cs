@@ -1,4 +1,3 @@
-using MagmaHeart.Core.CombatSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace MagmaHeart.Core.StateMachines
 
         private StateMachineStates m_currentState;
         
-        public GameStateMachine(ActionState action, CombatState combat, RewardState reward, Battle battle)
+        public GameStateMachine(ActionState action, CombatState combat, RewardState reward)
         {
             m_states = new Dictionary<StateMachineStates, IState>()
             {
@@ -31,8 +30,6 @@ namespace MagmaHeart.Core.StateMachines
 
             m_stateMachine = new StateMachine(action);
             m_currentState = StateMachineStates.Action;
-
-            battle.OnPlayerVictory += HandleOnPlayerVictory;
         }
 
         public void ChangeState(StateMachineStates state, params object[] args)
@@ -48,6 +45,6 @@ namespace MagmaHeart.Core.StateMachines
             }
         }
 
-        private void HandleOnPlayerVictory(object obj, EventArgs args) => ChangeState(StateMachineStates.Reward, args);
+        public void HandleOnPlayerVictory(object obj, EventArgs args) => ChangeState(StateMachineStates.Reward, args);
     }
 }

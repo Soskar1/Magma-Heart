@@ -9,8 +9,9 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
-using MagmaHeart.AI.Pathifinding;
 using UnityEngine;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.Core.AI;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -35,6 +36,11 @@ namespace MagmaHeart.Core.SceneLoading
         private UserInput m_userInput;
         private DungeonGrid m_grid;
         private CameraController m_camera;
+
+        private GameUI m_gameUI;
+        private Battle m_battle;
+        private BattleReward m_battleReward;
+        private GameStateMachine m_stateMachine;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -61,13 +67,13 @@ namespace MagmaHeart.Core.SceneLoading
         {
             m_renderer.RenderedAllTiles -= InitializePlayer;
 
-            RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            
-            GameUI uiInstance = Instantiate(m_uiPrefab);
-            Player spawnedPlayer = SpawnPlayer(startRoom, uiInstance);
+            RoomTileData startRoom = m_location.Rooms[UnityEngine.Random.Range(0, m_location.Rooms.Count)];
 
-            uiInstance.Initialize(spawnedPlayer);
-            uiInstance.HealthBar.gameObject.SetActive(true);
+            m_gameUI = Instantiate(m_uiPrefab);
+            Player spawnedPlayer = SpawnPlayer(startRoom, m_gameUI);
+
+            m_gameUI.Initialize(spawnedPlayer);
+            m_gameUI.HealthBar.gameObject.SetActive(true);
 
             if (m_sceneLoader.SavedData != null)
             {
@@ -76,10 +82,21 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
-            GameStateMachine stateMachine = InitializeStateMachine(spawnedPlayer, uiInstance);
-            uiInstance.RewardUI.Initialize(stateMachine);
+            AggressiveStrategy strategy = new AggressiveStrategy(1, spawnedPlayer.Model);
+            CombatAI combatAI = new CombatAI(strategy);
 
-            InitializeCombatSystem(startRoom, stateMachine);
+            List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
+            {
+                m_camera.TurnSwitchListener
+            };
+
+            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, combatAI);
+            m_battle = new Battle(spawnedPlayer, spawner, turnListeners);
+
+            InitializeStateMachine(spawnedPlayer);
+            m_gameUI.RewardUI.Initialize(m_stateMachine);
+
+            InitializeCombatSystem(startRoom, m_stateMachine);
         }
 
         private Player SpawnPlayer(RoomTileData startRoom, GameUI gameUI)
@@ -88,7 +105,7 @@ namespace MagmaHeart.Core.SceneLoading
             CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid);
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(actionUserInput, turnBasedUserInput, gameUI);
+            playerInstance.Initialize(actionUserInput, turnBasedUserInput, gameUI, m_grid);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);
@@ -98,7 +115,7 @@ namespace MagmaHeart.Core.SceneLoading
             return playerInstance;
         }
 
-        private GameStateMachine InitializeStateMachine(Player player, GameUI ui)
+        private void InitializeStateMachine(Player player)
         {
             List<IActionStateListener> actionListeners = new List<IActionStateListener>()
             { player };
@@ -107,29 +124,23 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<ICombatStateListener> combatStateListeners = new List<ICombatStateListener>()
             {
-                player, m_camera, m_grid, ui
+                player, m_camera, m_grid, m_gameUI
             };
-            List<ICombatTurnSwitchListener> turnSwitchListeners = new List<ICombatTurnSwitchListener>()
-            {
-                m_camera.TurnBasedCameraBehaviour, ui
-            };
-
-            Spawner spawner = new Spawner(player, m_enemyPrefab, m_minDistanceFromPlayer);
-            Battle battle = new Battle(player.TurnBasedPlayerBehaviour, spawner, turnSwitchListeners);
-            CombatState combatState = new CombatState(battle, combatStateListeners);
+            
+            CombatState combatState = new CombatState(m_battle, combatStateListeners);
 
             ArtifactDatabase database = new ArtifactDatabase();
-            BattleReward battleReward = new BattleReward(database);
-            // TODO: Unsubscribe somewhere
-            battleReward.OnBattleRewardCalculated += ui.RewardUI.HandleOnBattleRewardCalculated;
+            m_battleReward = new BattleReward(database);
+            m_battleReward.OnBattleRewardCalculated += m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
 
             List<IRewardStateListener> rewardStateListeners = new List<IRewardStateListener>()
             {
-                player, ui.RewardUI, battleReward
+                player, m_gameUI.RewardUI, m_battleReward
             };
             RewardState rewardState = new RewardState(rewardStateListeners);
 
-            return new GameStateMachine(actionState, combatState, rewardState, battle);
+            m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
+            m_battle.OnPlayerVictory += m_stateMachine.HandleOnPlayerVictory;
         }
 
         private void InitializeCombatSystem(RoomTileData startRoom, GameStateMachine stateMachine)
@@ -141,8 +152,8 @@ namespace MagmaHeart.Core.SceneLoading
                 if (roomTileData != startRoom)
                 {
                     CombatTilemapRenderer renderer = Instantiate(m_combatTilemapRendererPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    AStarGraph aStarGraph = AStarGraphBuilder.GenerateAStarGraph(roomTileData);
-                    Room room = new Room(roomTileData, m_grid, renderer, aStarGraph);
+                    BoardGraph graph = BoardGraphBuilder.GenerateBoardGraph(roomTileData);
+                    Room room = new Room(roomTileData, m_grid, renderer, graph);
 
                     if (roomTileData != bossRoom)
                     {
@@ -151,6 +162,13 @@ namespace MagmaHeart.Core.SceneLoading
                     }
                 }
             }
+        }
+
+        public void OnDisable()
+        {
+            m_battle.Disable();
+            m_battle.OnPlayerVictory -= m_stateMachine.HandleOnPlayerVictory;
+            m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
         }
     }
 }

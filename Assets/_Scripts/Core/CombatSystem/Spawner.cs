@@ -7,16 +7,22 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Spawner
     {
-        private Enemy m_enemyPrefab;
-        private Player m_player;
-        private float m_minDistanceFromPlayer;
-        private Vector3 m_offset = new Vector2(0.5f, 0.5f); // Used for offsetting spawned enemies
+        private readonly DungeonGrid m_grid;
+        private readonly CombatAI m_ai;
+        private readonly Enemy m_enemyPrefab;
+        private readonly Player m_player;
+        private readonly float m_minDistanceFromPlayer;
 
-        public Spawner(Player player, Enemy enemyPrefab, float minDistanceFromPlayer)
+        // TODO: Do something with this
+        private readonly Vector3 m_offset = new Vector2(0.5f, 0.5f); // Used for offsetting spawned enemies
+
+        public Spawner(Player player, Enemy enemyPrefab, float minDistanceFromPlayer, DungeonGrid grid, CombatAI ai)
         {
             m_player = player;
             m_enemyPrefab = enemyPrefab;
             m_minDistanceFromPlayer = minDistanceFromPlayer;
+            m_grid = grid;
+            m_ai = ai;
         }
 
         public Enemy SpawnEnemy(RoomTileData roomTileData)
@@ -29,7 +35,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             // TODO: Use object pooling
             Enemy entityInstance = Object.Instantiate(m_enemyPrefab, dungeonTile.Position.ToVector3() + m_offset, Quaternion.identity);
-            entityInstance.Initialize();
+            entityInstance.Initialize(m_grid, m_ai);
 
             return entityInstance;
         }
