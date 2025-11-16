@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class MovementAction : MagmaHeart.AI.Actions.Action<MovementActionArgs>
+    public class MovementAction : CombatAction<MovementActionArgs>
     {
         private readonly TurnBasedMovement m_movement;
         private readonly Entity m_entity;
@@ -167,14 +167,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override void Execute(ActionArgs args) => Execute(args as MovementActionArgs);
 
-        public int GetEnergyUsage(RoomTile targetTile)
-        {
-            CalculatePath(targetTile);
-
-            int distance = CurrentPath.Count - 1;
-            return Mathf.CeilToInt(distance / (float)m_movementDistanceInTilesForOneEnergy);
-        }
-
         private void Move()
         {
             if (CurrentPath.Count <= 0)
@@ -195,11 +187,18 @@ namespace MagmaHeart.Core.CombatSystem
         private void CalculatePath(RoomTile targetTile)
         {
             // TODO: implement cache
-            Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
-            List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
+            List<Vector2> path = GetPath(targetTile);
 
             if (path != null && path.Count > 0)
                 CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
+        }
+
+        public List<Vector2> GetPath(RoomTile targetTile)
+        {
+            Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
+            List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
+
+            return path;
         }
 
         private RoomTile PickAdjacentFreeTile(RoomTile targetTile, Func<RoomTile, bool> tileIsAccessable)
@@ -228,6 +227,14 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             return tile;
+        }
+
+        public override int GetEnergyCost(MovementActionArgs args)
+        {
+            CalculatePath(args.TileToMove);
+
+            int distance = CurrentPath.Count - 1;
+            return Mathf.CeilToInt(distance / (float)m_movementDistanceInTilesForOneEnergy);
         }
     }
 }
