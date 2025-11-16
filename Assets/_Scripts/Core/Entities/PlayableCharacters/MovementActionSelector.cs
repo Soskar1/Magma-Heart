@@ -15,8 +15,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         protected override ActionSelectionResult TrySelectAction(Room room, RoomTile roomTile)
         {
-            Debug.Log("MovementActionSelector");
-
             if (room.TileIsAccessable(roomTile) && m_movementAction.GetPath(roomTile) != null)
             {
                 MovementActionArgs args = new MovementActionArgs(roomTile);
