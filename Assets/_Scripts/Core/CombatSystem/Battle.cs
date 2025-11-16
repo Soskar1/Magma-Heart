@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
 
         private Room m_currentRoom;
-        private List<Entity> m_currentEntitiesInBattle;
+        private Dictionary<EntityModel, Entity> m_currentEntitiesInBattle;
         
         public event EventHandler OnPlayerVictory;
         private event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
@@ -51,15 +51,16 @@ namespace MagmaHeart.Core.CombatSystem
         public async Task Start(Room room)
         {
             m_currentRoom = room;
-            m_currentEntitiesInBattle = new List<Entity>() { m_player };
+            m_currentEntitiesInBattle = new Dictionary<EntityModel, Entity>() { { m_player.Model, m_player } };
 
             for (int i = 0; i < 1; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
-                m_currentEntitiesInBattle.Add(spawnedEntity);
+                m_currentEntitiesInBattle.Add(spawnedEntity.Model, spawnedEntity);
             }
 
-            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentEntitiesInBattle);
+            List<Entity> entityList = m_currentEntitiesInBattle.Values.ToList();
+            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entityList);
 
             foreach (Entity entity in sortedEntities)
             {
@@ -68,9 +69,9 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             m_turnOrder.Clear();
-            m_turnOrder.AddRange(m_currentEntitiesInBattle);
+            m_turnOrder.AddRange(entityList);
 
-            foreach (Entity entity in m_currentEntitiesInBattle)
+            foreach (Entity entity in entityList)
                 entity.CombatController.StartBattle(room, m_turnOrder);
 
             await ProcessBattle();
@@ -94,32 +95,23 @@ namespace MagmaHeart.Core.CombatSystem
             }
         }
 
-        private void HandleEntityDeath(object obj, EventArgs args)
+        private void HandleEntityDeath(object obj, OnDeathEventArgs args)
         {
-            Health health = obj as Health;
-            health.OnDeath -= HandleEntityDeath;
+            EntityModel model = args.Model;
+            Entity entity = m_currentEntitiesInBattle[model];
+            model.Health.OnDeath -= HandleEntityDeath;
 
-            Entity entity = null;
-            foreach (Entity e in m_currentEntitiesInBattle)
-            {
-                if (e.Health == health)
-                {
-                    entity = e;
-                    break;
-                }
-            }
-
-            if (entity.Model.IsPlayer)
+            if (model.IsPlayer)
             {
                 End(isPlayerVictory: false);
             }
             else
             {
                 m_turnOrder.Remove(entity);
-                m_currentEntitiesInBattle.Remove(entity);
+                m_currentEntitiesInBattle.Remove(model);
                 m_currentRoom.RemoveEntityFromRoom(entity);
 
-                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Any(e => e.Model.IsPlayer == false);
+                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Model.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -135,9 +127,6 @@ namespace MagmaHeart.Core.CombatSystem
         {
             if (isPlayerVictory)
             {
-                m_turnOrder.Clear();
-                m_currentEntitiesInBattle.Clear();
-
                 Debug.Log("Player won the battle!");
                 OnPlayerVictory?.Invoke(this, EventArgs.Empty);
             }
@@ -145,6 +134,15 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 // TODO: Handle player defeat
             }
+
+            foreach (Entity entity in m_currentEntitiesInBattle.Values)
+            {
+                m_currentRoom.RemoveEntityFromRoom(entity);
+                entity.CombatController.EndBattle();
+            }
+
+            m_turnOrder.Clear();
+            m_currentEntitiesInBattle.Clear();
 
             m_battleEnded = true;
         }

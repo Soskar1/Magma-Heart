@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Entities
             IsPlayer = isPlayer;
 
             GetCurrentTilePosition = getCurrentTilePosition;
-            Health = new Health(Stats.MaxHealth);
+            Health = new Health(this, Stats.MaxHealth);
             Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
         }
 
