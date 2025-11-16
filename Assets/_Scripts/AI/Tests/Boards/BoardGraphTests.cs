@@ -460,6 +460,48 @@ namespace MagmaHeart.AI.Boards.Tests
             Assert.That(ReferenceEquals(nodeCopy3, node3), Is.False);
             Assert.That(ReferenceEquals(nodeCopy4, node4), Is.False);
         }
+
+        [Test]
+        public void GetEdges_FromNodeWithMultipleEdges_ReturnsAllEdges()
+        {
+            BoardGraph graph = new BoardGraph();
+            BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
+            BoardNode node2 = new BoardNode(Vector2.up, BoardNodeType.Obstacle);
+            BoardNode node3 = new BoardNode(Vector2.right, BoardNodeType.Obstacle);
+            graph.AddNode(node1);
+            graph.AddNode(node2);
+            graph.AddNode(node3);
+            graph.ConnectNodes(node1.Position, node2.Position, 1);
+            graph.ConnectNodes(node1.Position, node3.Position, 2);
+
+            HashSet<BoardEdge> edges = graph.GetEdges(node1.Position);
+
+            Assert.That(edges.Count, Is.EqualTo(2));
+            Assert.That(edges.Any(e => (e.First == node1 && e.Second == node2) || (e.First == node2 && e.Second == node1)));
+            Assert.That(edges.Any(e => (e.First == node1 && e.Second == node3) || (e.First == node3 && e.Second == node1)));
+        }
+
+        [Test]
+        public void GetEdges_FromIsolatedNode_ReturnsNoEdges()
+        {
+            BoardGraph graph = new BoardGraph();
+            BoardNode node1 = new BoardNode(Vector2.zero, BoardNodeType.Walkable);
+            graph.AddNode(node1);
+
+            HashSet<BoardEdge> edges = graph.GetEdges(node1.Position);
+            
+            Assert.That(edges, Is.Null);
+        }
+
+        [Test]
+        public void GetEdges_FromNonExistingNode_ReturnsNull()
+        {
+            BoardGraph graph = new BoardGraph();
+
+            HashSet<BoardEdge> edges = graph.GetEdges(Vector2.zero);
+
+            Assert.That(edges, Is.Null);
+        }
     }
 }
 

@@ -163,6 +163,14 @@ namespace MagmaHeart.AI.Boards
             return GetEdgeBetweenNodes(node1, node2);
         }
 
+        internal HashSet<BoardEdge> GetEdges(Vector2 node)
+        {
+            if (m_edges.ContainsKey(node))
+                return m_edges[node];
+            else
+                return null;
+        }
+
         internal IEnumerable<BoardNode> GetAdjacentNodes(Vector2 node)
         {
             if (m_edges.ContainsKey(node))
@@ -218,9 +226,19 @@ namespace MagmaHeart.AI.Boards
                 result.AddNode(copy);
             }
 
-            foreach (HashSet<BoardEdge> hashSet in m_edges.Values)
-                foreach (BoardEdge edge in hashSet)
-                    result.ConnectNodes(edge.First.Position, edge.Second.Position, edge.Cost);
+            foreach (Vector2 node in m_edges.Keys)
+            {
+                HashSet<BoardEdge> edges = GetEdges(node);
+
+                foreach (BoardEdge edge in edges)
+                {
+                    Vector2 firstPos = edge.First.Position;
+                    Vector2 secondPos = edge.Second.Position;
+
+                    if (!result.ContainsEdge(firstPos, secondPos))
+                        result.ConnectNodes(firstPos, secondPos, edge.Cost);
+                }
+            }
 
             return result;
         }
