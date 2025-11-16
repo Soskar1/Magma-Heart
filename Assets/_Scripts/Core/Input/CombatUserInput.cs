@@ -1,4 +1,6 @@
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.UI;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Input
@@ -8,16 +10,16 @@ namespace MagmaHeart.Core.Input
         private UserInput m_userInput;
         public UserInput UserInput => m_userInput;
         
-        public TurnBasedMouseControl MouseControl { get; init; }
+        public CombatMouseControl MouseControl { get; init; }
 
         public Controls.TurnBasedPlayerActions TurnBasedPlayer => m_userInput.Controls.TurnBasedPlayer;
         public Vector2 CameraMovement => TurnBasedPlayer.CameraMovement.ReadValue<Vector2>();
         public float MouseScroll => TurnBasedPlayer.MouseScroll.ReadValue<float>();
 
-        public CombatUserInput(UserInput userInput, DungeonGrid grid)
+        public CombatUserInput(UserInput userInput, DungeonGrid grid, List<MouseOverUIElement> uiElementEvents)
         {
             m_userInput = userInput;
-            MouseControl = new TurnBasedMouseControl(this, grid);
+            MouseControl = new CombatMouseControl(this, grid, uiElementEvents);
         }
 
         public void Enable()

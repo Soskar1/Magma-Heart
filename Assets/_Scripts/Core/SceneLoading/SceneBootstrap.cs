@@ -12,6 +12,7 @@ using MagmaHeart.Core.UI;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
+using System.Linq;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -67,10 +68,10 @@ namespace MagmaHeart.Core.SceneLoading
         {
             m_renderer.RenderedAllTiles -= InitializePlayer;
 
-            RoomTileData startRoom = m_location.Rooms[UnityEngine.Random.Range(0, m_location.Rooms.Count)];
+            RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
 
             m_gameUI = Instantiate(m_uiPrefab);
-            Player spawnedPlayer = SpawnPlayer(startRoom, m_gameUI);
+            Player spawnedPlayer = SpawnPlayer(startRoom);
 
             m_gameUI.Initialize(spawnedPlayer);
             m_gameUI.HealthBar.gameObject.SetActive(true);
@@ -99,13 +100,15 @@ namespace MagmaHeart.Core.SceneLoading
             InitializeCombatSystem(startRoom, m_stateMachine);
         }
 
-        private Player SpawnPlayer(RoomTileData startRoom, GameUI gameUI)
+        private Player SpawnPlayer(RoomTileData startRoom)
         {
             ActionUserInput actionUserInput = new ActionUserInput(m_userInput);
-            CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid);
+
+            List<MouseOverUIElement> mouseOverUIEvents = m_gameUI.GetComponentsInChildren<MouseOverUIElement>(true).ToList();
+            CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid, mouseOverUIEvents);
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(actionUserInput, turnBasedUserInput, gameUI, m_grid);
+            playerInstance.Initialize(actionUserInput, turnBasedUserInput, m_gameUI, m_grid);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);
