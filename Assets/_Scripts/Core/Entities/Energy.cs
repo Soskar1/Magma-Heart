@@ -45,5 +45,7 @@ namespace MagmaHeart.Core.Entities
         }
 
         public void Regenerate() => CurrentEnergy += m_energyRegenerationPerTurn;
+
+        public void Reset() => CurrentEnergy = 0;
     }
 }

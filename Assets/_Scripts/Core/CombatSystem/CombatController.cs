@@ -28,7 +28,11 @@ namespace MagmaHeart.Core.Entities.CombatSystem
             m_movementAction.SetCurrentRoom(CurrentRoom);
         }
 
-        public virtual void EndBattle() => CurrentRoom = null;
+        public virtual void EndBattle()
+        {
+            Entity.Energy.Reset();
+            CurrentRoom = null;
+        }
 
         public virtual Task StartTurn()
         {
