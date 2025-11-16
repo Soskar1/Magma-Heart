@@ -159,9 +159,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentMouseTile = roomTile;
         }
 
-        private void HandleOnMouseClicked(object obj, EventArgs e)
+        private void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
         {
-            if (m_currentAction == null || !CanExecuteAction)
+            if (m_currentAction == null || !CanExecuteAction || e.IsOverUIElement)
                 return;
 
             m_currentAction.Execute(m_currentActionArgs);
