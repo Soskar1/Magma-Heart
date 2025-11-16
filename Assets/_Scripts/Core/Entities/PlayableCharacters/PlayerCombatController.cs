@@ -130,7 +130,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                     m_energyHUD.DisplayEnergyPrice(0);
                 }
             }
-            else if (CurrentRoom.TileIsAccessable(roomTile))
+            else if (CurrentRoom.TileIsAccessable(roomTile) && m_movementAction.GetPath(roomTile) != null)
             {
                 m_currentMouseOverEntity = null;
 

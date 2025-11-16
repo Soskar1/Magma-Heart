@@ -195,11 +195,18 @@ namespace MagmaHeart.Core.CombatSystem
         private void CalculatePath(RoomTile targetTile)
         {
             // TODO: implement cache
-            Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
-            List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
+            List<Vector2> path = GetPath(targetTile);
 
             if (path != null && path.Count > 0)
                 CurrentPath = path.Select(v => m_currentRoom.GetRoomTile(v)).ToList();
+        }
+
+        public List<Vector2> GetPath(RoomTile targetTile)
+        {
+            Vector3Int currentTile = m_entity.Model.GetCurrentTilePosition();
+            List<Vector2> path = m_aStar.FindPath(m_currentRoom.Graph, currentTile.ToVector2(), targetTile.Position.ToVector2());
+
+            return path;
         }
 
         private RoomTile PickAdjacentFreeTile(RoomTile targetTile, Func<RoomTile, bool> tileIsAccessable)
