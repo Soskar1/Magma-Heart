@@ -50,6 +50,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         public async Task Start(Room room)
         {
+            m_battleEnded = false;
             m_currentRoom = room;
             m_currentEntitiesInBattle = new Dictionary<EntityModel, Entity>() { { m_player.Model, m_player } };
 
