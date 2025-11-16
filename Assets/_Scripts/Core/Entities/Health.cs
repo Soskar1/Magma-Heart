@@ -4,13 +4,14 @@ namespace MagmaHeart.Core.Entities
 {
     public class Health
     {
+        private readonly EntityModel m_owner;
         private float m_currentHealth;
         private float m_maxHealth;
 
         public event EventHandler OnTakeDamage;
         public event EventHandler OnMaxHealthChanged;
         public event EventHandler OnCurrentHealthChanged;
-        public event EventHandler OnDeath;
+        public event EventHandler<OnDeathEventArgs> OnDeath;
 
         public float CurrentHealth
         {
@@ -35,8 +36,9 @@ namespace MagmaHeart.Core.Entities
             }
         }
 
-        public Health(float maxHealth)
+        public Health(EntityModel owner, float maxHealth)
         {
+            m_owner = owner;
             m_maxHealth = maxHealth;
             m_currentHealth = maxHealth;
         }
@@ -50,7 +52,10 @@ namespace MagmaHeart.Core.Entities
             OnCurrentHealthChanged?.Invoke(this, EventArgs.Empty);
 
             if (m_currentHealth <= 0)
-                OnDeath?.Invoke(this, EventArgs.Empty);
+            {
+                OnDeathEventArgs args = new OnDeathEventArgs(m_owner);
+                OnDeath?.Invoke(this, args);
+            }
         }
     }
 }
