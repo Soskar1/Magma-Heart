@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class MovementAction : MagmaHeart.AI.Actions.Action<MovementActionArgs>
+    public class MovementAction : CombatAction<MovementActionArgs>
     {
         private readonly TurnBasedMovement m_movement;
         private readonly Entity m_entity;
@@ -167,14 +167,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override void Execute(ActionArgs args) => Execute(args as MovementActionArgs);
 
-        public int GetEnergyUsage(RoomTile targetTile)
-        {
-            CalculatePath(targetTile);
-
-            int distance = CurrentPath.Count - 1;
-            return Mathf.CeilToInt(distance / (float)m_movementDistanceInTilesForOneEnergy);
-        }
-
         private void Move()
         {
             if (CurrentPath.Count <= 0)
@@ -235,6 +227,14 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             return tile;
+        }
+
+        public override int GetEnergyCost(MovementActionArgs args)
+        {
+            CalculatePath(args.TileToMove);
+
+            int distance = CurrentPath.Count - 1;
+            return Mathf.CeilToInt(distance / (float)m_movementDistanceInTilesForOneEnergy);
         }
     }
 }

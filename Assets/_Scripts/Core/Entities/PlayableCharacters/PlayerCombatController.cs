@@ -1,6 +1,4 @@
-﻿using MagmaHeart.AI;
-using MagmaHeart.AI.Actions;
-using MagmaHeart.Collections;
+﻿using MagmaHeart.Collections;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.CombatSystem;
@@ -8,7 +6,6 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
@@ -19,11 +16,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly CombatUserInput m_userInput;
 
         private RoomTile m_currentMouseTile;
-        private AIUnit m_currentMouseOverEntity;
 
         private readonly AttackAction m_attackAction;
-        private MagmaHeart.AI.Actions.Action m_currentAction;
-        private ActionArgs m_currentActionArgs;
+        private readonly ActionSelector m_actionSelectorChain;
+        private ActionSelectionResult m_currentAction;
 
         private bool m_canExecuteActions;
 
@@ -45,6 +41,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput = userInput;
 
             m_attackAction = Entity.Model.PossibleActions.Get<AttackAction>();
+            MovementAction movementAction = Entity.Model.PossibleActions.Get<MovementAction>();
+
+            m_actionSelectorChain = new AttackActionSelector(m_attackAction);
+            m_actionSelectorChain.Next = new MovementActionSelector(movementAction);
         }
 
         public override void StartBattle(Room room, CircularList<Entity> turnOrder)
@@ -97,9 +97,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 m_currentMouseTile = null;
             }
 
-            if (m_currentMouseOverEntity != null)
-                m_currentMouseOverEntity = null;
-
             base.EndTurn();
         }
 
@@ -112,48 +109,18 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 CurrentRoom.HideCombatTileAt(m_currentMouseTile);
 
             RoomTile roomTile = CurrentRoom.GetRoomTile(e.TilePosition);
-
-            if (CurrentRoom.EntityIsOnTile(roomTile, out EntityModel entity))
+            m_currentAction = m_actionSelectorChain.GetAction(CurrentRoom, roomTile);
+            
+            if (m_currentAction != null)
             {
-                m_currentMouseOverEntity = entity;
-                if (!entity.IsPlayer && m_attackAction.CanAttack(entity))
-                {
-                    // TODO: Outline the entity that can be attacked or display some kind of visual feedback
-                    m_currentAction = m_attackAction;
-                    m_currentActionArgs = new AttackActionArgs(entity);
-
-                    m_energyHUD.DisplayEnergyPrice(AttackAction.ENERGY_COST);
-                }
-                else
-                {
-                    m_currentAction = null;
-                    m_energyHUD.DisplayEnergyPrice(0);
-                }
-            }
-            else if (CurrentRoom.TileIsAccessable(roomTile) && m_movementAction.GetPath(roomTile) != null)
-            {
-                m_currentMouseOverEntity = null;
-
-                m_currentAction = m_movementAction;
-                m_currentActionArgs = new MovementActionArgs(roomTile);
-
                 CurrentRoom.TryDisplayCombatTile(roomTile);
-
-                int energyUsage = m_movementAction.GetEnergyUsage(roomTile);
-                m_energyHUD.DisplayEnergyPrice(Math.Min(energyUsage, Entity.Energy.CurrentEnergy));
-                if (!Entity.Energy.HasEnough(energyUsage))
-                {
-                    // TODO: Display some kind of visual feedback that the player can't move there
-                }
-
-                // m_energyHUD.DisplayEnergyPrice(m_movementAction.CurrentTheoreticalEnergyUsage);
-                // m_aStarPathRenderer.CurrentPath = m_movementAction.CurrentPath.Select(tile => tile.TileCenter).ToList();
+                
+                int energyCost = Math.Min(m_currentAction.EnergyCost, Entity.Energy.CurrentEnergy);
+                m_energyHUD.DisplayEnergyPrice(energyCost);
             }
             else
             {
-                m_currentAction = null;
-                m_currentActionArgs = null;
-                m_currentMouseOverEntity = null;
+                m_energyHUD.DisplayEnergyPrice(0);
             }
 
             m_currentMouseTile = roomTile;
@@ -164,7 +131,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentAction == null || !CanExecuteAction || e.IsOverUIElement)
                 return;
 
-            m_currentAction.Execute(m_currentActionArgs);
+            m_currentAction.Execute();
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
     }

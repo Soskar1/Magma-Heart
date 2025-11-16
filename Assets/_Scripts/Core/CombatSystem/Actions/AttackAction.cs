@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class AttackAction : MagmaHeart.AI.Actions.Action<AttackActionArgs>
+    public class AttackAction : CombatAction<AttackActionArgs>
     {
         public const int ENERGY_COST = 2;
         public const int ATTACK_DISTANCE = 1;
@@ -106,5 +106,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args) => CanSimulate(state, board, (AttackActionArgs)args);
         public override void Execute(ActionArgs args) => Execute((AttackActionArgs)args);
+
+        public override int GetEnergyCost(AttackActionArgs args) => ENERGY_COST;
     }
 }
