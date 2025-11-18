@@ -1,7 +1,4 @@
-﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Actions
 {
@@ -22,7 +19,7 @@ namespace MagmaHeart.AI.Actions
         public abstract void Execute(T args, GameState gameState);
         public override void Execute(ActionArgs args, GameState gameState) => Execute((T)args, gameState);
 
-        public abstract void CanExecute(T args, GameState gameState);
-        public override void CanExecute(ActionArgs args, GameState gameState) => CanExecute((T)args, gameState);
+        public abstract bool CanExecute(T args, GameState gameState);
+        public override bool CanExecute(ActionArgs args, GameState gameState) => CanExecute((T)args, gameState);
     }
 }
