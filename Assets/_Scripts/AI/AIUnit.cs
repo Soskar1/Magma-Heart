@@ -4,7 +4,7 @@ using MagmaHeart.Collections;
 
 namespace MagmaHeart.AI
 {
-    public record AIUnit(bool IsPlayer, TypeMap<Action> PossibleActions)
+    public record AIUnit(bool IsPlayer, TypeMap<UnitAction> PossibleActions)
     {
         public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
