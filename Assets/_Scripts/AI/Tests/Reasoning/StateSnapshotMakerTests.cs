@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.AI.States;
-using MagmaHeart.Collections;
 using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
@@ -8,12 +8,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
     internal class StateSnapshotMakerTests
     {
         [Test]
-        public void StateSnapshotMaker_CreateStateSnapshot_CreatesStateSnapshot()
+        public void CreateStateSnapshot_CreatesStateSnapshot()
         {
             Entity entity1 = new Entity(4, new Vector2(4, 4), false);
             Entity entity2 = new Entity(2, new Vector2(0, 1), true);
             Entity entity3 = new Entity(8, new Vector2(2, 4), false);
-            CircularList<AIUnit> units = new CircularList<AIUnit> { entity1, entity2, entity3 };
+            List<AIUnit> units = new List<AIUnit> { entity1, entity2, entity3 };
 
             StateSnapshot snapshot = StateSnapshotMaker.CreateStateSnapshot(units);
 
