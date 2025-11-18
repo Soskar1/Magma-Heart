@@ -1,4 +1,4 @@
 namespace MagmaHeart.AI.Actions
 {
-    public record BestAction(Action Action, ActionArgs Args);
+    public record BestAction(UnitAction Action, ActionArgs Args);
 }
