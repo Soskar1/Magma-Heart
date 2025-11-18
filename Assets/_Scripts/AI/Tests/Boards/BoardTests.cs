@@ -1,6 +1,8 @@
 ﻿using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Boards.Tests
@@ -8,7 +10,7 @@ namespace MagmaHeart.AI.Boards.Tests
     public class BoardTests
     {
         private Board m_board;
-        private AIUnit Unit => new AIUnit(false, new TypeMap<Actions.Action>());
+        private AIUnit Unit => new AIUnit(false, new TypeMap<Actions.UnitAction>());
 
         [SetUp]
         public void SetUp()
@@ -29,8 +31,8 @@ namespace MagmaHeart.AI.Boards.Tests
 
             m_board.AddUnit(Vector2.zero, unit);
 
-            Assert.That(m_board.TryGetUnit(Vector2.zero, out AIUnit unitOnBoard), Is.True);
-            Assert.That(unitOnBoard, Is.EqualTo(unit));
+            Assert.That(m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnit> unitsOnBoardNode), Is.True);
+            Assert.That(unitsOnBoardNode.First(), Is.EqualTo(unit));
         }
 
         [Test]
@@ -42,7 +44,7 @@ namespace MagmaHeart.AI.Boards.Tests
         }
 
         [Test]
-        public void AddUnit_MultipleUnitsOnOneNode_DoesNotUpdateUnitOnTheBoard()
+        public void AddUnit_MultipleUnitsOnOneNode_AddsAnotherUnit()
         {
             AIUnit unit1 = Unit;
             AIUnit unit2 = Unit;
@@ -50,8 +52,8 @@ namespace MagmaHeart.AI.Boards.Tests
 
             m_board.AddUnit(Vector2.zero, unit2);
 
-            Assert.That(m_board.TryGetUnit(Vector2.zero, out AIUnit unitOnBoard), Is.True);
-            Assert.That(unitOnBoard, Is.EqualTo(unit1));
+            Assert.That(m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnit> unitsOnBoardNode), Is.True);
+            Assert.That(unitsOnBoardNode.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -60,16 +62,19 @@ namespace MagmaHeart.AI.Boards.Tests
             AIUnit unit = Unit;
             m_board.AddUnit(Vector2.zero, unit);
 
-            bool result = m_board.RemoveUnit(Vector2.zero);
+            bool result = m_board.RemoveUnit(Vector2.zero, unit);
 
             Assert.That(result, Is.True);
-            Assert.That(m_board.TryGetUnit(Vector2.zero, out _), Is.False);
+            Assert.That(m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnit> units), Is.True);
+            Assert.That(units.Count, Is.EqualTo(0));
         }
 
         [Test]
         public void RemoveUnit_NonExistingUnit_DoNothing()
         {
-            bool result = m_board.RemoveUnit(Vector2.zero);
+            AIUnit unit = Unit;
+
+            bool result = m_board.RemoveUnit(Vector2.zero, unit);
 
             Assert.That(result, Is.False);
         }
@@ -80,19 +85,19 @@ namespace MagmaHeart.AI.Boards.Tests
             AIUnit unit = Unit;
             m_board.AddUnit(Vector2.zero, unit);
 
-            bool result = m_board.TryGetUnit(Vector2.zero, out AIUnit unitOnBoard);
+            bool result = m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnit> unitOnBoard);
 
             Assert.That(result, Is.True);
-            Assert.That(unitOnBoard, Is.EqualTo(unit));
+            Assert.That(unitOnBoard.First(), Is.EqualTo(unit));
         }
 
         [Test]
         public void TryGetUnit_NonExistingUnit_ReturnsFalseAndNullUnit()
         {
-            bool result = m_board.TryGetUnit(Vector2.zero, out AIUnit unit);
+            bool result = m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnit> units);
 
             Assert.That(result, Is.False);
-            Assert.That(unit, Is.Null);
+            Assert.That(units, Is.Null);
         }
 
         [Test]
@@ -106,8 +111,8 @@ namespace MagmaHeart.AI.Boards.Tests
             Board copy = m_board.DeepCopy();
 
             Assert.That(ReferenceEquals(m_board, copy), Is.False);
-            Assert.That(copy.TryGetUnit(Vector2.zero, out AIUnit unitCopy1), Is.True);
-            Assert.That(copy.TryGetUnit(Vector2.up, out AIUnit unitCopy2), Is.True);
+            Assert.That(copy.TryGetUnits(Vector2.zero, out HashSet<AIUnit> unitCopy1), Is.True);
+            Assert.That(copy.TryGetUnits(Vector2.up, out HashSet<AIUnit> unitCopy2), Is.True);
             Assert.That(ReferenceEquals(copy.Graph, m_board.Graph), Is.False);
         }
     }
