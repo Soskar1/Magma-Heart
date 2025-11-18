@@ -16,10 +16,12 @@ namespace MagmaHeart.AI.Boards
 
         public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType) => Graph.ChangeNodeType(position, newNodeType);
 
-        internal SimulatedBoard CreateSimulatedBoard()
+        public Board DeepCopy()
         {
-            BoardGraph graphCopy = Graph.DeepCopy();
-            return new SimulatedBoard(graphCopy, Units);
+            BoardGraph graph = Graph.DeepCopy();
+            Board board = new Board(graph);
+            // TODO
+            return board;
         }
     }
 }
