@@ -15,6 +15,7 @@ namespace MagmaHeart.AI.States
         }
 
         public abstract void ApplyChangeToSimulation(SimulatedBoardState simulation);
+        public abstract void UndoChangeInSimulation(SimulatedBoardState simulation);
         public abstract void ApplyChangeToActualState(ActualBoardState actualBoard);
     }
 }
