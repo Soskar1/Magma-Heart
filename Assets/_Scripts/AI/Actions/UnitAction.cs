@@ -43,7 +43,7 @@ namespace MagmaHeart.AI.Actions
     {
         public UnitAction(AIUnit actionPossessor) : base(actionPossessor) { }
 
-        public void Execute(T args, BoardState boardState) => Execute(args, boardState);
+        public void Execute(T args, BoardState boardState) => Execute((ActionArgs)args, boardState);
 
         public abstract List<StateChange> ProduceChanges(T args, BoardState boardState);
         public override List<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((T)args, boardState);
