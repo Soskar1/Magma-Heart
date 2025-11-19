@@ -29,7 +29,7 @@ namespace MagmaHeart.AI.States
             m_currentSimulationOperations = new List<SimulationOperation>();
         }
 
-        public override void ApplyStateChanges(List<StateChange> stateChanges)
+        public override void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
             base.ApplyStateChanges(stateChanges);
 
@@ -52,8 +52,8 @@ namespace MagmaHeart.AI.States
                     Board.AddUnit(removeUnitOperation.Position, removeUnitOperation.RemovedUnit);
                 else if (operation is UnitPropertyUpdateSimulationOperation unitPropertyUpdateOperation)
                     WriteProperty(unitPropertyUpdateOperation.Unit, unitPropertyUpdateOperation.OldPropertyValue);
-
-                // TODO: Implement ChangeNodeType
+                else if (operation is NodeTypeUpdateBoardSimulationOperation nodeTypeUpdateOperation)
+                    Board.Graph.ChangeNodeType(nodeTypeUpdateOperation.Position, nodeTypeUpdateOperation.OldNodeType);
             }
         }
 
@@ -89,6 +89,15 @@ namespace MagmaHeart.AI.States
             Board.RemoveUnit(position, unit);
 
             RemoveUnitBoardSimulationOperation operation = new RemoveUnitBoardSimulationOperation(position, unit);
+            m_currentSimulationOperations.Add(operation);
+        }
+
+        public void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType)
+        {
+            BoardNodeType oldNodeType = Board.Graph.GetNode(position).Type;
+            Board.ChangeNodeType(position, newNodeType);
+
+            NodeTypeUpdateBoardSimulationOperation operation = new NodeTypeUpdateBoardSimulationOperation(position, oldNodeType, newNodeType);
             m_currentSimulationOperations.Add(operation);
         }
     }

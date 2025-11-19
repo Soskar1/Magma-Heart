@@ -14,7 +14,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_speed = speed;
         }
 
-        public override List<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState gameState)
         {
             Position targetPosition = gameState.GetProperty<Position>(args.RunAwayFrom);
             Position possessorPosition = gameState.GetProperty<Position>(ActionPossessor);
@@ -43,6 +43,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override bool CanExecute(RunAwayActionArgs args, BoardState gameState) => true;
 
-        public override ActionArgs CreateArgument(BoardState state, AIUnit unit) => new RunAwayActionArgs(unit);
+        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new RunAwayActionArgs(unit);
     }
 }

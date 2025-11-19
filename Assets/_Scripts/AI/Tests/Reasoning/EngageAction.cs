@@ -18,15 +18,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_damageAction = new AttackAction(actionPossessor, damage);
         }
 
-        public override List<StateChange> ProduceChanges(EngageActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(EngageActionArgs args, BoardState gameState)
         {
             Position targetPosition = gameState.GetProperty<Position>(args.Target);
 
             MoveActionArgs moveArgs = new MoveActionArgs(targetPosition.CurrentPosition);
-            List<StateChange> movementChanges = m_moveAction.ProduceChanges(moveArgs, gameState);
+            IEnumerable<StateChange> movementChanges = m_moveAction.ProduceChanges(moveArgs, gameState);
 
             AttackActionArgs attackArgs = new AttackActionArgs(args.Target);
-            List<StateChange> attackChanges = m_damageAction.ProduceChanges(attackArgs, gameState);
+            IEnumerable<StateChange> attackChanges = m_damageAction.ProduceChanges(attackArgs, gameState);
 
             return movementChanges.Concat(attackChanges).ToList();
         }
@@ -43,6 +43,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override ActionArgs CreateArgument(BoardState state, AIUnit unit) => new EngageActionArgs(unit);
+        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new EngageActionArgs(unit);
     }
 }

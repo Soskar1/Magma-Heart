@@ -11,13 +11,13 @@ namespace MagmaHeart.AI.Actions
 
         public void Execute(ActionArgs args, BoardState boardState)
         {
-            List<StateChange> changes = ProduceChanges(args, boardState);
+            IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
             boardState.ApplyStateChanges(changes);
         }
 
-        public abstract List<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
+        public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
         public abstract bool CanExecute(ActionArgs args, BoardState boardState);
-        internal List<ActionArgs> GetArguments(BoardState state) // Right now it is a dumb solution
+        internal List<ActionArgs> GetArguments(SimulatedBoardState state) // Right now it is a dumb solution
         {
             List<ActionArgs> args = new List<ActionArgs>();
 
@@ -29,14 +29,14 @@ namespace MagmaHeart.AI.Actions
                 if ((ActionPossessor.IsPlayer && !unit.IsPlayer) ||
                     (!ActionPossessor.IsPlayer && unit.IsPlayer))
                 {
-                    args.Add(CreateArgument(state, unit));
+                    args.Add(CreateSimulationArgument(state, unit));
                 }
             }
 
             return args;
         }
         
-        public abstract ActionArgs CreateArgument(BoardState state, AIUnit unit);
+        public abstract ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit);
     }
 
     public abstract class UnitAction<T> : UnitAction where T : ActionArgs
@@ -45,8 +45,8 @@ namespace MagmaHeart.AI.Actions
 
         public void Execute(T args, BoardState boardState) => Execute((ActionArgs)args, boardState);
 
-        public abstract List<StateChange> ProduceChanges(T args, BoardState boardState);
-        public override List<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((T)args, boardState);
+        public abstract IEnumerable<StateChange> ProduceChanges(T args, BoardState boardState);
+        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((T)args, boardState);
 
         public abstract bool CanExecute(T args, BoardState boardState);
         public override bool CanExecute(ActionArgs args, BoardState boardState) => CanExecute((T)args, boardState);

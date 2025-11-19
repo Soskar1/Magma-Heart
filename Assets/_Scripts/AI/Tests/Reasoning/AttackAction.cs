@@ -24,13 +24,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override List<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
             return new List<StateChange> {
                 new ApplyDamageStateChange(Damage, args.Target)
             };
         }
 
-        public override ActionArgs CreateArgument(BoardState state, AIUnit unit) => new AttackActionArgs(unit);
+        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new AttackActionArgs(unit);
     }
 }

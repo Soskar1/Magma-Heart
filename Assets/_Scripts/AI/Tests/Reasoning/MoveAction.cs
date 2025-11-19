@@ -14,7 +14,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_speed = speed;
         }
 
-        public override List<StateChange> ProduceChanges(MoveActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState gameState)
         {
             Position possessorPosition = gameState.GetProperty<Position>(ActionPossessor);
 
@@ -51,7 +51,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override ActionArgs CreateArgument(BoardState state, AIUnit unit)
+        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
         {
             Position position = state.GetProperty<Position>(unit);
             return new MoveActionArgs(position.CurrentPosition);

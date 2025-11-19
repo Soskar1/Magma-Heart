@@ -13,7 +13,7 @@ namespace MagmaHeart.AI.States
         }
 
         public abstract T GetProperty<T>(AIUnit unit) where T : PropertySnapshot;
-        public virtual void ApplyStateChanges(List<StateChange> stateChanges)
+        public virtual void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
             foreach (StateChange change in stateChanges)
                 change.ApplyTo(this);
