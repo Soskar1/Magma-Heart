@@ -1,5 +1,4 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Reasoning.Tests.StateChanges;
 using MagmaHeart.AI.States;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,8 +22,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
             Vector2 direction = -(targetPosition.CurrentPosition - tmpPosition);
-            float xMovement = Mathf.Abs(direction.x) * m_speed;
-            float yMovement = Mathf.Abs(direction.y) * m_speed;
+            float xMovement = m_speed;
+            float yMovement = m_speed;
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;

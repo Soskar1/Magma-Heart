@@ -1,0 +1,109 @@
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace MagmaHeart.AI.Reasoning.Tests
+{
+    internal class SimulatedBoardTests
+    {
+        private Board m_board;
+        private Entity m_entity;
+        private SimulatedBoardState m_state;
+
+        [SetUp]
+        public void SetUp()
+        {
+            m_entity = new Entity(10, Vector2.zero, false);
+
+            BoardGraph graph = new BoardGraph();
+            graph.AddNode(Vector2.zero, BoardNodeType.Walkable);
+            graph.AddNode(Vector2.up, BoardNodeType.Walkable);
+
+            m_board = new Board(graph);
+            m_board.AddUnit(m_entity.Position, m_entity);
+
+            m_state = new SimulatedBoardState(m_board);
+        }
+
+        [Test]
+        public void SimulatedBoardState_CreatesSimulatedBoardWithUnitProperties()
+        {
+            Assert.That(ReferenceEquals(m_board, m_state.Board), Is.EqualTo(false));
+            Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(m_entity.Health));
+            Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(m_entity.Position));
+        }
+
+        [Test]
+        public void GetWriteProperty_UpdatesPropertiesInSimulation()
+        {
+            m_state.WriteProperty(m_entity, new Position(Vector2.up));
+            m_state.WriteProperty(m_entity, new Health(4, 10));
+
+            Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(4));
+            Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(Vector2.up));
+            Assert.That(m_entity.Position, Is.EqualTo(Vector2.zero));
+            Assert.That(m_entity.Health, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void ApplyStateChanges_AddsStateChangeToHistoryStack()
+        {
+            MovementStateChange movementStateChange = new MovementStateChange(m_entity, Vector2.zero, Vector2.up);
+
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange });
+
+            Assert.That(m_state.History.Count, Is.EqualTo(1));
+            Assert.That(m_state.History.Peek().StateChanges.First(), Is.EqualTo(movementStateChange));
+        }
+
+        [Test]
+        public void Undo_RemovesLastStateChangeFromHistoryStack()
+        {
+            MovementStateChange movementStateChange = new MovementStateChange(m_entity, Vector2.zero, Vector2.up);
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange });
+
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ApplyStateChanges_ActionAppliesTwoStateChanges_AddsTwoStateChangesToHistoryStack()
+        {
+            Entity player = new Entity(10, Vector2.up, true);
+            m_board.AddUnit(player.Position, player);
+            m_state = new SimulatedBoardState(m_board);
+            EngageAction action = new EngageAction(m_entity, 1, 1);
+            EngageActionArgs args = new EngageActionArgs(player);
+
+            action.Execute(args, m_state);
+
+            Assert.That(m_state.History.Count, Is.EqualTo(1));
+            Assert.That(m_state.History.Peek().StateChanges.Count, Is.EqualTo(2));
+            Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(player.Position));
+            Assert.That(m_state.GetProperty<Health>(player).CurrentHealth, Is.EqualTo(9));
+            Assert.That(m_entity.Position, Is.EqualTo(Vector2.zero));
+            Assert.That(player.Health, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void Undo_ActionAppliesTwoStateChanges_RemovesTwoStateChangesFromSimulation()
+        {
+            Entity player = new Entity(10, Vector2.up, true);
+            m_board.AddUnit(player.Position, player);
+            m_state = new SimulatedBoardState(m_board);
+            EngageAction action = new EngageAction(m_entity, 1, 1);
+            EngageActionArgs args = new EngageActionArgs(player);
+            action.Execute(args, m_state);
+
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(0));
+            Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(Vector2.zero));
+            Assert.That(m_state.GetProperty<Health>(player).CurrentHealth, Is.EqualTo(10));
+        }
+    }
+}

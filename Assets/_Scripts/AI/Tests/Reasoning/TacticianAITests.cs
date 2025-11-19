@@ -4,6 +4,8 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
@@ -50,7 +52,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             BasicStrategy strategy = new BasicStrategy(1, m_player);
             TacticianAI tactician = new TacticianAI(strategy);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(10, Vector2.zero, false, m_board), m_player };
+            Entity enemy = Entity(10, Vector2.zero, false, m_board);
+            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
 
             BestAction bestAction = tactician.ChooseBestMove(circularList, m_state);
 
