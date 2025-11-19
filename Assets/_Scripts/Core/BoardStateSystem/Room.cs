@@ -7,7 +7,6 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.BoardStateSystem.Actions;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
@@ -30,7 +29,6 @@ namespace MagmaHeart.Core.BoardStateSystem
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
             AddUnit(position, entity.Model);
-            entity.TurnBasedMovement.OnMovementEnded += HandleOnMovementEnded;
 
             ChangeNodeType(position, BoardNodeType.Obstacle);
         }
@@ -39,7 +37,6 @@ namespace MagmaHeart.Core.BoardStateSystem
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
-            entity.TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
             RemoveUnit(position, entity.Model);
 
             ChangeNodeType(position, BoardNodeType.Walkable);
@@ -74,24 +71,6 @@ namespace MagmaHeart.Core.BoardStateSystem
                 return false;
 
             return true;
-        }
-
-        // TODO: Move this to custom StateChangeObject
-        private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
-        {
-            //Vector2 from = e.From.ToVector2();
-            //Vector2 to = e.To.ToVector2();
-
-            //if (!TryGetUnit(from, out EntityModel unit))
-            //    throw new System.Exception($"Unit at position {from} does not exist");
-
-            //RemoveUnit(from);
-            //AddUnit(to, unit);
-
-            //ChangeNodeType(from, BoardNodeType.Walkable);
-            //ChangeNodeType(to, BoardNodeType.Obstacle);
-
-            throw new System.Exception("FIX THIS");
         }
 
         public bool TryGetUnit(Vector2 position, out EntityModel entity)

@@ -38,9 +38,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         {
             IEnumerable<StateChange> changes = base.ProduceChanges(args, gameState);
 
+            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
+
             return changes.Concat(new List<StateChange>()
             {
-                new MoveEntityStateChange(ActionPossessor, args.SourceTile, args.TileToMove)
+                new MoveEntityStateChange(ActionPossessor, path)
             });
         }
 

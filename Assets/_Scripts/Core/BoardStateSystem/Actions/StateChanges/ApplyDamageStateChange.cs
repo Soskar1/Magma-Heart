@@ -4,9 +4,9 @@ using MagmaHeart.Core.Entities.Properties;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    internal record ApplyDamageStateChange(EntityModel Unit, float Damage) : StateChange
+    public record ApplyDamageStateChange(EntityModel Unit, float Damage) : MagmaHeartStateChange
     {
-        public override void ApplyChangeToActualState(ActualBoardState actualBoard)
+        public override void ApplyChangeToActualState(CombatBoardState actualBoard)
         {
             Unit.Health.TakeDamage(Damage);
         }

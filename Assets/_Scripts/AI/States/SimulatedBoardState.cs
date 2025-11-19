@@ -76,26 +76,26 @@ namespace MagmaHeart.AI.States
             m_currentSimulationOperations.Add(operation);
         }
 
-        public void AddUnit(Vector2 position, AIUnit unit)
+        public override void AddUnit(Vector2 position, AIUnit unit)
         {
-            Board.AddUnit(position, unit);
+            base.AddUnit(position, unit);
 
             AddUnitBoardSimulationOperation operation = new AddUnitBoardSimulationOperation(position, unit);
             m_currentSimulationOperations.Add(operation);
         }
 
-        public void RemoveUnit(Vector2 position, AIUnit unit)
+        public override void RemoveUnit(Vector2 position, AIUnit unit)
         {
-            Board.RemoveUnit(position, unit);
+            base.RemoveUnit(position, unit);
 
             RemoveUnitBoardSimulationOperation operation = new RemoveUnitBoardSimulationOperation(position, unit);
             m_currentSimulationOperations.Add(operation);
         }
 
-        public void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType)
+        public override void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType)
         {
             BoardNodeType oldNodeType = Board.Graph.GetNode(position).Type;
-            Board.ChangeNodeType(position, newNodeType);
+            base.UpdateBoardNodeType(position, newNodeType);
 
             NodeTypeUpdateBoardSimulationOperation operation = new NodeTypeUpdateBoardSimulationOperation(position, oldNodeType, newNodeType);
             m_currentSimulationOperations.Add(operation);

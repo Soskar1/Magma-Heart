@@ -15,9 +15,11 @@ namespace MagmaHeart.Core.Entities
         public Energy Energy { get; init; }
         public EntityData Data { get; init; }
         public EntityStats Stats => Data.Stats;
+        public Entity Entity { get; init; }
 
-        public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer, new TypeMap<MagmaHeart.AI.Actions.UnitAction>())
+        public EntityModel(Entity entity, EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer, new TypeMap<MagmaHeart.AI.Actions.UnitAction>())
         {
+            Entity = entity;
             Data = data;
 
             GetCurrentTilePosition = getCurrentTilePosition;

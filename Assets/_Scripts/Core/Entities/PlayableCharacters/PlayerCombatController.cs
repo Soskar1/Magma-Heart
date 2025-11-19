@@ -5,6 +5,7 @@ using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -54,11 +55,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             Entity.Energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
 
-            // TODO: move it to the movement service
-            throw new Exception("FIX THIS");
             // Move player at the center of the current standing tile
-            //RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
-            //m_movementAction.MoveWithoutEnergyUsage(roomTile);
+            RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
+            combatBoardState.MovementService.MoveEntity(Entity, new List<RoomTile>() { roomTile });
         }
 
         public override void EndBattle()

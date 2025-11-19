@@ -1,5 +1,6 @@
 using MagmaHeart.AI.Boards;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.AI.States
 {
@@ -18,5 +19,9 @@ namespace MagmaHeart.AI.States
             foreach (StateChange change in stateChanges)
                 change.ApplyTo(this);
         }
+
+        public virtual void AddUnit(Vector2 position, AIUnit unit) => Board.AddUnit(position, unit);
+        public virtual void RemoveUnit(Vector2 position, AIUnit unit) => Board.RemoveUnit(position, unit);
+        public virtual void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType) => Board.ChangeNodeType(position, newNodeType);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    internal record TriggerAttackEventStateChange : StateChange
+    public record TriggerAttackEventStateChange : MagmaHeartStateChange
     {
-        public override void ApplyChangeToActualState(ActualBoardState actualBoard)
+        public override void ApplyChangeToActualState(CombatBoardState actualBoard)
         {
             // Trigger on attack event
 

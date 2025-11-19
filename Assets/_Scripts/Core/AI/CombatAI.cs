@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_tactician = new TacticianAI(strategy);
         }
 
-        public BestAction GetBestAction(CircularList<Entity> turnOrder, Room room)
+        public BestAction GetBestAction(CircularList<Entity> turnOrder, CombatBoardState combatBoardState)
         {
             List<AIUnit> units = turnOrder.Select(x => (AIUnit)x.Model).ToList();
             CircularList<AIUnit> turnOrderToProcess = new CircularList<AIUnit>();
@@ -24,8 +24,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             foreach (AIUnit unit in units)
                 turnOrderToProcess.Add(unit);
 
-            throw new System.Exception("FIX THIS");
-            //return m_tactician.ChooseBestMove(turnOrderToProcess, room);
+            return m_tactician.ChooseBestMove(turnOrderToProcess, combatBoardState);
         }
     }
 }

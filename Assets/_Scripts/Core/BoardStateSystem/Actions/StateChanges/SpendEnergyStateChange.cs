@@ -4,9 +4,9 @@ using MagmaHeart.Core.Entities.Properties;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    internal record SpendEnergyStateChange(EntityModel Unit, int EnergyToSpend) : StateChange
+    public record SpendEnergyStateChange(EntityModel Unit, int EnergyToSpend) : MagmaHeartStateChange
     {
-        public override void ApplyChangeToActualState(ActualBoardState actualBoard)
+        public override void ApplyChangeToActualState(CombatBoardState actualBoard)
         {
             Unit.Energy.Spend(EnergyToSpend);
         }
