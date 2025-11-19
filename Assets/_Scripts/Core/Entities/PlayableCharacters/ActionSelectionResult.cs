@@ -2,8 +2,8 @@
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public record ActionSelectionResult(Action Action, ActionArgs Args, int EnergyCost)
+    public record ActionSelectionResult(UnitAction Action, ActionArgs Args, int EnergyCost)
     {
-        public void Execute() => Action.Execute(Args);
+        //public void Execute() => Action.Execute(Args);
     }
 }

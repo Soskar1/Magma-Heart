@@ -5,24 +5,12 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class Entity : AIUnit
+    internal record Entity(float Health, Vector2 Position, bool IsPlayer) : AIUnit(IsPlayer, new TypeMap<UnitAction>())
     {
-        private float m_health;
-        public Vector2 Position { get; private set; }
-
-        public Entity(float health, Vector2 position, bool isPlayer)
-        {
-            m_health = health;
-            Position = position;
-
-            IsPlayer = isPlayer;
-            PossibleActions = new TypeMap<Action>();
-        }
-
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
             TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
-            Health healthLeft = new Health(m_health, m_health);
+            Health healthLeft = new Health(Health, Health);
             Position position = new Position(Position);
 
             properties.Add(healthLeft);

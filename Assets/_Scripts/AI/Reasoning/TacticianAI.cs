@@ -1,12 +1,10 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Action = MagmaHeart.AI.Actions.Action;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -21,30 +19,29 @@ namespace MagmaHeart.AI.Reasoning
             m_depth = m_strategy.LookAhead;
         }
 
-        public BestAction ChooseBestMove(CircularList<AIUnit> unitsToConsider, Board board)
+        public BestAction ChooseBestMove(ChainNode<AIUnit> unitOrder, ActualBoardState gameState)
         {  
-            StateSnapshot stateSnapshot = StateSnapshotMaker.CreateStateSnapshot(unitsToConsider);
-            SimulatedBoard simulatedBoard = board.CreateSimulatedBoard();
+            SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
 
-            ChainNode<AIUnit> head = (ChainNode<AIUnit>)unitsToConsider;
             float alpha = float.MinValue;
             float beta = float.MaxValue;
             float bestValue = float.MinValue;
 
             BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(stateSnapshot, simulatedBoard, head.Value.PossibleActions.ToList());
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitOrder.Value.PossibleActions);
 
             Debug.Log($"[ROOT] Got all possible simulations. Count: {possibleSimulations.Count}");
 
-            foreach (ActionSimulation simulation in possibleSimulations)
+            foreach (ActionSimulation possibleSimulation in possibleSimulations)
             {
-                Action action = simulation.Action;
-                foreach (ActionArgs args in simulation.SimulationArgs)
+                UnitAction action = possibleSimulation.Action;
+                foreach (ActionArgs args in possibleSimulation.SimulationArgs)
                 {
-                    StateSnapshot actionState = action.Simulate(stateSnapshot, simulatedBoard, args);
-                    
-                    float evaluation = Minimax(actionState, head.Next, simulatedBoard, m_depth - 1, alpha, beta);
-                    simulatedBoard.UndoBoardModification(actionState.CurrentSimulationDepth);
+                    action.Execute(args, simulation);
+
+                    float evaluation = Minimax(simulation, unitOrder.Next, m_depth - 1, alpha, beta);
+
+                    simulation.Undo();
                     
                     if (evaluation > bestValue)
                     {
@@ -60,30 +57,31 @@ namespace MagmaHeart.AI.Reasoning
         }
 
         // TODO: Remove code duplication
-        private float Minimax(StateSnapshot state, ChainNode<AIUnit> units, SimulatedBoard board, int currentDepth, float alpha, float beta)
+        private float Minimax(SimulatedBoardState simulation, ChainNode<AIUnit> units, int currentDepth, float alpha, float beta)
         {
             AIUnit currentUnit = units.Value;
-            IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(currentUnit);
+            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
-                return m_strategy.EvaluateState(state);
+                return m_strategy.EvaluateState(simulation);
 
-            List<ActionSimulation> simulations = ActionSimulationFilter.GetActionSimulations(state, board, currentUnit.PossibleActions.ToList());
-            Debug.Log($"[{currentDepth}] Got all possible simulations. Count: {simulations.Count}");
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit.PossibleActions);
+            Debug.Log($"[{currentDepth}] Got all possible simulations. Count: {possibleSimulations.Count}");
 
             if (!currentUnit.IsPlayer)
             {
                 // AI
                 float maxEvaluation = float.MinValue;
-                foreach (ActionSimulation simulation in simulations)
+                foreach (ActionSimulation possibleSimulation in possibleSimulations)
                 {
-                    Action action = simulation.Action;
-                    foreach (ActionArgs args in simulation.SimulationArgs)
+                    UnitAction action = possibleSimulation.Action;
+                    foreach (ActionArgs args in possibleSimulation.SimulationArgs)
                     {
-                        StateSnapshot newState = action.Simulate(state, board, args);
-                        float evaluation = Minimax(newState, units.Next, board, currentDepth - 1, alpha, beta);
+                        action.Execute(args, simulation);
                         
-                        board.UndoBoardModification(newState.CurrentSimulationDepth);
+                        float evaluation = Minimax(simulation, units.Next, currentDepth - 1, alpha, beta);
+                        
+                        simulation.Undo();
                         
                         maxEvaluation = Math.Max(maxEvaluation, evaluation);
                         alpha = Math.Max(alpha, evaluation);
@@ -99,15 +97,16 @@ namespace MagmaHeart.AI.Reasoning
             {
                 // PLAYER
                 float minEvaluation = float.MaxValue;
-                foreach (ActionSimulation simulation in simulations)
+                foreach (ActionSimulation possibleSimulation in possibleSimulations)
                 {
-                    Action action = simulation.Action;
-                    foreach (ActionArgs args in simulation.SimulationArgs)
+                    UnitAction action = possibleSimulation.Action;
+                    foreach (ActionArgs args in possibleSimulation.SimulationArgs)
                     {
-                        StateSnapshot newPosition = action.Simulate(state, board, args);
+                        action.Execute(args, simulation);
 
-                        float evaluation = Minimax(newPosition, units.Next, board, currentDepth - 1, alpha, beta);
-                        board.UndoBoardModification(newPosition.CurrentSimulationDepth);
+                        float evaluation = Minimax(simulation, units.Next, currentDepth - 1, alpha, beta);
+                        
+                        simulation.Undo();
 
                         minEvaluation = Math.Min(minEvaluation, evaluation);
                         beta = Math.Min(beta, evaluation);

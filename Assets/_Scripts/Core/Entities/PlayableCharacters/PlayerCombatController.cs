@@ -1,10 +1,11 @@
 ﻿using MagmaHeart.Collections;
-using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -47,16 +48,16 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_actionSelectorChain.Next = new MovementActionSelector(movementAction);
         }
 
-        public override void StartBattle(Room room, CircularList<Entity> turnOrder)
+        public override void StartBattle(CombatBoardState combatBoardState, CircularList<Entity> turnOrder)
         {
-            base.StartBattle(room, turnOrder);
+            base.StartBattle(combatBoardState, turnOrder);
             m_userInput.Enable();
 
             Entity.Energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
-            m_movementAction.MoveWithoutEnergyUsage(roomTile);
+            combatBoardState.MovementService.MoveEntity(Entity, new List<RoomTile>() { roomTile });
         }
 
         public override void EndBattle()
@@ -108,12 +109,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentMouseTile != null)
                 CurrentRoom.HideCombatTileAt(m_currentMouseTile);
 
-            RoomTile roomTile = CurrentRoom.GetRoomTile(e.TilePosition);
-            m_currentAction = m_actionSelectorChain.GetAction(CurrentRoom, roomTile);
+            RoomTile mouseTilePosition = CurrentRoom.GetRoomTile(e.TilePosition);
+            m_currentAction = m_actionSelectorChain.GetAction(CurrentCombatBoardState, mouseTilePosition);
             
             if (m_currentAction != null)
             {
-                CurrentRoom.TryDisplayCombatTile(roomTile);
+                CurrentRoom.TryDisplayCombatTile(mouseTilePosition);
                 
                 int energyCost = Math.Min(m_currentAction.EnergyCost, Entity.Energy.CurrentEnergy);
                 m_energyHUD.DisplayEnergyPrice(energyCost);
@@ -123,7 +124,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 m_energyHUD.DisplayEnergyPrice(0);
             }
 
-            m_currentMouseTile = roomTile;
+            m_currentMouseTile = mouseTilePosition;
         }
 
         private void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
@@ -131,7 +132,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentAction == null || !CanExecuteAction || e.IsOverUIElement)
                 return;
 
-            m_currentAction.Execute();
+            m_currentAction.Action.Execute(m_currentAction.Args, CurrentCombatBoardState);
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
     }

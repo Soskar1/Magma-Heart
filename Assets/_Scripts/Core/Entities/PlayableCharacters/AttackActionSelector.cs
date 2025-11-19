@@ -1,5 +1,5 @@
-﻿using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
@@ -9,14 +9,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public AttackActionSelector(AttackAction action) => m_attack = action;
 
-        protected override ActionSelectionResult TrySelectAction(Room room, RoomTile roomTile)
+        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
-            if (room.EntityIsOnTile(roomTile, out EntityModel entity))
+            if (combatBoardState.Board.EntityIsOnTile(selectedTile, out EntityModel entity))
             {
-                if (!entity.IsPlayer && m_attack.CanAttack(entity))
+                AttackActionArgs args = new AttackActionArgs(entity);
+
+                if (!entity.IsPlayer && m_attack.CanExecute(args, combatBoardState))
                 {
-                    AttackActionArgs args = new AttackActionArgs(entity);
-                    int energyCost = m_attack.GetEnergyCost(args);
+                    int energyCost = m_attack.GetEnergyCost(args, combatBoardState);
                     return new ActionSelectionResult(m_attack, args, energyCost);
                 }
             }

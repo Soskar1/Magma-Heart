@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.AI.Reasoning.Tests;
 using MagmaHeart.AI.States;
-using MagmaHeart.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -12,7 +12,7 @@ namespace MagmaHeart.AI.Reasoning
 
         public BasicStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
 
-        public override float EvaluateState(StateSnapshot state)
+        public override float EvaluateState(BoardState state)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
@@ -34,14 +34,13 @@ namespace MagmaHeart.AI.Reasoning
 
                 return 5 / distance;
             };
-
-            foreach (var aiUnitWithProperties in state.StateProperties)
+            
+            IEnumerable<AIUnit> aiUnits = state.Board.GetUnits();
+            foreach (AIUnit unit in aiUnits)
             {
-                AIUnit unit = aiUnitWithProperties.Key;
-                TypeMap<PropertySnapshot> unitProperties = aiUnitWithProperties.Value;
-                Health health = unitProperties.Get<Health>();
-                Position position = unitProperties.Get<Position>();
-                IsAlivePropertySnapshot isAlive = unitProperties.Get<IsAlivePropertySnapshot>();
+                Health health = state.GetProperty<Health>(unit);
+                Position position = state.GetProperty<Position>(unit);
+                IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
 
                 if (unit.IsPlayer)
                 {
@@ -68,16 +67,16 @@ namespace MagmaHeart.AI.Reasoning
 
             if (playerIsAlive)
             {
-                foreach (AIUnit aiUnit in state.StateProperties.Keys)
+                foreach (AIUnit unit in aiUnits)
                 {
-                    if (aiUnit.IsPlayer)
+                    if (unit.IsPlayer)
                         continue;
 
-                    IsAlivePropertySnapshot isAlive = state.StateProperties[aiUnit].Get<IsAlivePropertySnapshot>();
+                    IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
                     if (!isAlive)
                         continue;
 
-                    Position position = state.StateProperties[aiUnit].Get<Position>();
+                    Position position = state.GetProperty<Position>(unit);
                     distancePoints += getDistancePoints(position);
                 }
             }

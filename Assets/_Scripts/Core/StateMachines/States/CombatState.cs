@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
 
 namespace MagmaHeart.Core.StateMachines
 {

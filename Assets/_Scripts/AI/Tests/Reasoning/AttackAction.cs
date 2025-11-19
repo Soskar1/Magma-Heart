@@ -1,10 +1,10 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class AttackAction : Action<AttackActionArgs>
+    internal class AttackAction : UnitAction<AttackActionArgs>
     {
         public float Damage { get; init; }
 
@@ -13,14 +13,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Damage = damage;
         }
 
-        public override ActionArgs CreateActionArgs(StateSnapshot state, SimulatedBoard board, AIUnit unit) => new AttackActionArgs(unit);
-
-        public override void Execute(AttackActionArgs args) { }
-
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, AttackActionArgs args)
+        public override bool CanExecute(AttackActionArgs args, BoardState gameState)
         {
-            Position possessorPosition = state.GetProperty<Position>(ActionPossessor);
-            Position targetPosition = state.GetProperty<Position>(args.Target);
+            Position possessorPosition = gameState.GetProperty<Position>(ActionPossessor);
+            Position targetPosition = gameState.GetProperty<Position>(args.Target);
 
             if (possessorPosition.Distance(targetPosition) > 1)
                 return false;
@@ -28,22 +24,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override StateSnapshot Simulate(StateSnapshot state, SimulatedBoard board, AttackActionArgs args)
+        public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
-            StateSnapshot newState = base.Simulate(state, board, args);
-
-            Health targetHealth = state.GetProperty<Health>(args.Target);
-
-            if (targetHealth.CurrentHealth < Damage)
-                newState.Update(args.Target, new IsAlivePropertySnapshot(false));
-
-            targetHealth = new Health(targetHealth.CurrentHealth - Damage, targetHealth.MaxHealth);
-            newState.Update(args.Target, targetHealth);
-
-            return newState;
+            return new List<StateChange> {
+                new ApplyDamageStateChange(Damage, args.Target)
+            };
         }
 
-        public override bool CanSimulate(StateSnapshot state, SimulatedBoard board, ActionArgs args) => CanSimulate(state, board, (AttackActionArgs)args);
-        public override void Execute(ActionArgs args) => Execute((AttackActionArgs)args);
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<AttackActionArgs>() { new AttackActionArgs(unit) };
     }
 }

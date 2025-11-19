@@ -1,5 +1,6 @@
-﻿using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Extensions;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -13,12 +14,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_movementAction = movementAction;
         }
 
-        protected override ActionSelectionResult TrySelectAction(Room room, RoomTile roomTile)
+        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
-            if (room.TileIsAccessable(roomTile) && m_movementAction.GetPath(roomTile) != null)
+            Vector2 sourceTile = m_movementAction.ActionPossessor.GetCurrentTilePosition().ToVector2();
+            MovementActionArgs args = new MovementActionArgs(sourceTile, selectedTile.Position.ToVector2());
+
+            if (combatBoardState.Board.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
             {
-                MovementActionArgs args = new MovementActionArgs(roomTile);
-                int energyCost = m_movementAction.GetEnergyCost(args);
+                int energyCost = m_movementAction.GetEnergyCost(args, combatBoardState);
                 return new ActionSelectionResult(m_movementAction, args, energyCost);
             }
 

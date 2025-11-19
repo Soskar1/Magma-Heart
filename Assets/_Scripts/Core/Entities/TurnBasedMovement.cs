@@ -1,5 +1,5 @@
-using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

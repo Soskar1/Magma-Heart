@@ -1,21 +1,20 @@
-﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.States;
 using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Actions
 {
     internal class ActionSimulationFilter
     {
-        public static List<ActionSimulation> GetActionSimulations(StateSnapshot state, SimulatedBoard board, List<Action> possibleActions)
+        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, IEnumerable<UnitAction> possibleActions)
         {
             List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
-            foreach (Action action in possibleActions)
+            foreach (UnitAction action in possibleActions)
             {
                 ActionSimulation actionSimulation = new ActionSimulation(action);
-                List<ActionArgs> possibleSimulations = action.GetSimulationArguments(state, board);
+                List<ActionArgs> possibleSimulations = action.GetArguments(simulation);
 
                 foreach (ActionArgs args in possibleSimulations)
-                    if (action.CanSimulate(state, board, args))
+                    if (action.CanExecute(args, simulation))
                         actionSimulation.SimulationArgs.Add(args);
 
                 if (actionSimulation.SimulationArgs.Count > 0)
