@@ -17,6 +17,7 @@ namespace MagmaHeart.AI.Boards
         }
 
         public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType) => Graph.ChangeNodeType(position, newNodeType);
+        public BoardNodeType GetNodeType(Vector2 position) => Graph.GetNode(position).Type;
 
         public void AddUnit(Vector2 position, AIUnit unit)
         {

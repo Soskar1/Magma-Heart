@@ -5,7 +5,7 @@ namespace MagmaHeart.AI.Actions
 {
     internal class ActionSimulationFilter
     {
-        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, List<UnitAction> possibleActions)
+        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, IEnumerable<UnitAction> possibleActions)
         {
             List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
             foreach (UnitAction action in possibleActions)

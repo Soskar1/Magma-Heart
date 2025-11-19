@@ -43,6 +43,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override bool CanExecute(RunAwayActionArgs args, BoardState gameState) => true;
 
-        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new RunAwayActionArgs(unit);
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<RunAwayActionArgs>() { new RunAwayActionArgs(unit) };
     }
 }

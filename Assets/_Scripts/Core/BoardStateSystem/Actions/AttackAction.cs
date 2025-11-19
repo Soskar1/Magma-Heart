@@ -20,7 +20,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public AttackAction(EntityModel actionPossessor) : base(actionPossessor) { }
 
-        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new AttackActionArgs((EntityModel)unit);
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<AttackActionArgs>() { new AttackActionArgs((EntityModel)unit) };
 
         public void Hit(EntityModel entity) => entity.Health.TakeDamage(ATTACK_DAMAGE);
 

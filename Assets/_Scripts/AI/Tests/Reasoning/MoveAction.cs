@@ -51,10 +51,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
         {
             Position position = state.GetProperty<Position>(unit);
-            return new MoveActionArgs(position.CurrentPosition);
+            return new List<MoveActionArgs>() { new MoveActionArgs(position.CurrentPosition) };
         }
     }
 }

@@ -1,5 +1,6 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
@@ -47,14 +48,34 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             });
         }
 
-        public override ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
         {
-            Vector3Int source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position;
-            Vector3Int targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position;
+            Vector2 source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position.ToVector2();
+            Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position.ToVector2();
 
-            // TODO: Check if no one is standing in that tile
+            EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
 
-            return new MovementActionArgs(source.ToVector2(), targetPosition.ToVector2());
+            Vector2[] adjacentTiles = new Vector2[]
+            {
+                targetPosition + Vector2.up,
+                targetPosition + Vector2.down,
+                targetPosition + Vector2.left,
+                targetPosition + Vector2.right
+            };
+
+            List<Vector2> roomTiles =
+                adjacentTiles.Where(v => state.Board.Graph.ContainsNode(v) && state.Board.GetNodeType(v) == BoardNodeType.Walkable)
+                .ToList();
+
+            foreach (Vector2 tile in roomTiles)
+            {
+                List<Vector2> path = m_aStar.FindPath(state.Board.Graph, source, tile);
+                if (path == null || !path.Any())
+                    continue;
+
+                Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy).Last();
+                yield return new MovementActionArgs(source, targetTile);
+            }
         }
     }
 }

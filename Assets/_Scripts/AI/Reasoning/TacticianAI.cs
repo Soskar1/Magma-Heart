@@ -28,7 +28,7 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitOrder.Value.PossibleActions.ToList());
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitOrder.Value.PossibleActions);
 
             Debug.Log($"[ROOT] Got all possible simulations. Count: {possibleSimulations.Count}");
 
@@ -65,7 +65,7 @@ namespace MagmaHeart.AI.Reasoning
             if (currentDepth <= 0 || !isAlive)
                 return m_strategy.EvaluateState(simulation);
 
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit.PossibleActions.ToList());
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit.PossibleActions);
             Debug.Log($"[{currentDepth}] Got all possible simulations. Count: {possibleSimulations.Count}");
 
             if (!currentUnit.IsPlayer)

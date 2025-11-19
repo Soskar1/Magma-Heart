@@ -29,14 +29,14 @@ namespace MagmaHeart.AI.Actions
                 if ((ActionPossessor.IsPlayer && !unit.IsPlayer) ||
                     (!ActionPossessor.IsPlayer && unit.IsPlayer))
                 {
-                    args.Add(CreateSimulationArgument(state, unit));
+                    args.AddRange(CreateSimulationArgument(state, unit));
                 }
             }
 
             return args;
         }
         
-        public abstract ActionArgs CreateSimulationArgument(SimulatedBoardState state, AIUnit unit);
+        public abstract IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit);
     }
 
     public abstract class UnitAction<T> : UnitAction where T : ActionArgs
