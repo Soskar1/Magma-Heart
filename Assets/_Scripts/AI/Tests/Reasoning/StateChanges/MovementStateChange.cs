@@ -12,16 +12,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
-            simulation.Board.RemoveUnit(From, Creator);
-            simulation.Board.AddUnit(To, Creator);
-            simulation.WriteProperty(Creator, new Position(To));
-        }
-
-        public override void UndoChangeInSimulation(SimulatedBoardState simulation)
-        {
-            simulation.Board.RemoveUnit(To, Creator);
-            simulation.Board.AddUnit(From, Creator);
-            simulation.WriteProperty(Creator, new Position(From));
+            simulation.RemoveUnit(From, Creator);
+            simulation.AddUnit(To, Creator);
+            simulation.UpdateProperty(Creator, new Position(To));
         }
     }
 }

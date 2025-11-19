@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using MagmaHeart.AI.States.SimulationOperations;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +40,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void GetWriteProperty_UpdatesPropertiesInSimulation()
         {
-            m_state.WriteProperty(m_entity, new Position(Vector2.up));
-            m_state.WriteProperty(m_entity, new Health(4, 10));
+            m_state.UpdateProperty(m_entity, new Position(Vector2.up));
+            m_state.UpdateProperty(m_entity, new Health(4, 10));
 
             Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(4));
             Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(Vector2.up));
@@ -51,12 +52,17 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ApplyStateChanges_AddsStateChangeToHistoryStack()
         {
-            MovementStateChange movementStateChange = new MovementStateChange(m_entity, Vector2.zero, Vector2.up);
+            MoveAction moveAction = new MoveAction(m_entity, 1);
+            MoveActionArgs args = new MoveActionArgs(Vector2.up);
 
-            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange });
+            moveAction.Execute(args, m_state);
 
             Assert.That(m_state.History.Count, Is.EqualTo(1));
-            Assert.That(m_state.History.Peek().StateChanges.First(), Is.EqualTo(movementStateChange));
+            List<SimulationOperation> operations = m_state.History.Peek().Operations;
+            Assert.That(operations.Count, Is.EqualTo(3));
+            Assert.That(operations[2] is UnitPropertyUpdateSimulationOperation, Is.EqualTo(true));
+            Assert.That(operations[1] is AddUnitBoardSimulationOperation, Is.EqualTo(true));
+            Assert.That(operations[0] is RemoveUnitBoardSimulationOperation, Is.EqualTo(true));
         }
 
         [Test]
@@ -82,7 +88,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             action.Execute(args, m_state);
 
             Assert.That(m_state.History.Count, Is.EqualTo(1));
-            Assert.That(m_state.History.Peek().StateChanges.Count, Is.EqualTo(2));
+            List<SimulationOperation> operations = m_state.History.Peek().Operations;
+            Assert.That(operations.Count, Is.EqualTo(4));
             Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(player.Position));
             Assert.That(m_state.GetProperty<Health>(player).CurrentHealth, Is.EqualTo(9));
             Assert.That(m_entity.Position, Is.EqualTo(Vector2.zero));

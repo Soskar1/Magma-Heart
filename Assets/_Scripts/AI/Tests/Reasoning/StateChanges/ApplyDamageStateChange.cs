@@ -14,24 +14,24 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Health targetHealth = simulation.GetProperty<Health>(Target);
 
             if (targetHealth.CurrentHealth < Damage)
-                simulation.WriteProperty(Target, new IsAlivePropertySnapshot(false));
+                simulation.UpdateProperty(Target, new IsAlivePropertySnapshot(false));
 
             targetHealth = new Health(targetHealth.CurrentHealth - Damage, targetHealth.MaxHealth);
-            simulation.WriteProperty(Target, targetHealth);
+            simulation.UpdateProperty(Target, targetHealth);
         }
 
-        public override void UndoChangeInSimulation(SimulatedBoardState simulation)
-        {
-            Health targetHealth = simulation.GetProperty<Health>(Target);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(Target);
+        //public override void UndoChangeInSimulation(SimulatedBoardState simulation)
+        //{
+        //    Health targetHealth = simulation.GetProperty<Health>(Target);
+        //    IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(Target);
 
-            float health = targetHealth.CurrentHealth + Damage;
+        //    float health = targetHealth.CurrentHealth + Damage;
 
-            if (!isAlive && health > 0)
-                simulation.WriteProperty(Target, new IsAlivePropertySnapshot(true));
+        //    if (!isAlive && health > 0)
+        //        simulation.UpdateProperty(Target, new IsAlivePropertySnapshot(true));
 
-            targetHealth = new Health(health, targetHealth.MaxHealth);
-            simulation.WriteProperty(Target, targetHealth);
-        }
+        //    targetHealth = new Health(health, targetHealth.MaxHealth);
+        //    simulation.UpdateProperty(Target, targetHealth);
+        //}
     }
 }
