@@ -3,7 +3,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.AI.Boards;
 using System.Linq;
 
-namespace MagmaHeart.Core.Navigation
+namespace MagmaHeart.Core.BoardStateSystem
 {
     public static class BoardGraphBuilder
     {

@@ -6,13 +6,13 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
-using MagmaHeart.Core.Navigation;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
 using System.Linq;
+using MagmaHeart.Core.BoardStateSystem;
 
 namespace MagmaHeart.Core.SceneLoading
 {

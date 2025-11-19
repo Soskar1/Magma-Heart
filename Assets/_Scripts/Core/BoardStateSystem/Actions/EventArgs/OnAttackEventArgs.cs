@@ -1,7 +1,7 @@
 using MagmaHeart.Core.Entities;
 using System;
 
-namespace MagmaHeart.Core.CombatSystem
+namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public class OnAttackEventArgs : EventArgs
     {

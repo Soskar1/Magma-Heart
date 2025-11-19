@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.Collections;
-using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.CombatSystem
@@ -8,7 +8,8 @@ namespace MagmaHeart.Core.Entities.CombatSystem
     public abstract class CombatController
     {
         public Entity Entity { get; init; }
-        public Room CurrentRoom { get; private set; }
+        public Room CurrentRoom => CurrentCombatBoardState.Board;
+        public CombatBoardState CurrentCombatBoardState { get; private set; }
         protected CircularList<Entity> CurrentTurnOrder { get; private set; }
         protected MovementAction m_movementAction { get; init; }
 
@@ -20,18 +21,16 @@ namespace MagmaHeart.Core.Entities.CombatSystem
             m_movementAction = Entity.Model.PossibleActions.Get<MovementAction>();
         }
 
-        public virtual void StartBattle(Room room, CircularList<Entity> turnOrder)
+        public virtual void StartBattle(CombatBoardState combatBoardState, CircularList<Entity> turnOrder)
         {
-            CurrentRoom = room;
+            CurrentCombatBoardState = combatBoardState;
             CurrentTurnOrder = turnOrder;
-
-            m_movementAction.SetCurrentRoom(CurrentRoom);
         }
 
         public virtual void EndBattle()
         {
             Entity.Energy.Reset();
-            CurrentRoom = null;
+            CurrentCombatBoardState = null;
         }
 
         public virtual Task StartTurn()
@@ -44,7 +43,6 @@ namespace MagmaHeart.Core.Entities.CombatSystem
 
         public virtual void EndTurn()
         {
-            m_movementAction.Reset();
             m_turnFinished.SetResult(true);
         }
     }

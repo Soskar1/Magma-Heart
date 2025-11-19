@@ -1,4 +1,4 @@
-using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;

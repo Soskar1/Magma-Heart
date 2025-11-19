@@ -18,7 +18,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             Task task = base.StartTurn();
 
             BestAction action = m_ai.GetBestAction(CurrentTurnOrder, CurrentRoom);
-            action.Action.Execute(action.Args);
+            throw new System.Exception("FIX THIS");
+            // action.Action.Execute(action.Args);
 
             return task;
         }

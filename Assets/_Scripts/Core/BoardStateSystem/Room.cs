@@ -1,4 +1,3 @@
-using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Extensions;
 using System.Linq;
 using UnityEngine;
@@ -6,8 +5,11 @@ using UnityEngine.Tilemaps;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
+using System.Collections.Generic;
+using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 
-namespace MagmaHeart.Core.Dungeon
+namespace MagmaHeart.Core.BoardStateSystem
 {
     public class Room : Board
     {
@@ -27,7 +29,7 @@ namespace MagmaHeart.Core.Dungeon
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
-            Units.Add(position, entity.Model);
+            AddUnit(position, entity.Model);
             entity.TurnBasedMovement.OnMovementEnded += HandleOnMovementEnded;
 
             ChangeNodeType(position, BoardNodeType.Obstacle);
@@ -38,7 +40,7 @@ namespace MagmaHeart.Core.Dungeon
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
             entity.TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
-            Units.Remove(position);
+            RemoveUnit(position, entity.Model);
 
             ChangeNodeType(position, BoardNodeType.Walkable);
         }
@@ -74,57 +76,36 @@ namespace MagmaHeart.Core.Dungeon
             return true;
         }
 
-        public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit)
-        {
-            Vector2 position = Units.Keys.FirstOrDefault(pos => pos == roomTile.Position.ToVector2());
-
-            if (Units.TryGetValue(position, out AIUnit aiUnit))
-            {
-                unit = (EntityModel)aiUnit;
-                return true;
-            }
-
-            unit = null;
-            return false;
-        }
-
+        // TODO: Move this to custom StateChangeObject
         private void HandleOnMovementEnded(object obj, OnMovementEventArgs e)
         {
-            Vector2 from = e.From.ToVector2();
-            Vector2 to = e.To.ToVector2();
+            //Vector2 from = e.From.ToVector2();
+            //Vector2 to = e.To.ToVector2();
 
-            AIUnit unit = Units[from];
-            Units.Remove(from);
-            Units.Add(to, unit);
+            //if (!TryGetUnit(from, out EntityModel unit))
+            //    throw new System.Exception($"Unit at position {from} does not exist");
 
-            ChangeNodeType(from, BoardNodeType.Walkable);
-            ChangeNodeType(to, BoardNodeType.Obstacle);
+            //RemoveUnit(from);
+            //AddUnit(to, unit);
+
+            //ChangeNodeType(from, BoardNodeType.Walkable);
+            //ChangeNodeType(to, BoardNodeType.Obstacle);
+
+            throw new System.Exception("FIX THIS");
         }
-    }
 
-    public class RoomTile
-    {
-        private Room m_room;
-        public Vector3Int Position { get; private set; }
-        public Vector2 TileCenter => m_room.Grid.ToTileCenter(Position.ToVector2Int());
-        public RoomTile(Room room, Vector3Int position)
+        public bool TryGetUnit(Vector2 position, out EntityModel entity)
         {
-            m_room = room;
-            Position = position;
+            if (!TryGetUnits(position, out HashSet<AIUnit> units))
+            {
+                entity = null;
+                return false;
+            }
+
+            entity = (EntityModel)units.First();
+            return true;
         }
 
-        public CombatTile ToCombatTile()
-        {
-            Vector2 worldPosition = m_room.Grid.TilePositionToWorld(Position);
-            Vector3Int combatTilePosition = m_room.CombatTilemap.WorldToCell(worldPosition);
-            return new CombatTile(combatTilePosition);
-        }
-    }
-
-    public class CombatTile
-    {
-        public Vector3Int Position { get; private set; }
-
-        public CombatTile(Vector3Int position) => Position = position;
+        public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit) => TryGetUnit(roomTile.Position.ToVector2(), out unit);
     }
 }

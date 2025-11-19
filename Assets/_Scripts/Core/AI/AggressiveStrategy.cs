@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.AI
 
         public AggressiveStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
 
-        public override float EvaluateState(StateSnapshot state)
+        public override float EvaluateState(BoardState state)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
@@ -28,7 +28,8 @@ namespace MagmaHeart.Core.AI
             int aiNotAliveCount = 0;
             PositionPropertySnapshot playerPosition = state.GetProperty<PositionPropertySnapshot>(Player);
 
-            Func<PositionPropertySnapshot, float> getDistancePoints = (ai) => {
+            Func<PositionPropertySnapshot, float> getDistancePoints = (ai) =>
+            {
                 float distance = ai.ManhattanDistance(playerPosition);
                 if (distance == 0)
                     return 5;
@@ -36,7 +37,7 @@ namespace MagmaHeart.Core.AI
                 return 5 / distance;
             };
 
-            foreach (var unit in state.GetAllUnits())
+            foreach (var unit in state.Board.GetUnits())
             {
                 HealthPropertySnapshot health = state.GetProperty<HealthPropertySnapshot>(unit);
                 PositionPropertySnapshot position = state.GetProperty<PositionPropertySnapshot>(unit);
@@ -62,7 +63,7 @@ namespace MagmaHeart.Core.AI
 
             if (playerIsAlive)
             {
-                foreach (AIUnit aiUnit in state.StateProperties.Keys)
+                foreach (AIUnit aiUnit in state.Board.GetUnits())
                 {
                     if (aiUnit.IsPlayer)
                         continue;
@@ -80,6 +81,7 @@ namespace MagmaHeart.Core.AI
                 + aiIsNotAlivePoints * aiNotAliveCount
                 + HEALTH_WEIGHT * (aiHP - playerHP)
                 + DISTANCE_WEIGHT * distancePoints;
+            return 0;
         }
     }
 }

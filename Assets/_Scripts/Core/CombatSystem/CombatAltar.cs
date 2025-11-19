@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 

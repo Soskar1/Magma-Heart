@@ -1,4 +1,4 @@
-﻿using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.BoardStateSystem;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
@@ -6,14 +6,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         public ActionSelector Next { get; set; }
 
-        public ActionSelectionResult GetAction(Room room, RoomTile roomTile)
+        public ActionSelectionResult GetAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
             ActionSelectionResult result = null;
             ActionSelector selector = this;
 
             while (selector != null)
             {
-                result = selector.TrySelectAction(room, roomTile);
+                result = selector.TrySelectAction(combatBoardState, selectedTile);
 
                 if (result != null)
                     break;
@@ -24,6 +24,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             return result;
         }
 
-        protected abstract ActionSelectionResult TrySelectAction(Room room, RoomTile roomTile);
+        protected abstract ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile);
     }
 }

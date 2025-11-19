@@ -27,8 +27,6 @@ namespace MagmaHeart.Core.Entities
             Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
-            Model.PossibleActions.Add(new MovementAction(this));
-            Model.PossibleActions.Add(new AttackAction(this));
         }
     }
 }

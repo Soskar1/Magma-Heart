@@ -1,5 +1,5 @@
 using MagmaHeart.Collections;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using System;
@@ -72,8 +72,10 @@ namespace MagmaHeart.Core.CombatSystem
             m_turnOrder.Clear();
             m_turnOrder.AddRange(entityList);
 
+            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
+
             foreach (Entity entity in entityList)
-                entity.CombatController.StartBattle(room, m_turnOrder);
+                entity.CombatController.StartBattle(combatBoardState, m_turnOrder);
 
             await ProcessBattle();
         }

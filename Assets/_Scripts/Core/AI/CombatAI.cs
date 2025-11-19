@@ -2,7 +2,7 @@
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Collections;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.BoardStateSystem;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +24,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             foreach (AIUnit unit in units)
                 turnOrderToProcess.Add(unit);
 
-            return m_tactician.ChooseBestMove(turnOrderToProcess, room);
+            throw new System.Exception("FIX THIS");
+            //return m_tactician.ChooseBestMove(turnOrderToProcess, room);
         }
     }
 }

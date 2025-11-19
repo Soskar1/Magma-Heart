@@ -1,8 +1,7 @@
-using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace MagmaHeart.Core.CombatSystem
+namespace MagmaHeart.Core.BoardStateSystem
 {
     [RequireComponent(typeof(Grid))]
     public class CombatTilemapRenderer : MonoBehaviour

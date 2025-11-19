@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MagmaHeart.Core.CombatSystem
+namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public class OnMovementEventArgs : EventArgs
     {
