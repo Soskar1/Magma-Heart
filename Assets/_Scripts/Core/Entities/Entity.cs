@@ -7,6 +7,8 @@ using UnityEngine;
 namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(TurnBasedMovement))]
+    [RequireComponent(typeof(Facing))]
+    [RequireComponent(typeof(EntityAnimation))]
     public class Entity : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
@@ -18,6 +20,8 @@ namespace MagmaHeart.Core.Entities
         public EntityStats Stats => Model.Stats;
         public CombatController CombatController { get; protected set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
+        public Facing Facing { get; private set; }
+        public EntityAnimation Animation { get; private set; }
 
         public virtual void Initialize(DungeonGrid grid, bool isPlayer)
         {
@@ -27,6 +31,8 @@ namespace MagmaHeart.Core.Entities
             Model = new EntityModel(this, m_data, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
+            Facing = GetComponent<Facing>();
+            Animation = GetComponent<EntityAnimation>();
         }
     }
 }

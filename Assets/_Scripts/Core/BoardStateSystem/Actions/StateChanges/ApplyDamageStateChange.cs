@@ -4,20 +4,20 @@ using MagmaHeart.Core.Entities.Properties;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    public record ApplyDamageStateChange(EntityModel Unit, float Damage) : MagmaHeartStateChange
+    public record ApplyDamageStateChange(EntityModel Attacker, EntityModel Target, float Damage) : MagmaHeartStateChange
     {
         public override void ApplyChangeToActualState(CombatBoardState actualBoard)
         {
-            Unit.Health.TakeDamage(Damage);
+            actualBoard.AttackService.AttackEntity(Attacker.Entity, Target.Entity, Damage);
         }
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(Unit);
-            simulation.UpdateProperty(Unit, new HealthPropertySnapshot(Damage, health.MaxHealth));
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(Target);
+            simulation.UpdateProperty(Target, new HealthPropertySnapshot(Damage, health.MaxHealth));
 
             if (Damage <= 0)
-                simulation.UpdateProperty(Unit, new IsAlivePropertySnapshot(false));
+                simulation.UpdateProperty(Target, new IsAlivePropertySnapshot(false));
         }
     }
 }

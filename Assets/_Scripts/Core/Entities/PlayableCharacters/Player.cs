@@ -10,7 +10,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
-        private EntityAnimation m_animation;
         private Inventory m_inventory;
         private RewardUI m_rewardUI;
 
@@ -27,7 +26,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             base.Initialize(grid, true);
 
             CombatController = new PlayerCombatController(this, gameUI, turnBasedUserInput);
-            m_animation = GetComponent<EntityAnimation>();
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;
@@ -35,7 +33,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
             m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI.CombatUI);
-            m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, m_animation);
+            m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, Animation);
             m_currentBehaviour = m_actionBehaviour;
         }
 
@@ -60,7 +58,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentBehaviour.Enable();
         }
 
-        private void Update() => m_animation.PlayAnimations();
+        private void Update() => Animation.PlayAnimations();
         private void FixedUpdate() => m_currentBehaviour.Update();
 
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);

@@ -12,7 +12,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         
         private readonly Player m_player;
         private readonly PlayerCombatController m_combatController;
-        private readonly Transform m_transform;
         
         private readonly Facing m_facing;
         private readonly EntityAnimation m_animation;
@@ -21,20 +20,17 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private readonly AttackAction m_attackAction;
         private readonly TurnBasedMovement m_movement;
-        
-        private EntityModel m_currentTargetedEntity;
 
         public CombatPlayerBehaviour(Player player, CombatUserInput userInput, CombatUI combatUI)
         {
             m_player = player;
-            m_transform = player.transform;
             m_combatController = (PlayerCombatController)player.CombatController;
             m_userInput = userInput;
             m_combatUI = combatUI;
 
-            m_facing = player.GetComponent<Facing>();
-            m_animation = player.GetComponent<EntityAnimation>();
-            m_movement = player.GetComponent<TurnBasedMovement>();
+            m_facing = player.Facing;
+            m_animation = player.Animation;
+            m_movement = player.TurnBasedMovement;
 
             m_attackAction = m_player.Model.PossibleActions.Get<AttackAction>();
         }
@@ -49,7 +45,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_attackAction.OnAttackTriggered += HandleOnAttackTriggered;
             m_attackAction.OnAttackTriggered += m_combatUI.HandleOnAttackTriggered;
 
-            m_animation.OnAttackAnimationHitFrameTriggered += HandleOnAttackAnimationHitFrame;
             m_animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
             m_animation.OnAttackAnimationEnded += m_combatUI.HandleOnAttackAnimationEnded;
 
@@ -66,7 +61,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_attackAction.OnAttackTriggered -= HandleOnAttackTriggered;
             m_attackAction.OnAttackTriggered -= m_combatUI.HandleOnAttackTriggered;
 
-            m_animation.OnAttackAnimationHitFrameTriggered -= HandleOnAttackAnimationHitFrame;
             m_animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
             m_animation.OnAttackAnimationEnded -= m_combatUI.HandleOnAttackAnimationEnded;
         }
@@ -96,19 +90,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private void HandleOnAttackTriggered(object obj, OnAttackEventArgs e)
         {
             m_combatController.CanExecuteAction = false;
-
-            m_currentTargetedEntity = e.Target;
-            m_facing.TryUpdateFacing(m_currentTargetedEntity.GetCurrentTilePosition().x - m_transform.position.x);
-            m_animation.PlayAttackAnimation();
         }
-
-        private void HandleOnAttackAnimationHitFrame(object obj, EventArgs e) => m_attackAction.Hit(m_currentTargetedEntity);
 
         private void HandleOnAttackAnimationEnded(object obj, EventArgs e)
         {
             m_combatController.CanExecuteAction = true;
             m_animation.PlayIdleAnimation();
-            m_currentTargetedEntity = null;
         }
     }
 }
