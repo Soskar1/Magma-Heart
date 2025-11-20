@@ -16,8 +16,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
             TurnBasedMovement.OnMovementStarted += HandleOnMovementStarted;
             TurnBasedMovement.OnMovementEnded += HandleOnMovementEnded;
-
-            Animation.OnAttackAnimationEnded += HandleOnAttackAnimationEnded;
         }
 
         private void Update() => Animation.PlayAnimations();
@@ -26,8 +24,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         {
             TurnBasedMovement.OnMovementStarted -= HandleOnMovementStarted;
             TurnBasedMovement.OnMovementEnded -= HandleOnMovementEnded;
-
-            Animation.OnAttackAnimationEnded -= HandleOnAttackAnimationEnded;
         }
 
         private void HandleOnMovementStarted(object obj, OnMovementEventArgs e)
@@ -48,8 +44,6 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         private void HandleOnAttackAnimationEnded(object obj, EventArgs e)
         {
-            Animation.PlayIdleAnimation();
-
             // TODO: Consider enemy AI for more complex behavior. Need to add ActionEndedEvent to properly handle this
             Debug.Log($"{gameObject.name} {transform.position} is ending it's move after the attack action");
             CombatController.EndTurn();

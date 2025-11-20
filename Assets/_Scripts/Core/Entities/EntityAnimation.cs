@@ -20,16 +20,21 @@ namespace MagmaHeart.Core.Entities
         public Task PlayAttackAnimationAsync()
         {
             CurrentAnimationState = m_attackAnimationID;
+            return GetAnimationTriggerTask();
+        }
+
+        public Task GetAnimationTriggerTask()
+        {
             m_animationTrigger = new TaskCompletionSource<bool>();
             return m_animationTrigger.Task;
         }
 
         public void AnimationTrigger() => m_animationTrigger.SetResult(true);
 
-        public override void FireOnAnimationEndedEvent()
-        {
-            if (CurrentAnimationState == m_attackAnimationID)
-                OnAttackAnimationEnded?.Invoke(this, EventArgs.Empty);
-        }  
+        //public override void FireOnAnimationEndedEvent()
+        //{
+        //    if (CurrentAnimationState == m_attackAnimationID)
+        //        OnAttackAnimationEnded?.Invoke(this, EventArgs.Empty);
+        //}  
     }
 }

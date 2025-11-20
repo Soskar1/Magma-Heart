@@ -32,7 +32,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
-            m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput, gameUI.CombatUI);
+            m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput);
             m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, Animation);
             m_currentBehaviour = m_actionBehaviour;
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerCombatController : CombatController
+    public class PlayerCombatController : CombatController, IActionLockable
     {
         private readonly EnergyHUD m_energyHUD;
         private readonly CombatUI m_combatUI;
@@ -24,14 +24,21 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private bool m_canExecuteActions;
 
-        public bool CanExecuteAction
+        public bool CanExecuteActions
         {
             get => m_canExecuteActions;
             set
             {
                 m_canExecuteActions = value;
                 if (m_canExecuteActions)
+                {
                     m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+                    m_combatUI.Enable();
+                }
+                else
+                {
+                    m_combatUI.Disable();
+                }
             }
         }
 
@@ -79,7 +86,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
 
-            CanExecuteAction = true;
+            CanExecuteActions = true;
 
             return task;
         }
@@ -103,7 +110,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseChangedTile(object obj, OnMouseChangedTileEventArgs e)
         {
-            if (!CanExecuteAction)
+            if (!CanExecuteActions)
                 return;
 
             if (m_currentMouseTile != null)
@@ -129,7 +136,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
         {
-            if (m_currentAction == null || !CanExecuteAction || e.IsOverUIElement)
+            if (m_currentAction == null || !CanExecuteActions || e.IsOverUIElement)
                 return;
 
             m_currentAction.Action.Execute(m_currentAction.Args, CurrentCombatBoardState);
