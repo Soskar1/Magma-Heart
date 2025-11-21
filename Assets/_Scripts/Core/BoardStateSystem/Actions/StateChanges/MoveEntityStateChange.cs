@@ -1,6 +1,8 @@
 ﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.Properties;
+using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,6 +30,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
             UpdateBoard(simulation);
+
+            PositionPropertySnapshot position = new PositionPropertySnapshot(AStarPath.Last().ToVector3Int());
+            simulation.UpdateProperty(EntityModel, position);
         }
 
         private void UpdateBoard(BoardState boardState)
