@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
+using System;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.CombatSystem

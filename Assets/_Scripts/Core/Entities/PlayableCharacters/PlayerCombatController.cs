@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerCombatController : CombatController, IActionLockable
+    public class PlayerCombatController : CombatController
     {
         private readonly EnergyHUD m_energyHUD;
         private readonly CombatUI m_combatUI;
@@ -134,12 +134,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentMouseTile = mouseTilePosition;
         }
 
-        private void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
+        private async void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
         {
             if (m_currentAction == null || !CanExecuteActions || e.IsOverUIElement)
                 return;
 
-            m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState);
+            CanExecuteActions = false;
+            await m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState);
+            CanExecuteActions = true;
+
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
     }
