@@ -1,11 +1,12 @@
 ﻿using MagmaHeart.AI.States;
+using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
     public abstract record MagmaHeartStateChange : StateChange
     {
-        public abstract void ApplyChangeToActualState(CombatBoardState actualBoard);
+        public virtual Task ApplyChangeToActualState(CombatBoardState actualBoard) => Task.CompletedTask;
 
-        public override void ApplyChangeToActualState(ActualBoardState actualBoard) => ApplyChangeToActualState((CombatBoardState)actualBoard);
+        public override Task ApplyChangeToActualStateAsync(ActualBoardState actualBoard) => ApplyChangeToActualState((CombatBoardState)actualBoard);
     }
 }

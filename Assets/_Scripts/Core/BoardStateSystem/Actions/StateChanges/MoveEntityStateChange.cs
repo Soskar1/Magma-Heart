@@ -3,13 +3,14 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
     public record MoveEntityStateChange(EntityModel EntityModel, List<Vector2> AStarPath) : MagmaHeartStateChange
     {
-        public override void ApplyChangeToActualState(CombatBoardState actualBoard)
+        public override async Task ApplyChangeToActualState(CombatBoardState actualBoard)
         {
             List<RoomTile> roomTiles = new List<RoomTile>();
 
@@ -18,7 +19,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
                 roomTiles.Add(roomTile);
             }
 
-            actualBoard.MovementService.MoveEntity(EntityModel.Entity, roomTiles);
+            await actualBoard.MovementService.MoveEntityAsync(EntityModel.Entity, roomTiles);
             UpdateBoard(actualBoard);
         }
 

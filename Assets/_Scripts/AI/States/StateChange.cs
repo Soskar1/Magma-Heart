@@ -1,20 +1,24 @@
 using System;
+using System.Threading.Tasks;
 
 namespace MagmaHeart.AI.States
 {
     public abstract record StateChange
     {
-        internal void ApplyTo(BoardState state)
+        internal async Task ApplyToAsync(BoardState state)
         {
             if (state is SimulatedBoardState simulatedBoardState)
                 ApplyChangeToSimulation(simulatedBoardState);
             else if (state is ActualBoardState actualBoardState)
-                ApplyChangeToActualState(actualBoardState);
+                await ApplyChangeToActualStateAsync(actualBoardState);
             else
                 throw new ArgumentException($"{state.GetType()} state is not supported");
         }
 
         public abstract void ApplyChangeToSimulation(SimulatedBoardState simulation);
-        public abstract void ApplyChangeToActualState(ActualBoardState actualBoard);
+        public virtual Task ApplyChangeToActualStateAsync(ActualBoardState actualBoard)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

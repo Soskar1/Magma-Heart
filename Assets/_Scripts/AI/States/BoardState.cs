@@ -1,5 +1,6 @@
 using MagmaHeart.AI.Boards;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.AI.States
@@ -14,10 +15,10 @@ namespace MagmaHeart.AI.States
         }
 
         public abstract T GetProperty<T>(AIUnit unit) where T : PropertySnapshot;
-        public virtual void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
+        public virtual async Task ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
             foreach (StateChange change in stateChanges)
-                change.ApplyTo(this);
+                await change.ApplyToAsync(this);
         }
 
         public virtual void AddUnit(Vector2 position, AIUnit unit) => Board.AddUnit(position, unit);

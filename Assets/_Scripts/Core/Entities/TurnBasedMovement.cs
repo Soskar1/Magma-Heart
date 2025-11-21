@@ -3,6 +3,7 @@ using MagmaHeart.Core.BoardStateSystem.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -15,18 +16,16 @@ namespace MagmaHeart.Core.Entities
         private bool m_canMove = false;
         private List<RoomTile> m_currentPath = new List<RoomTile>();
 
-        public event EventHandler<OnMovementEventArgs> OnMovementStarted;
-        public event EventHandler<OnMovementEventArgs> OnMovementEnded;
-        private OnMovementEventArgs m_currentArgs;
+        private TaskCompletionSource<bool> m_movementFinished;
 
-        public void StartMovement(List<RoomTile> path)
+        public Task StartMovementAsync(List<RoomTile> path)
         {
             m_currentPath = path;
             m_targetIndex = 0;
             m_canMove = true;
 
-            m_currentArgs = new OnMovementEventArgs(path.First().Position, path.Last().Position);
-            OnMovementStarted?.Invoke(this, m_currentArgs);
+            m_movementFinished = new TaskCompletionSource<bool>();
+            return m_movementFinished.Task;
         }
 
         public void Update()
@@ -47,7 +46,7 @@ namespace MagmaHeart.Core.Entities
             if (m_targetIndex == m_currentPath.Count)
             {
                 m_canMove = false;
-                OnMovementEnded?.Invoke(this, m_currentArgs);
+                m_movementFinished.SetResult(true);
             }
         }
     }

@@ -13,14 +13,12 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_ai = ai;
         }
 
-        public override Task StartTurn()
+        public override async Task StartTurn()
         {
-            Task task = base.StartTurn();
+            base.StartTurn();
 
             BestAction action = m_ai.GetBestAction(CurrentTurnOrder, CurrentCombatBoardState);
-            action.Action.Execute(action.Args, CurrentCombatBoardState);
-
-            return task;
+            await action.Action.ExecuteAsync(action.Args, CurrentCombatBoardState);
         }
     }
 }

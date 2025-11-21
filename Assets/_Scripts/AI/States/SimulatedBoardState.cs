@@ -3,6 +3,7 @@ using MagmaHeart.AI.States.SimulationOperations;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.AI.States
@@ -29,9 +30,9 @@ namespace MagmaHeart.AI.States
             m_currentSimulationOperations = new List<SimulationOperation>();
         }
 
-        public override void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
+        public override async Task ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
-            base.ApplyStateChanges(stateChanges);
+            await base.ApplyStateChanges(stateChanges);
 
             SimulationChange change = new SimulationChange(new List<SimulationOperation>(m_currentSimulationOperations));
             m_history.Push(change);

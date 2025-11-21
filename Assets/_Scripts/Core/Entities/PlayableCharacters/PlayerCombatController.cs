@@ -64,7 +64,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
-            combatBoardState.MovementService.MoveEntity(Entity, new List<RoomTile>() { roomTile });
+            combatBoardState.MovementService.MoveEntityAsync(Entity, new List<RoomTile>() { roomTile });
         }
 
         public override void EndBattle()
@@ -139,7 +139,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentAction == null || !CanExecuteActions || e.IsOverUIElement)
                 return;
 
-            m_currentAction.Action.Execute(m_currentAction.Args, CurrentCombatBoardState);
+            m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState);
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
     }

@@ -1,14 +1,15 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
+using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
     public record ApplyDamageStateChange(EntityModel Attacker, EntityModel Target, float Damage) : MagmaHeartStateChange
     {
-        public override void ApplyChangeToActualState(CombatBoardState actualBoard)
+        public override Task ApplyChangeToActualState(CombatBoardState actualBoard)
         {
-            actualBoard.AttackService.AttackEntity(Attacker.Entity, Target.Entity, Damage);
+            return actualBoard.AttackService.AttackEntityAsync(Attacker.Entity, Target.Entity, Damage);
         }
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
