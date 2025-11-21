@@ -1,5 +1,4 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace MagmaHeart.AI.Boards.Tests
     public class BoardTests
     {
         private Board m_board;
-        private AIUnit Unit => new AIUnit(false, new TypeMap<UnitAction>());
+        private AIUnit Unit => new AIUnit(false);
 
         [SetUp]
         public void SetUp()
