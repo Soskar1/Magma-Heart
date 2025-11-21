@@ -29,7 +29,7 @@ namespace MagmaHeart.AI.States
             m_currentSimulationOperations = new List<SimulationOperation>();
         }
 
-        public override void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
+        internal override void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
             base.ApplyStateChanges(stateChanges);
 

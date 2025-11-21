@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Boards
@@ -35,7 +36,12 @@ namespace MagmaHeart.AI.Boards
             if (!m_units.ContainsKey(position))
                 return false;
 
-            return m_units[position].Remove(unit);
+            bool result = m_units[position].Remove(unit);
+            
+            if (result && !m_units[position].Any())
+                return m_units.Remove(position);
+
+            return result;
         }
 
         public bool TryGetUnits(Vector2 position, out HashSet<AIUnit> units) => m_units.TryGetValue(position, out units);

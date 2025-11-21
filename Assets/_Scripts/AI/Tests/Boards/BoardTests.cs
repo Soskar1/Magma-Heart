@@ -66,8 +66,7 @@ namespace MagmaHeart.AI.Boards.Tests
             bool result = m_board.RemoveUnit(Vector2.zero, unit);
 
             Assert.That(result, Is.True);
-            Assert.That(m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnit> units), Is.True);
-            Assert.That(units.Count, Is.EqualTo(0));
+            Assert.That(m_board.TryGetUnits(Vector2.zero, out _), Is.False);
         }
 
         [Test]

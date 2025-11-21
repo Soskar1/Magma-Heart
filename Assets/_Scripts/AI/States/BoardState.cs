@@ -1,5 +1,7 @@
 using MagmaHeart.AI.Boards;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.AI.States
@@ -14,7 +16,13 @@ namespace MagmaHeart.AI.States
         }
 
         public abstract T GetProperty<T>(AIUnit unit) where T : PropertySnapshot;
-        public virtual void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
+        internal virtual async Task ApplyStateChangesAsync(IEnumerable<StateChange> stateChanges, CancellationToken cancellationToken)
+        {
+            foreach (StateChange change in stateChanges)
+                await change.ApplyToAsync(this, cancellationToken);
+        }
+
+        internal virtual void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
             foreach (StateChange change in stateChanges)
                 change.ApplyTo(this);

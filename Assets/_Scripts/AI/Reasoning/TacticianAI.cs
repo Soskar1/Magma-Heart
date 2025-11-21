@@ -3,7 +3,6 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning

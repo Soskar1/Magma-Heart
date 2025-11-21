@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.Core
@@ -6,6 +7,8 @@ namespace MagmaHeart.Core
     public class AnimationPlayer : MonoBehaviour
     {
         public Animator Animator { get; private set; }
+
+        private TaskCompletionSource<bool> m_animationEnded;
 
         private int m_currentAnimationState;
         public int CurrentAnimationState
@@ -26,18 +29,20 @@ namespace MagmaHeart.Core
             {
                 Animator.CrossFade(CurrentAnimationState, 0, 0, 0);
 
-                FireOnAnimationEndedEvent();
+                if (m_animationEnded != null)
+                { 
+                    m_animationEnded.SetResult(true);
+                    m_animationEnded = null;
+                }
             }
         }
 
         public bool DoesCurrentAnimationEnded() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
 
-        public void IncreaseAnimationSpeed(string animationParameter, float amount)
+        public Task WaitForAnimationEnd()
         {
-            float currentAmount = Animator.GetFloat(animationParameter);
-            Animator.SetFloat(animationParameter, currentAmount + amount);
+            m_animationEnded = new TaskCompletionSource<bool>();
+            return m_animationEnded.Task;
         }
-
-        public virtual void FireOnAnimationEndedEvent() { }
     }
 }

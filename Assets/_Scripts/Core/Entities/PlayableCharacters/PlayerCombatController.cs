@@ -6,6 +6,7 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -23,15 +24,23 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private ActionSelectionResult m_currentAction;
 
         private bool m_canExecuteActions;
+        private CancellationTokenSource m_cancellationTokenSource;
 
-        public bool CanExecuteAction
+        public bool CanExecuteActions
         {
             get => m_canExecuteActions;
             set
             {
                 m_canExecuteActions = value;
                 if (m_canExecuteActions)
+                {
                     m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+                    m_combatUI.Enable();
+                }
+                else
+                {
+                    m_combatUI.Disable();
+                }
             }
         }
 
@@ -57,7 +66,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
-            combatBoardState.MovementService.MoveEntity(Entity, new List<RoomTile>() { roomTile });
+            combatBoardState.MovementService.MoveEntityAsync(Entity, new List<RoomTile>() { roomTile });
         }
 
         public override void EndBattle()
@@ -66,6 +75,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.Disable();
 
             Entity.Energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
+
+            m_cancellationTokenSource.Cancel();
         }
 
         public override Task StartTurn()
@@ -79,7 +90,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
 
-            CanExecuteAction = true;
+            CanExecuteActions = true;
 
             return task;
         }
@@ -103,7 +114,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnMouseChangedTile(object obj, OnMouseChangedTileEventArgs e)
         {
-            if (!CanExecuteAction)
+            if (!CanExecuteActions)
                 return;
 
             if (m_currentMouseTile != null)
@@ -127,12 +138,20 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentMouseTile = mouseTilePosition;
         }
 
-        private void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
+        private async void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
         {
-            if (m_currentAction == null || !CanExecuteAction || e.IsOverUIElement)
+            if (m_currentAction == null || !CanExecuteActions || e.IsOverUIElement)
                 return;
 
-            m_currentAction.Action.Execute(m_currentAction.Args, CurrentCombatBoardState);
+            m_cancellationTokenSource = new CancellationTokenSource();
+
+            CanExecuteActions = false;
+            await m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
+
+            if (m_cancellationTokenSource.IsCancellationRequested)
+                return;
+
+            CanExecuteActions = true;
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
     }

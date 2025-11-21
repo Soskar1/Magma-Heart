@@ -4,7 +4,6 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,13 +15,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         public const int ATTACK_DISTANCE = 1;
         public const int ATTACK_DAMAGE = 1;
 
-        public event EventHandler<OnAttackEventArgs> OnAttackTriggered;
-
         public AttackAction(EntityModel actionPossessor) : base(actionPossessor) { }
 
         public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<AttackActionArgs>() { new AttackActionArgs((EntityModel)unit) };
-
-        public void Hit(EntityModel entity) => entity.Health.TakeDamage(ATTACK_DAMAGE);
 
         public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => ENERGY_COST;
 
@@ -32,8 +27,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>
             {
-                new ApplyDamageStateChange(args.Target, ATTACK_DAMAGE),
-                new TriggerAttackEventStateChange()
+                new ApplyDamageStateChange(ActionPossessor, args.Target, ATTACK_DAMAGE),
             });
         }
 

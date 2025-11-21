@@ -1,23 +1,25 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    public record ApplyDamageStateChange(EntityModel Unit, float Damage) : MagmaHeartStateChange
+    public record ApplyDamageStateChange(EntityModel Attacker, EntityModel Target, float Damage) : MagmaHeartStateChange
     {
-        public override void ApplyChangeToActualState(CombatBoardState actualBoard)
+        public override Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken cancellationToken)
         {
-            Unit.Health.TakeDamage(Damage);
+            return actualBoard.AttackService.AttackEntityAsync(Attacker.Entity, Target.Entity, Damage, cancellationToken);
         }
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(Unit);
-            simulation.UpdateProperty(Unit, new HealthPropertySnapshot(Damage, health.MaxHealth));
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(Target);
+            simulation.UpdateProperty(Target, new HealthPropertySnapshot(Damage, health.MaxHealth));
 
             if (Damage <= 0)
-                simulation.UpdateProperty(Unit, new IsAlivePropertySnapshot(false));
+                simulation.UpdateProperty(Target, new IsAlivePropertySnapshot(false));
         }
     }
 }
