@@ -6,6 +6,7 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -23,6 +24,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private ActionSelectionResult m_currentAction;
 
         private bool m_canExecuteActions;
+        private CancellationTokenSource m_cancellationTokenSource;
 
         public bool CanExecuteActions
         {
@@ -73,6 +75,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.Disable();
 
             Entity.Energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
+
+            m_cancellationTokenSource.Cancel();
         }
 
         public override Task StartTurn()
@@ -139,10 +143,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             if (m_currentAction == null || !CanExecuteActions || e.IsOverUIElement)
                 return;
 
-            CanExecuteActions = false;
-            await m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState);
-            CanExecuteActions = true;
+            m_cancellationTokenSource = new CancellationTokenSource();
 
+            CanExecuteActions = false;
+            await m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
+
+            if (m_cancellationTokenSource.IsCancellationRequested)
+                return;
+
+            CanExecuteActions = true;
             m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
         }
     }

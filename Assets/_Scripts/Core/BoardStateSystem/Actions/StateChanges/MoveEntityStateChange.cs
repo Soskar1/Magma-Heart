@@ -3,6 +3,7 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -10,7 +11,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
     public record MoveEntityStateChange(EntityModel EntityModel, List<Vector2> AStarPath) : MagmaHeartStateChange
     {
-        public override async Task ApplyChangeToActualState(CombatBoardState actualBoard)
+        // TODO: handel cancellationToken.Cancel
+        public override async Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken cancellationToken)
         {
             List<RoomTile> roomTiles = new List<RoomTile>();
 

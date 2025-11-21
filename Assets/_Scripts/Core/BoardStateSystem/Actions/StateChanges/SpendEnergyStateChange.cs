@@ -1,13 +1,14 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
     public record SpendEnergyStateChange(EntityModel Unit, int EnergyToSpend) : MagmaHeartStateChange
     {
-        public override Task ApplyChangeToActualState(CombatBoardState actualBoard)
+        public override Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken token)
         {
             Unit.Energy.Spend(EnergyToSpend);
             return Task.CompletedTask;

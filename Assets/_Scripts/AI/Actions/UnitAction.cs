@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI.States;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.AI.Actions
@@ -10,10 +11,16 @@ namespace MagmaHeart.AI.Actions
 
         public UnitAction(AIUnit actionPossessor) => ActionPossessor = actionPossessor;
 
-        public async Task ExecuteAsync(ActionArgs args, BoardState boardState)
+        public async Task ExecuteAsync(ActionArgs args, BoardState boardState, CancellationToken cancellationToken)
         {
             IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
-            await boardState.ApplyStateChanges(changes);
+            await boardState.ApplyStateChangesAsync(changes, cancellationToken);
+        }
+
+        public void Execute(ActionArgs args, BoardState boardState)
+        {
+            IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
+            boardState.ApplyStateChanges(changes);
         }
 
         public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
@@ -44,7 +51,7 @@ namespace MagmaHeart.AI.Actions
     {
         public UnitAction(AIUnit actionPossessor) : base(actionPossessor) { }
 
-        public void Execute(T args, BoardState boardState) => ExecuteAsync((ActionArgs)args, boardState);
+        public async Task ExecuteAsync(T args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
 
         public abstract IEnumerable<StateChange> ProduceChanges(T args, BoardState boardState);
         public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((T)args, boardState);

@@ -3,7 +3,6 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning
@@ -37,7 +36,7 @@ namespace MagmaHeart.AI.Reasoning
                 UnitAction action = possibleSimulation.Action;
                 foreach (ActionArgs args in possibleSimulation.SimulationArgs)
                 {
-                    action.ExecuteAsync(args, simulation);
+                    action.Execute(args, simulation);
 
                     float evaluation = Minimax(simulation, unitOrder.Next, m_depth - 1, alpha, beta);
 
@@ -77,7 +76,7 @@ namespace MagmaHeart.AI.Reasoning
                     UnitAction action = possibleSimulation.Action;
                     foreach (ActionArgs args in possibleSimulation.SimulationArgs)
                     {
-                        action.ExecuteAsync(args, simulation);
+                        action.Execute(args, simulation);
                         
                         float evaluation = Minimax(simulation, units.Next, currentDepth - 1, alpha, beta);
                         
@@ -102,7 +101,7 @@ namespace MagmaHeart.AI.Reasoning
                     UnitAction action = possibleSimulation.Action;
                     foreach (ActionArgs args in possibleSimulation.SimulationArgs)
                     {
-                        action.ExecuteAsync(args, simulation);
+                        action.Execute(args, simulation);
 
                         float evaluation = Minimax(simulation, units.Next, currentDepth - 1, alpha, beta);
                         
