@@ -54,7 +54,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom = room;
             m_currentEntitiesInBattle = new Dictionary<EntityModel, Entity>() { { m_player.Model, m_player } };
 
-            for (int i = 0; i < 1; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            for (int i = 0; i < 5; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 m_currentEntitiesInBattle.Add(spawnedEntity.Model, spawnedEntity);

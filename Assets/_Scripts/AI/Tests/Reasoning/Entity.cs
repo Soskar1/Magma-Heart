@@ -1,11 +1,10 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record Entity(float Health, Vector2 Position, bool IsPlayer) : AIUnit(IsPlayer, new TypeMap<UnitAction>())
+    internal record Entity(float Health, Vector2 Position, bool IsPlayer) : AIUnit(IsPlayer)
     {
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()
         {

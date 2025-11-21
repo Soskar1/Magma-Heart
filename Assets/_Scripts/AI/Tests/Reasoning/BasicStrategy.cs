@@ -12,7 +12,7 @@ namespace MagmaHeart.AI.Reasoning
 
         public BasicStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
 
-        public override float EvaluateState(BoardState state)
+        public override float EvaluateState(SimulatedBoardState state)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER

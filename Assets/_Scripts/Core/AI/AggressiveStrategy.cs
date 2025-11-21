@@ -13,20 +13,24 @@ namespace MagmaHeart.Core.AI
 
         public AggressiveStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
 
-        public override float EvaluateState(BoardState state)
+        public override float EvaluateState(SimulatedBoardState state)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
             // 1 * (PLAYER_IS_NOT_ALIVE + AI_IS_NOT_ALIVE) + w1 * (AI_HP - PLAYER_HP) + w2 * (5 / AI_DISTANCE_TO_PLAYER)
 
             float aiHP = 0;
-            float playerHP = 0;
             float distancePoints = 0;
-            bool playerIsAlive = true;
             float playerIsNotAlivePoints = 0;
             float aiIsNotAlivePoints = -50;
             int aiNotAliveCount = 0;
+
             PositionPropertySnapshot playerPosition = state.GetProperty<PositionPropertySnapshot>(Player);
+            bool playerIsAlive = state.GetProperty<IsAlivePropertySnapshot>(Player);
+            float playerHP = state.GetProperty<HealthPropertySnapshot>(Player).CurrentHealth;
+
+            if (!playerIsAlive)
+                playerIsNotAlivePoints = 100;
 
             Func<PositionPropertySnapshot, float> getDistancePoints = (ai) =>
             {
@@ -39,41 +43,23 @@ namespace MagmaHeart.Core.AI
 
             foreach (var unit in state.Board.GetUnits())
             {
+                if (unit.IsPlayer)
+                    continue;
+
                 HealthPropertySnapshot health = state.GetProperty<HealthPropertySnapshot>(unit);
                 PositionPropertySnapshot position = state.GetProperty<PositionPropertySnapshot>(unit);
                 IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
-
-                if (unit.IsPlayer)
+                
+                if (!isAlive)
                 {
-                    playerIsAlive = isAlive;
-
-                    if (isAlive)
-                        playerHP = health.CurrentHealth;
-                    else
-                        playerIsNotAlivePoints = 100;
+                    ++aiNotAliveCount;
                 }
                 else
                 {
-                    if (!isAlive)
-                        ++aiNotAliveCount;
-                    else
-                        aiHP += health.CurrentHealth;
-                }
-            }
+                    aiHP += health.CurrentHealth;
 
-            if (playerIsAlive)
-            {
-                foreach (AIUnit aiUnit in state.Board.GetUnits())
-                {
-                    if (aiUnit.IsPlayer)
-                        continue;
-
-                    IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(aiUnit);
-                    if (!isAlive)
-                        continue;
-
-                    PositionPropertySnapshot position = state.GetProperty<PositionPropertySnapshot>(aiUnit);
-                    distancePoints += getDistancePoints(position);
+                    if (playerIsAlive)
+                        distancePoints += getDistancePoints(position);
                 }
             }
 
@@ -81,7 +67,6 @@ namespace MagmaHeart.Core.AI
                 + aiIsNotAlivePoints * aiNotAliveCount
                 + HEALTH_WEIGHT * (aiHP - playerHP)
                 + DISTANCE_WEIGHT * distancePoints;
-            return 0;
         }
     }
 }

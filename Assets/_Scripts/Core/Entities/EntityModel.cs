@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.Entities
         public EntityStats Stats => Data.Stats;
         public Entity Entity { get; init; }
 
-        public EntityModel(Entity entity, EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer, new TypeMap<MagmaHeart.AI.Actions.UnitAction>())
+        public EntityModel(Entity entity, EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
         {
             Entity = entity;
             Data = data;
@@ -26,6 +26,7 @@ namespace MagmaHeart.Core.Entities
             Health = new Health(this, Stats.MaxHealth);
             Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
 
+            PossibleActions.Add(new DoNothingAction(this));
             PossibleActions.Add(new MovementAction(this));
             PossibleActions.Add(new AttackAction(this));
         }
