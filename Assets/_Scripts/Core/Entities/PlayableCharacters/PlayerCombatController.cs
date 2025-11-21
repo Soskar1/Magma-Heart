@@ -109,6 +109,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 m_currentMouseTile = null;
             }
 
+            CanExecuteActions = false;
+
             base.EndTurn();
         }
 
