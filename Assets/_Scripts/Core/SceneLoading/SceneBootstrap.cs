@@ -42,6 +42,7 @@ namespace MagmaHeart.Core.SceneLoading
         private Battle m_battle;
         private BattleReward m_battleReward;
         private GameStateMachine m_stateMachine;
+        private CombatAI m_combatAI;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -83,16 +84,17 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
-            AggressiveStrategy strategy = new AggressiveStrategy(1, spawnedPlayer.Model);
-            CombatAI combatAI = new CombatAI(strategy);
+            AggressiveStrategy strategy = new AggressiveStrategy(2, spawnedPlayer.Model);
+            m_combatAI = new CombatAI(strategy);
 
             List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
             {
                 m_camera.TurnSwitchListener
             };
 
-            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, combatAI);
+            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
             m_battle = new Battle(spawnedPlayer, spawner, turnListeners);
+            m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
 
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_stateMachine);
@@ -170,6 +172,7 @@ namespace MagmaHeart.Core.SceneLoading
         public void OnDisable()
         {
             m_battle.Disable();
+            m_battle.OnBattleStarted -= m_combatAI.HandleOnBattleStarted;
             m_battle.OnPlayerVictory -= m_stateMachine.HandleOnPlayerVictory;
             m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
         }

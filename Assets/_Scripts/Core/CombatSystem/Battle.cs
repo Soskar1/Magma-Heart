@@ -1,6 +1,7 @@
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,14 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly Entity m_player;
         private readonly Spawner m_spawner;
-        private readonly CircularList<Entity> m_turnOrder;
         private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
 
         private Room m_currentRoom;
-        private Dictionary<EntityModel, Entity> m_currentEntitiesInBattle;
+        private Dictionary<EntityModel, CombatController> m_currentEntitiesInBattle;
+        private TurnOrder m_currentTurnOrder;
         
         public event EventHandler OnPlayerVictory;
+        public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         private event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
         private bool m_battleEnded = false;
@@ -29,8 +31,6 @@ namespace MagmaHeart.Core.CombatSystem
         {
             m_player = player;
             m_spawner = spawner;
-
-            m_turnOrder = new CircularList<Entity>();
             m_turnSwitchListeners = turnSwitchListeners;
 
             Enable();
@@ -52,30 +52,32 @@ namespace MagmaHeart.Core.CombatSystem
         {
             m_battleEnded = false;
             m_currentRoom = room;
-            m_currentEntitiesInBattle = new Dictionary<EntityModel, Entity>() { { m_player.Model, m_player } };
+            m_currentEntitiesInBattle = new Dictionary<EntityModel, CombatController>() { { m_player.Model, m_player.CombatController } };
 
             for (int i = 0; i < 5; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
-                m_currentEntitiesInBattle.Add(spawnedEntity.Model, spawnedEntity);
+                m_currentEntitiesInBattle.Add(spawnedEntity.Model, spawnedEntity.CombatController);
             }
 
-            List<Entity> entityList = m_currentEntitiesInBattle.Values.ToList();
-            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entityList);
+            List<CombatController> combatControllers = m_currentEntitiesInBattle.Values.ToList();
+            IEnumerable<CombatController> sortedCombatControllers = IniciativeRollSort.SortByRollingIniciative(combatControllers);
 
-            foreach (Entity entity in sortedEntities)
+            foreach (CombatController combatController in sortedCombatControllers)
             {
+                Entity entity = combatController.Entity;
                 entity.Health.OnDeath += HandleEntityDeath;
                 m_currentRoom.AddEntityToInspect(entity);
             }
 
-            m_turnOrder.Clear();
-            m_turnOrder.AddRange(entityList);
-
+            m_currentTurnOrder = new TurnOrder(combatControllers);
             CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
 
-            foreach (Entity entity in entityList)
-                entity.CombatController.StartBattle(combatBoardState, m_turnOrder);
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
+            OnBattleStarted?.Invoke(this, args);
+
+            foreach (CombatController controller in combatControllers)
+                controller.StartBattle(combatBoardState);
 
             await ProcessBattle();
         }
@@ -84,24 +86,20 @@ namespace MagmaHeart.Core.CombatSystem
         {
             while (!m_battleEnded)
             {
-                Entity entity = m_turnOrder.Head;
+                CombatController combatController = (CombatController)m_currentTurnOrder.Current;
 
-                Debug.Log($"{entity.gameObject.name} started it's turn");
-
-                OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
+                OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(combatController.Entity);
                 OnTurnSwitched?.Invoke(this, args);
-                await entity.CombatController.StartTurnTask();
+                await combatController.StartTurnTask();
 
-                Debug.Log($"{entity.gameObject.name} ended it's turn");
-
-                m_turnOrder.Next();
+                m_currentTurnOrder.Next();
             }
         }
 
         private void HandleEntityDeath(object obj, OnDeathEventArgs args)
         {
             EntityModel model = args.Model;
-            Entity entity = m_currentEntitiesInBattle[model];
+            CombatController combatController = m_currentEntitiesInBattle[model];
             model.Health.OnDeath -= HandleEntityDeath;
 
             if (model.IsPlayer)
@@ -110,11 +108,11 @@ namespace MagmaHeart.Core.CombatSystem
             }
             else
             {
-                m_turnOrder.Remove(entity);
+                m_currentTurnOrder.Remove(combatController);
                 m_currentEntitiesInBattle.Remove(model);
-                m_currentRoom.RemoveEntityFromRoom(entity);
+                m_currentRoom.RemoveEntityFromRoom(combatController.Entity);
 
-                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Model.IsPlayer == false);
+                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Owner.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -122,8 +120,7 @@ namespace MagmaHeart.Core.CombatSystem
                 }
             }
 
-            Debug.Log($"Entity died: {entity.gameObject.name}");
-            GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
+            GameObject.Destroy(combatController.Entity.gameObject); // TODO: Use object pool instead of destroying
         }
 
         private void End(bool isPlayerVictory)
@@ -138,13 +135,13 @@ namespace MagmaHeart.Core.CombatSystem
                 // TODO: Handle player defeat
             }
 
-            foreach (Entity entity in m_currentEntitiesInBattle.Values)
+            foreach (CombatController combatController in m_currentEntitiesInBattle.Values)
             {
-                m_currentRoom.RemoveEntityFromRoom(entity);
-                entity.CombatController.EndBattle();
+                m_currentRoom.RemoveEntityFromRoom(combatController.Entity);
+                combatController.EndBattle();
             }
 
-            m_turnOrder.Clear();
+            m_currentTurnOrder.Clear();
             m_currentEntitiesInBattle.Clear();
 
             m_battleEnded = true;

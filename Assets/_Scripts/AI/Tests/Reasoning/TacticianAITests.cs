@@ -5,16 +5,22 @@ using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class TacticianAITests
     {
-        private Entity m_player;
+        private EmptyTurnController m_player;
         private Board m_board;
         private DummyActualGameState m_state;
+
+        internal class EmptyTurnController : TurnContext
+        {
+            public EmptyTurnController(AIUnit owner) : base(owner) { }
+
+            public override IEnumerable<StateChange> ProduceStartTurnChanges() => new List<StateChange>();
+        }
 
         internal class DummyActualGameState : ActualBoardState
         {
@@ -43,19 +49,19 @@ namespace MagmaHeart.AI.Reasoning.Tests
                     graph.AddNode(new Vector2(i, j), BoardNodeType.Walkable);
 
             m_board = new Board(graph);
-            m_player = Entity(10, new Vector2(5, 5), true, m_board);
+            m_player = new EmptyTurnController(Entity(10, new Vector2(5, 5), true, m_board));
             m_state = new DummyActualGameState(m_board);
         }
 
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
-            BasicStrategy strategy = new BasicStrategy(1, m_player);
+            BasicStrategy strategy = new BasicStrategy(1, m_player.Owner);
             TacticianAI tactician = new TacticianAI(strategy);
-            Entity enemy = Entity(10, Vector2.zero, false, m_board);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { enemy, m_player };
+            EmptyTurnController enemy = new EmptyTurnController(Entity(10, Vector2.zero, false, m_board));
+            CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
-            BestAction bestAction = tactician.ChooseBestMove(circularList, m_state);
+            BestAction bestAction = tactician.ChooseBestMove(turnOrder, m_state);
 
             Assert.That(bestAction.Action, Is.TypeOf<MoveAction>());
         }
@@ -65,11 +71,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [TestCase(2)]
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            BasicStrategy strategy = new BasicStrategy(depth, m_player);
+            BasicStrategy strategy = new BasicStrategy(depth, m_player.Owner);
             TacticianAI tactician = new TacticianAI(strategy);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(10, new Vector2(5, 3), false, m_board), m_player };
+            EmptyTurnController enemy = new EmptyTurnController(Entity(10, new Vector2(5, 3), false, m_board));
+            CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
-            BestAction bestAction = tactician.ChooseBestMove(circularList, m_state);
+            BestAction bestAction = tactician.ChooseBestMove(turnOrder, m_state);
 
             Assert.That(bestAction.Action, Is.TypeOf<EngageAction>());
         }
@@ -77,11 +84,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
-            BasicStrategy strategy = new BasicStrategy(2, m_player);
+            BasicStrategy strategy = new BasicStrategy(2, m_player.Owner);
             TacticianAI tactician = new TacticianAI(strategy);
-            CircularList<AIUnit> circularList = new CircularList<AIUnit>() { Entity(1, new Vector2(4, 5), false, m_board), m_player };
+            EmptyTurnController enemy = new EmptyTurnController(Entity(1, new Vector2(4, 5), false, m_board));
+            CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
-            BestAction bestAction = tactician.ChooseBestMove(circularList, m_state);
+            BestAction bestAction = tactician.ChooseBestMove(turnOrder, m_state);
 
             Assert.That(bestAction.Action, Is.TypeOf<RunAwayAction>());
         }

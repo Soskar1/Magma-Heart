@@ -13,17 +13,15 @@ namespace MagmaHeart.Core.Entities.CombatSystem
         public Entity Entity { get; init; }
         public Room CurrentRoom => CurrentCombatBoardState.Board;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
-        protected CircularList<Entity> CurrentTurnOrder { get; private set; }
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public CombatController(Entity entity) => Entity = entity;
+        public CombatController(EntityModel model) : base(model) => Entity = model.Entity;
 
-        public virtual void StartBattle(CombatBoardState combatBoardState, CircularList<Entity> turnOrder)
+        public virtual void StartBattle(CombatBoardState combatBoardState)
         {
             CurrentCombatBoardState = combatBoardState;
-            CurrentTurnOrder = turnOrder;
         }
 
         public virtual void EndBattle()
@@ -36,7 +34,6 @@ namespace MagmaHeart.Core.Entities.CombatSystem
 
         public virtual async Task StartTurnTask()
         {
-            //Entity.Energy.Regenerate();
             m_cancellationTokenSource = new CancellationTokenSource();
             await StartTurnAsync(CurrentCombatBoardState, m_cancellationTokenSource.Token);
 

@@ -1,8 +1,4 @@
-using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.CombatSystem;
-using System;
-using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
@@ -12,7 +8,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         {
             base.Initialize(grid, false);
 
-            CombatController = new EnemyCombatController(this, ai);
+            CombatController = new EnemyCombatController(Model, ai);
         }
 
         private void Update() => Animation.PlayAnimations();

@@ -1,9 +1,9 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.AI.States.SimulationOperations;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
@@ -13,6 +13,17 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private Board m_board;
         private Entity m_entity;
         private SimulatedBoardState m_state;
+
+        internal class EmptyAction : UnitAction
+        {
+            public EmptyAction(AIUnit actionPossessor) : base(actionPossessor) { }
+
+            public override bool CanExecute(ActionArgs args, BoardState boardState) => true;
+
+            public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<ActionArgs>() { ActionArgs.Empty };
+
+            public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => new List<StateChange>();
+        }
 
         [SetUp]
         public void SetUp()
@@ -111,6 +122,25 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Assert.That(m_state.History.Count, Is.EqualTo(0));
             Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(Vector2.zero));
             Assert.That(m_state.GetProperty<Health>(player).CurrentHealth, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void Undo_AfterTwoStateChangesAndEmptyAction_DoesNotDeleteFirstActionStateChanges()
+        {
+            Entity player = new Entity(10, Vector2.up, true);
+            m_board.AddUnit(player.Position, player);
+            m_state = new SimulatedBoardState(m_board);
+            EngageAction action = new EngageAction(m_entity, 1, 1);
+            EngageActionArgs args = new EngageActionArgs(player);
+            EmptyAction emptyAction = new EmptyAction(player);
+            action.Execute(args, m_state);
+            emptyAction.Execute(ActionArgs.Empty, m_state);
+
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(1));
+            List<SimulationOperation> operations = m_state.History.Peek().Operations;
+            Assert.That(operations.Count, Is.EqualTo(4));
         }
     }
 }
