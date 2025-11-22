@@ -17,7 +17,7 @@ namespace MagmaHeart.AI.Actions
             await boardState.ApplyStateChangesAsync(changes, cancellationToken);
         }
 
-        public void Execute(ActionArgs args, BoardState boardState)
+        internal void Execute(ActionArgs args, SimulatedBoardState boardState)
         {
             IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
             boardState.ApplyStateChanges(changes);
