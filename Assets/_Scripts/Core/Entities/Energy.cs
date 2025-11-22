@@ -5,16 +5,21 @@ namespace MagmaHeart.Core.Entities
 {
     public class Energy
     {
-        private int m_maxEnergy;
-        private int m_energyRegenerationPerTurn;
+        private int m_maxEnergy; 
         private int m_currentEnergy;
-        public Action OnEnergyChanged;
+        public event Action OnEnergyChanged;
 
         public int CurrentEnergy
         {
             get => m_currentEnergy;
-            private set
+            set
             {
+                if (value < 0)
+                {
+                    Debug.LogWarning($"Energy must be positive. Tried to set: {value}");
+                    value = 0;
+                }
+
                 m_currentEnergy = value;
 
                 if (m_currentEnergy > m_maxEnergy)
@@ -24,27 +29,11 @@ namespace MagmaHeart.Core.Entities
             }
         }
 
-        public Energy(int maxEnergy, int energyRegenerationPerTurn)
+        public Energy(int maxEnergy)
         {
             m_maxEnergy = maxEnergy;
             m_currentEnergy = 0;
-            m_energyRegenerationPerTurn = energyRegenerationPerTurn;
         }
-
-        public bool HasEnough(int energyToSpent) => energyToSpent <= CurrentEnergy;
-
-        public void Spend(int amount)
-        {
-            if (!HasEnough(amount))
-            {
-                Debug.LogWarning($"Tried to spend {amount}, but entity has {CurrentEnergy}");
-                return;
-            }
-
-            CurrentEnergy -= amount;
-        }
-
-        public void Regenerate() => CurrentEnergy += m_energyRegenerationPerTurn;
 
         public void Reset() => CurrentEnergy = 0;
     }

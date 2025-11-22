@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    public record SpendEnergyStateChange(EntityModel Unit, int EnergyToSpend) : MagmaHeartStateChange
+    public record UpdateEnergyStateChange(EntityModel Unit, int NewEnergyValue) : MagmaHeartStateChange
     {
         public override Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken token)
         {
-            Unit.Energy.Spend(EnergyToSpend);
+            Unit.Energy.CurrentEnergy = NewEnergyValue;
             return Task.CompletedTask;
         }
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
             EnergyPropertySnapshot energy = simulation.GetProperty<EnergyPropertySnapshot>(Unit);
-            simulation.UpdateProperty(Unit, new EnergyPropertySnapshot(energy.CurrentEnergy - EnergyToSpend));
+            simulation.UpdateProperty(Unit, new EnergyPropertySnapshot(NewEnergyValue));
         }
     }
 }

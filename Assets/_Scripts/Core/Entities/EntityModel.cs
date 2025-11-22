@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.Entities
 
             GetCurrentTilePosition = getCurrentTilePosition;
             Health = new Health(this, Stats.MaxHealth);
-            Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Energy = new Energy(Stats.MaxEnergy);
 
             PossibleActions.Add(new DoNothingAction(this));
             PossibleActions.Add(new MovementAction(this));
