@@ -15,9 +15,9 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_ai = ai;
         }
 
-        public override async Task StartTurn()
+        public override async Task StartTurnTask()
         {
-            base.StartTurn();
+            base.StartTurnTask();
 
             m_cancellationTokenSource = new CancellationTokenSource();
 

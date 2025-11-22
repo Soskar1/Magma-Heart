@@ -79,9 +79,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_cancellationTokenSource.Cancel();
         }
 
-        public override Task StartTurn()
+        public override Task StartTurnTask()
         {
-            Task task = base.StartTurn();
+            Task task = base.StartTurnTask();
 
             m_combatUI.Show();
             m_energyHUD.Show();

@@ -90,7 +90,7 @@ namespace MagmaHeart.Core.CombatSystem
 
                 OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
                 OnTurnSwitched?.Invoke(this, args);
-                await entity.CombatController.StartTurn();
+                await entity.CombatController.StartTurnTask();
 
                 Debug.Log($"{entity.gameObject.name} ended it's turn");
 
