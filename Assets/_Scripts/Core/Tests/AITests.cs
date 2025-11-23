@@ -137,5 +137,41 @@ namespace MagmaHeart.Core.Tests
 
             Assert.That(best.Action, Is.TypeOf<DoNothingAction>());
         }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task MovementAction_OnePlayerTwoEnemiesWithLowHealth_EnemyMovesTowardsPlayer(int depth)
+        {
+            TurnContext player = AddEntity(new Vector3Int(3, 3), true, 4);
+            TurnContext enemy1 = AddEntity(new Vector3Int(1, 1), false, 1);
+            TurnContext enemy2 = AddEntity(new Vector3Int(3, 2), false, 2);
+            TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy1, player, enemy2 });
+            TacticianAI ai = await StartTurn(turnOrder, depth, player.Owner);
+
+            BestAction best = ai.ChooseBestMove(turnOrder.ToChainNode(), State);
+
+            Assert.That(best.Action, Is.TypeOf<MovementAction>());
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task MovementAction_OnePlayerTwoEnemies_EnemyMovesTowardsPlayer(int depth)
+        {
+            TurnContext player = AddEntity(new Vector3Int(2, 2), true, 5);
+            TurnContext enemy1 = AddEntity(new Vector3Int(2, 1), false, 5);
+            TurnContext enemy2 = AddEntity(new Vector3Int(0, 1), false, 2);
+            TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy2, player, enemy1});
+            TacticianAI ai = await StartTurn(turnOrder, depth, player.Owner);
+
+            BestAction best = ai.ChooseBestMove(turnOrder.ToChainNode(), State);
+
+            Assert.That(best.Action, Is.TypeOf<MovementAction>());
+        }
     }
 }
