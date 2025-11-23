@@ -5,9 +5,10 @@ namespace MagmaHeart.Core.Entities
 {
     public class Energy
     {
-        private int m_maxEnergy; 
         private int m_currentEnergy;
         public event Action OnEnergyChanged;
+
+        public int MaxEnergy { get; init; }
 
         public int CurrentEnergy
         {
@@ -22,8 +23,8 @@ namespace MagmaHeart.Core.Entities
 
                 m_currentEnergy = value;
 
-                if (m_currentEnergy > m_maxEnergy)
-                    m_currentEnergy = m_maxEnergy;
+                if (m_currentEnergy > MaxEnergy)
+                    m_currentEnergy = MaxEnergy;
 
                 OnEnergyChanged?.Invoke();
             }
@@ -31,7 +32,7 @@ namespace MagmaHeart.Core.Entities
 
         public Energy(int maxEnergy)
         {
-            m_maxEnergy = maxEnergy;
+            MaxEnergy = maxEnergy;
             m_currentEnergy = 0;
         }
 

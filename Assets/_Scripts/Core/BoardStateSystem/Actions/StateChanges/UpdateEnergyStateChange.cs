@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
             EnergyPropertySnapshot energy = simulation.GetProperty<EnergyPropertySnapshot>(Unit);
-            simulation.UpdateProperty(Unit, new EnergyPropertySnapshot(NewEnergyValue));
+            simulation.UpdateProperty(Unit, new EnergyPropertySnapshot(NewEnergyValue, energy.MaxEnergy));
         }
     }
 }
