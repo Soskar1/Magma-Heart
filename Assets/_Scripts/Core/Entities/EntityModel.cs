@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.Entities
             TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
 
             properties.Add(new HealthPropertySnapshot(Health.CurrentHealth, Health.MaxHealth));
-            properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy));
+            properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy, Energy.MaxEnergy));
             properties.Add(new PositionPropertySnapshot(GetCurrentTilePosition()));
 
             return properties;
