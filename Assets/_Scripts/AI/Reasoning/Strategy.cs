@@ -15,6 +15,6 @@ namespace MagmaHeart.AI.Reasoning
             Player = player;
         }
 
-        public abstract float EvaluateState(SimulatedBoardState gameState);
+        public abstract float EvaluateState(SimulatedBoardState boardState);
     }
 }
