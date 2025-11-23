@@ -10,18 +10,18 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         private readonly CombatAI m_ai;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public EnemyCombatController(Entity entity, CombatAI ai) : base(entity)
+        public EnemyCombatController(EntityModel model, CombatAI ai) : base(model)
         {
             m_ai = ai;
         }
 
-        public override async Task StartTurn()
+        public override async Task StartTurnTask()
         {
-            base.StartTurn();
+            base.StartTurnTask();
 
             m_cancellationTokenSource = new CancellationTokenSource();
 
-            BestAction action = m_ai.GetBestAction(CurrentTurnOrder, CurrentCombatBoardState);
+            BestAction action = m_ai.GetBestAction();
             await action.Action.ExecuteAsync(action.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
         }
 

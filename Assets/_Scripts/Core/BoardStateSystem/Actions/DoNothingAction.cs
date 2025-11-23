@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    internal class DoNothingAction : CombatAction<ActionArgs>
+    public class DoNothingAction : CombatAction<ActionArgs>
     {
         public DoNothingAction(EntityModel actionPossessor) : base(actionPossessor) { }
 

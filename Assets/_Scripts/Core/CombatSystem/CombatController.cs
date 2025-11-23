@@ -1,44 +1,57 @@
-﻿using MagmaHeart.Collections;
+﻿using MagmaHeart.AI.States;
+using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.CombatSystem
 {
-    public abstract class CombatController
+    public abstract class CombatController : TurnContext
     {
         public Entity Entity { get; init; }
         public Room CurrentRoom => CurrentCombatBoardState.Board;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
-        protected CircularList<Entity> CurrentTurnOrder { get; private set; }
-        protected MovementAction m_movementAction { get; init; }
 
         private TaskCompletionSource<bool> m_turnFinished;
+        private CancellationTokenSource m_cancellationTokenSource;
 
-        public CombatController(Entity entity)
-        {
-            Entity = entity;
-            m_movementAction = Entity.Model.PossibleActions.Get<MovementAction>();
-        }
+        public CombatController(EntityModel model) : base(model) => Entity = model.Entity;
 
-        public virtual void StartBattle(CombatBoardState combatBoardState, CircularList<Entity> turnOrder)
+        public virtual void StartBattle(CombatBoardState combatBoardState)
         {
             CurrentCombatBoardState = combatBoardState;
-            CurrentTurnOrder = turnOrder;
         }
 
         public virtual void EndBattle()
         {
             Entity.Energy.Reset();
             CurrentCombatBoardState = null;
+
+            m_cancellationTokenSource.Cancel();
         }
 
-        public virtual Task StartTurn()
+        public virtual async Task StartTurnTask()
         {
-            Entity.Energy.Regenerate();
+            m_cancellationTokenSource = new CancellationTokenSource();
+            await StartTurnAsync(CurrentCombatBoardState, m_cancellationTokenSource.Token);
+
+            if (m_cancellationTokenSource.IsCancellationRequested)
+                return;
 
             m_turnFinished = new TaskCompletionSource<bool>();
-            return m_turnFinished.Task;
+            await m_turnFinished.Task;
+        }
+
+        public override IEnumerable<StateChange> ProduceStartTurnChanges()
+        {
+            EntityModel model = (EntityModel)Owner;
+            int newEnergyValue = model.Energy.CurrentEnergy + model.Stats.EnergyRegenerationPerTurn;
+            return new List<StateChange>()
+            {
+                new UpdateEnergyStateChange(model, newEnergyValue)
+            };
         }
 
         public virtual void EndTurn()

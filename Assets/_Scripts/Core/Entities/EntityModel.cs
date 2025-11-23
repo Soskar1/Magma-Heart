@@ -13,18 +13,17 @@ namespace MagmaHeart.Core.Entities
         public Func<Vector3Int> GetCurrentTilePosition { get; init; }
         public Health Health { get; init; }
         public Energy Energy { get; init; }
-        public EntityData Data { get; init; }
-        public EntityStats Stats => Data.Stats;
+        public EntityStats Stats { get; init; }
         public Entity Entity { get; init; }
 
-        public EntityModel(Entity entity, EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
+        public EntityModel(Entity entity, EntityStats stats, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
         {
             Entity = entity;
-            Data = data;
+            Stats = stats;
 
             GetCurrentTilePosition = getCurrentTilePosition;
             Health = new Health(this, Stats.MaxHealth);
-            Energy = new Energy(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Energy = new Energy(Stats.MaxEnergy);
 
             PossibleActions.Add(new DoNothingAction(this));
             PossibleActions.Add(new MovementAction(this));

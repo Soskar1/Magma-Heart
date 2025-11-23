@@ -3,7 +3,6 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -18,7 +17,7 @@ namespace MagmaHeart.AI.Reasoning
             m_depth = m_strategy.LookAhead;
         }
 
-        public BestAction ChooseBestMove(ChainNode<AIUnit> unitOrder, ActualBoardState gameState)
+        public BestAction ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)
         {  
             SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
 
@@ -27,9 +26,7 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitOrder.Value.PossibleActions);
-
-            Debug.Log($"[ROOT] Got all possible simulations. Count: {possibleSimulations.Count}");
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Owner.PossibleActions);
 
             foreach (ActionSimulation possibleSimulation in possibleSimulations)
             {
@@ -38,7 +35,7 @@ namespace MagmaHeart.AI.Reasoning
                 {
                     action.Execute(args, simulation);
 
-                    float evaluation = Minimax(simulation, unitOrder.Next, m_depth - 1, alpha, beta);
+                    float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
 
                     simulation.Undo();
                     
@@ -55,17 +52,17 @@ namespace MagmaHeart.AI.Reasoning
             return bestAction;
         }
 
-        // TODO: Remove code duplication
-        private float Minimax(SimulatedBoardState simulation, ChainNode<AIUnit> units, int currentDepth, float alpha, float beta)
+        private float Minimax(SimulatedBoardState simulation, ChainNode<TurnContext> turns, int currentDepth, float alpha, float beta)
         {
-            AIUnit currentUnit = units.Value;
+            TurnContext currentTurnContext = turns.Value;
+            AIUnit currentUnit = currentTurnContext.Owner;
             IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
                 return m_strategy.EvaluateState(simulation);
 
+            currentTurnContext.StartTurn(simulation);
             List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit.PossibleActions);
-            Debug.Log($"[{currentDepth}] Got all possible simulations. Count: {possibleSimulations.Count}");
 
             if (!currentUnit.IsPlayer)
             {
@@ -78,7 +75,7 @@ namespace MagmaHeart.AI.Reasoning
                     {
                         action.Execute(args, simulation);
                         
-                        float evaluation = Minimax(simulation, units.Next, currentDepth - 1, alpha, beta);
+                        float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
                         
                         simulation.Undo();
                         
@@ -90,6 +87,7 @@ namespace MagmaHeart.AI.Reasoning
                     }
                 }
 
+                currentTurnContext.UndoTurn(simulation);
                 return maxEvaluation;
             }
             else
@@ -103,7 +101,7 @@ namespace MagmaHeart.AI.Reasoning
                     {
                         action.Execute(args, simulation);
 
-                        float evaluation = Minimax(simulation, units.Next, currentDepth - 1, alpha, beta);
+                        float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
                         
                         simulation.Undo();
 
@@ -115,6 +113,7 @@ namespace MagmaHeart.AI.Reasoning
                     }
                 }
 
+                currentTurnContext.UndoTurn(simulation);
                 return minEvaluation;
             }
         }

@@ -6,6 +6,8 @@ namespace MagmaHeart.Collections
 
         public ChainNode<T> Next { get; set; }
 
+        public ChainNode() { }
+
         public ChainNode(T value)
         {
             Value = value;

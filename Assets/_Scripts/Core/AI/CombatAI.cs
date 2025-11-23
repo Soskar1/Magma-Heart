@@ -1,30 +1,32 @@
-﻿using MagmaHeart.AI;
-using MagmaHeart.AI.Actions;
+﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
-using System.Collections.Generic;
-using System.Linq;
+using MagmaHeart.Core.CombatSystem;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class CombatAI
     {
         private readonly TacticianAI m_tactician;
+        private TurnOrder m_currentTurnOrder;
+        private CombatBoardState m_currentBoardState;
 
         public CombatAI(Strategy strategy) {
             m_tactician = new TacticianAI(strategy);
         }
 
-        public BestAction GetBestAction(CircularList<Entity> turnOrder, CombatBoardState combatBoardState)
+        public BestAction GetBestAction()
         {
-            List<AIUnit> units = turnOrder.Select(x => (AIUnit)x.Model).ToList();
-            CircularList<AIUnit> turnOrderToProcess = new CircularList<AIUnit>();
+            ChainNode<TurnContext> chain = m_currentTurnOrder.ToChainNode();
+            return m_tactician.ChooseBestMove(chain, m_currentBoardState);
+        }
 
-            foreach (AIUnit unit in units)
-                turnOrderToProcess.Add(unit);
-
-            return m_tactician.ChooseBestMove(turnOrderToProcess, combatBoardState);
+        public void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args)
+        {
+            m_currentTurnOrder = args.TurnOrder;
+            m_currentBoardState = args.CombatBoardState;
         }
     }
 }

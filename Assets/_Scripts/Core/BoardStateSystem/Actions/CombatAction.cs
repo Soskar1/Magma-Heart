@@ -32,7 +32,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         {
             return new List<StateChange>
             {
-                new SpendEnergyStateChange(ActionPossessor, GetEnergyCost(args, boardState))
+                new UpdateEnergyStateChange(ActionPossessor, ActionPossessor.Energy.CurrentEnergy - GetEnergyCost(args, boardState))
             };
         }
     }

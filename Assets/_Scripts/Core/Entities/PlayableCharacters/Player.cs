@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             base.Initialize(grid, true);
 
-            CombatController = new PlayerCombatController(this, gameUI, turnBasedUserInput);
+            CombatController = new PlayerCombatController(Model, gameUI, turnBasedUserInput);
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;

@@ -1,5 +1,4 @@
-﻿using MagmaHeart.Collections;
-using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Input;
@@ -44,22 +43,22 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerCombatController(Entity entity, GameUI gameUI, CombatUserInput userInput) : base(entity)
+        public PlayerCombatController(EntityModel model, GameUI gameUI, CombatUserInput userInput) : base(model)
         {
             m_energyHUD = gameUI.EnergyHUD;
             m_combatUI = gameUI.CombatUI;
             m_userInput = userInput;
 
-            m_attackAction = Entity.Model.PossibleActions.Get<AttackAction>();
-            MovementAction movementAction = Entity.Model.PossibleActions.Get<MovementAction>();
+            m_attackAction = model.PossibleActions.Get<AttackAction>();
+            MovementAction movementAction = model.PossibleActions.Get<MovementAction>();
 
             m_actionSelectorChain = new AttackActionSelector(m_attackAction);
             m_actionSelectorChain.Next = new MovementActionSelector(movementAction);
         }
 
-        public override void StartBattle(CombatBoardState combatBoardState, CircularList<Entity> turnOrder)
+        public override void StartBattle(CombatBoardState combatBoardState)
         {
-            base.StartBattle(combatBoardState, turnOrder);
+            base.StartBattle(combatBoardState);
             m_userInput.Enable();
 
             Entity.Energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
@@ -79,9 +78,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_cancellationTokenSource.Cancel();
         }
 
-        public override Task StartTurn()
+        public override Task StartTurnTask()
         {
-            Task task = base.StartTurn();
+            Task task = base.StartTurnTask();
 
             m_combatUI.Show();
             m_energyHUD.Show();
