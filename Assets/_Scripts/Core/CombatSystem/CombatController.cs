@@ -46,10 +46,11 @@ namespace MagmaHeart.Core.Entities.CombatSystem
 
         public override IEnumerable<StateChange> ProduceStartTurnChanges()
         {
-            int newEnergyValue = Entity.Energy.CurrentEnergy + Entity.Stats.EnergyRegenerationPerTurn;
+            EntityModel model = (EntityModel)Owner;
+            int newEnergyValue = model.Energy.CurrentEnergy + model.Stats.EnergyRegenerationPerTurn;
             return new List<StateChange>()
             {
-                new UpdateEnergyStateChange(Entity.Model, newEnergyValue)
+                new UpdateEnergyStateChange(model, newEnergyValue)
             };
         }
 

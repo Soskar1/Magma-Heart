@@ -3,7 +3,6 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -29,8 +28,6 @@ namespace MagmaHeart.AI.Reasoning
             BestAction bestAction = null;
             List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Owner.PossibleActions);
 
-            Debug.Log($"[ROOT] Got all possible simulations. Count: {possibleSimulations.Count}");
-
             foreach (ActionSimulation possibleSimulation in possibleSimulations)
             {
                 UnitAction action = possibleSimulation.Action;
@@ -55,7 +52,6 @@ namespace MagmaHeart.AI.Reasoning
             return bestAction;
         }
 
-        // TODO: Remove code duplication
         private float Minimax(SimulatedBoardState simulation, ChainNode<TurnContext> turns, int currentDepth, float alpha, float beta)
         {
             TurnContext currentTurnContext = turns.Value;
@@ -67,7 +63,6 @@ namespace MagmaHeart.AI.Reasoning
 
             currentTurnContext.StartTurn(simulation);
             List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit.PossibleActions);
-            Debug.Log($"[{currentDepth}] Got all possible simulations. Count: {possibleSimulations.Count}");
 
             if (!currentUnit.IsPlayer)
             {
