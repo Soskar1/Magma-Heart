@@ -4,6 +4,7 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
@@ -65,6 +66,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             List<Vector2> roomTiles =
                 adjacentTiles.Where(v => state.Board.Graph.ContainsNode(v) && state.Board.GetNodeType(v) == BoardNodeType.Walkable)
+                .OrderBy(t => DungeonGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
                 .ToList();
 
             foreach (Vector2 tile in roomTiles)
