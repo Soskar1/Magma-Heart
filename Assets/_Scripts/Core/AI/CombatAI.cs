@@ -3,6 +3,7 @@ using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
@@ -20,7 +21,16 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         public BestAction GetBestAction()
         {
             ChainNode<TurnContext> chain = m_currentTurnOrder.ToChainNode();
-            return m_tactician.ChooseBestMove(chain, m_currentBoardState);
+            BestAction bestAction = m_tactician.ChooseBestMove(chain, m_currentBoardState);
+
+            if (bestAction == null)
+            {
+                bestAction = new BestAction(
+                    new DoNothingAction((EntityModel)m_currentTurnOrder.Current.Owner),
+                    ActionArgs.Empty);
+            }
+
+            return bestAction;
         }
 
         public void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args)
