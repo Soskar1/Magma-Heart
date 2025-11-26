@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerCombatController : EntityTurnContext
+    public class PlayerTurnContext : EntityTurnContext
     {
         private readonly CombatUI m_combatUI;
         private readonly CombatUserInput m_userInput;
@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerCombatController(EntityModel model, GameUI gameUI, CombatUserInput userInput) : base(model)
+        public PlayerTurnContext(EntityModel model, GameUI gameUI, CombatUserInput userInput) : base(model)
         {
             m_combatUI = gameUI.CombatUI;
             m_userInput = userInput;
