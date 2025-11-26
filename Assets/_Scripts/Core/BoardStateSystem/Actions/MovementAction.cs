@@ -77,6 +77,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy).Last();
                 yield return new MovementActionArgs(source, targetTile);
+                break;
             }
         }
     }
