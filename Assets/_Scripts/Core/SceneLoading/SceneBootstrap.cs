@@ -89,7 +89,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
             {
-                m_camera.TurnSwitchListener
+                m_camera.TurnSwitchListener, m_gameUI
             };
 
             Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
@@ -129,7 +129,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<ICombatStateListener> combatStateListeners = new List<ICombatStateListener>()
             {
-                player, m_camera, m_grid, m_gameUI
+                player, m_camera, m_grid
             };
             
             CombatState combatState = new CombatState(m_battle, combatStateListeners);

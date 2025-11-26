@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.Entities
     {
         public Func<Vector3Int> GetCurrentTilePosition { get; init; }
         public HealthModel Health { get; init; }
-        public Energy Energy { get; init; }
+        public EnergyModel Energy { get; init; }
         public EntityStats Stats { get; init; }
         public Entity Entity { get; init; }
 
@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.Entities
 
             GetCurrentTilePosition = getCurrentTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
-            Energy = new Energy(Stats.MaxEnergy);
+            Energy = new EnergyModel(Stats.MaxEnergy);
 
             PossibleActions.Add(new MovementAction(this));
             PossibleActions.Add(new AttackAction(this));

@@ -1,3 +1,4 @@
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.StateMachines;
@@ -6,18 +7,16 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.UI
 {
-    public class GameUI : MonoBehaviour, ICombatStateListener
+    public class GameUI : MonoBehaviour, ITurnSwitchListener
     {
         [SerializeField] private HealthPresenter m_healthBar;
         [SerializeField] private CombatUI m_combatUI;
-        [SerializeField] private EnergyHUD m_energyHUD;
+        [SerializeField] private EnergyPresenter m_energyHUD;
         [SerializeField] private RewardUI m_rewardUI;
-
-        private List<ICombatStateListener> m_stateListeners;
 
         public HealthPresenter HealthBar => m_healthBar;
         public CombatUI CombatUI => m_combatUI;
-        public EnergyHUD EnergyHUD => m_energyHUD;
+        public EnergyPresenter EnergyHUD => m_energyHUD;
         public RewardUI RewardUI => m_rewardUI;
 
         public void Initialize(Player player)
@@ -25,21 +24,20 @@ namespace MagmaHeart.Core.UI
             m_healthBar.Initialize(player);
             m_combatUI.Initialize(player);
             m_energyHUD.Initialize(player);
-
-            m_stateListeners = new List<ICombatStateListener>()
-            { m_energyHUD, m_combatUI };
         }
 
-        public void EnterCombatState()
+        public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            foreach (ICombatStateListener listener in m_stateListeners)
-                listener.EnterCombatState();
-        }
-
-        public void ExitCombatState()
-        {
-            foreach (ICombatStateListener listener in m_stateListeners)
-                listener.ExitCombatState();
+            if (args.Entity.Model.IsPlayer)
+            {
+                m_energyHUD.Show();
+                m_combatUI.Show();
+            }
+            else
+            {
+                m_energyHUD.Hide();
+                m_combatUI.Hide();
+            }
         }
     }
 }
