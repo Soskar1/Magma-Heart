@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Entities.Properties;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
     {
         public override Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken cancellationToken)
         {
-            return actualBoard.AttackService.AttackEntityAsync(Attacker.Entity, Target.Entity, Damage, cancellationToken);
+            actualBoard.Room.TryGetEntityPresenter(Attacker, out EntityPresenter attackerEntity);
+            actualBoard.Room.TryGetEntityPresenter(Target, out EntityPresenter targetEntity);
+
+            return actualBoard.AttackService.AttackEntityAsync(attackerEntity, targetEntity, Damage, cancellationToken);
         }
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)

@@ -19,7 +19,6 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
 
         private Room m_currentRoom;
-        private Dictionary<EntityModel, EntityPresenter> m_modelToPresenter;
         private TurnOrder m_currentTurnOrder;
         
         public event EventHandler OnPlayerVictory;
@@ -53,28 +52,23 @@ namespace MagmaHeart.Core.CombatSystem
         {
             m_battleEnded = false;
             m_currentRoom = room;
-            m_modelToPresenter = new Dictionary<EntityModel, EntityPresenter>() { { m_player.Model, m_player } };
 
-            for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            m_currentRoom.AddEntityToInspect(m_player);
+            for (int i = 0; i < 1; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
-                m_modelToPresenter.Add(spawnedEntity.Model, spawnedEntity);
-            }
-
-            IEnumerable<EntityPresenter> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_modelToPresenter.Values);
-
-            foreach (EntityPresenter entity in sortedEntities)
-            {
-                m_currentRoom.AddEntityToInspect(entity);
+                m_currentRoom.AddEntityToInspect(spawnedEntity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
                 {
-                    HandleEntityOnHealthChanged(entity.Model, args);
+                    HandleEntityOnHealthChanged(spawnedEntity.Model, args);
                 });
 
-                m_healthHandlers[entity.Model] = handler;
-                entity.Health.OnHealthChanged += handler;
+                m_healthHandlers[spawnedEntity.Model] = handler;
+                spawnedEntity.Health.OnHealthChanged += handler;
             }
+
+            IEnumerable<EntityPresenter> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
             CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
@@ -93,7 +87,8 @@ namespace MagmaHeart.Core.CombatSystem
             while (!m_battleEnded)
             {
                 EntityTurnContext turnContext = (EntityTurnContext)m_currentTurnOrder.Current;
-                EntityPresenter entity = m_modelToPresenter[turnContext.TypedModel];
+
+                m_currentRoom.TryGetEntityPresenter(turnContext.TypedModel, out EntityPresenter entity);
 
                 OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
                 OnTurnSwitched?.Invoke(this, args);
@@ -111,7 +106,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
-            EntityPresenter entity = m_modelToPresenter[entityModel];
+            m_currentRoom.TryGetEntityPresenter(entityModel, out EntityPresenter entity);
 
             EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
             entityModel.Health.OnHealthChanged -= handler;
@@ -124,10 +119,9 @@ namespace MagmaHeart.Core.CombatSystem
             else
             {
                 m_currentTurnOrder.Remove(entity.TurnContext);
-                m_modelToPresenter.Remove(entityModel);
                 m_currentRoom.RemoveEntityFromRoom(entity);
 
-                bool anyEnemiesInRoom = m_modelToPresenter.Values.Any(e => e.Model.IsPlayer == false);
+                bool anyEnemiesInRoom = m_currentRoom.Models.Any(e => e.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -150,14 +144,14 @@ namespace MagmaHeart.Core.CombatSystem
                 // TODO: Handle player defeat
             }
 
-            foreach (EntityPresenter entity in m_modelToPresenter.Values)
+            List<EntityPresenter> leftEntities = m_currentRoom.Entities.ToList();
+            foreach (EntityPresenter entity in leftEntities)
             {
                 m_currentRoom.RemoveEntityFromRoom(entity);
                 entity.TurnContext.EndBattle();
             }
 
             m_currentTurnOrder.Clear();
-            m_modelToPresenter.Clear();
             m_healthHandlers.Clear();
 
             m_battleEnded = true;

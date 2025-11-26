@@ -13,16 +13,22 @@ namespace MagmaHeart.Core.BoardStateSystem
 {
     public class Room : Board
     {
-        private CombatTilemapRenderer m_renderer;
+        private readonly Dictionary<EntityModel, EntityPresenter> m_entities;
+        private readonly CombatTilemapRenderer m_renderer;
+
         public RoomTileData RoomTileData { get; init; }
         public DungeonGrid Grid { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
+
+        public IEnumerable<EntityModel> Models => m_entities.Keys;
+        public IEnumerable<EntityPresenter> Entities => m_entities.Values;
 
         public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
+            m_entities = new Dictionary<EntityModel, EntityPresenter>();
         }
 
         public void AddEntityToInspect(EntityPresenter entity)
@@ -30,6 +36,7 @@ namespace MagmaHeart.Core.BoardStateSystem
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
             AddUnit(position, entity.Model);
+            m_entities.Add(entity.Model, entity);
 
             ChangeNodeType(position, BoardNodeType.Obstacle);
         }
@@ -39,6 +46,7 @@ namespace MagmaHeart.Core.BoardStateSystem
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
             RemoveUnit(position, entity.Model);
+            m_entities.Remove(entity.Model);
 
             ChangeNodeType(position, BoardNodeType.Walkable);
         }
@@ -87,5 +95,7 @@ namespace MagmaHeart.Core.BoardStateSystem
         }
 
         public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit) => TryGetUnit(roomTile.Position.ToVector2(), out unit);
+
+        public bool TryGetEntityPresenter(EntityModel model, out EntityPresenter presenter) => m_entities.TryGetValue(model, out presenter);
     }
 }

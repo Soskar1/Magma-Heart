@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
@@ -19,11 +20,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
             List<RoomTile> roomTiles = new List<RoomTile>();
 
             foreach (Vector2 tile in AStarPath) {
-                RoomTile roomTile = actualBoard.Board.GetRoomTile(tile);
+                RoomTile roomTile = actualBoard.Room.GetRoomTile(tile);
                 roomTiles.Add(roomTile);
             }
 
-            await actualBoard.MovementService.MoveEntityAsync(EntityModel.Entity, roomTiles);
+            actualBoard.Room.TryGetEntityPresenter(EntityModel, out EntityPresenter entity);
+            await actualBoard.MovementService.MoveEntityAsync(entity, roomTiles);
             UpdateBoard(actualBoard);
         }
 

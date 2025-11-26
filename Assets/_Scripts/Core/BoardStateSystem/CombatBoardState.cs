@@ -5,13 +5,13 @@ namespace MagmaHeart.Core.BoardStateSystem
 {
     public class CombatBoardState : ActualBoardState
     {
-        public new Room Board { get; init; }
+        public Room Room { get; init; }
         public EntityMovementService MovementService { get; init; }
         public EntityAttackService AttackService { get; init; }
 
         public CombatBoardState(Room room) : base(room)
         {
-            Board = room;
+            Room = room;
             MovementService = new EntityMovementService();
             AttackService = new EntityAttackService();
         }

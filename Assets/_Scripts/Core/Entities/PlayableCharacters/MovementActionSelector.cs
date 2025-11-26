@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             Vector2 sourceTile = m_movementAction.ActionPossessor.GetCurrentTilePosition().ToVector2();
             MovementActionArgs args = new MovementActionArgs(sourceTile, selectedTile.Position.ToVector2());
 
-            if (combatBoardState.Board.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
+            if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
             {
                 int energyCost = m_movementAction.GetEnergyCost(args, combatBoardState);
                 return new ActionSelectionResult(m_movementAction, args, energyCost);

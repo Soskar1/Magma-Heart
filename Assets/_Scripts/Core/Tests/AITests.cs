@@ -33,7 +33,7 @@ namespace MagmaHeart.Core.Tests
             return ai;
         }
 
-        private void CreateWall(Vector2 position) => State.Board.ChangeNodeType(position, BoardNodeType.Obstacle);
+        private void CreateWall(Vector2 position) => State.Room.ChangeNodeType(position, BoardNodeType.Obstacle);
 
         private void SurroundEntityWithWalls(EntityModel model)
         {

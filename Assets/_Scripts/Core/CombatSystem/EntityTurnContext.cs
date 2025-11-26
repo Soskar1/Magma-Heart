@@ -9,7 +9,7 @@ namespace MagmaHeart.Core.Entities.CombatSystem
 {
     public abstract class EntityTurnContext : TurnContext<EntityModel>
     {
-        public Room CurrentRoom => CurrentCombatBoardState.Board;
+        public Room CurrentRoom => CurrentCombatBoardState.Room;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
 
         private TaskCompletionSource<bool> m_turnFinished;

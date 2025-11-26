@@ -42,8 +42,8 @@ namespace MagmaHeart.Core.Tests
         {
             EntityStats stats = new EntityStats(maxHealth);
             EntityModel model = new EntityModel(stats, () => position, isPlayer);
-            m_state.Board.AddUnit(position.ToVector2(), model);
-            m_state.Board.ChangeNodeType(position.ToVector2(), BoardNodeType.Obstacle);
+            m_state.Room.AddUnit(position.ToVector2(), model);
+            m_state.Room.ChangeNodeType(position.ToVector2(), BoardNodeType.Obstacle);
 
             return new EnemyCombatController(model, null);
         }

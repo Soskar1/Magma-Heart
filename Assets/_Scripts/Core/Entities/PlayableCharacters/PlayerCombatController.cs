@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.CombatSystem;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.UI;
 using System;
@@ -61,7 +62,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(TypedModel.GetCurrentTilePosition());
-            combatBoardState.MovementService.MoveEntityAsync(Entity, new List<RoomTile>() { roomTile });
+            CurrentRoom.TryGetEntityPresenter(TypedModel, out EntityPresenter entity);
+            combatBoardState.MovementService.MoveEntityAsync(entity, new List<RoomTile>() { roomTile });
         }
 
         public override void EndBattle()
