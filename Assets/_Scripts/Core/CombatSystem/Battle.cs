@@ -66,7 +66,8 @@ namespace MagmaHeart.Core.CombatSystem
             foreach (CombatController combatController in sortedCombatControllers)
             {
                 Entity entity = combatController.Entity;
-                entity.Health.OnDeath += HandleEntityDeath;
+                throw new Exception("FIX THIS");
+                // entity.Health.OnDeath += HandleEntityDeath;
                 m_currentRoom.AddEntityToInspect(entity);
             }
 
@@ -100,7 +101,8 @@ namespace MagmaHeart.Core.CombatSystem
         {
             EntityModel model = args.Model;
             CombatController combatController = m_currentEntitiesInBattle[model];
-            model.Health.OnDeath -= HandleEntityDeath;
+            throw new Exception("FIX THIS");
+            // model.Health.OnDeath -= HandleEntityDeath;
 
             if (model.IsPlayer)
             {

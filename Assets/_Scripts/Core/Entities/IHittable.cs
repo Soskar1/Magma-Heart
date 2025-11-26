@@ -1,8 +1,10 @@
+using MagmaHeart.Core.Entities.Models;
+
 namespace MagmaHeart.Core.Entities
 {
     public interface IHittable
     {
-        public Health Health { get; }
+        public HealthModel Health { get; }
         public void Hit(float damage);
     }
 }

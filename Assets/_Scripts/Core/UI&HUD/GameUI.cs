@@ -1,4 +1,5 @@
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.StateMachines;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,14 +8,14 @@ namespace MagmaHeart.Core.UI
 {
     public class GameUI : MonoBehaviour, ICombatStateListener
     {
-        [SerializeField] private HealthBar m_healthBar;
+        [SerializeField] private HealthPresenter m_healthBar;
         [SerializeField] private CombatUI m_combatUI;
         [SerializeField] private EnergyHUD m_energyHUD;
         [SerializeField] private RewardUI m_rewardUI;
 
         private List<ICombatStateListener> m_stateListeners;
 
-        public HealthBar HealthBar => m_healthBar;
+        public HealthPresenter HealthBar => m_healthBar;
         public CombatUI CombatUI => m_combatUI;
         public EnergyHUD EnergyHUD => m_energyHUD;
         public RewardUI RewardUI => m_rewardUI;

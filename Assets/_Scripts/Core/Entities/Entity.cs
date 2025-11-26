@@ -1,6 +1,7 @@
 ﻿using System;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.CombatSystem;
+using MagmaHeart.Core.Entities.Models;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -14,7 +15,7 @@ namespace MagmaHeart.Core.Entities
         private DungeonGrid m_grid;
 
         public EntityModel Model { get; private set; }
-        public Health Health => Model.Health;
+        public HealthModel Health => Model.Health;
         public Energy Energy => Model.Energy;
         public EntityStats Stats => Model.Stats;
         public CombatController CombatController { get; protected set; }

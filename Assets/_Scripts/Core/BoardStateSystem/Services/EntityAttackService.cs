@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
 
             await attacker.Animation.PlayAttackAnimationAsync();
             
-            target.Health.TakeDamage(damage);
+            target.Health.CurrentHealth -= damage;
 
             if (cancellationToken.IsCancellationRequested)
                 return;

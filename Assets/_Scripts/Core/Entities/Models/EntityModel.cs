@@ -2,6 +2,7 @@ using MagmaHeart.AI;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.Properties;
 using System;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace MagmaHeart.Core.Entities
     public record EntityModel : AIUnit
     {
         public Func<Vector3Int> GetCurrentTilePosition { get; init; }
-        public Health Health { get; init; }
+        public HealthModel Health { get; init; }
         public Energy Energy { get; init; }
         public EntityStats Stats { get; init; }
         public Entity Entity { get; init; }
@@ -22,7 +23,7 @@ namespace MagmaHeart.Core.Entities
             Stats = stats;
 
             GetCurrentTilePosition = getCurrentTilePosition;
-            Health = new Health(this, Stats.MaxHealth);
+            Health = new HealthModel(Stats.MaxHealth);
             Energy = new Energy(Stats.MaxEnergy);
 
             PossibleActions.Add(new MovementAction(this));
