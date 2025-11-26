@@ -25,7 +25,6 @@ namespace MagmaHeart.Core.Entities
             Health = new Health(this, Stats.MaxHealth);
             Energy = new Energy(Stats.MaxEnergy);
 
-            PossibleActions.Add(new DoNothingAction(this));
             PossibleActions.Add(new MovementAction(this));
             PossibleActions.Add(new AttackAction(this));
         }
