@@ -9,7 +9,7 @@ namespace MagmaHeart.Core.Entities.Presenters
         {
             base.Initialize(grid, false);
 
-            CombatController = new EnemyCombatController(Model, ai);
+            TurnContext = new EnemyCombatController(Model, ai);
         }
 
         private void Update() => Animation.PlayAnimations();

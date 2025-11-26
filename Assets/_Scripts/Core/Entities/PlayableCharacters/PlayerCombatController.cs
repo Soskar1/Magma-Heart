@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerCombatController : CombatController
+    public class PlayerCombatController : EntityTurnContext
     {
         private readonly CombatUI m_combatUI;
         private readonly CombatUserInput m_userInput;
@@ -60,7 +60,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.Enable();
 
             // Move player at the center of the current standing tile
-            RoomTile roomTile = CurrentRoom.GetRoomTile(EntityPresenter.transform.position);
+            RoomTile roomTile = CurrentRoom.GetRoomTile(TypedModel.GetCurrentTilePosition());
             combatBoardState.MovementService.MoveEntityAsync(Entity, new List<RoomTile>() { roomTile });
         }
 

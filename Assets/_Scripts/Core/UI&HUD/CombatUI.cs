@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.UI
 
         public void Initialize(Player player)
         {
-            m_nextTurnButton.onClick.AddListener(player.CombatController.EndTurn);
+            m_nextTurnButton.onClick.AddListener(player.TurnContext.EndTurn);
         }
 
         public void Enable() => m_nextTurnButton.enabled = true;

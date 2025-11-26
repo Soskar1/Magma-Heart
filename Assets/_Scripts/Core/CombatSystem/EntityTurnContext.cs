@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.CombatSystem
 {
-    public abstract class CombatController : TurnContext<EntityModel>
+    public abstract class EntityTurnContext : TurnContext<EntityModel>
     {
         public Room CurrentRoom => CurrentCombatBoardState.Board;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.Entities.CombatSystem
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public CombatController(EntityModel model) : base(model) { }
+        public EntityTurnContext(EntityModel model) : base(model) { }
 
         public virtual void StartBattle(CombatBoardState combatBoardState)
         {

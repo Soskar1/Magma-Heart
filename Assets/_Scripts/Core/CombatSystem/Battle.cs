@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
 
         private Room m_currentRoom;
-        private Dictionary<EntityModel, CombatController> m_currentEntitiesInBattle;
+        private Dictionary<EntityModel, EntityPresenter> m_modelToPresenter;
         private TurnOrder m_currentTurnOrder;
         
         public event EventHandler OnPlayerVictory;
@@ -53,20 +53,18 @@ namespace MagmaHeart.Core.CombatSystem
         {
             m_battleEnded = false;
             m_currentRoom = room;
-            m_currentEntitiesInBattle = new Dictionary<EntityModel, CombatController>() { { m_player.Model, m_player.CombatController } };
+            m_modelToPresenter = new Dictionary<EntityModel, EntityPresenter>() { { m_player.Model, m_player } };
 
             for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
-                m_currentEntitiesInBattle.Add(spawnedEntity.Model, spawnedEntity.CombatController);
+                m_modelToPresenter.Add(spawnedEntity.Model, spawnedEntity);
             }
 
-            List<CombatController> combatControllers = m_currentEntitiesInBattle.Values.ToList();
-            IEnumerable<CombatController> sortedCombatControllers = IniciativeRollSort.SortByRollingIniciative(combatControllers);
+            IEnumerable<EntityPresenter> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_modelToPresenter.Values);
 
-            foreach (CombatController combatController in sortedCombatControllers)
+            foreach (EntityPresenter entity in sortedEntities)
             {
-                EntityPresenter entity = combatController.Entity;
                 m_currentRoom.AddEntityToInspect(entity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
@@ -78,14 +76,14 @@ namespace MagmaHeart.Core.CombatSystem
                 entity.Health.OnHealthChanged += handler;
             }
 
-            m_currentTurnOrder = new TurnOrder(combatControllers);
+            m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
             CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
 
             OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
             OnBattleStarted?.Invoke(this, args);
 
-            foreach (CombatController controller in combatControllers)
-                controller.StartBattle(combatBoardState);
+            foreach (EntityPresenter entity in sortedEntities)
+                entity.TurnContext.StartBattle(combatBoardState);
 
             await ProcessBattle();
         }
@@ -94,11 +92,12 @@ namespace MagmaHeart.Core.CombatSystem
         {
             while (!m_battleEnded)
             {
-                CombatController combatController = (CombatController)m_currentTurnOrder.Current;
+                EntityTurnContext turnContext = (EntityTurnContext)m_currentTurnOrder.Current;
+                EntityPresenter entity = m_modelToPresenter[turnContext.TypedModel];
 
-                OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(combatController.Entity);
+                OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
                 OnTurnSwitched?.Invoke(this, args);
-                await combatController.StartTurnTask();
+                await turnContext.StartTurnTask();
 
                 m_currentTurnOrder.Next();
             }
@@ -112,7 +111,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
-            CombatController combatController = m_currentEntitiesInBattle[entityModel];
+            EntityPresenter entity = m_modelToPresenter[entityModel];
 
             EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
             entityModel.Health.OnHealthChanged -= handler;
@@ -124,11 +123,11 @@ namespace MagmaHeart.Core.CombatSystem
             }
             else
             {
-                m_currentTurnOrder.Remove(combatController);
-                m_currentEntitiesInBattle.Remove(entityModel);
-                m_currentRoom.RemoveEntityFromRoom(combatController.Entity);
+                m_currentTurnOrder.Remove(entity.TurnContext);
+                m_modelToPresenter.Remove(entityModel);
+                m_currentRoom.RemoveEntityFromRoom(entity);
 
-                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Model.IsPlayer == false);
+                bool anyEnemiesInRoom = m_modelToPresenter.Values.Any(e => e.Model.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -136,7 +135,7 @@ namespace MagmaHeart.Core.CombatSystem
                 }
             }
 
-            GameObject.Destroy(combatController.Entity.gameObject); // TODO: Use object pool instead of destroying
+            GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
         }
 
         private void End(bool isPlayerVictory)
@@ -151,14 +150,14 @@ namespace MagmaHeart.Core.CombatSystem
                 // TODO: Handle player defeat
             }
 
-            foreach (CombatController combatController in m_currentEntitiesInBattle.Values)
+            foreach (EntityPresenter entity in m_modelToPresenter.Values)
             {
-                m_currentRoom.RemoveEntityFromRoom(combatController.Entity);
-                combatController.EndBattle();
+                m_currentRoom.RemoveEntityFromRoom(entity);
+                entity.TurnContext.EndBattle();
             }
 
             m_currentTurnOrder.Clear();
-            m_currentEntitiesInBattle.Clear();
+            m_modelToPresenter.Clear();
             m_healthHandlers.Clear();
 
             m_battleEnded = true;

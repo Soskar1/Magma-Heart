@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Entities.Presenters
         {
             base.Initialize(grid, true);
 
-            CombatController = new PlayerCombatController(Model, gameUI, turnBasedUserInput);
+            TurnContext = new PlayerCombatController(Model, gameUI, turnBasedUserInput);
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;

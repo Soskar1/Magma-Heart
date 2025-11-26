@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.Entities.Presenters
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
-        public CombatController CombatController { get; protected set; }
+        public EntityTurnContext TurnContext { get; protected set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }

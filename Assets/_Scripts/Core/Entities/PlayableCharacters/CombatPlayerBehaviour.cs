@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public CombatPlayerBehaviour(Player player, CombatUserInput userInput)
         {
-            m_combatController = (PlayerCombatController)player.CombatController;
+            m_combatController = (PlayerCombatController)player.TurnContext;
             m_userInput = userInput;
 
             m_animation = player.Animation;
