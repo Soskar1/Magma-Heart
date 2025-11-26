@@ -1,3 +1,4 @@
+using MagmaHeart.Core.CombatSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,6 +46,10 @@ namespace MagmaHeart.Core.StateMachines
             }
         }
 
-        public void HandleOnPlayerVictory(object obj, EventArgs args) => ChangeState(StateMachineStates.Reward, args);
+        public void HandleOnBattleEnded(object obj, OnBattleEndedEventArgs args)
+        {
+            if (args.IsPlayerVictory)
+                ChangeState(StateMachineStates.Reward, args);
+        }
     }
 }

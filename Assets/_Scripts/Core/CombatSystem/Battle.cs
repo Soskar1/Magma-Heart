@@ -21,8 +21,8 @@ namespace MagmaHeart.Core.CombatSystem
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
         
-        public event EventHandler OnPlayerVictory;
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
+        public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
         private event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
         private bool m_battleEnded = false;
@@ -100,7 +100,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void HandleEntityOnHealthChanged(EntityModel model, OnHealthChangedEventArgs args)
         {
-            if (args.CurrentHealth < 0)
+            if (args.CurrentHealth <= 0)
                 RemoveEntityFromConsideration(model);
         }
 
@@ -136,8 +136,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             if (isPlayerVictory)
             {
-                Debug.Log("Player won the battle!");
-                OnPlayerVictory?.Invoke(this, EventArgs.Empty);
+
             }
             else
             {
@@ -153,6 +152,9 @@ namespace MagmaHeart.Core.CombatSystem
 
             m_currentTurnOrder.Clear();
             m_healthHandlers.Clear();
+
+            OnBattleEndedEventArgs args = new OnBattleEndedEventArgs(isPlayerVictory);
+            OnBattleEnded?.Invoke(this, args);
 
             m_battleEnded = true;
         }

@@ -1,8 +1,5 @@
 using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
-using MagmaHeart.Core.StateMachines;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.UI
@@ -38,6 +35,12 @@ namespace MagmaHeart.Core.UI
                 m_energyHUD.Hide();
                 m_combatUI.Hide();
             }
+        }
+
+        public void HandleOnBattleEnded(object obj, OnBattleEndedEventArgs args)
+        {
+            m_combatUI.Hide();
+            m_energyHUD.Hide();
         }
     }
 }

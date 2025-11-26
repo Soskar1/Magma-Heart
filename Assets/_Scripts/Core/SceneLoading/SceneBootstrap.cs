@@ -146,7 +146,8 @@ namespace MagmaHeart.Core.SceneLoading
             RewardState rewardState = new RewardState(rewardStateListeners);
 
             m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
-            m_battle.OnPlayerVictory += m_stateMachine.HandleOnPlayerVictory;
+            m_battle.OnBattleEnded += m_stateMachine.HandleOnBattleEnded;
+            m_battle.OnBattleEnded += m_gameUI.HandleOnBattleEnded;
         }
 
         private void InitializeCombatSystem(RoomTileData startRoom, GameStateMachine stateMachine)
@@ -174,7 +175,8 @@ namespace MagmaHeart.Core.SceneLoading
         {
             m_battle.Disable();
             m_battle.OnBattleStarted -= m_combatAI.HandleOnBattleStarted;
-            m_battle.OnPlayerVictory -= m_stateMachine.HandleOnPlayerVictory;
+            m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
+            m_battle.OnBattleEnded -= m_gameUI.HandleOnBattleEnded;
             m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
         }
     }
