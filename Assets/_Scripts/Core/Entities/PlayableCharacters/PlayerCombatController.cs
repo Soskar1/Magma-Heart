@@ -115,12 +115,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             {
                 CurrentRoom.TryDisplayCombatTile(mouseTilePosition);
                 
-                int energyCost = Math.Min(m_currentAction.EnergyCost, Entity.Energy.CurrentEnergy);
-                Entity.Energy.PreviewCost = energyCost;
+                int energyCost = Math.Min(m_currentAction.EnergyCost, TypedModel.Energy.CurrentEnergy);
+                TypedModel.Energy.PreviewCost = energyCost;
             }
             else
             {
-                Entity.Energy.PreviewCost = 0;
+                TypedModel.Energy.PreviewCost = 0;
             }
 
             m_currentMouseTile = mouseTilePosition;

@@ -17,7 +17,6 @@ namespace MagmaHeart.Core.Entities
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
-        public EntityStats Stats => Model.Stats;
         public CombatController CombatController { get; protected set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
@@ -28,7 +27,7 @@ namespace MagmaHeart.Core.Entities
             m_grid = grid;
 
             Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
-            Model = new EntityModel(this, m_data.Stats, getCurrentTilePosition, isPlayer);
+            Model = new EntityModel(m_data.Stats, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
             Facing = GetComponent<Facing>();

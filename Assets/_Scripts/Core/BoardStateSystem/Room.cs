@@ -75,7 +75,7 @@ namespace MagmaHeart.Core.BoardStateSystem
 
         public bool TryGetUnit(Vector2 position, out EntityModel entity)
         {
-            if (!TryGetUnits(position, out HashSet<AIUnit> units))
+            if (!TryGetUnits(position, out HashSet<AIUnitModel> units))
             {
                 entity = null;
                 return false;

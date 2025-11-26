@@ -9,29 +9,29 @@ namespace MagmaHeart.AI.Boards
     {
         public BoardGraph Graph { get; init; }
 
-        private Dictionary<Vector2, HashSet<AIUnit>> m_units;
+        private Dictionary<Vector2, HashSet<AIUnitModel>> m_units;
 
         public Board(BoardGraph graph)
         {
             Graph = graph;
-            m_units = new Dictionary<Vector2, HashSet<AIUnit>>();
+            m_units = new Dictionary<Vector2, HashSet<AIUnitModel>>();
         }
 
         public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType) => Graph.ChangeNodeType(position, newNodeType);
         public BoardNodeType GetNodeType(Vector2 position) => Graph.GetNode(position).Type;
 
-        public void AddUnit(Vector2 position, AIUnit unit)
+        public void AddUnit(Vector2 position, AIUnitModel unit)
         {
             if (Graph.GetNode(position) == null)
                 throw new ArgumentException($"Node at {position} does not exist in the board graph!");
 
             if (!m_units.ContainsKey(position))
-                m_units[position] = new HashSet<AIUnit>();
+                m_units[position] = new HashSet<AIUnitModel>();
 
             m_units[position].Add(unit);
         }
 
-        public bool RemoveUnit(Vector2 position, AIUnit unit)
+        public bool RemoveUnit(Vector2 position, AIUnitModel unit)
         {
             if (!m_units.ContainsKey(position))
                 return false;
@@ -44,7 +44,7 @@ namespace MagmaHeart.AI.Boards
             return result;
         }
 
-        public bool TryGetUnits(Vector2 position, out HashSet<AIUnit> units) => m_units.TryGetValue(position, out units);
+        public bool TryGetUnits(Vector2 position, out HashSet<AIUnitModel> units) => m_units.TryGetValue(position, out units);
 
         public Board DeepCopy()
         {
@@ -52,16 +52,16 @@ namespace MagmaHeart.AI.Boards
             Board board = new Board(graph);
             
             foreach (var keyValuePair in m_units)
-                foreach (AIUnit unit in keyValuePair.Value)
+                foreach (AIUnitModel unit in keyValuePair.Value)
                     board.AddUnit(keyValuePair.Key, unit);
 
             return board;
         }
 
-        public IEnumerable<AIUnit> GetUnits()
+        public IEnumerable<AIUnitModel> GetUnits()
         {
-            foreach (HashSet<AIUnit> hashSet in m_units.Values)
-                foreach (AIUnit unit in hashSet)
+            foreach (HashSet<AIUnitModel> hashSet in m_units.Values)
+                foreach (AIUnitModel unit in hashSet)
                     yield return unit;
         }
     }

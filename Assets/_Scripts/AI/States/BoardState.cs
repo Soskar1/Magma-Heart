@@ -15,7 +15,7 @@ namespace MagmaHeart.AI.States
             Board = board;
         }
 
-        public abstract T GetProperty<T>(AIUnit unit) where T : PropertySnapshot;
+        public abstract T GetProperty<T>(AIUnitModel unit) where T : PropertySnapshot;
         internal virtual async Task ApplyStateChangesAsync(IEnumerable<StateChange> stateChanges, CancellationToken cancellationToken)
         {
             foreach (StateChange change in stateChanges)
@@ -28,8 +28,8 @@ namespace MagmaHeart.AI.States
                 change.ApplyTo(this);
         }
 
-        public virtual void AddUnit(Vector2 position, AIUnit unit) => Board.AddUnit(position, unit);
-        public virtual void RemoveUnit(Vector2 position, AIUnit unit) => Board.RemoveUnit(position, unit);
+        public virtual void AddUnit(Vector2 position, AIUnitModel unit) => Board.AddUnit(position, unit);
+        public virtual void RemoveUnit(Vector2 position, AIUnitModel unit) => Board.RemoveUnit(position, unit);
         public virtual void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType) => Board.ChangeNodeType(position, newNodeType);
     }
 }

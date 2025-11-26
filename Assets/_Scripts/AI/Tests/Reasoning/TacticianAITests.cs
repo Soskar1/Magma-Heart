@@ -17,7 +17,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         internal class EmptyTurnController : TurnContext
         {
-            public EmptyTurnController(AIUnit owner) : base(owner) { }
+            public EmptyTurnController(AIUnitModel owner) : base(owner) { }
 
             public override IEnumerable<StateChange> ProduceStartTurnChanges() => new List<StateChange>();
         }
@@ -25,7 +25,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         internal class DummyActualGameState : ActualBoardState
         {
             public DummyActualGameState(Board board) : base(board) { }
-            public override T GetProperty<T>(AIUnit unit) => throw new NotImplementedException();
+            public override T GetProperty<T>(AIUnitModel unit) => throw new NotImplementedException();
         }
 
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
@@ -56,7 +56,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
-            BasicStrategy strategy = new BasicStrategy(1, m_player.Owner);
+            BasicStrategy strategy = new BasicStrategy(1, m_player.Model);
             TacticianAI tactician = new TacticianAI(strategy);
             EmptyTurnController enemy = new EmptyTurnController(Entity(10, Vector2.zero, false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
@@ -71,7 +71,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [TestCase(2)]
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            BasicStrategy strategy = new BasicStrategy(depth, m_player.Owner);
+            BasicStrategy strategy = new BasicStrategy(depth, m_player.Model);
             TacticianAI tactician = new TacticianAI(strategy);
             EmptyTurnController enemy = new EmptyTurnController(Entity(10, new Vector2(5, 3), false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
@@ -84,7 +84,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
-            BasicStrategy strategy = new BasicStrategy(2, m_player.Owner);
+            BasicStrategy strategy = new BasicStrategy(2, m_player.Model);
             TacticianAI tactician = new TacticianAI(strategy);
             EmptyTurnController enemy = new EmptyTurnController(Entity(1, new Vector2(4, 5), false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };

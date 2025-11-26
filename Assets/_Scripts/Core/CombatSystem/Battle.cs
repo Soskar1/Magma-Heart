@@ -128,7 +128,7 @@ namespace MagmaHeart.Core.CombatSystem
                 m_currentEntitiesInBattle.Remove(entityModel);
                 m_currentRoom.RemoveEntityFromRoom(combatController.Entity);
 
-                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Owner.IsPlayer == false);
+                bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Model.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win

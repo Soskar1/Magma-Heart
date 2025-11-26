@@ -9,7 +9,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         public float m_speed;
 
-        public MoveAction(AIUnit actionPossessor, float speed) : base(actionPossessor)
+        public MoveAction(AIUnitModel actionPossessor, float speed) : base(actionPossessor)
         {
             m_speed = speed;
         }
@@ -51,7 +51,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit)
         {
             Position position = state.GetProperty<Position>(unit);
             return new List<MoveActionArgs>() { new MoveActionArgs(position.CurrentPosition) };

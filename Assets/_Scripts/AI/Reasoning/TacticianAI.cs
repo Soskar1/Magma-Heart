@@ -26,7 +26,7 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Owner.PossibleActions);
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Model.PossibleActions);
 
             foreach (ActionSimulation possibleSimulation in possibleSimulations)
             {
@@ -55,7 +55,7 @@ namespace MagmaHeart.AI.Reasoning
         private float Minimax(SimulatedBoardState simulation, ChainNode<TurnContext> turns, int currentDepth, float alpha, float beta)
         {
             TurnContext currentTurnContext = turns.Value;
-            AIUnit currentUnit = currentTurnContext.Owner;
+            AIUnitModel currentUnit = currentTurnContext.Model;
             IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)

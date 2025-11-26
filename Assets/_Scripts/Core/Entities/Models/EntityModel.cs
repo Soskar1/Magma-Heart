@@ -9,17 +9,15 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public record EntityModel : AIUnit
+    public record EntityModel : AIUnitModel
     {
         public Func<Vector3Int> GetCurrentTilePosition { get; init; }
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
         public EntityStats Stats { get; init; }
-        public Entity Entity { get; init; }
 
-        public EntityModel(Entity entity, EntityStats stats, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
+        public EntityModel(EntityStats stats, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
         {
-            Entity = entity;
             Stats = stats;
 
             GetCurrentTilePosition = getCurrentTilePosition;

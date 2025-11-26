@@ -6,6 +6,6 @@ namespace MagmaHeart.AI.States
     {
         protected ActualBoardState(Board board) : base(board) { }
 
-        public override T GetProperty<T>(AIUnit unit) => unit.GetPropertySnapshots().Get<T>();
+        public override T GetProperty<T>(AIUnitModel unit) => unit.GetPropertySnapshots().Get<T>();
     }
 }

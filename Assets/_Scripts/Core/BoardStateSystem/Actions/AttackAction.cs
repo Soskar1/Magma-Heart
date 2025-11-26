@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public AttackAction(EntityModel actionPossessor) : base(actionPossessor) { }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<AttackActionArgs>() { new AttackActionArgs((EntityModel)unit) };
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit) => new List<AttackActionArgs>() { new AttackActionArgs((EntityModel)unit) };
 
         public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => ENERGY_COST;
 

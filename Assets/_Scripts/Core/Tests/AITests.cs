@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.Tests
 {
     internal class AITests : CoreTests
     {
-        private async Task<CombatAI> StartTurn(TurnOrder turnOrder, int lookAhead, AIUnit player)
+        private async Task<CombatAI> StartTurn(TurnOrder turnOrder, int lookAhead, AIUnitModel player)
         {
             AggressiveStrategy strategy = new AggressiveStrategy(lookAhead, player);
             CombatAI ai = new CombatAI(strategy);
@@ -63,7 +63,7 @@ namespace MagmaHeart.Core.Tests
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext enemy = AddEntity(enemyPosition, false);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 
@@ -81,12 +81,12 @@ namespace MagmaHeart.Core.Tests
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext enemy = AddEntity(new Vector3Int(3, 3), false);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 
             Assert.That(best.Action, Is.TypeOf<AttackAction>());
-            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs((EntityModel)player.Owner)));
+            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs((EntityModel)player.Model)));
         }
 
         [Test]
@@ -99,12 +99,12 @@ namespace MagmaHeart.Core.Tests
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext enemy = AddEntity(new Vector3Int(3, 3), false, 1);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 
             Assert.That(best.Action, Is.TypeOf<AttackAction>());
-            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs((EntityModel)player.Owner)));
+            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs((EntityModel)player.Model)));
         }
 
         [Test]
@@ -115,10 +115,10 @@ namespace MagmaHeart.Core.Tests
         public async Task DoNothingAction_PlayerSurroundedByWalls_EnemyDoesNothing(int depth)
         {
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
-            SurroundEntityWithWalls((EntityModel)player.Owner);
+            SurroundEntityWithWalls((EntityModel)player.Model);
             TurnContext enemy = AddEntity(new Vector3Int(4, 3), false, 1);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 
@@ -134,9 +134,9 @@ namespace MagmaHeart.Core.Tests
         {
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext enemy = AddEntity(new Vector3Int(4, 3), false, 1);
-            SurroundEntityWithWalls((EntityModel)enemy.Owner);
+            SurroundEntityWithWalls((EntityModel)enemy.Model);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 
@@ -154,7 +154,7 @@ namespace MagmaHeart.Core.Tests
             TurnContext enemy1 = AddEntity(new Vector3Int(1, 1), false, 1);
             TurnContext enemy2 = AddEntity(new Vector3Int(3, 2), false, 2);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy1, player, enemy2 });
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 
@@ -172,7 +172,7 @@ namespace MagmaHeart.Core.Tests
             TurnContext enemy1 = AddEntity(new Vector3Int(2, 1), false, 5);
             TurnContext enemy2 = AddEntity(new Vector3Int(0, 1), false, 2);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy2, player, enemy1});
-            CombatAI ai = await StartTurn(turnOrder, depth, player.Owner);
+            CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
             BestAction best = ai.GetBestAction();
 

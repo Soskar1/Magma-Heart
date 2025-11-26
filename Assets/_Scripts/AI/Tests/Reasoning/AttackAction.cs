@@ -8,7 +8,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         public float Damage { get; init; }
 
-        public AttackAction(AIUnit actionPossessor, float damage) : base(actionPossessor)
+        public AttackAction(AIUnitModel actionPossessor, float damage) : base(actionPossessor)
         {
             Damage = damage;
         }
@@ -31,6 +31,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
             };
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<AttackActionArgs>() { new AttackActionArgs(unit) };
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit) => new List<AttackActionArgs>() { new AttackActionArgs(unit) };
     }
 }

@@ -17,8 +17,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void ApplyDamageStateChange_OneExecution_AppliesDamageToTargetInSimulation()
         {
-            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Owner;
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Model;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 1);
 
@@ -31,8 +31,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void ApplyDamageStateChange_TwoExecutions_AppliesDamageToTargetInSimulation()
         {
-            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Owner;
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Model;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 2);
 
@@ -46,8 +46,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void ApplyDamageStateChange_DamageIsGreaterThanTargetsCurrentHealth_SetsTargetIsAliveToFalse()
         {
-            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Owner;
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Model;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 6);
 
@@ -62,7 +62,7 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_OneExecution_UpdatesEnergyForTargetInSimulation()
         {
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(enemy, 3);
 
@@ -75,7 +75,7 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_TwoExecutions_LastExecutionIsAppliedToSimulation()
         {
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(enemy, 3);
             UpdateEnergyStateChange energyChange2 = new UpdateEnergyStateChange(enemy, 4);
@@ -90,7 +90,7 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_NewEnergyValueIsAboveMaxEnergy_SetsEnergyValueToMaxEnergy()
         {
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             int energyToSet = enemy.Energy.MaxEnergy + 1;
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(enemy, energyToSet);
@@ -104,7 +104,7 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_NewEnergyValueIsNegative_SetsEnergyValueToZero()
         {
-            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Owner;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(enemy, -1);
 
@@ -119,7 +119,7 @@ namespace MagmaHeart.Core.Tests
         {
             Vector2 initialPosition = new Vector2Int(3, 3);
             Vector2 endPosition = new Vector2Int(5, 5);
-            EntityModel enemy = (EntityModel)AddEntity(initialPosition.ToVector3Int(), false).Owner;
+            EntityModel enemy = (EntityModel)AddEntity(initialPosition.ToVector3Int(), false).Model;
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             MoveEntityStateChange moveChange = new MoveEntityStateChange(enemy, new List<Vector2>() { initialPosition, endPosition });
 
@@ -127,7 +127,7 @@ namespace MagmaHeart.Core.Tests
 
             PositionPropertySnapshot position = simulation.GetProperty<PositionPropertySnapshot>(enemy);
             Assert.That(position.Position.ToVector2(), Is.EqualTo(endPosition));
-            Assert.That(simulation.Board.TryGetUnits(endPosition, out HashSet<AIUnit> units), Is.True);
+            Assert.That(simulation.Board.TryGetUnits(endPosition, out HashSet<AIUnitModel> units), Is.True);
             Assert.That(units.Count, Is.EqualTo(1));
             Assert.That(units.First(), Is.EqualTo(enemy));
             Assert.That(simulation.Board.TryGetUnits(initialPosition, out _), Is.False);
