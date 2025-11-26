@@ -1,7 +1,7 @@
-using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.CombatSystem;
+using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,7 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly Entity m_player;
         private readonly Spawner m_spawner;
         private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
+        private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
 
         private Room m_currentRoom;
         private Dictionary<EntityModel, CombatController> m_currentEntitiesInBattle;
@@ -66,9 +67,15 @@ namespace MagmaHeart.Core.CombatSystem
             foreach (CombatController combatController in sortedCombatControllers)
             {
                 Entity entity = combatController.Entity;
-                throw new Exception("FIX THIS");
-                // entity.Health.OnDeath += HandleEntityDeath;
                 m_currentRoom.AddEntityToInspect(entity);
+
+                EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
+                {
+                    HandleEntityOnHealthChanged(entity.Model, args);
+                });
+
+                m_healthHandlers[entity.Model] = handler;
+                entity.Health.OnHealthChanged += handler;
             }
 
             m_currentTurnOrder = new TurnOrder(combatControllers);
@@ -97,21 +104,28 @@ namespace MagmaHeart.Core.CombatSystem
             }
         }
 
-        private void HandleEntityDeath(object obj, OnDeathEventArgs args)
+        private void HandleEntityOnHealthChanged(EntityModel model, OnHealthChangedEventArgs args)
         {
-            EntityModel model = args.Model;
-            CombatController combatController = m_currentEntitiesInBattle[model];
-            throw new Exception("FIX THIS");
-            // model.Health.OnDeath -= HandleEntityDeath;
+            if (args.CurrentHealth < 0)
+                RemoveEntityFromConsideration(model);
+        }
 
-            if (model.IsPlayer)
+        private void RemoveEntityFromConsideration(EntityModel entityModel)
+        {
+            CombatController combatController = m_currentEntitiesInBattle[entityModel];
+
+            EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
+            entityModel.Health.OnHealthChanged -= handler;
+            m_healthHandlers.Remove(entityModel);
+
+            if (entityModel.IsPlayer)
             {
                 End(isPlayerVictory: false);
             }
             else
             {
                 m_currentTurnOrder.Remove(combatController);
-                m_currentEntitiesInBattle.Remove(model);
+                m_currentEntitiesInBattle.Remove(entityModel);
                 m_currentRoom.RemoveEntityFromRoom(combatController.Entity);
 
                 bool anyEnemiesInRoom = m_currentEntitiesInBattle.Values.Any(e => e.Owner.IsPlayer == false);
@@ -145,6 +159,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             m_currentTurnOrder.Clear();
             m_currentEntitiesInBattle.Clear();
+            m_healthHandlers.Clear();
 
             m_battleEnded = true;
         }
