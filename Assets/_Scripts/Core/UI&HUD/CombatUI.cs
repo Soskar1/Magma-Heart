@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Entities.Presenters;
 using UnityEngine;
 using UnityEngine.UI;
 

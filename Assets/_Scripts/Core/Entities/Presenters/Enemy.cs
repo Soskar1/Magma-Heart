@@ -1,8 +1,9 @@
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
 
-namespace MagmaHeart.Core.Entities.NonPlayableCharacters
+namespace MagmaHeart.Core.Entities.Presenters
 {
-    public class Enemy : Entity
+    public class Enemy : EntityPresenter
     {
         public void Initialize(DungeonGrid grid, CombatAI ai)
         {

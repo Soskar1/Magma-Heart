@@ -2,7 +2,7 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.Presenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly Entity m_player;
+        private readonly EntityPresenter m_player;
         private readonly Spawner m_spawner;
         private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private bool m_battleEnded = false;
 
-        public Battle(Entity player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
+        public Battle(EntityPresenter player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
         {
             m_player = player;
             m_spawner = spawner;
@@ -66,7 +66,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             foreach (CombatController combatController in sortedCombatControllers)
             {
-                Entity entity = combatController.Entity;
+                EntityPresenter entity = combatController.Entity;
                 m_currentRoom.AddEntityToInspect(entity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>

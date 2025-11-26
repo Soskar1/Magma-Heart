@@ -60,7 +60,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.Enable();
 
             // Move player at the center of the current standing tile
-            RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
+            RoomTile roomTile = CurrentRoom.GetRoomTile(EntityPresenter.transform.position);
             combatBoardState.MovementService.MoveEntityAsync(Entity, new List<RoomTile>() { roomTile });
         }
 

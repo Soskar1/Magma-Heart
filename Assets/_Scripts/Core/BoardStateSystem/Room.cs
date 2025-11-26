@@ -7,6 +7,7 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
@@ -24,7 +25,7 @@ namespace MagmaHeart.Core.BoardStateSystem
             m_renderer = renderer;
         }
 
-        public void AddEntityToInspect(Entity entity)
+        public void AddEntityToInspect(EntityPresenter entity)
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
@@ -33,7 +34,7 @@ namespace MagmaHeart.Core.BoardStateSystem
             ChangeNodeType(position, BoardNodeType.Obstacle);
         }
 
-        public void RemoveEntityFromRoom(Entity entity)
+        public void RemoveEntityFromRoom(EntityPresenter entity)
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 

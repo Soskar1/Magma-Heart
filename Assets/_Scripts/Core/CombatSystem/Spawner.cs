@@ -1,6 +1,6 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
-using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Entities.Presenters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem

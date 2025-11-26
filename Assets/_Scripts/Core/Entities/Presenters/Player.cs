@@ -1,14 +1,15 @@
 using System;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.Entities.Presenters
 {
-    public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
+    public class Player : EntityPresenter, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
         private Inventory m_inventory;
         private RewardUI m_rewardUI;
