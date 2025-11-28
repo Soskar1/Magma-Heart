@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.Entities.CombatSystem
+namespace MagmaHeart.Core.Entities
 {
     public abstract class EntityTurnContext : TurnContext<EntityModel>
     {

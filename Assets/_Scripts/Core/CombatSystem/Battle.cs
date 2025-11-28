@@ -1,7 +1,7 @@
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Entities.Models;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
 using System;
 using System.Collections.Generic;

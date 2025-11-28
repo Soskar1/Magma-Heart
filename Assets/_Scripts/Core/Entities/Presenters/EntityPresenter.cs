@@ -1,6 +1,5 @@
 ﻿using System;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Entities.Models;
 using UnityEngine;
 

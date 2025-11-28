@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Entities.Presenters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.SceneLoading

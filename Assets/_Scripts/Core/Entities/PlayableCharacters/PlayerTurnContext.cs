@@ -1,9 +1,7 @@
 ﻿using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.Entities.CombatSystem;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
-using MagmaHeart.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,7 +11,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerTurnContext : EntityTurnContext
     {
-        private readonly CombatUI m_combatUI;
         private readonly CombatUserInput m_userInput;
 
         private RoomTile m_currentMouseTile;
@@ -25,6 +22,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private bool m_canExecuteActions;
         private CancellationTokenSource m_cancellationTokenSource;
 
+        public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
+
         public bool CanExecuteActions
         {
             get => m_canExecuteActions;
@@ -32,20 +31,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             {
                 m_canExecuteActions = value;
                 if (m_canExecuteActions)
-                {
                     m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
-                    m_combatUI.Enable();
-                }
-                else
-                {
-                    m_combatUI.Disable();
-                }
+
+                OnCanExecuteActionsChangedEventArgs args = new OnCanExecuteActionsChangedEventArgs(m_canExecuteActions);
+                OnCanExecuteActionsChanged?.Invoke(this, args);
             }
         }
 
-        public PlayerTurnContext(EntityModel model, GameUI gameUI, CombatUserInput userInput) : base(model)
+        public PlayerTurnContext(EntityModel model, CombatUserInput userInput) : base(model)
         {
-            m_combatUI = gameUI.CombatUI;
             m_userInput = userInput;
 
             m_attackAction = model.PossibleActions.Get<AttackAction>();

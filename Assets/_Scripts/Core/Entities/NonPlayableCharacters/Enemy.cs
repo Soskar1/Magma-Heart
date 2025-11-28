@@ -1,7 +1,7 @@
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.Presenters;
 
-namespace MagmaHeart.Core.Entities.Presenters
+namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class Enemy : EntityPresenter
     {

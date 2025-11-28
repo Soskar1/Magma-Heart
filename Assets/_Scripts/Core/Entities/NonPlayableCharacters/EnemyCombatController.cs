@@ -1,5 +1,4 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.Core.Entities.CombatSystem;
 using System.Threading;
 using System.Threading.Tasks;
 
