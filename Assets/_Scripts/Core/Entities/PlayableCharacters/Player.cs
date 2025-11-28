@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : EntityPresenter, IActionStateListener, ICombatStateListener, IRewardStateListener
+    public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
         private Inventory m_inventory;
         private RewardUI m_rewardUI;

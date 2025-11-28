@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
                 roomTiles.Add(roomTile);
             }
 
-            actualBoard.Room.TryGetEntityPresenter(EntityModel, out EntityPresenter entity);
+            actualBoard.Room.TryGetEntityPresenter(EntityModel, out Entity entity);
             await actualBoard.MovementService.MoveEntityAsync(entity, roomTiles);
             UpdateBoard(actualBoard);
         }

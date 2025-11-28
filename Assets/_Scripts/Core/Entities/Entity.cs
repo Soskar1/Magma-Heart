@@ -3,12 +3,12 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.Models;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities.Presenters
+namespace MagmaHeart.Core.Entities
 {
     [RequireComponent(typeof(TurnBasedMovement))]
     [RequireComponent(typeof(Facing))]
     [RequireComponent(typeof(EntityAnimation))]
-    public class EntityPresenter : MonoBehaviour
+    public class Entity : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
         private DungeonGrid m_grid;

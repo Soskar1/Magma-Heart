@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly EntityPresenter m_player;
+        private readonly Entity m_player;
         private readonly Spawner m_spawner;
         private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private bool m_battleEnded = false;
 
-        public Battle(EntityPresenter player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
+        public Battle(Entity player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
         {
             m_player = player;
             m_spawner = spawner;
@@ -68,7 +68,7 @@ namespace MagmaHeart.Core.CombatSystem
                 spawnedEntity.Health.OnHealthChanged += handler;
             }
 
-            IEnumerable<EntityPresenter> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
+            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
             CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
@@ -76,7 +76,7 @@ namespace MagmaHeart.Core.CombatSystem
             OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
             OnBattleStarted?.Invoke(this, args);
 
-            foreach (EntityPresenter entity in sortedEntities)
+            foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);
 
             await ProcessBattle();
@@ -88,7 +88,7 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 EntityTurnContext turnContext = (EntityTurnContext)m_currentTurnOrder.Current;
 
-                m_currentRoom.TryGetEntityPresenter(turnContext.TypedModel, out EntityPresenter entity);
+                m_currentRoom.TryGetEntityPresenter(turnContext.TypedModel, out Entity entity);
 
                 OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
                 OnTurnSwitched?.Invoke(this, args);
@@ -106,7 +106,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
-            m_currentRoom.TryGetEntityPresenter(entityModel, out EntityPresenter entity);
+            m_currentRoom.TryGetEntityPresenter(entityModel, out Entity entity);
 
             EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
             entityModel.Health.OnHealthChanged -= handler;
@@ -143,8 +143,8 @@ namespace MagmaHeart.Core.CombatSystem
                 // TODO: Handle player defeat
             }
 
-            List<EntityPresenter> leftEntities = m_currentRoom.Entities.ToList();
-            foreach (EntityPresenter entity in leftEntities)
+            List<Entity> leftEntities = m_currentRoom.Entities.ToList();
+            foreach (Entity entity in leftEntities)
             {
                 m_currentRoom.RemoveEntityFromRoom(entity);
                 entity.TurnContext.EndBattle();

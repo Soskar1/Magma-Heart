@@ -3,7 +3,7 @@ using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class Enemy : EntityPresenter
+    public class Enemy : Entity
     {
         public void Initialize(DungeonGrid grid, CombatAI ai)
         {

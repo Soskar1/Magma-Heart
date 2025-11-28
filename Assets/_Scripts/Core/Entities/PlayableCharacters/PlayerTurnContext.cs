@@ -56,7 +56,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(TypedModel.GetCurrentTilePosition());
-            CurrentRoom.TryGetEntityPresenter(TypedModel, out EntityPresenter entity);
+            CurrentRoom.TryGetEntityPresenter(TypedModel, out Entity entity);
             combatBoardState.MovementService.MoveEntityAsync(entity, new List<RoomTile>() { roomTile });
         }
 

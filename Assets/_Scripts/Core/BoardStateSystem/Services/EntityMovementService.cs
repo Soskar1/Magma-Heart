@@ -1,4 +1,4 @@
-﻿using MagmaHeart.Core.Entities.Presenters;
+﻿using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ namespace MagmaHeart.Core.BoardStateSystem
 {
     public class EntityMovementService
     {
-        public async Task MoveEntityAsync(EntityPresenter entity, List<RoomTile> aStarPath)
+        public async Task MoveEntityAsync(Entity entity, List<RoomTile> aStarPath)
         {
             Vector3Int from = aStarPath.First().Position;
             Vector3Int to = aStarPath.Last().Position;
