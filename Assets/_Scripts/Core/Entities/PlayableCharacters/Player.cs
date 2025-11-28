@@ -1,7 +1,6 @@
 using System;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
