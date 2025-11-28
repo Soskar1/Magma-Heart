@@ -1,11 +1,10 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.Core.Entities.CombatSystem;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class EnemyCombatController : CombatController
+    public class EnemyCombatController : EntityTurnContext
     {
         private readonly CombatAI m_ai;
         private CancellationTokenSource m_cancellationTokenSource;

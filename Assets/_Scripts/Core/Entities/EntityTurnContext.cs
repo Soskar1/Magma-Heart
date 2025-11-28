@@ -1,23 +1,21 @@
 ﻿using MagmaHeart.AI.States;
-using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.Entities.CombatSystem
+namespace MagmaHeart.Core.Entities
 {
-    public abstract class CombatController : TurnContext
+    public abstract class EntityTurnContext : TurnContext<EntityModel>
     {
-        public Entity Entity { get; init; }
-        public Room CurrentRoom => CurrentCombatBoardState.Board;
+        public Room CurrentRoom => CurrentCombatBoardState.Room;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public CombatController(EntityModel model) : base(model) => Entity = model.Entity;
+        public EntityTurnContext(EntityModel model) : base(model) { }
 
         public virtual void StartBattle(CombatBoardState combatBoardState)
         {
@@ -26,7 +24,7 @@ namespace MagmaHeart.Core.Entities.CombatSystem
 
         public virtual void EndBattle()
         {
-            Entity.Energy.Reset();
+            TypedModel.Energy.Reset();
             CurrentCombatBoardState = null;
 
             m_cancellationTokenSource.Cancel();
@@ -46,11 +44,10 @@ namespace MagmaHeart.Core.Entities.CombatSystem
 
         public override IEnumerable<StateChange> ProduceStartTurnChanges()
         {
-            EntityModel model = (EntityModel)Owner;
-            int newEnergyValue = model.Energy.CurrentEnergy + model.Stats.EnergyRegenerationPerTurn;
+            int newEnergyValue = TypedModel.Energy.CurrentEnergy + TypedModel.Stats.EnergyRegenerationPerTurn;
             return new List<StateChange>()
             {
-                new UpdateEnergyStateChange(model, newEnergyValue)
+                new UpdateEnergyStateChange(TypedModel, newEnergyValue)
             };
         }
 

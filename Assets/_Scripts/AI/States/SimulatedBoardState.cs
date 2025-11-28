@@ -9,7 +9,7 @@ namespace MagmaHeart.AI.States
 {
     public sealed class SimulatedBoardState : BoardState
     {
-        private readonly Dictionary<AIUnit, TypeMap<PropertySnapshot>> m_stateProperties;
+        private readonly Dictionary<AIUnitModel, TypeMap<PropertySnapshot>> m_stateProperties;
         private readonly Stack<SimulationChange> m_history;
         private readonly List<SimulationOperation> m_currentSimulationOperations;
 
@@ -17,9 +17,9 @@ namespace MagmaHeart.AI.States
 
         public SimulatedBoardState(Board board) : base(board.DeepCopy())
         {
-            m_stateProperties = new Dictionary<AIUnit, TypeMap<PropertySnapshot>>();
+            m_stateProperties = new Dictionary<AIUnitModel, TypeMap<PropertySnapshot>>();
 
-            foreach (AIUnit unit in Board.GetUnits())
+            foreach (AIUnitModel unit in Board.GetUnits())
             {
                 TypeMap<PropertySnapshot> unitProperties = unit.GetPropertySnapshots();
                 m_stateProperties[unit] = unitProperties;
@@ -57,15 +57,15 @@ namespace MagmaHeart.AI.States
             }
         }
 
-        public override T GetProperty<T>(AIUnit unit) => (T)GetProperty(unit, typeof(T));
-        private PropertySnapshot GetProperty(AIUnit unit, Type propertyType) => m_stateProperties[unit][propertyType];
-        private void WriteProperty(AIUnit unit, PropertySnapshot property)
+        public override T GetProperty<T>(AIUnitModel unit) => (T)GetProperty(unit, typeof(T));
+        private PropertySnapshot GetProperty(AIUnitModel unit, Type propertyType) => m_stateProperties[unit][propertyType];
+        private void WriteProperty(AIUnitModel unit, PropertySnapshot property)
         {
             Type propertyType = property.GetType();
             m_stateProperties[unit][propertyType] = property;
         }
 
-        public void UpdateProperty(AIUnit unit, PropertySnapshot property)
+        public void UpdateProperty(AIUnitModel unit, PropertySnapshot property)
         {
             Type propertyType = property.GetType();
             PropertySnapshot oldValue = GetProperty(unit, propertyType);
@@ -76,7 +76,7 @@ namespace MagmaHeart.AI.States
             m_currentSimulationOperations.Add(operation);
         }
 
-        public override void AddUnit(Vector2 position, AIUnit unit)
+        public override void AddUnit(Vector2 position, AIUnitModel unit)
         {
             base.AddUnit(position, unit);
 
@@ -84,7 +84,7 @@ namespace MagmaHeart.AI.States
             m_currentSimulationOperations.Add(operation);
         }
 
-        public override void RemoveUnit(Vector2 position, AIUnit unit)
+        public override void RemoveUnit(Vector2 position, AIUnitModel unit)
         {
             base.RemoveUnit(position, unit);
 

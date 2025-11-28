@@ -41,9 +41,9 @@ namespace MagmaHeart.Core.Tests
         public TurnContext AddEntity(Vector3Int position, bool isPlayer, int maxHealth = 5)
         {
             EntityStats stats = new EntityStats(maxHealth);
-            EntityModel model = new EntityModel(null, stats, () => position, isPlayer);
-            m_state.Board.AddUnit(position.ToVector2(), model);
-            m_state.Board.ChangeNodeType(position.ToVector2(), BoardNodeType.Obstacle);
+            EntityModel model = new EntityModel(stats, () => position, isPlayer);
+            m_state.Room.AddUnit(position.ToVector2(), model);
+            m_state.Room.ChangeNodeType(position.ToVector2(), BoardNodeType.Obstacle);
 
             return new EnemyCombatController(model, null);
         }

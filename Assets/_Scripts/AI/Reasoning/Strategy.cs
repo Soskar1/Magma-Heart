@@ -6,9 +6,9 @@ namespace MagmaHeart.AI.Reasoning
     {
         // public Action[] ActionsToConsider { get; init; }
         public int LookAhead { get; init; }
-        public AIUnit Player { get; init; }
+        public AIUnitModel Player { get; init; }
 
-        public Strategy(int lookAhead, AIUnit player)
+        public Strategy(int lookAhead, AIUnitModel player)
         {
             // ActionsToConsider = actionsToConsider;
             LookAhead = lookAhead;

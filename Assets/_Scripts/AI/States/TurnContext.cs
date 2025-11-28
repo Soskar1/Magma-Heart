@@ -6,9 +6,9 @@ namespace MagmaHeart.AI.States
 {
     public abstract class TurnContext
     {
-        public AIUnit Owner { get; init; }
+        public AIUnitModel Model { get; init; }
 
-        public TurnContext(AIUnit owner) => Owner = owner;
+        public TurnContext(AIUnitModel model) => Model = model;
 
         public abstract IEnumerable<StateChange> ProduceStartTurnChanges();
 
@@ -25,5 +25,12 @@ namespace MagmaHeart.AI.States
         }
 
         internal void UndoTurn(SimulatedBoardState simulatedBoardState) => simulatedBoardState.Undo();
+    }
+
+    public abstract class TurnContext<T> : TurnContext where T : AIUnitModel
+    {
+        public T TypedModel { get; init; }
+
+        protected TurnContext(T model) : base(model) => TypedModel = model;
     }
 }

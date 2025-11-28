@@ -49,7 +49,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             });
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit)
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit)
         {
             Vector2 source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position.ToVector2();
             Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position.ToVector2();

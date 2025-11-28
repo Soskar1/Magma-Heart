@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1b2f813e6936a489bf89fc4883584a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_player: {fileID: 9174482365166451569, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_player: {fileID: 1904451890846969, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
   m_cameraPrefab: {fileID: 3860478200218055625, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
   m_locationGeneratorPrefab: {fileID: 4989227748005816970, guid: 9ff23c656290fe246a4b775c1bd86bd5, type: 3}
   m_uiPrefab: {fileID: 6341758075742481958, guid: 5740d4716790e0e439d7c4b2a0139e8b, type: 3}
@@ -52,5 +52,5 @@ MonoBehaviour:
   m_teleporterPrefab: {fileID: 7001880076195291559, guid: bd596004a1ef0424ba53365e88845e9b, type: 3}
   m_combatAltarPrefab: {fileID: 8918392495559026645, guid: b4ea2020421ad15429d6d334566dcddb, type: 3}
   m_combatTilemapRendererPrefab: {fileID: 3941165013236252738, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}
-  m_enemyPrefab: {fileID: -2797457387962274250, guid: 742862497be07974a8a888e2f832ee26, type: 3}
+  m_enemyPrefab: {fileID: 5564779713819671306, guid: 742862497be07974a8a888e2f832ee26, type: 3}
   m_minDistanceFromPlayer: 2

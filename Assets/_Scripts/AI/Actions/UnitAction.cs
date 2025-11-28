@@ -7,9 +7,9 @@ namespace MagmaHeart.AI.Actions
 {
     public abstract class UnitAction
     {
-        public AIUnit ActionPossessor { get; }
+        public AIUnitModel ActionPossessor { get; }
 
-        public UnitAction(AIUnit actionPossessor) => ActionPossessor = actionPossessor;
+        public UnitAction(AIUnitModel actionPossessor) => ActionPossessor = actionPossessor;
 
         public async Task ExecuteAsync(ActionArgs args, BoardState boardState, CancellationToken cancellationToken)
         {
@@ -29,7 +29,7 @@ namespace MagmaHeart.AI.Actions
         {
             List<ActionArgs> args = new List<ActionArgs>();
 
-            foreach (AIUnit unit in state.Board.GetUnits())
+            foreach (AIUnitModel unit in state.Board.GetUnits())
             {
                 if (unit == ActionPossessor)
                     continue;
@@ -44,12 +44,12 @@ namespace MagmaHeart.AI.Actions
             return args;
         }
         
-        public abstract IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit);
+        public abstract IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit);
     }
 
     public abstract class UnitAction<T> : UnitAction where T : ActionArgs
     {
-        public UnitAction(AIUnit actionPossessor) : base(actionPossessor) { }
+        public UnitAction(AIUnitModel actionPossessor) : base(actionPossessor) { }
 
         public async Task ExecuteAsync(T args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
 

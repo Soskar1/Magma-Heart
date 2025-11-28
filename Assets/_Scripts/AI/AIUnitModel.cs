@@ -4,12 +4,12 @@ using MagmaHeart.Collections;
 
 namespace MagmaHeart.AI
 {
-    public record AIUnit
+    public record AIUnitModel
     {
         public bool IsPlayer { get; init; }
         public TypeMap<UnitAction> PossibleActions { get; init; }
 
-        public AIUnit(bool isPlayer)
+        public AIUnitModel(bool isPlayer)
         {
             IsPlayer = isPlayer;
             PossibleActions = new TypeMap<UnitAction>();

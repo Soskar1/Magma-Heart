@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
-            if (combatBoardState.Board.EntityIsOnTile(selectedTile, out EntityModel entity))
+            if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel entity))
             {
                 AttackActionArgs args = new AttackActionArgs(entity);
 

@@ -1,23 +1,22 @@
 ﻿using System;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.CombatSystem;
+using MagmaHeart.Core.Entities.Models;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities
+namespace MagmaHeart.Core.Entities.Presenters
 {
     [RequireComponent(typeof(TurnBasedMovement))]
     [RequireComponent(typeof(Facing))]
     [RequireComponent(typeof(EntityAnimation))]
-    public class Entity : MonoBehaviour
+    public class EntityPresenter : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
         private DungeonGrid m_grid;
 
         public EntityModel Model { get; private set; }
-        public Health Health => Model.Health;
-        public Energy Energy => Model.Energy;
-        public EntityStats Stats => Model.Stats;
-        public CombatController CombatController { get; protected set; }
+        public HealthModel Health => Model.Health;
+        public EnergyModel Energy => Model.Energy;
+        public EntityTurnContext TurnContext { get; protected set; }
         public TurnBasedMovement TurnBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
@@ -27,7 +26,7 @@ namespace MagmaHeart.Core.Entities
             m_grid = grid;
 
             Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
-            Model = new EntityModel(this, m_data.Stats, getCurrentTilePosition, isPlayer);
+            Model = new EntityModel(m_data.Stats, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
             Facing = GetComponent<Facing>();

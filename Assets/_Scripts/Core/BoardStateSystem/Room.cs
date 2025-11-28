@@ -7,37 +7,46 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
     public class Room : Board
     {
-        private CombatTilemapRenderer m_renderer;
+        private readonly Dictionary<EntityModel, EntityPresenter> m_entities;
+        private readonly CombatTilemapRenderer m_renderer;
+
         public RoomTileData RoomTileData { get; init; }
         public DungeonGrid Grid { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
+
+        public IEnumerable<EntityModel> Models => m_entities.Keys;
+        public IEnumerable<EntityPresenter> Entities => m_entities.Values;
 
         public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
+            m_entities = new Dictionary<EntityModel, EntityPresenter>();
         }
 
-        public void AddEntityToInspect(Entity entity)
+        public void AddEntityToInspect(EntityPresenter entity)
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
             AddUnit(position, entity.Model);
+            m_entities.Add(entity.Model, entity);
 
             ChangeNodeType(position, BoardNodeType.Obstacle);
         }
 
-        public void RemoveEntityFromRoom(Entity entity)
+        public void RemoveEntityFromRoom(EntityPresenter entity)
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
             RemoveUnit(position, entity.Model);
+            m_entities.Remove(entity.Model);
 
             ChangeNodeType(position, BoardNodeType.Walkable);
         }
@@ -75,7 +84,7 @@ namespace MagmaHeart.Core.BoardStateSystem
 
         public bool TryGetUnit(Vector2 position, out EntityModel entity)
         {
-            if (!TryGetUnits(position, out HashSet<AIUnit> units))
+            if (!TryGetUnits(position, out HashSet<AIUnitModel> units))
             {
                 entity = null;
                 return false;
@@ -86,5 +95,7 @@ namespace MagmaHeart.Core.BoardStateSystem
         }
 
         public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit) => TryGetUnit(roomTile.Position.ToVector2(), out unit);
+
+        public bool TryGetEntityPresenter(EntityModel model, out EntityPresenter presenter) => m_entities.TryGetValue(model, out presenter);
     }
 }

@@ -13,6 +13,7 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
 using System.Linq;
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -89,7 +90,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
             {
-                m_camera.TurnSwitchListener
+                m_camera.TurnSwitchListener, m_gameUI
             };
 
             Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
@@ -129,7 +130,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<ICombatStateListener> combatStateListeners = new List<ICombatStateListener>()
             {
-                player, m_camera, m_grid, m_gameUI
+                player, m_camera, m_grid
             };
             
             CombatState combatState = new CombatState(m_battle, combatStateListeners);
@@ -145,7 +146,8 @@ namespace MagmaHeart.Core.SceneLoading
             RewardState rewardState = new RewardState(rewardStateListeners);
 
             m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
-            m_battle.OnPlayerVictory += m_stateMachine.HandleOnPlayerVictory;
+            m_battle.OnBattleEnded += m_stateMachine.HandleOnBattleEnded;
+            m_battle.OnBattleEnded += m_gameUI.HandleOnBattleEnded;
         }
 
         private void InitializeCombatSystem(RoomTileData startRoom, GameStateMachine stateMachine)
@@ -173,7 +175,8 @@ namespace MagmaHeart.Core.SceneLoading
         {
             m_battle.Disable();
             m_battle.OnBattleStarted -= m_combatAI.HandleOnBattleStarted;
-            m_battle.OnPlayerVictory -= m_stateMachine.HandleOnPlayerVictory;
+            m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
+            m_battle.OnBattleEnded -= m_gameUI.HandleOnBattleEnded;
             m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
         }
     }

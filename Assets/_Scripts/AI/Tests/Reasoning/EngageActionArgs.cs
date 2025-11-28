@@ -2,5 +2,5 @@ using MagmaHeart.AI.Actions;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    public record EngageActionArgs(AIUnit Target) : ActionArgs;
+    public record EngageActionArgs(AIUnitModel Target) : ActionArgs;
 }

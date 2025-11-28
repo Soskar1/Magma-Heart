@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record MovementStateChange(AIUnit Creator, Vector2 From, Vector2 To) : StateChange
+    internal record MovementStateChange(AIUnitModel Creator, Vector2 From, Vector2 To) : StateChange
     {
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {

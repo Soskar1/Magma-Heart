@@ -10,7 +10,7 @@ namespace MagmaHeart.AI.Reasoning
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public BasicStrategy(int lookAhead, AIUnit player) : base(lookAhead, player) { }
+        public BasicStrategy(int lookAhead, AIUnitModel player) : base(lookAhead, player) { }
 
         public override float EvaluateState(SimulatedBoardState state)
         {
@@ -35,8 +35,8 @@ namespace MagmaHeart.AI.Reasoning
                 return 5 / distance;
             };
             
-            IEnumerable<AIUnit> aiUnits = state.Board.GetUnits();
-            foreach (AIUnit unit in aiUnits)
+            IEnumerable<AIUnitModel> aiUnits = state.Board.GetUnits();
+            foreach (AIUnitModel unit in aiUnits)
             {
                 Health health = state.GetProperty<Health>(unit);
                 Position position = state.GetProperty<Position>(unit);
@@ -67,7 +67,7 @@ namespace MagmaHeart.AI.Reasoning
 
             if (playerIsAlive)
             {
-                foreach (AIUnit unit in aiUnits)
+                foreach (AIUnitModel unit in aiUnits)
                 {
                     if (unit.IsPlayer)
                         continue;

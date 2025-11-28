@@ -1,6 +1,7 @@
 using System;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.Core.UI;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
+    public class Player : EntityPresenter, IActionStateListener, ICombatStateListener, IRewardStateListener
     {
         private Inventory m_inventory;
         private RewardUI m_rewardUI;
@@ -25,7 +26,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             base.Initialize(grid, true);
 
-            CombatController = new PlayerCombatController(Model, gameUI, turnBasedUserInput);
+            TurnContext = new PlayerTurnContext(Model, turnBasedUserInput);
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;

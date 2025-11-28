@@ -1,8 +1,7 @@
 ﻿using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.Entities.CombatSystem;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
-using MagmaHeart.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -10,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerCombatController : CombatController
+    public class PlayerTurnContext : EntityTurnContext
     {
-        private readonly EnergyHUD m_energyHUD;
-        private readonly CombatUI m_combatUI;
         private readonly CombatUserInput m_userInput;
 
         private RoomTile m_currentMouseTile;
@@ -25,6 +22,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private bool m_canExecuteActions;
         private CancellationTokenSource m_cancellationTokenSource;
 
+        public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
+
         public bool CanExecuteActions
         {
             get => m_canExecuteActions;
@@ -32,21 +31,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             {
                 m_canExecuteActions = value;
                 if (m_canExecuteActions)
-                {
                     m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
-                    m_combatUI.Enable();
-                }
-                else
-                {
-                    m_combatUI.Disable();
-                }
+
+                OnCanExecuteActionsChangedEventArgs args = new OnCanExecuteActionsChangedEventArgs(m_canExecuteActions);
+                OnCanExecuteActionsChanged?.Invoke(this, args);
             }
         }
 
-        public PlayerCombatController(EntityModel model, GameUI gameUI, CombatUserInput userInput) : base(model)
+        public PlayerTurnContext(EntityModel model, CombatUserInput userInput) : base(model)
         {
-            m_energyHUD = gameUI.EnergyHUD;
-            m_combatUI = gameUI.CombatUI;
             m_userInput = userInput;
 
             m_attackAction = model.PossibleActions.Get<AttackAction>();
@@ -61,11 +54,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             base.StartBattle(combatBoardState);
             m_userInput.Enable();
 
-            Entity.Energy.OnEnergyChanged += m_energyHUD.DisplayEnergy;
-
             // Move player at the center of the current standing tile
-            RoomTile roomTile = CurrentRoom.GetRoomTile(Entity.transform.position);
-            combatBoardState.MovementService.MoveEntityAsync(Entity, new List<RoomTile>() { roomTile });
+            RoomTile roomTile = CurrentRoom.GetRoomTile(TypedModel.GetCurrentTilePosition());
+            CurrentRoom.TryGetEntityPresenter(TypedModel, out EntityPresenter entity);
+            combatBoardState.MovementService.MoveEntityAsync(entity, new List<RoomTile>() { roomTile });
         }
 
         public override void EndBattle()
@@ -73,18 +65,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             base.EndBattle();
             m_userInput.Disable();
 
-            Entity.Energy.OnEnergyChanged -= m_energyHUD.DisplayEnergy;
-
             m_cancellationTokenSource.Cancel();
         }
 
         public override Task StartTurnTask()
         {
             Task task = base.StartTurnTask();
-
-            m_combatUI.Show();
-            m_energyHUD.Show();
-            m_energyHUD.DisplayEnergy();
 
             m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
@@ -96,9 +82,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public override void EndTurn()
         {
-            m_combatUI.Hide();
-            m_energyHUD.Hide();
-
             m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
             m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
 
@@ -128,12 +111,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             {
                 CurrentRoom.TryDisplayCombatTile(mouseTilePosition);
                 
-                int energyCost = Math.Min(m_currentAction.EnergyCost, Entity.Energy.CurrentEnergy);
-                m_energyHUD.DisplayEnergyPrice(energyCost);
+                int energyCost = Math.Min(m_currentAction.EnergyCost, TypedModel.Energy.CurrentEnergy);
+                TypedModel.Energy.PreviewCost = energyCost;
             }
             else
             {
-                m_energyHUD.DisplayEnergyPrice(0);
+                TypedModel.Energy.PreviewCost = 0;
             }
 
             m_currentMouseTile = mouseTilePosition;

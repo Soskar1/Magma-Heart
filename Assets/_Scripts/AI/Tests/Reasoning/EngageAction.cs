@@ -11,7 +11,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private AttackAction m_damageAction;
         private float m_speed;
 
-        public EngageAction(AIUnit actionPossessor, float damage, float speed) : base(actionPossessor)
+        public EngageAction(AIUnitModel actionPossessor, float damage, float speed) : base(actionPossessor)
         {
             m_speed = speed;
             m_moveAction = new MoveAction(actionPossessor, speed);
@@ -43,6 +43,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<EngageActionArgs>() { new EngageActionArgs(unit) };
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit) => new List<EngageActionArgs>() { new EngageActionArgs(unit) };
     }
 }

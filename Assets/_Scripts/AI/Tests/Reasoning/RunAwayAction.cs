@@ -9,7 +9,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         public float m_speed;
 
-        public RunAwayAction(AIUnit actionPossessor, float speed) : base(actionPossessor)
+        public RunAwayAction(AIUnitModel actionPossessor, float speed) : base(actionPossessor)
         {
             m_speed = speed;
         }
@@ -43,6 +43,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override bool CanExecute(RunAwayActionArgs args, BoardState gameState) => true;
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnit unit) => new List<RunAwayActionArgs>() { new RunAwayActionArgs(unit) };
+        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit) => new List<RunAwayActionArgs>() { new RunAwayActionArgs(unit) };
     }
 }

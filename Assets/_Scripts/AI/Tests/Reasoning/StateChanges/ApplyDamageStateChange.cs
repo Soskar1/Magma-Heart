@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record ApplyDamageStateChange(float Damage, AIUnit Target) : StateChange
+    internal record ApplyDamageStateChange(float Damage, AIUnitModel Target) : StateChange
     {
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {

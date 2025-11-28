@@ -1,44 +1,45 @@
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.StateMachines;
-using System.Collections.Generic;
+using MagmaHeart.Core.Entities.Presenters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.UI
 {
-    public class GameUI : MonoBehaviour, ICombatStateListener
+    public class GameUI : MonoBehaviour, ITurnSwitchListener
     {
-        [SerializeField] private HealthBar m_healthBar;
-        [SerializeField] private CombatUI m_combatUI;
-        [SerializeField] private EnergyHUD m_energyHUD;
+        [SerializeField] private HealthPresenter m_healthBar;
+        [SerializeField] private EndTurnButton m_endTurnButton;
+        [SerializeField] private EnergyPresenter m_energyHUD;
         [SerializeField] private RewardUI m_rewardUI;
 
-        private List<ICombatStateListener> m_stateListeners;
-
-        public HealthBar HealthBar => m_healthBar;
-        public CombatUI CombatUI => m_combatUI;
-        public EnergyHUD EnergyHUD => m_energyHUD;
+        public HealthPresenter HealthBar => m_healthBar;
         public RewardUI RewardUI => m_rewardUI;
 
         public void Initialize(Player player)
         {
             m_healthBar.Initialize(player);
-            m_combatUI.Initialize(player);
+            m_endTurnButton.Initialize(player);
             m_energyHUD.Initialize(player);
-
-            m_stateListeners = new List<ICombatStateListener>()
-            { m_energyHUD, m_combatUI };
         }
 
-        public void EnterCombatState()
+        public void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            foreach (ICombatStateListener listener in m_stateListeners)
-                listener.EnterCombatState();
+            if (args.Entity.Model.IsPlayer)
+            {
+                m_energyHUD.Show();
+                m_endTurnButton.Show();
+            }
+            else
+            {
+                m_energyHUD.Hide();
+                m_endTurnButton.Hide();
+            }
         }
 
-        public void ExitCombatState()
+        public void HandleOnBattleEnded(object obj, OnBattleEndedEventArgs args)
         {
-            foreach (ICombatStateListener listener in m_stateListeners)
-                listener.ExitCombatState();
+            m_endTurnButton.Hide();
+            m_energyHUD.Hide();
         }
     }
 }

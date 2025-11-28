@@ -1,4 +1,4 @@
-using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -7,13 +7,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private readonly CombatUserInput m_userInput;
         
-        private readonly PlayerCombatController m_combatController;
+        private readonly PlayerTurnContext m_combatController;
         
         private readonly EntityAnimation m_animation;
 
         public CombatPlayerBehaviour(Player player, CombatUserInput userInput)
         {
-            m_combatController = (PlayerCombatController)player.CombatController;
+            m_combatController = (PlayerTurnContext)player.TurnContext;
             m_userInput = userInput;
 
             m_animation = player.Animation;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5687144593012042129}
   - component: {fileID: 4677020682616429677}
   - component: {fileID: 8151822629687108204}
-  - component: {fileID: 9174482365166451569}
+  - component: {fileID: 1904451890846969}
   - component: {fileID: 6923697098451377377}
   - component: {fileID: 7749249598224458991}
   - component: {fileID: 6310924248195134273}
@@ -127,7 +127,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &9174482365166451569
+--- !u!114 &1904451890846969
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
