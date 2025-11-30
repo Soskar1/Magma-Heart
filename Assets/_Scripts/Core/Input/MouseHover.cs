@@ -1,15 +1,31 @@
-using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Input
 {
-    public class MouseHover : MonoBehaviour
+    public class MouseHover
     {
-        public event EventHandler OnMouseEnterEvent;
-        public event EventHandler OnMouseExitEvent;
+        private readonly UserInput m_userInput;
+        private IMouseHoverStrategy m_currentHoverStrategy;
+        private readonly ActionMouseHoverStrategy m_actionMouseHoverStrategy;
 
-        private void OnMouseEnter() => OnMouseEnterEvent?.Invoke(this, EventArgs.Empty);
+        public MouseHover(UserInput userInput)
+        {
+            m_userInput = userInput;
+            m_userInput.OnMousePositionChanged += HandleOnMousePositionChanged;
 
-        private void OnMouseExit() => OnMouseExitEvent?.Invoke(this, EventArgs.Empty);
+            m_actionMouseHoverStrategy = new ActionMouseHoverStrategy();
+            m_currentHoverStrategy = m_actionMouseHoverStrategy;
+        }
+
+        public void Disable()
+        {
+            m_userInput.OnMousePositionChanged -= HandleOnMousePositionChanged;
+        }
+
+        private void HandleOnMousePositionChanged(object obj, OnMousePositionChangedEventArgs args)
+        {
+            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(args.Position);
+            m_currentHoverStrategy.Evaluate(worldPosition);
+        }
     }
 }
