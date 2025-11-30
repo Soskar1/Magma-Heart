@@ -77,10 +77,7 @@ namespace MagmaHeart.Core.Input
             OnMouseScroll?.Invoke(this, args);
         }
 
-        private void HandleInteraction(InputAction.CallbackContext context)
-        {
-            OnInteractionKeyPressed?.Invoke(this, EventArgs.Empty);
-        }
+        private void HandleInteraction(InputAction.CallbackContext context) => OnInteractionKeyPressed?.Invoke(this, EventArgs.Empty);
 
         private void HandleMousePosition(InputAction.CallbackContext context)
         {
@@ -91,9 +88,6 @@ namespace MagmaHeart.Core.Input
             OnMousePositionChanged?.Invoke(this, args);
         }
 
-        private void HandleLeftMouseButtonClick(InputAction.CallbackContext context)
-        {
-            OnLeftMouseButtonClick?.Invoke(this, EventArgs.Empty);
-        }
+        private void HandleLeftMouseButtonClick(InputAction.CallbackContext context) => OnLeftMouseButtonClick?.Invoke(this, EventArgs.Empty);
     }
 }
