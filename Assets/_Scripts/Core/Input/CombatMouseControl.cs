@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.Input
                 uiElementEvent.OnMouseExitUIElement += HandleOnMouseExitUIElement;
             }
 
-            m_userInput.TurnBasedPlayer.MouseClick.performed += OnMouseClick;
+            // m_userInput.TurnBasedPlayer.MouseClick.performed += OnMouseClick;
         }
 
         public void Disable()
@@ -45,14 +45,11 @@ namespace MagmaHeart.Core.Input
                 uiElementEvent.OnMouseExitUIElement -= HandleOnMouseExitUIElement;
             }
 
-            m_userInput.TurnBasedPlayer.MouseClick.performed -= OnMouseClick;
+            // m_userInput.TurnBasedPlayer.MouseClick.performed -= OnMouseClick;
         }
 
         public void UpdateMousePosition()
         {
-            if (!m_userInput.TurnBasedPlayer.enabled)
-                Debug.LogWarning("Combat user input is not enabled. Cannot update mouse position.");
-
             Vector2 mouseWorldPosition = GetMouseWorldPosition();
             Vector3Int mouseOverTilePosition = m_grid.WorldToTilePosition(mouseWorldPosition);
 
@@ -79,8 +76,9 @@ namespace MagmaHeart.Core.Input
 
         private Vector2 GetMouseWorldPosition()
         {
-            Vector2 currentMousePosition = m_userInput.TurnBasedPlayer.MousePosition.ReadValue<Vector2>();
-            return Camera.main.ScreenToWorldPoint(currentMousePosition);
+            //Vector2 currentMousePosition = m_userInput.TurnBasedPlayer.MousePosition.ReadValue<Vector2>();
+            //return Camera.main.ScreenToWorldPoint(currentMousePosition);
+            return Vector2.zero;
         }
 
         private void OnMouseClick(InputAction.CallbackContext context)

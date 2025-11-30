@@ -12,10 +12,6 @@ namespace MagmaHeart.Core.Input
         
         public CombatMouseControl MouseControl { get; init; }
 
-        public Controls.TurnBasedPlayerActions TurnBasedPlayer => m_userInput.Controls.TurnBasedPlayer;
-        public Vector2 CameraMovement => TurnBasedPlayer.CameraMovement.ReadValue<Vector2>();
-        public float MouseScroll => TurnBasedPlayer.MouseScroll.ReadValue<float>();
-
         public CombatUserInput(UserInput userInput, DungeonGrid grid, List<MouseOverUIElement> uiElementEvents)
         {
             m_userInput = userInput;
@@ -24,13 +20,11 @@ namespace MagmaHeart.Core.Input
 
         public void Enable()
         {
-            TurnBasedPlayer.Enable();
             MouseControl.Enable();
         }
 
         public void Disable()
         {
-            TurnBasedPlayer.Disable();
             MouseControl.Disable();
         }
     }

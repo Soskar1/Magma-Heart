@@ -1,44 +1,66 @@
-using MagmaHeart.Core.StateMachines;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace MagmaHeart.Core.Input
 {
-    public class UserInput : IActionStateListener, ICombatStateListener
+    public class UserInput
     {
         public Controls Controls { get; private set; }
-        private Controls.ActionPlayerActions ActionPlayer => Controls.ActionPlayer;
-        private Controls.TurnBasedPlayerActions TurnBasedPlayer => Controls.TurnBasedPlayer;
+        private Controls.PlayerActions Player => Controls.Player;
         private Controls.MouseActions Mouse => Controls.Mouse;
 
         public event EventHandler<OnMovementKeyPressedEventArgs> OnMovementKeyPressed;
-        public event EventHandler<OnMouseScrollEventArgs> OnMouseScroll;
         public event EventHandler OnInteractionKeyPressed;
+        public event EventHandler<OnMouseScrollEventArgs> OnMouseScroll;
+        public event EventHandler<OnMousePositionChangedEventArgs> OnMousePositionChanged;
+        public event EventHandler OnLeftMouseButtonClick;
 
         public UserInput()
         {
             Controls = new Controls();
 
-            ActionPlayer.Move.performed += HandleMovement;
-            ActionPlayer.Move.canceled += HandleMovement;
-            ActionPlayer.Interaction.performed += HandleInteraction;
+            Player.Enable();
+            
+            Enable();
+        }
+
+        public void Enable()
+        {
+            Player.Move.performed += HandleMovement;
+            Player.Move.canceled += HandleMovement;
+            Player.Interaction.performed += HandleInteraction;
 
             Mouse.MouseScroll.performed += HandleMouseScroll;
             Mouse.MouseScroll.canceled += HandleMouseScroll;
-            ActionPlayer.Enable();
+            Mouse.MousePosition.performed += HandleMousePosition;
+            Mouse.MouseClick.performed += HandleLeftMouseButtonClick;
+
+            Controls.Enable();
             Mouse.Enable();
         }
 
-        public void Enable() => Controls.Enable();
-        public void Disable() => Controls.Disable();
+        public void Disable()
+        {
+            Player.Move.performed -= HandleMovement;
+            Player.Move.canceled -= HandleMovement;
+            Player.Interaction.performed -= HandleInteraction;
+
+            Mouse.MouseScroll.performed -= HandleMouseScroll;
+            Mouse.MouseScroll.canceled -= HandleMouseScroll;
+            Mouse.MousePosition.performed -= HandleMousePosition;
+            Mouse.MouseClick.performed -= HandleLeftMouseButtonClick;
+
+            Controls.Disable();
+            Mouse.Disable();
+        }
 
         private void HandleMovement(InputAction.CallbackContext context)
         {
             Vector2 movement = Vector2.zero;
 
             if (context.performed)
-                movement = ActionPlayer.Move.ReadValue<Vector2>();
+                movement = Player.Move.ReadValue<Vector2>();
 
             OnMovementKeyPressedEventArgs args = new OnMovementKeyPressedEventArgs(movement);
             OnMovementKeyPressed?.Invoke(this, args);
@@ -60,9 +82,18 @@ namespace MagmaHeart.Core.Input
             OnInteractionKeyPressed?.Invoke(this, EventArgs.Empty);
         }
 
-        public void EnterActionState() => ActionPlayer.Enable();
-        public void ExitActionState() => ActionPlayer.Disable();
-        public void EnterCombatState() => TurnBasedPlayer.Enable();
-        public void ExitCombatState() => TurnBasedPlayer.Disable();
+        private void HandleMousePosition(InputAction.CallbackContext context)
+        {
+            Vector2 position = Mouse.MousePosition.ReadValue<Vector2>();
+            Debug.Log(position);
+
+            OnMousePositionChangedEventArgs args = new OnMousePositionChangedEventArgs(position);
+            OnMousePositionChanged?.Invoke(this, args);
+        }
+
+        private void HandleLeftMouseButtonClick(InputAction.CallbackContext context)
+        {
+            OnLeftMouseButtonClick?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
