@@ -41,5 +41,15 @@ namespace MagmaHeart.Core.CameraControls
             m_tracker.Track(args.Entity.transform);
             m_stickCameraWithTarget = true;
         }
+
+        public void Enable()
+        {
+            
+        }
+
+        public void Disable()
+        {
+            
+        }
     }
 }

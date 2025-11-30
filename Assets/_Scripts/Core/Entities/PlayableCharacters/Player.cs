@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private CombatPlayerBehaviour m_combatBehaviour;
         private RewardPlayerBehaviour m_rewardPlayerBehaviour;
 
-        public void Initialize(ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput, GameUI gameUI, DungeonGrid grid)
+        public void Initialize(UserInput userInput, CombatUserInput turnBasedUserInput, GameUI gameUI, DungeonGrid grid)
         {
             base.Initialize(grid, true);
 
@@ -31,9 +31,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_rewardUI = gameUI.RewardUI;
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
-            m_actionBehaviour = new ActionPlayerBehaviour(this, actionUserInput);
+            m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
             m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput);
-            m_rewardPlayerBehaviour = new RewardPlayerBehaviour(actionUserInput.UserInput, Animation);
+            m_rewardPlayerBehaviour = new RewardPlayerBehaviour(userInput, Animation);
             m_currentBehaviour = m_actionBehaviour;
         }
 

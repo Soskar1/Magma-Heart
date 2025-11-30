@@ -23,12 +23,12 @@ namespace MagmaHeart.Core.CameraControls
 
         public ITurnSwitchListener TurnSwitchListener => m_turnBasedCameraBehaviour;
 
-        public void Initialize(Transform objectToTrack, ActionUserInput actionUserInput, CombatUserInput turnBasedUserInput)
+        public void Initialize(Transform objectToTrack, UserInput userInput, CombatUserInput turnBasedUserInput)
         {
             Camera camera = GetComponent<Camera>();
             CameraZoom zoom = new CameraZoom(camera, m_zoomSpeed, m_minZoom, m_maxZoom, m_smoothTime);
 
-            m_actionCameraBehaviour = new ActionCameraBehaviour(actionUserInput, transform, objectToTrack, zoom);
+            m_actionCameraBehaviour = new ActionCameraBehaviour(userInput, transform, objectToTrack, zoom);
             m_turnBasedCameraBehaviour = new CombatCameraBehaviour(transform, turnBasedUserInput, m_movementSpeed, zoom);
             SwitchToActionCamera();
         }
@@ -37,7 +37,12 @@ namespace MagmaHeart.Core.CameraControls
 
         public void SwitchToActionCamera() => SwitchState(m_actionCameraBehaviour);
         public void SwitchToTurnBasedCamera() => SwitchState(m_turnBasedCameraBehaviour);
-        private void SwitchState(ICameraBehaviour behaviour) => m_currentBehaviour = behaviour;
+        private void SwitchState(ICameraBehaviour behaviour)
+        {
+            m_currentBehaviour?.Disable();
+            m_currentBehaviour = behaviour;
+            m_currentBehaviour.Enable();
+        }
 
         public void EnterCombatState() => SwitchToTurnBasedCamera();
         public void ExitCombatState() => SwitchToActionCamera();
