@@ -106,13 +106,12 @@ namespace MagmaHeart.Core.SceneLoading
         private Player SpawnPlayer(RoomTileData startRoom)
         {
             List<MouseOverUIElement> mouseOverUIEvents = m_gameUI.GetComponentsInChildren<MouseOverUIElement>(true).ToList();
-            CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid, mouseOverUIEvents);
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(m_userInput, turnBasedUserInput, m_gameUI, m_grid);
+            playerInstance.Initialize(m_userInput, m_gameUI, m_grid);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
-            m_camera.Initialize(playerInstance.transform, m_userInput, turnBasedUserInput);
+            m_camera.Initialize(playerInstance.transform, m_userInput);
 
             playerInstance.Enable();
 

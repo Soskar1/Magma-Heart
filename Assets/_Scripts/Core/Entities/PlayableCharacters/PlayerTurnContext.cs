@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerTurnContext : EntityTurnContext
     {
-        private readonly CombatUserInput m_userInput;
+        private readonly UserInput m_userInput;
 
         private RoomTile m_currentMouseTile;
 
@@ -38,7 +38,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnContext(EntityModel model, CombatUserInput userInput) : base(model)
+        public PlayerTurnContext(EntityModel model, UserInput userInput) : base(model)
         {
             m_userInput = userInput;
 

@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private CombatPlayerBehaviour m_combatBehaviour;
         private RewardPlayerBehaviour m_rewardPlayerBehaviour;
 
-        public void Initialize(UserInput userInput, CombatUserInput turnBasedUserInput, GameUI gameUI, DungeonGrid grid)
+        public void Initialize(UserInput userInput, GameUI gameUI, DungeonGrid grid)
         {
             base.Initialize(grid, true);
 

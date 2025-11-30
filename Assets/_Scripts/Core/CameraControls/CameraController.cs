@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.CameraControls
 
         public ITurnSwitchListener TurnSwitchListener => m_turnBasedCameraBehaviour;
 
-        public void Initialize(Transform objectToTrack, UserInput userInput, CombatUserInput turnBasedUserInput)
+        public void Initialize(Transform objectToTrack, UserInput userInput)
         {
             Camera camera = GetComponent<Camera>();
             m_cameraZoom = new CameraZoom(camera, m_zoomSpeed, m_minZoom, m_maxZoom, m_smoothTime);
