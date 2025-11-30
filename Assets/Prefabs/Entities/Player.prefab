@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3383836243793586766}
   - component: {fileID: 5687144593012042129}
   - component: {fileID: 4677020682616429677}
+  - component: {fileID: 8188827388430083643}
   - component: {fileID: 8151822629687108204}
   - component: {fileID: 1904451890846969}
   - component: {fileID: 6923697098451377377}
@@ -107,6 +108,52 @@ CapsuleCollider2D:
   m_Offset: {x: -0.010928035, y: -0.14362568}
   m_Size: {x: 0.22211558, y: 0.71274865}
   m_Direction: 0
+--- !u!61 &8188827388430083643
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936468212120715525}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.030476362, y: 0.015238166}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.57033616, y: 1.0304763}
+  m_EdgeRadius: 0
 --- !u!95 &8151822629687108204
 Animator:
   serializedVersion: 7
@@ -233,7 +280,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4679fcc1ad93cc54f8b9bdbf8de6ea5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_outline: {r: 0, g: 0, b: 0, a: 0}
+  m_renderer: {fileID: 8772074274509467110}
+  m_outline: {fileID: 2100000, guid: ca82768ce9f68f342ae4b5b871807fad, type: 2}
 --- !u!1 &5847080484812070247
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,7 +337,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
