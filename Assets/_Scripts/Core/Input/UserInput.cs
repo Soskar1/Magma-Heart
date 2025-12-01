@@ -82,7 +82,6 @@ namespace MagmaHeart.Core.Input
         private void HandleMousePosition(InputAction.CallbackContext context)
         {
             Vector2 position = Mouse.MousePosition.ReadValue<Vector2>();
-            Debug.Log(position);
 
             OnMousePositionChangedEventArgs args = new OnMousePositionChangedEventArgs(position);
             OnMousePositionChanged?.Invoke(this, args);

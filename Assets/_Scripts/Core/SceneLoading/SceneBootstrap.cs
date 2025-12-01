@@ -14,6 +14,7 @@ using MagmaHeart.Core.AI;
 using System.Linq;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities.Presenters;
+using MagmaHeart.Core.Presentation;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -44,6 +45,8 @@ namespace MagmaHeart.Core.SceneLoading
         private BattleReward m_battleReward;
         private GameStateMachine m_stateMachine;
         private CombatAI m_combatAI;
+
+        private HoverManager m_hoverManager;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -103,6 +106,10 @@ namespace MagmaHeart.Core.SceneLoading
             InitializeCombatSystem(startRoom, m_stateMachine);
             spawnedPlayer.EnterActionState();
             Debug.LogWarning("Cringe");
+
+            MouseHover mouseHover = new MouseHover(m_userInput);
+            m_hoverManager = new HoverManager(mouseHover);
+            m_hoverManager.SetHandler(new ActionHoverHandler());
         }
 
         private Player SpawnPlayer(RoomTileData startRoom)
@@ -175,6 +182,8 @@ namespace MagmaHeart.Core.SceneLoading
             m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
             m_battle.OnBattleEnded -= m_gameUI.HandleOnBattleEnded;
             m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
+
+            m_hoverManager.Disable();
         }
     }
 }

@@ -12,6 +12,8 @@ namespace MagmaHeart.Core.Presentation
             m_mouseHover.OnHoverWorldPosition += HandleMouseHover;
         }
 
+        public void Disable() => m_mouseHover.OnHoverWorldPosition -= HandleMouseHover;
+
         public void SetHandler(IHoverHandler handler) => m_handler = handler;
         private void HandleMouseHover(object obj, OnMouseHoverEventArgs args) => m_handler?.HandleHover(args.WorldPosition);
     }
