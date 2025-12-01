@@ -101,6 +101,8 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.RewardUI.Initialize(m_stateMachine);
 
             InitializeCombatSystem(startRoom, m_stateMachine);
+            spawnedPlayer.EnterActionState();
+            Debug.LogWarning("Cringe");
         }
 
         private Player SpawnPlayer(RoomTileData startRoom)
@@ -112,8 +114,6 @@ namespace MagmaHeart.Core.SceneLoading
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
             m_camera.Initialize(playerInstance.transform, m_userInput);
-
-            playerInstance.Enable();
 
             return playerInstance;
         }
@@ -127,7 +127,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<ICombatStateListener> combatStateListeners = new List<ICombatStateListener>()
             {
-                player, m_camera, m_grid
+                m_camera, m_grid
             };
             
             CombatState combatState = new CombatState(m_battle, combatStateListeners);
@@ -138,7 +138,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             List<IRewardStateListener> rewardStateListeners = new List<IRewardStateListener>()
             {
-                player, m_gameUI.RewardUI, m_battleReward
+                m_gameUI.RewardUI, m_battleReward
             };
             RewardState rewardState = new RewardState(rewardStateListeners);
 

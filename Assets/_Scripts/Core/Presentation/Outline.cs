@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.Presentation
 
         private void Awake()
         {
-            m_mouseHover = GetComponent<MouseHover>();
+            // m_mouseHover = GetComponent<MouseHover>();
             m_defaultMaterial = m_renderer.material;
         }
 

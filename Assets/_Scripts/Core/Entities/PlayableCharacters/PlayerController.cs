@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class ActionPlayerBehaviour : IPlayerBehaviour
+    public class PlayerController
     {
         private readonly Player m_player;
         private readonly Rigidbody2D m_rigidbody;
@@ -16,13 +16,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private IInteractable m_currentInteractableObject;
         private Vector2 m_currentMovement;
 
-        public ActionPlayerBehaviour(Player player, UserInput userInput)
+        public PlayerController(Player player, UserInput userInput)
         {
             m_userInput = userInput;
             m_player = player;
-            m_animation = player.GetComponent<EntityAnimation>();
+            m_animation = player.Animation;
             m_movement = player.GetComponent<RigidbodyMovement>();
-            m_facing = player.GetComponent<Facing>();
+            m_facing = player.Facing;
             m_rigidbody = player.GetComponent<Rigidbody2D>();
         }
 

@@ -8,58 +8,34 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class Player : Entity, IActionStateListener, ICombatStateListener, IRewardStateListener
+    public class Player : Entity, IActionStateListener
     {
         private Inventory m_inventory;
         private RewardUI m_rewardUI;
+        private PlayerController m_playerController;
 
         public event Action<Collider2D> OnTriggerEnter;
         public event Action<Collider2D> OnTriggerExit;
-
-        private IPlayerBehaviour m_currentBehaviour;
-        private ActionPlayerBehaviour m_actionBehaviour;
-        private CombatPlayerBehaviour m_combatBehaviour;
-        private RewardPlayerBehaviour m_rewardPlayerBehaviour;
 
         public void Initialize(UserInput userInput, GameUI gameUI, DungeonGrid grid)
         {
             base.Initialize(grid, true);
 
             TurnContext = new PlayerTurnContext(Model, userInput);
+            m_playerController = new PlayerController(this, userInput);
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
-
-            m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
-            m_combatBehaviour = new CombatPlayerBehaviour(this);
-            m_rewardPlayerBehaviour = new RewardPlayerBehaviour(userInput, Animation);
-            m_currentBehaviour = m_actionBehaviour;
         }
 
         public void OnDisable() => m_rewardUI.OnRewardPicked -= HandleOnRewardPicked;
 
-        public void Enable() => m_currentBehaviour.Enable();
-        public void Disable() => m_currentBehaviour.Disable();
-
-        public void EnterActionState() => SwitchState(m_actionBehaviour);
-        public void ExitActionState() { }
-
-        public void EnterCombatState() => SwitchState(m_combatBehaviour);
-        public void ExitCombatState() { }
-
-        public void EnterRewardState() => SwitchState(m_rewardPlayerBehaviour);
-        public void ExitRewardState() { }
-
-        private void SwitchState(IPlayerBehaviour newState)
-        {
-            m_currentBehaviour.Disable();
-            m_currentBehaviour = newState;
-            m_currentBehaviour.Enable();
-        }
+        public void EnterActionState() => m_playerController.Enable();
+        public void ExitActionState() => m_playerController.Disable();
 
         private void Update() => Animation.PlayAnimations();
-        private void FixedUpdate() => m_currentBehaviour.Update();
+        private void FixedUpdate() => m_playerController.Update();
 
         private void OnTriggerEnter2D(Collider2D collision) => OnTriggerEnter?.Invoke(collision);
 
