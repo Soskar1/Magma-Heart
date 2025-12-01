@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.Core.Artifacts;
 using System;
 
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation.UI
 {
     public class OnRewardPickedArgs : EventArgs
     {

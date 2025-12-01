@@ -1,12 +1,16 @@
+using System;
+using MagmaHeart.Core.Input;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Input
+namespace MagmaHeart.Core.Presentation
 {
     public class MouseHover
     {
         private readonly UserInput m_userInput;
         private IMouseHoverStrategy m_currentHoverStrategy;
         private readonly ActionMouseHoverStrategy m_actionMouseHoverStrategy;
+
+        public event EventHandler<OnMouseHoverEventArgs> OnMouseHover;
 
         public MouseHover(UserInput userInput)
         {
@@ -25,7 +29,7 @@ namespace MagmaHeart.Core.Input
         private void HandleOnMousePositionChanged(object obj, OnMousePositionChangedEventArgs args)
         {
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(args.Position);
-            m_currentHoverStrategy.Evaluate(worldPosition);
+            MouseHoverResult result = m_currentHoverStrategy.Evaluate(worldPosition);
         }
     }
 }

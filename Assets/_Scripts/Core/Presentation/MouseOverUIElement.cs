@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation
 {
     public class MouseOverUIElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

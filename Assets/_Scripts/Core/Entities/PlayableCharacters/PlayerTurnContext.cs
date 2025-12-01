@@ -30,8 +30,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             set
             {
                 m_canExecuteActions = value;
-                if (m_canExecuteActions)
-                    m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+                //if (m_canExecuteActions)
+                //    m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+
+                throw new Exception("TODO");
 
                 OnCanExecuteActionsChangedEventArgs args = new OnCanExecuteActionsChangedEventArgs(m_canExecuteActions);
                 OnCanExecuteActionsChanged?.Invoke(this, args);
@@ -72,8 +74,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             Task task = base.StartTurnTask();
 
-            m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
-            m_userInput.MouseControl.OnMouseClicked += HandleOnMouseClicked;
+            //m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
+            //m_userInput.OnMouseClicked += HandleOnMouseClicked;
+
+            throw new Exception("TODO");
 
             CanExecuteActions = true;
 
@@ -82,8 +86,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public override void EndTurn()
         {
-            m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
-            m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
+            //m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
+            //m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
+
+            throw new Exception("TODO");
 
             if (m_currentMouseTile != null)
             {
@@ -136,7 +142,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 return;
 
             CanExecuteActions = true;
-            m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+            // m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
+            throw new Exception("TODO");
         }
     }
 }

@@ -1,19 +1,21 @@
 ﻿using MagmaHeart.Core.Entities;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Input
+namespace MagmaHeart.Core.Presentation
 {
     public class ActionMouseHoverStrategy : IMouseHoverStrategy
     {
-        public void Evaluate(Vector2 worldPosition)
+        public MouseHoverResult Evaluate(Vector2 worldPosition)
         {
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector3.back, Mathf.Infinity);
 
             if (hit.collider == null)
-                return;
+                return MouseHoverResult.None;
 
             if (!hit.collider.TryGetComponent(out Entity entity))
-                return;
+                return MouseHoverResult.Entity;
+
+            return MouseHoverResult.None;
         }
     }
 }

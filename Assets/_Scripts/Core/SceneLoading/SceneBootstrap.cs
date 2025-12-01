@@ -7,7 +7,7 @@ using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
-using MagmaHeart.Core.UI;
+using MagmaHeart.Core.Presentation.UI;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
@@ -105,7 +105,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Player SpawnPlayer(RoomTileData startRoom)
         {
-            List<MouseOverUIElement> mouseOverUIEvents = m_gameUI.GetComponentsInChildren<MouseOverUIElement>(true).ToList();
+            //List<MouseOverUIElement> mouseOverUIEvents = m_gameUI.GetComponentsInChildren<MouseOverUIElement>(true).ToList();
 
             Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             playerInstance.Initialize(m_userInput, m_gameUI, m_grid);

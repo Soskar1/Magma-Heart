@@ -3,7 +3,7 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
 using UnityEngine;
 
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation.UI
 {
     public class GameUI : MonoBehaviour, ITurnSwitchListener
     {

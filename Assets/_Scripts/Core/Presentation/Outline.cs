@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation
 {
     [RequireComponent(typeof(MouseHover))]
     public class Outline : MonoBehaviour
@@ -16,15 +16,6 @@ namespace MagmaHeart.Core.UI
         {
             m_mouseHover = GetComponent<MouseHover>();
             m_defaultMaterial = m_renderer.material;
-
-            m_mouseHover.OnMouseEnterEvent += HandleOnMouseEnter;
-            m_mouseHover.OnMouseExitEvent += HandleOnMouseExit;
-        }
-
-        private void OnDisable()
-        {
-            m_mouseHover.OnMouseEnterEvent -= HandleOnMouseEnter;
-            m_mouseHover.OnMouseExitEvent -= HandleOnMouseExit;
         }
 
         private void HandleOnMouseEnter(object obj, EventArgs args)

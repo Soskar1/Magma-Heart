@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation.UI
 {
     public class RewardUI : MonoBehaviour, IDisplayable, IRewardStateListener
     {

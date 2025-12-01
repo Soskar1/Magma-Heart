@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation.UI
 {
     public class RewardCard : MonoBehaviour, IPointerClickHandler
     {

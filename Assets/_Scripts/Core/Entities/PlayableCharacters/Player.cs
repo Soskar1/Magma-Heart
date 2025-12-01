@@ -3,7 +3,7 @@ using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
-using MagmaHeart.Core.UI;
+using MagmaHeart.Core.Presentation.UI;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
@@ -25,14 +25,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             base.Initialize(grid, true);
 
-            TurnContext = new PlayerTurnContext(Model, turnBasedUserInput);
+            TurnContext = new PlayerTurnContext(Model, userInput);
 
             m_inventory = new Inventory(Model);
             m_rewardUI = gameUI.RewardUI;
             m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
 
             m_actionBehaviour = new ActionPlayerBehaviour(this, userInput);
-            m_combatBehaviour = new CombatPlayerBehaviour(this, turnBasedUserInput);
+            m_combatBehaviour = new CombatPlayerBehaviour(this);
             m_rewardPlayerBehaviour = new RewardPlayerBehaviour(userInput, Animation);
             m_currentBehaviour = m_actionBehaviour;
         }

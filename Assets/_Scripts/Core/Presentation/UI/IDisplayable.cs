@@ -1,4 +1,4 @@
-namespace MagmaHeart.Core.UI
+namespace MagmaHeart.Core.Presentation.UI
 {
     public interface IDisplayable
     {

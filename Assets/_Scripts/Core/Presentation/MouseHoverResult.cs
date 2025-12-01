@@ -1,4 +1,4 @@
-﻿namespace MagmaHeart.Core.Input
+﻿namespace MagmaHeart.Core.Presentation
 {
     public enum MouseHoverResult
     {
