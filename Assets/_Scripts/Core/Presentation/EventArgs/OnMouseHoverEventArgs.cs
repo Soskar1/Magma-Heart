@@ -5,6 +5,8 @@ namespace MagmaHeart.Core.Presentation
 {
     public class OnMouseHoverEventArgs : EventArgs
     {
-        public MouseHoverResult HoverResult { get; init; }
+        public Vector2 WorldPosition { get; init; }
+
+        public OnMouseHoverEventArgs(Vector2 worldPosition) => WorldPosition = worldPosition;
     }
 }
