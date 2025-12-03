@@ -1,6 +1,7 @@
 ﻿using System;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.Models;
+using MagmaHeart.Core.Presentation;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -8,6 +9,7 @@ namespace MagmaHeart.Core.Entities
     [RequireComponent(typeof(TurnBasedMovement))]
     [RequireComponent(typeof(Facing))]
     [RequireComponent(typeof(EntityAnimation))]
+    [RequireComponent(typeof(Outline))]
     public class Entity : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
@@ -20,6 +22,7 @@ namespace MagmaHeart.Core.Entities
         public TurnBasedMovement TurnBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
+        public Outline Outline { get; private set; }
 
         public virtual void Initialize(DungeonGrid grid, bool isPlayer)
         {
@@ -31,6 +34,7 @@ namespace MagmaHeart.Core.Entities
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
             Facing = GetComponent<Facing>();
             Animation = GetComponent<EntityAnimation>();
+            Outline = GetComponent<Outline>();
         }
     }
 }

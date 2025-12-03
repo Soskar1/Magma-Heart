@@ -28,8 +28,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             set
             {
                 m_canExecuteActions = value;
-                //if (m_canExecuteActions)
-                //    m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
 
                 OnCanExecuteActionsChangedEventArgs args = new OnCanExecuteActionsChangedEventArgs(m_canExecuteActions);
                 OnCanExecuteActionsChanged?.Invoke(this, args);

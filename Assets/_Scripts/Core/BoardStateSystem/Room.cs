@@ -97,5 +97,18 @@ namespace MagmaHeart.Core.BoardStateSystem
         public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit) => TryGetUnit(roomTile.Position.ToVector2(), out unit);
 
         public bool TryGetEntity(EntityModel model, out Entity presenter) => m_entities.TryGetValue(model, out presenter);
+
+        public bool TryGetEntity(RoomTile roomTile, out Entity entity)
+        {
+            entity = null;
+
+            if (!EntityIsOnTile(roomTile, out EntityModel model))
+                return false;
+
+            if (!TryGetEntity(model, out entity))
+                return false;
+
+            return true;
+        }
     }
 }
