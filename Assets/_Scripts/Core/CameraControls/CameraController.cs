@@ -32,7 +32,7 @@ namespace MagmaHeart.Core.CameraControls
 
             CameraTargetTracker tracker = new CameraTargetTracker(transform);
             m_actionCameraBehaviour = new ActionCameraBehaviour(tracker, objectToTrack);
-            m_turnBasedCameraBehaviour = new CombatCameraBehaviour(tracker, userInput, m_movementSpeed, battle);
+            m_turnBasedCameraBehaviour = new CombatCameraBehaviour(transform, tracker, userInput, m_movementSpeed, battle);
             SwitchToActionCamera();
         }
 

@@ -13,8 +13,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private readonly UserInput m_userInput;
 
-        private RoomTile m_currentMouseTile;
-
         private readonly AttackAction m_attackAction;
         private readonly ActionSelector m_actionSelectorChain;
         private ActionSelectionResult m_currentAction;
@@ -68,82 +66,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_userInput.Disable();
 
             m_cancellationTokenSource.Cancel();
-        }
-
-        public override Task StartTurnTask()
-        {
-            Task task = base.StartTurnTask();
-
-            //m_userInput.MouseControl.OnMouseChangedTile += HandleOnMouseChangedTile;
-            //m_userInput.OnMouseClicked += HandleOnMouseClicked;
-
-            throw new Exception("TODO");
-
-            CanExecuteActions = true;
-
-            return task;
-        }
-
-        public override void EndTurn()
-        {
-            //m_userInput.MouseControl.OnMouseChangedTile -= HandleOnMouseChangedTile;
-            //m_userInput.MouseControl.OnMouseClicked -= HandleOnMouseClicked;
-
-            throw new Exception("TODO");
-
-            if (m_currentMouseTile != null)
-            {
-                CurrentRoom.HideCombatTileAt(m_currentMouseTile);
-                m_currentMouseTile = null;
-            }
-
-            CanExecuteActions = false;
-
-            base.EndTurn();
-        }
-
-        private void HandleOnMouseChangedTile(object obj, OnMouseChangedTileEventArgs e)
-        {
-            if (!CanExecuteActions)
-                return;
-
-            if (m_currentMouseTile != null)
-                CurrentRoom.HideCombatTileAt(m_currentMouseTile);
-
-            RoomTile mouseTilePosition = CurrentRoom.GetRoomTile(e.TilePosition);
-            m_currentAction = m_actionSelectorChain.GetAction(CurrentCombatBoardState, mouseTilePosition);
-            
-            if (m_currentAction != null)
-            {
-                CurrentRoom.TryDisplayCombatTile(mouseTilePosition);
-                
-                int energyCost = Math.Min(m_currentAction.EnergyCost, TypedModel.Energy.CurrentEnergy);
-                TypedModel.Energy.PreviewCost = energyCost;
-            }
-            else
-            {
-                TypedModel.Energy.PreviewCost = 0;
-            }
-
-            m_currentMouseTile = mouseTilePosition;
-        }
-
-        private async void HandleOnMouseClicked(object obj, OnMouseClickedEventArgs e)
-        {
-            if (m_currentAction == null || !CanExecuteActions || e.IsOverUIElement)
-                return;
-
-            m_cancellationTokenSource = new CancellationTokenSource();
-
-            CanExecuteActions = false;
-            await m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
-
-            if (m_cancellationTokenSource.IsCancellationRequested)
-                return;
-
-            CanExecuteActions = true;
-            // m_userInput.MouseControl.ForceTriggerOnMouseChangedTile();
-            throw new Exception("TODO");
         }
     }
 }

@@ -101,16 +101,18 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.RewardUI.Initialize(m_battleReward);
 
             InitializeCombatSystem(startRoom, m_stateMachine);
-
-            MouseHover mouseHover = new MouseHover(m_userInput);
-            m_hoverManager = new HoverManager(mouseHover);
-            m_hoverManager.SetHandler(new ActionHoverHandler());
         }
 
         private void InitializeStateMachine(Player player)
         {
-            ActionState actionState = new ActionState(player.Controller);
-            CombatState combatState = new CombatState(m_camera, m_grid);
+            MouseHover mouseHover = new MouseHover(m_userInput);
+            m_hoverManager = new HoverManager(mouseHover);
+
+            PlayerCombatController combatController = new PlayerCombatController(player.Model, m_battle, m_userInput);
+            CombatHoverHandler combatHoverHandler = new CombatHoverHandler(m_battle, combatController);
+
+            ActionState actionState = new ActionState(player.Controller, m_hoverManager);
+            CombatState combatState = new CombatState(m_camera, m_grid, combatController, m_hoverManager, combatHoverHandler);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);

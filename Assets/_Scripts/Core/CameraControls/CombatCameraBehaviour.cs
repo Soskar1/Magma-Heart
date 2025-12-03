@@ -10,14 +10,15 @@ namespace MagmaHeart.Core.CameraControls
         private readonly UserInput m_userInput;
         private readonly int m_movementSpeed;
         private readonly Battle m_battle;
+        private readonly Transform m_transform;
 
-        private Transform m_transform;
         private bool m_stickCameraWithTarget = true;
 
         private Vector2 m_currentMovement;
 
-        public CombatCameraBehaviour(CameraTargetTracker tracker, UserInput userInput, int movementSpeed, Battle battle)
+        public CombatCameraBehaviour(Transform transform, CameraTargetTracker tracker, UserInput userInput, int movementSpeed, Battle battle)
         {
+            m_transform = transform;
             m_userInput = userInput;
             m_movementSpeed = movementSpeed;
             m_tracker = tracker;
