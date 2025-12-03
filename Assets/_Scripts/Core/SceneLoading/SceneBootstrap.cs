@@ -108,11 +108,10 @@ namespace MagmaHeart.Core.SceneLoading
             MouseHover mouseHover = new MouseHover(m_userInput);
             m_hoverManager = new HoverManager(mouseHover);
 
-            PlayerCombatController combatController = new PlayerCombatController(player.Model, m_battle, m_userInput);
-            CombatHoverHandler combatHoverHandler = new CombatHoverHandler(m_battle, combatController);
+            CombatHoverHandler combatHoverHandler = new CombatHoverHandler((PlayerTurnContext)player.TurnContext);
 
             ActionState actionState = new ActionState(player.Controller, m_hoverManager);
-            CombatState combatState = new CombatState(m_camera, m_grid, combatController, m_hoverManager, combatHoverHandler);
+            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverManager, combatHoverHandler);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);

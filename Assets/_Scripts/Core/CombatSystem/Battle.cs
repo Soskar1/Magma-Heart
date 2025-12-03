@@ -71,7 +71,7 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 EntityTurnContext turnContext = (EntityTurnContext)m_currentTurnOrder.Current;
 
-                m_currentRoom.TryGetEntityPresenter(turnContext.TypedModel, out Entity entity);
+                m_currentRoom.TryGetEntity(turnContext.TypedModel, out Entity entity);
 
                 OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
                 OnTurnSwitched?.Invoke(this, args);
@@ -89,7 +89,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
-            m_currentRoom.TryGetEntityPresenter(entityModel, out Entity entity);
+            m_currentRoom.TryGetEntity(entityModel, out Entity entity);
 
             EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
             entityModel.Health.OnHealthChanged -= handler;

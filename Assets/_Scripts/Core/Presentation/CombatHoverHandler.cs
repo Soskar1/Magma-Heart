@@ -1,6 +1,7 @@
 using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 
@@ -8,39 +9,56 @@ namespace MagmaHeart.Core.Presentation
 {
     public class CombatHoverHandler : IHoverHandler
     {
-        private readonly Battle m_battle;
-        private readonly PlayerCombatController m_controller;
-        private CombatBoardState m_currentBoard;
+        private readonly PlayerTurnContext m_turnContext;
         private RoomTile m_currentTile;
+        private Room Room => m_turnContext.CurrentRoom;
 
-        public CombatHoverHandler(Battle battle, PlayerCombatController playerCombatController)
+        public CombatHoverHandler(PlayerTurnContext playerTurnContext)
         {
-            m_battle = battle;
-            m_controller = playerCombatController;
-            m_battle.OnBattleStarted += HandleOnBattleStarted;
+            m_turnContext = playerTurnContext;
         }
-
-        public void Disable() => m_battle.OnBattleStarted -= HandleOnBattleStarted;
 
         public void HandleHover(Vector2 worldPosition)
         {
-            Vector3Int tilePosition = m_currentBoard.Room.Grid.WorldToTilePosition(worldPosition);
-            RoomTile hoveredTile = m_currentBoard.Room.GetRoomTile(tilePosition);
+            Vector3Int tilePosition = Room.Grid.WorldToTilePosition(worldPosition);
+            RoomTile hoveredTile = Room.GetRoomTile(tilePosition);
 
             if (m_currentTile == hoveredTile)
                 return;
 
+            if (m_currentTile != null)
+                Room.HideCombatTileAt(m_currentTile);
+            
             m_currentTile = hoveredTile;
-            m_currentBoard.Room.HideCombatTileAt(m_currentTile);
 
             if (hoveredTile != null)
             {
-                UnitAction possibleAction = m_controller.SelectAction(hoveredTile);
-                // TODO: highlight strategy
-                //hoveredTile.HighlightForAction(possibleAction);
+                UnitAction possibleAction = m_turnContext.SelectAction(hoveredTile);
+
+                // TODO: use strategy pattern
+                if (possibleAction == null)
+                {
+                    if (Room.EntityIsOnTile(hoveredTile, out EntityModel model))
+                    {
+                        if (model.IsPlayer)
+                        {
+                            // Green outline
+                        }
+                        else
+                        {
+                            // No attack outline
+                        }
+                    }
+                }
+                else if (possibleAction is MovementAction)
+                {
+                    Room.TryDisplayCombatTile(hoveredTile);
+                }
+                else if (possibleAction is AttackAction)
+                {
+                    // Attack outline
+                }
             }
         }
-
-        private void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args) => m_currentBoard = args.CombatBoardState; 
     }
 }

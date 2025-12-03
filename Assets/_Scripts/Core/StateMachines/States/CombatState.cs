@@ -1,6 +1,5 @@
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Presentation;
 
 namespace MagmaHeart.Core.StateMachines
@@ -9,15 +8,13 @@ namespace MagmaHeart.Core.StateMachines
     {
         private readonly CameraController m_camera;
         private readonly DungeonGrid m_grid;
-        private readonly PlayerCombatController m_player;
         private readonly HoverManager m_hoverManager;
         private readonly CombatHoverHandler m_hoverHandler;
 
-        public CombatState(CameraController camera, DungeonGrid grid, PlayerCombatController playerController, HoverManager hoverManager, CombatHoverHandler combatHoverHandler)
+        public CombatState(CameraController camera, DungeonGrid grid, HoverManager hoverManager, CombatHoverHandler combatHoverHandler)
         {
             m_camera = camera;
             m_grid = grid;
-            m_player = playerController;
             m_hoverManager = hoverManager;
             m_hoverHandler = combatHoverHandler;
         }
@@ -27,7 +24,6 @@ namespace MagmaHeart.Core.StateMachines
             m_camera.SwitchToTurnBasedCamera();
             m_grid.Corridors.gameObject.SetActive(true);
 
-            m_player.Enable();
             m_hoverManager.SetHandler(m_hoverHandler);
         }
 
@@ -35,8 +31,6 @@ namespace MagmaHeart.Core.StateMachines
         {
             m_camera.SwitchToActionCamera();
             m_grid.Corridors.gameObject.SetActive(false);
-
-            m_player.Disable();
         }
     }
 }

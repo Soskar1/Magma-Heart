@@ -11,8 +11,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
     {
         public override Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken cancellationToken)
         {
-            actualBoard.Room.TryGetEntityPresenter(Attacker, out Entity attackerEntity);
-            actualBoard.Room.TryGetEntityPresenter(Target, out Entity targetEntity);
+            actualBoard.Room.TryGetEntity(Attacker, out Entity attackerEntity);
+            actualBoard.Room.TryGetEntity(Target, out Entity targetEntity);
 
             return actualBoard.AttackService.AttackEntityAsync(attackerEntity, targetEntity, Damage, cancellationToken);
         }
