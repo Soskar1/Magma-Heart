@@ -1,34 +1,29 @@
-using System.Collections.Generic;
-using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.CameraControls;
+using MagmaHeart.Core.Dungeon;
 
 namespace MagmaHeart.Core.StateMachines
 {
     public class CombatState : IState
     {
-        private readonly List<ICombatStateListener> m_combatStateListeners;
-        private readonly Battle m_battle;
+        private readonly CameraController m_camera;
+        private readonly DungeonGrid m_grid;
 
-        public CombatState(Battle battle, List<ICombatStateListener> combatStateListeners)
+        public CombatState(CameraController camera, DungeonGrid grid)
         {
-            m_battle = battle;
-            m_combatStateListeners = combatStateListeners;
+            m_camera = camera;
+            m_grid = grid;
         }
 
-        public async void Enter(params object[] args)
+        public void Enter()
         {
-            Room room = args[0] as Room;
-
-            foreach (ICombatStateListener listener in m_combatStateListeners)
-                listener.EnterCombatState();
-
-            await m_battle.Start(room);
+            m_camera.SwitchToTurnBasedCamera();
+            m_grid.Corridors.gameObject.SetActive(true);
         }
 
         public void Exit()
         {
-            foreach (ICombatStateListener listener in m_combatStateListeners)
-                listener.ExitCombatState();
+            m_camera.SwitchToActionCamera();
+            m_grid.Corridors.gameObject.SetActive(false);
         }
     }
 }

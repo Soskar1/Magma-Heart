@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Presentation.UI;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Core.Artifacts
@@ -7,14 +8,20 @@ namespace MagmaHeart.Core.Artifacts
     {
         private readonly Dictionary<ArtifactData, Artifact> m_artifacts;
         private readonly EntityModel m_owner;
+        private readonly RewardUI m_rewardUI;
 
-        public Inventory(EntityModel owner)
+        public Inventory(EntityModel owner, RewardUI rewardUI)
         {
             m_artifacts = new Dictionary<ArtifactData, Artifact>();
             m_owner = owner;
+            m_rewardUI = rewardUI;
+
+            m_rewardUI.OnRewardPicked += HandleOnRewardPicked;
         }
 
-        public void Pick(ArtifactData data)
+        public void Disable() => m_rewardUI.OnRewardPicked -= HandleOnRewardPicked;
+
+        private void Pick(ArtifactData data)
         {
             if (m_artifacts.ContainsKey(data))
             {
@@ -34,5 +41,7 @@ namespace MagmaHeart.Core.Artifacts
                 artifact.Apply(m_owner);
             }
         }
+
+        private void HandleOnRewardPicked(object obj, OnRewardPickedArgs args) => Pick(args.ArtifactData);
     }
 }

@@ -1,6 +1,5 @@
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.StateMachines;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,28 +7,32 @@ using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Presentation.UI
 {
-    public class RewardUI : MonoBehaviour, IDisplayable, IRewardStateListener
+    public class RewardUI : MonoBehaviour, IDisplayable
     {
         [SerializeField] private GameObject m_visual;
         [SerializeField] private Button m_getRewardButton;
         [SerializeField] private List<RewardCard> m_rewardCards;
-        private GameStateMachine m_stateMachine;
         private ArtifactData m_currentlyPickedArtifact;
+        private BattleReward m_battleReward;
 
         public event EventHandler<OnRewardPickedArgs> OnRewardPicked;
 
-        public void Initialize(GameStateMachine stateMachine)
+        public void Initialize(BattleReward battleReward)
         {
-            m_stateMachine = stateMachine;
-            
+            m_battleReward = battleReward;
+
             foreach (RewardCard card in m_rewardCards)
                 card.OnArtifactDataPicked += HandleOnArtifactPicked;
+
+            m_battleReward.OnBattleRewardCalculated += HandleOnBattleRewardCalculated;
         }
 
         public void OnDisable()
         {
             foreach (RewardCard card in m_rewardCards)
                 card.OnArtifactDataPicked -= HandleOnArtifactPicked;
+
+            m_battleReward.OnBattleRewardCalculated -= HandleOnBattleRewardCalculated;
         }
 
         public void Show() => m_visual.SetActive(true);
@@ -39,15 +42,6 @@ namespace MagmaHeart.Core.Presentation.UI
         {
             OnRewardPickedArgs args = new OnRewardPickedArgs(m_currentlyPickedArtifact);
             OnRewardPicked?.Invoke(this, args);
-
-            m_stateMachine.ChangeState(StateMachineStates.Action);
-        }
-
-        public void EnterRewardState() { }
-        public void ExitRewardState()
-        {
-            Hide();
-            m_getRewardButton.interactable = false;
         }
 
         public void HandleOnBattleRewardCalculated(object obj, OnBattleRewardCalculatedArgs args)

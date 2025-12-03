@@ -2,7 +2,6 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
-using MagmaHeart.Core.Entities.Presenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,6 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly Entity m_player;
         private readonly Spawner m_spawner;
-        private readonly List<ITurnSwitchListener> m_turnSwitchListeners;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
 
         private Room m_currentRoom;
@@ -23,29 +21,14 @@ namespace MagmaHeart.Core.CombatSystem
         
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
-        private event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
+        public event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
 
         private bool m_battleEnded = false;
 
-        public Battle(Entity player, Spawner spawner, List<ITurnSwitchListener> turnSwitchListeners)
+        public Battle(Entity player, Spawner spawner)
         {
             m_player = player;
             m_spawner = spawner;
-            m_turnSwitchListeners = turnSwitchListeners;
-
-            Enable();
-        }
-
-        public void Enable()
-        {
-            foreach (ITurnSwitchListener listener in m_turnSwitchListeners)
-                OnTurnSwitched += listener.HandleOnTurnSwitched;
-        }
-
-        public void Disable()
-        {
-            foreach (ITurnSwitchListener listener in m_turnSwitchListeners)
-                OnTurnSwitched -= listener.HandleOnTurnSwitched;
         }
 
         public async Task Start(Room room)

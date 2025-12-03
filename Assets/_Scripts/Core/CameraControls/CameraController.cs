@@ -1,12 +1,11 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Input;
-using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls
 {
     [RequireComponent(typeof(Camera))]
-    public class CameraController : MonoBehaviour, ICombatStateListener
+    public class CameraController : MonoBehaviour
     {
         [SerializeField] private int m_movementSpeed;
 
@@ -24,9 +23,7 @@ namespace MagmaHeart.Core.CameraControls
         private CameraZoom m_cameraZoom;
         private float m_currentMouseScroll;
 
-        public ITurnSwitchListener TurnSwitchListener => m_turnBasedCameraBehaviour;
-
-        public void Initialize(Transform objectToTrack, UserInput userInput)
+        public void Initialize(Transform objectToTrack, UserInput userInput, Battle battle)
         {
             Camera camera = GetComponent<Camera>();
             m_cameraZoom = new CameraZoom(camera, m_zoomSpeed, m_minZoom, m_maxZoom, m_smoothTime);
@@ -35,7 +32,7 @@ namespace MagmaHeart.Core.CameraControls
 
             CameraTargetTracker tracker = new CameraTargetTracker(transform);
             m_actionCameraBehaviour = new ActionCameraBehaviour(tracker, objectToTrack);
-            m_turnBasedCameraBehaviour = new CombatCameraBehaviour(tracker, userInput, m_movementSpeed);
+            m_turnBasedCameraBehaviour = new CombatCameraBehaviour(tracker, userInput, m_movementSpeed, battle);
             SwitchToActionCamera();
         }
 
@@ -53,9 +50,6 @@ namespace MagmaHeart.Core.CameraControls
             m_currentBehaviour = behaviour;
             m_currentBehaviour.Enable();
         }
-
-        public void EnterCombatState() => SwitchToTurnBasedCamera();
-        public void ExitCombatState() => SwitchToActionCamera();
 
         private void HandleOnMouseScroll(object obj, OnMouseScrollEventArgs args) => m_currentMouseScroll = args.MouseScroll;
     }

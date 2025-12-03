@@ -1,11 +1,10 @@
-using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.Dungeon
 {
     [RequireComponent(typeof(Grid))]
-    public class DungeonGrid : MonoBehaviour, ICombatStateListener
+    public class DungeonGrid : MonoBehaviour
     {
         [SerializeField] private Tilemap m_floor;
         [SerializeField] private Tilemap m_walls;
@@ -40,8 +39,5 @@ namespace MagmaHeart.Core.Dungeon
         public Vector2 ToTileCenter(Vector2Int tile) => tile.ToVector2() + (Vector2)m_offsetToTileCenter;
 
         public static int ManhattanDistance(Vector3Int tile1, Vector3Int tile2) => Mathf.Abs(tile1.x - tile2.x) + Mathf.Abs(tile1.y - tile2.y);
-
-        public void EnterCombatState() => m_corridors.gameObject.SetActive(true);
-        public void ExitCombatState() => m_corridors.gameObject.SetActive(false);
     }
 }

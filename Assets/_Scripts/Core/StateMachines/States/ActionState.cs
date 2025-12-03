@@ -1,23 +1,25 @@
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Core.StateMachines
 {
     public class ActionState : IState
     {
-        private readonly List<IActionStateListener> m_listeners;
+        private readonly PlayerController m_controller;
 
-        public ActionState(List<IActionStateListener> listeners) => m_listeners = listeners;
-
-        public void Enter(params object[] args)
+        public ActionState(PlayerController controller)
         {
-            foreach (IActionStateListener listener in m_listeners)
-                listener.EnterActionState();
+            m_controller = controller;
+        }
+
+        public void Enter()
+        {
+            m_controller.Enable();
         }
 
         public void Exit()
         {
-            foreach (IActionStateListener listener in m_listeners)
-                listener.ExitActionState();
+            m_controller.Disable();
         }
     }
 }
