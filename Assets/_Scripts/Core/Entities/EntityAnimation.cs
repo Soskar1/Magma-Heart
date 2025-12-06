@@ -10,8 +10,6 @@ namespace MagmaHeart.Core.Entities
         private readonly int m_runAnimationID = Animator.StringToHash("Run");
         private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
 
-        public event EventHandler OnAttackAnimationEnded;
-
         private TaskCompletionSource<bool> m_animationTrigger;
 
         public void PlayIdleAnimation() => CurrentAnimationState = m_idleAnimationID;
@@ -30,11 +28,5 @@ namespace MagmaHeart.Core.Entities
         }
 
         public void AnimationTrigger() => m_animationTrigger.SetResult(true);
-
-        //public override void FireOnAnimationEndedEvent()
-        //{
-        //    if (CurrentAnimationState == m_attackAnimationID)
-        //        OnAttackAnimationEnded?.Invoke(this, EventArgs.Empty);
-        //}  
     }
 }
