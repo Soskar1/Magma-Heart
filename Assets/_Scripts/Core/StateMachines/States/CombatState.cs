@@ -29,6 +29,7 @@ namespace MagmaHeart.Core.StateMachines
 
         public void Exit()
         {
+            m_hoverManager.SetHandler(null);
             m_camera.SwitchToActionCamera();
             m_grid.Corridors.gameObject.SetActive(false);
         }
