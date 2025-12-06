@@ -1,5 +1,4 @@
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,15 +11,26 @@ namespace MagmaHeart.Core.Entities.Presenters
         [SerializeField] private TextMeshProUGUI m_text;
         private HealthModel m_healthModel;
 
-        public void Initialize(Player player)
+        public void Register(HealthModel model)
         {
-            m_healthModel = player.Health;
+            if (m_healthModel != null)
+                Unregister();
+
+            m_healthModel = model;
             m_healthModel.OnHealthChanged += HandleOnHealthChangedEvent;
 
             UpdateHealthBar(m_healthModel.CurrentHealth, m_healthModel.MaxHealth);
         }
 
-        private void OnDisable() => m_healthModel.OnHealthChanged -= HandleOnHealthChangedEvent;
+        private void OnDisable() => Unregister();
+        public void Unregister()
+        {
+            if (m_healthModel == null)
+                return;
+
+            m_healthModel.OnHealthChanged -= HandleOnHealthChangedEvent;
+            m_healthModel = null;
+        }
 
         private void HandleOnHealthChangedEvent(object obj, OnHealthChangedEventArgs e) => UpdateHealthBar(e.CurrentHealth, e.MaxHealth);
 

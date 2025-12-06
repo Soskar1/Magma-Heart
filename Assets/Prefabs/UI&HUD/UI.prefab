@@ -466,6 +466,7 @@ MonoBehaviour:
   m_endTurnButton: {fileID: 9195097509354610360}
   m_energyHUD: {fileID: 2256596116238844227}
   m_rewardUI: {fileID: 7447906932855217904}
+  m_entityInfoUI: {fileID: 7084399564829114419}
 --- !u!1 &2090010933572652575
 GameObject:
   m_ObjectHideFlags: 0

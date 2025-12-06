@@ -11,16 +11,18 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private EndTurnButton m_endTurnButton;
         [SerializeField] private EnergyPresenter m_energyHUD;
         [SerializeField] private RewardUI m_rewardUI;
+        [SerializeField] private EntityInfoUI m_entityInfoUI;
 
         public RewardUI RewardUI => m_rewardUI;
 
         private Battle m_battle;
 
-        public void Initialize(Player player, Battle battle)
+        public void Initialize(Player player, Battle battle, MouseHover mouseHover)
         {
-            m_healthBar.Initialize(player);
+            m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(player);
             m_energyHUD.Initialize(player);
+            m_entityInfoUI.Initialize(mouseHover);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
