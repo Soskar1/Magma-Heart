@@ -45,6 +45,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Inventory m_inventory;
         private HoverManager m_hoverManager;
+        private CombatHoverHandler m_combatHoverHandler;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -108,10 +109,10 @@ namespace MagmaHeart.Core.SceneLoading
             MouseHover mouseHover = new MouseHover(m_userInput);
             m_hoverManager = new HoverManager(mouseHover);
 
-            CombatHoverHandler combatHoverHandler = new CombatHoverHandler((PlayerTurnContext)player.TurnContext);
+            m_combatHoverHandler = new CombatHoverHandler((PlayerTurnContext)player.TurnContext);
 
             ActionState actionState = new ActionState(player.Controller, m_hoverManager);
-            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverManager, combatHoverHandler);
+            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverManager, m_combatHoverHandler);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
@@ -153,6 +154,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.RewardUI.OnRewardPicked -= m_stateMachine.HandleOnRewardPicked;
 
             m_hoverManager.Disable();
+            m_combatHoverHandler.Disable();
             m_inventory.Disable();
         }
     }

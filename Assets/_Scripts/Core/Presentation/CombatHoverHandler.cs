@@ -18,7 +18,10 @@ namespace MagmaHeart.Core.Presentation
         public CombatHoverHandler(PlayerTurnContext playerTurnContext)
         {
             m_turnContext = playerTurnContext;
+            m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
         }
+
+        public void Disable() => m_turnContext.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
 
         public void HandleHover(Vector2 worldPosition)
         {
@@ -39,26 +42,31 @@ namespace MagmaHeart.Core.Presentation
             m_currentEntity = entity;
 
             if (hoveredTile != null)
-            {
-                UnitAction possibleAction = m_turnContext.SelectAction(hoveredTile);
+                HandleHover();
+        }
 
-                // TODO: use strategy pattern
-                if (possibleAction == null && m_currentEntity != null)
-                {
-                    if (entity.Model.IsPlayer)
-                        entity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
-                    else
-                        entity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
-                }
-                else if (possibleAction is MovementAction)
-                {
-                    Room.TryDisplayCombatTile(hoveredTile);
-                }
-                else if (possibleAction is AttackAction && m_currentEntity != null)
-                {
-                    entity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
-                }
+        private void HandleHover()
+        {
+            UnitAction possibleAction = m_turnContext.SelectAction(m_currentTile);
+
+            // TODO: use strategy pattern
+            if (possibleAction == null && m_currentEntity != null)
+            {
+                if (m_currentEntity.Model.IsPlayer)
+                    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
+                else
+                    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+            }
+            else if (possibleAction is MovementAction)
+            {
+                Room.TryDisplayCombatTile(m_currentTile);
+            }
+            else if (possibleAction is AttackAction && m_currentEntity != null)
+            {
+                m_currentEntity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
             }
         }
+
+        private void HandleOnCombatActionExecuted() => HandleHover();
     }
 }
