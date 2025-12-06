@@ -7,6 +7,12 @@ namespace MagmaHeart.Core.Presentation
     {
         private Entity m_currentEntity;
 
+        public void ClearHover()
+        {
+            m_currentEntity?.Outline.RemoveOutline();
+            m_currentEntity = null;
+        }
+
         public void HandleHover(Vector2 worldPosition)
         {
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector3.back, Mathf.Infinity);

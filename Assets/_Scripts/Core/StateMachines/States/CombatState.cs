@@ -8,30 +8,27 @@ namespace MagmaHeart.Core.StateMachines
     {
         private readonly CameraController m_camera;
         private readonly DungeonGrid m_grid;
-        private readonly HoverManager m_hoverManager;
-        private readonly CombatHoverHandler m_hoverHandler;
+        private readonly MouseHover m_mouseHover;
 
-        public CombatState(CameraController camera, DungeonGrid grid, HoverManager hoverManager, CombatHoverHandler combatHoverHandler)
+        public CombatState(CameraController camera, DungeonGrid grid, MouseHover mouseHover)
         {
             m_camera = camera;
             m_grid = grid;
-            m_hoverManager = hoverManager;
-            m_hoverHandler = combatHoverHandler;
+            m_mouseHover = mouseHover;
         }
 
         public void Enter()
         {
             m_camera.SwitchToTurnBasedCamera();
             m_grid.Corridors.gameObject.SetActive(true);
-
-            m_hoverManager.SetHandler(m_hoverHandler);
+            m_mouseHover.UseCombatHover();
         }
 
         public void Exit()
         {
-            m_hoverManager.SetHandler(null);
             m_camera.SwitchToActionCamera();
             m_grid.Corridors.gameObject.SetActive(false);
+            m_mouseHover.UseRaycastHover();
         }
     }
 }

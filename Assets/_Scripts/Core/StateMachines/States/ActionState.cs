@@ -6,20 +6,18 @@ namespace MagmaHeart.Core.StateMachines
     public class ActionState : IState
     {
         private readonly PlayerController m_controller;
-        private readonly HoverManager m_mouseHover;
-        private readonly RaycastHoverHandler m_actionHoverHandler;
+        private readonly MouseHover m_mouseHover;
 
-        public ActionState(PlayerController controller, HoverManager mouseHover)
+        public ActionState(PlayerController controller, MouseHover mouseHover)
         {
             m_controller = controller;
             m_mouseHover = mouseHover;
-            m_actionHoverHandler = new RaycastHoverHandler();
         }
 
         public void Enter()
         {
             m_controller.Enable();
-            m_mouseHover.SetHandler(m_actionHoverHandler);
+            m_mouseHover.UseRaycastHover();
         }
 
         public void Exit()

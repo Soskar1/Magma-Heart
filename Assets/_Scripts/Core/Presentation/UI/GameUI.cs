@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            if (args.Entity.Model.IsPlayer)
+            if (args.CurrentEntity.Model.IsPlayer)
             {
                 m_energyHUD.Show();
                 m_endTurnButton.Show();

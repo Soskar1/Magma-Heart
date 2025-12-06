@@ -25,6 +25,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRendererPrefab;
+        [SerializeField] private MousePositionListener m_mousePositionListenerPrefab;
 
         [Header("Spawner Settings")]
         [SerializeField] private Enemy m_enemyPrefab;
@@ -44,8 +45,7 @@ namespace MagmaHeart.Core.SceneLoading
         private CombatAI m_combatAI;
 
         private Inventory m_inventory;
-        private HoverManager m_hoverManager;
-        private CombatHoverHandler m_combatHoverHandler;
+        private MouseHover m_mouseHover;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -106,13 +106,12 @@ namespace MagmaHeart.Core.SceneLoading
 
         private void InitializeStateMachine(Player player)
         {
-            MouseHover mouseHover = new MouseHover(m_userInput);
-            m_hoverManager = new HoverManager(mouseHover);
+            MousePositionListener mousePositionListener = Instantiate(m_mousePositionListenerPrefab);
+            mousePositionListener.Initialize(m_userInput);
+            m_mouseHover = new MouseHover(mousePositionListener, (PlayerTurnContext)player.TurnContext, m_battle);
 
-            m_combatHoverHandler = new CombatHoverHandler((PlayerTurnContext)player.TurnContext);
-
-            ActionState actionState = new ActionState(player.Controller, m_hoverManager);
-            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverManager, m_combatHoverHandler);
+            ActionState actionState = new ActionState(player.Controller, m_mouseHover);
+            CombatState combatState = new CombatState(m_camera, m_grid, m_mouseHover);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
@@ -153,8 +152,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
             m_gameUI.RewardUI.OnRewardPicked -= m_stateMachine.HandleOnRewardPicked;
 
-            m_hoverManager.Disable();
-            m_combatHoverHandler.Disable();
+            m_mouseHover.Disable();
             m_inventory.Disable();
         }
     }

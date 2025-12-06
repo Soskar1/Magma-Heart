@@ -15,13 +15,7 @@ namespace MagmaHeart.Core.Presentation
 
         private Room Room => m_turnContext.CurrentRoom;
 
-        public CombatHoverHandler(PlayerTurnContext playerTurnContext)
-        {
-            m_turnContext = playerTurnContext;
-            m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
-        }
-
-        public void Disable() => m_turnContext.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
+        public CombatHoverHandler(PlayerTurnContext playerTurnContext) => m_turnContext = playerTurnContext;
 
         public void HandleHover(Vector2 worldPosition)
         {
@@ -67,6 +61,15 @@ namespace MagmaHeart.Core.Presentation
             }
         }
 
-        private void HandleOnCombatActionExecuted() => HandleHover();
+        public void ClearHover()
+        {
+            m_currentEntity?.Outline.RemoveOutline();
+
+            if (m_currentTile != null)
+                Room?.HideCombatTileAt(m_currentTile);
+
+            m_currentEntity = null;
+            m_currentTile = null;
+        }
     }
 }

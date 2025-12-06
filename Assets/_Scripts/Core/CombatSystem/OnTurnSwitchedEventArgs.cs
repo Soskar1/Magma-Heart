@@ -5,8 +5,8 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class OnTurnSwitchedEventArgs : EventArgs
     {
-        public Entity Entity { get; init; }
+        public Entity CurrentEntity { get; init; }
 
-        public OnTurnSwitchedEventArgs(Entity entity) => Entity = entity;
+        public OnTurnSwitchedEventArgs(Entity entity) => CurrentEntity = entity;
     }
 }
