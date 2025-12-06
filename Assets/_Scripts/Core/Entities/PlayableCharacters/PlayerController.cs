@@ -16,6 +16,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private IInteractable m_currentInteractableObject;
         private Vector2 m_currentMovement;
 
+        private bool m_isEnabled;
+
         public PlayerController(Player player, UserInput userInput)
         {
             m_userInput = userInput;
@@ -39,6 +41,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Enable()
         {
+            m_isEnabled = true;
+
             m_animation.PlayIdleAnimation();
 
             m_userInput.OnMovementKeyPressed += HandleOnMovementKeyPressed;
@@ -50,6 +54,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Disable()
         {
+            m_isEnabled = false;
+
             m_userInput.OnMovementKeyPressed -= HandleOnMovementKeyPressed;
             m_userInput.OnInteractionKeyPressed -= Interact;
 
@@ -57,9 +63,16 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_player.OnTriggerExit -= OnTriggerExit;
 
             m_rigidbody.linearVelocity = Vector3.zero;
+            m_currentMovement = Vector2.zero;
         }
 
-        public void Update() => m_movement.Move(m_currentMovement);
+        public void Update()
+        {
+            if (!m_isEnabled)
+                return;
+
+            m_movement.Move(m_currentMovement);
+        }
 
         private void Interact(object obj, EventArgs args)
         {
