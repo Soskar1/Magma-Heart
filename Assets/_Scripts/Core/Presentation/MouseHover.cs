@@ -23,8 +23,9 @@ namespace MagmaHeart.Core.Presentation
             m_raycastHoverHandler = new RaycastHoverHandler();
             m_combatHoverHandler = new CombatHoverHandler(playerTurnContext);
 
-            m_turnContext.OnCombatActionExecuted += TriggerHover;
             m_mousePositionListener.OnMouseWorldPositionChanged += HandleOnMousePositionChanged;
+            m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
+            m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
@@ -33,7 +34,8 @@ namespace MagmaHeart.Core.Presentation
         public void Disable()
         {
             m_mousePositionListener.OnMouseWorldPositionChanged -= HandleOnMousePositionChanged;
-            m_turnContext.OnCombatActionExecuted -= TriggerHover;
+            m_turnContext.OnCombatActionExecutionStarted -= HandleOnCombatActionExecutionStarted;
+            m_turnContext.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
             m_battle.OnTurnSwitched -= HandleOnTurnSwitched;
         }
 
@@ -56,5 +58,19 @@ namespace MagmaHeart.Core.Presentation
         }
 
         private void TriggerHover() => m_currentHandler?.HandleHover(m_currentMousePosition);
+
+        private void HandleOnCombatActionExecutionStarted()
+        {
+            m_currentHandler.ClearHover();
+            UseRaycastHover();
+            TriggerHover();
+        }
+
+        private void HandleOnCombatActionExecuted()
+        {
+            m_currentHandler.ClearHover();
+            UseCombatHover();
+            TriggerHover();
+        }
     }
 }

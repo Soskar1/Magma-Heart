@@ -21,6 +21,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private CancellationTokenSource m_cancellationTokenSource;
 
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
+        public event Action OnCombatActionExecutionStarted;
         public event Action OnCombatActionExecuted;
 
         public bool CanExecuteActions
@@ -109,6 +110,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_cancellationTokenSource = new CancellationTokenSource();
 
             CanExecuteActions = false;
+            OnCombatActionExecutionStarted?.Invoke();
             await m_currentAction.Action.ExecuteAsync(m_currentAction.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
 
             if (m_cancellationTokenSource.IsCancellationRequested)
