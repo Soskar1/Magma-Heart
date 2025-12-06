@@ -6,6 +6,6 @@ namespace MagmaHeart.Core.Presentation
     {
         public static readonly Color ALLY_OUTLINE = Color.green;
         public static readonly Color ENEMY_OUTLINE = Color.red;
-        public static readonly Color CAN_ATTACK_OUTLINE = Color.magenta;
+        public static readonly Color CAN_ATTACK_OUTLINE = new Color(1, 0.35f, 0.35f);
     }
 }
