@@ -220,7 +220,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5983265350589768172}
-  - component: {fileID: 5373274043441132363}
+  - component: {fileID: 9205674142745973876}
   m_Layer: 5
   m_Name: RewardCard
   m_TagString: Untagged
@@ -248,7 +248,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 357.0547, y: 707.5846}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5373274043441132363
+--- !u!114 &9205674142745973876
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -257,7 +257,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2211806110432548662}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 660f729d129c3cb4590f8e9777387d2f, type: 3}
+  m_Script: {fileID: 11500000, guid: a768fe2e5037eee41a83108f961c5fa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_nameText: {fileID: 1207135074887986285}

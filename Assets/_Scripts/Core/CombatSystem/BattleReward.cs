@@ -1,11 +1,10 @@
 ﻿using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.StateMachines;
 using System;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Core.CombatSystem
 {
-    public class BattleReward : IRewardStateListener
+    public class BattleReward
     {
         private readonly ArtifactDatabase m_database;
         public event EventHandler<OnBattleRewardCalculatedArgs> OnBattleRewardCalculated;
@@ -15,14 +14,12 @@ namespace MagmaHeart.Core.CombatSystem
             m_database = database;
         }
 
-        public void EnterRewardState()
+        public void Calculate()
         {
             // TODO: Randomly select rarity
             List<ArtifactData> artifacts = m_database.GetRandomArtifacts(Rarity.Common, 3);
             OnBattleRewardCalculatedArgs args = new OnBattleRewardCalculatedArgs(artifacts);
             OnBattleRewardCalculated?.Invoke(this, args);
         }
-
-        public void ExitRewardState() { }
     }
 }

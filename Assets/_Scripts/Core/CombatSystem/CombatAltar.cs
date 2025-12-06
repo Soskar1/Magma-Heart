@@ -1,24 +1,23 @@
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.StateMachines;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public class CombatAltar : MonoBehaviour, IInteractable
     {
-        private GameStateMachine m_stateMachine;
         private Room m_room;
+        private Battle m_battle;
 
-        public void Initialize(Room room, GameStateMachine stateMachine)
+        public void Initialize(Room room, Battle battle)
         {
             m_room = room;
-            m_stateMachine = stateMachine;
+            m_battle = battle;
         }
 
-        public void Interact()
+        public async void Interact()
         {
             Destroy(gameObject);
-            m_stateMachine.ChangeState(StateMachineStates.Combat, m_room);
+            await m_battle.Start(m_room);
         }
     }
 }

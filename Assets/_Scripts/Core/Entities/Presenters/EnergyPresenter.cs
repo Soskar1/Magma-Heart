@@ -1,6 +1,6 @@
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.UI;
+using MagmaHeart.Core.Presentation.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,12 +1,12 @@
-using MagmaHeart.Core.Entities.Presenters;
+using MagmaHeart.Core.Entities;
 using System;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public class OnTurnSwitchedEventArgs : EventArgs
     {
-        public EntityPresenter Entity { get; init; }
+        public Entity CurrentEntity { get; init; }
 
-        public OnTurnSwitchedEventArgs(EntityPresenter entity) => Entity = entity;
+        public OnTurnSwitchedEventArgs(Entity entity) => CurrentEntity = entity;
     }
 }

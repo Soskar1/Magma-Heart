@@ -3,7 +3,7 @@
     "name": "Controls",
     "maps": [
         {
-            "name": "ActionPlayer",
+            "name": "Player",
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
@@ -16,15 +16,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Interaction",
                     "type": "Button",
                     "id": "8d44fbe8-fddf-4c0a-81e3-51d906d0b6ab",
@@ -32,15 +23,6 @@
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "MouseScroll",
-                    "type": "Value",
-                    "id": "6b0d2f82-945a-44e3-97ab-7e63edfce9cc",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -101,17 +83,6 @@
                 },
                 {
                     "name": "",
-                    "id": "05f6913d-c316-48b2-a6bb-e225f14c7960",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b43d7d4a-d6be-46c1-86a9-2cb0d2387d9c",
                     "path": "<Keyboard>/e",
                     "interactions": "",
@@ -120,10 +91,45 @@
                     "action": "Interaction",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Mouse",
+            "id": "f986b461-b2cc-40f6-a3d9-c201a7c1b262",
+            "actions": [
+                {
+                    "name": "MouseScroll",
+                    "type": "Value",
+                    "id": "3d28c717-9bfc-485b-90ed-b0a8989556f5",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
+                    "name": "MouseClick",
+                    "type": "Button",
+                    "id": "daba5328-3ec3-425f-a038-5cfb419c7958",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MousePosition",
+                    "type": "Value",
+                    "id": "5ec17e4b-a75c-4f61-868e-2806f4869698",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
                     "name": "1D Axis",
-                    "id": "36d944f9-47af-4e51-87f9-e187f2fab48d",
+                    "id": "fe09cbb8-8932-4659-92ca-cb236c38a3a7",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
@@ -134,7 +140,7 @@
                 },
                 {
                     "name": "negative",
-                    "id": "5469defc-6104-4290-b0b1-836020bb71a2",
+                    "id": "5ab3d895-3740-472d-aa71-7caac2b17add",
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
                     "processors": "",
@@ -145,7 +151,7 @@
                 },
                 {
                     "name": "positive",
-                    "id": "3e98622e-e738-4504-a2b8-a662533caa86",
+                    "id": "6be8e942-bf2e-43d1-a21e-db3ef6c4d27a",
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
@@ -153,65 +159,10 @@
                     "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": true
-                }
-            ]
-        },
-        {
-            "name": "TurnBasedPlayer",
-            "id": "493982c9-fcc5-4be7-9c76-46f4c46d367c",
-            "actions": [
-                {
-                    "name": "MousePosition",
-                    "type": "Value",
-                    "id": "a190f30b-d084-4f4c-b398-89055228ba7b",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "MouseClick",
-                    "type": "Button",
-                    "id": "f76f1526-b361-436e-9672-3f95c385d9f3",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "CameraMovement",
-                    "type": "Value",
-                    "id": "7198be77-2390-4238-91e7-3cca29fb350e",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "MouseScroll",
-                    "type": "Value",
-                    "id": "fbe2c7dc-0059-4f8f-a99b-9f7254a25b35",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "7e0e1fd0-d2f0-46a0-a4a5-1afaed0c8a9d",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "MousePosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "a272ffee-068a-41b7-94c3-ad984daa29b2",
+                    "id": "43ff9073-c343-402b-a7db-a67f92985b3d",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
@@ -221,92 +172,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "2D Vector",
-                    "id": "c050298f-0638-41c4-99c8-71196202669a",
-                    "path": "2DVector",
+                    "name": "",
+                    "id": "a2e10458-b1f8-49b9-814a-d7b8849442df",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "CameraMovement",
-                    "isComposite": true,
+                    "groups": ";Keyboard&Mouse",
+                    "action": "MousePosition",
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "97d1161b-d988-467f-9d46-0c4ac5efc6e2",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraMovement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "8f82f137-dce8-44ff-b494-01b6f5319984",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraMovement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "9f3fb238-33d4-4db0-a09b-39cc52403bb3",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraMovement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "74b021b9-daa5-4658-8ff2-50b21aa8d87c",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraMovement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "1D Axis",
-                    "id": "78eb69d3-e816-4b1f-a35a-b9d4eea6d9b3",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseScroll",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "fd22f730-9820-440c-98d2-32c77d4a8513",
-                    "path": "<Mouse>/scroll/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseScroll",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "81c85a12-33da-464e-a095-06b031f3d2d3",
-                    "path": "<Mouse>/scroll/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseScroll",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },

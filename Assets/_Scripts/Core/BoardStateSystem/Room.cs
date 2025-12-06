@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.BoardStateSystem
 {
     public class Room : Board
     {
-        private readonly Dictionary<EntityModel, EntityPresenter> m_entities;
+        private readonly Dictionary<EntityModel, Entity> m_entities;
         private readonly CombatTilemapRenderer m_renderer;
 
         public RoomTileData RoomTileData { get; init; }
@@ -21,17 +21,17 @@ namespace MagmaHeart.Core.BoardStateSystem
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
         public IEnumerable<EntityModel> Models => m_entities.Keys;
-        public IEnumerable<EntityPresenter> Entities => m_entities.Values;
+        public IEnumerable<Entity> Entities => m_entities.Values;
 
         public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;
             m_renderer = renderer;
-            m_entities = new Dictionary<EntityModel, EntityPresenter>();
+            m_entities = new Dictionary<EntityModel, Entity>();
         }
 
-        public void AddEntityToInspect(EntityPresenter entity)
+        public void AddEntityToInspect(Entity entity)
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
@@ -41,7 +41,7 @@ namespace MagmaHeart.Core.BoardStateSystem
             ChangeNodeType(position, BoardNodeType.Obstacle);
         }
 
-        public void RemoveEntityFromRoom(EntityPresenter entity)
+        public void RemoveEntityFromRoom(Entity entity)
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
@@ -96,6 +96,19 @@ namespace MagmaHeart.Core.BoardStateSystem
 
         public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit) => TryGetUnit(roomTile.Position.ToVector2(), out unit);
 
-        public bool TryGetEntityPresenter(EntityModel model, out EntityPresenter presenter) => m_entities.TryGetValue(model, out presenter);
+        public bool TryGetEntity(EntityModel model, out Entity presenter) => m_entities.TryGetValue(model, out presenter);
+
+        public bool TryGetEntity(RoomTile roomTile, out Entity entity)
+        {
+            entity = null;
+
+            if (!EntityIsOnTile(roomTile, out EntityModel model))
+                return false;
+
+            if (!TryGetEntity(model, out entity))
+                return false;
+
+            return true;
+        }
     }
 }

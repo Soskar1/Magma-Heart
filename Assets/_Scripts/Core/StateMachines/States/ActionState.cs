@@ -1,23 +1,28 @@
-using System.Collections.Generic;
+using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Presentation;
 
 namespace MagmaHeart.Core.StateMachines
 {
     public class ActionState : IState
     {
-        private readonly List<IActionStateListener> m_listeners;
+        private readonly PlayerController m_controller;
+        private readonly MouseHover m_mouseHover;
 
-        public ActionState(List<IActionStateListener> listeners) => m_listeners = listeners;
-
-        public void Enter(params object[] args)
+        public ActionState(PlayerController controller, MouseHover mouseHover)
         {
-            foreach (IActionStateListener listener in m_listeners)
-                listener.EnterActionState();
+            m_controller = controller;
+            m_mouseHover = mouseHover;
+        }
+
+        public void Enter()
+        {
+            m_controller.Enable();
+            m_mouseHover.UseRaycastHover();
         }
 
         public void Exit()
         {
-            foreach (IActionStateListener listener in m_listeners)
-                listener.ExitActionState();
+            m_controller.Disable();
         }
     }
 }

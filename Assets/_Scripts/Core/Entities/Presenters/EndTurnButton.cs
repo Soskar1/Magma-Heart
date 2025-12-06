@@ -1,5 +1,5 @@
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.UI;
+using MagmaHeart.Core.Presentation.UI;
 using UnityEngine;
 using UnityEngine.UI;
 

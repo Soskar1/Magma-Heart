@@ -1,0 +1,42 @@
+using MagmaHeart.Core.Entities;
+using UnityEngine;
+
+namespace MagmaHeart.Core.Presentation
+{
+    public class RaycastHoverHandler : IHoverHandler
+    {
+        private Entity m_currentEntity;
+
+        public void ClearHover()
+        {
+            m_currentEntity?.Outline.RemoveOutline();
+            m_currentEntity = null;
+        }
+
+        public void HandleHover(Vector2 worldPosition)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector3.back, Mathf.Infinity);
+
+            if (hit.collider != null && hit.collider.TryGetComponent(out Entity entity))
+            {
+                if (m_currentEntity != entity)
+                {
+                    m_currentEntity?.Outline.RemoveOutline();
+                    m_currentEntity = entity;
+
+                    if (m_currentEntity.Model.IsPlayer)
+                        m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
+                    else
+                        m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+                }
+            }
+            else
+            {
+                if (m_currentEntity != null)
+                    m_currentEntity.Outline.RemoveOutline();
+
+                m_currentEntity = null;
+            }
+        }
+    }
+}

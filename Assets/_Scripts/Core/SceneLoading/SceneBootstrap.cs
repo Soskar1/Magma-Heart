@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
@@ -7,13 +6,12 @@ using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.StateMachines;
-using MagmaHeart.Core.UI;
+using MagmaHeart.Core.Presentation.UI;
 using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
-using System.Linq;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.Entities.Presenters;
+using MagmaHeart.Core.Presentation;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -27,6 +25,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRendererPrefab;
+        [SerializeField] private MouseListener m_mouseListenerPrefab;
 
         [Header("Spawner Settings")]
         [SerializeField] private Enemy m_enemyPrefab;
@@ -45,11 +44,18 @@ namespace MagmaHeart.Core.SceneLoading
         private GameStateMachine m_stateMachine;
         private CombatAI m_combatAI;
 
+        private Inventory m_inventory;
+        private MouseHover m_mouseHover;
+        private MouseListener m_mouseListener;
+
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void BootScene()
         {
             m_userInput = new UserInput();
+
+            m_mouseListener = Instantiate(m_mouseListenerPrefab);
+            m_mouseListener.Initialize(m_userInput);
 
             m_grid = Instantiate(m_gridPrefab);
             m_grid.Initialize();
@@ -57,7 +63,7 @@ namespace MagmaHeart.Core.SceneLoading
             LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
             m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
 
-            m_renderer.RenderedAllTiles += InitializePlayer;
+            m_renderer.RenderedAllTiles += BootSceneAfterRender;
 
             m_location = await locationGeneratorInstance.GenerateLocation(Vector2Int.zero);
             m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
@@ -66,17 +72,13 @@ namespace MagmaHeart.Core.SceneLoading
             m_renderer.DrawTiles();
         }
 
-        private void InitializePlayer()
+        private void BootSceneAfterRender()
         {
-            m_renderer.RenderedAllTiles -= InitializePlayer;
+            m_renderer.RenderedAllTiles -= BootSceneAfterRender;
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-
-            m_gameUI = Instantiate(m_uiPrefab);
-            Player spawnedPlayer = SpawnPlayer(startRoom);
-
-            m_gameUI.Initialize(spawnedPlayer);
-            m_gameUI.HealthBar.gameObject.SetActive(true);
+            Player spawnedPlayer = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
+            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid);
 
             if (m_sceneLoader.SavedData != null)
             {
@@ -88,66 +90,40 @@ namespace MagmaHeart.Core.SceneLoading
             AggressiveStrategy strategy = new AggressiveStrategy(2, spawnedPlayer.Model);
             m_combatAI = new CombatAI(strategy);
 
-            List<ITurnSwitchListener> turnListeners = new List<ITurnSwitchListener>()
-            {
-                m_camera.TurnSwitchListener, m_gameUI
-            };
-
             Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
-            m_battle = new Battle(spawnedPlayer, spawner, turnListeners);
+            m_battle = new Battle(spawnedPlayer, spawner);
             m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
 
+            m_gameUI = Instantiate(m_uiPrefab);
+            m_gameUI.Initialize(spawnedPlayer, m_battle);
+
+            m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);
+
+            m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
+            m_camera.Initialize(spawnedPlayer.transform, m_userInput, m_battle);
+
             InitializeStateMachine(spawnedPlayer);
-            m_gameUI.RewardUI.Initialize(m_stateMachine);
+            m_gameUI.RewardUI.Initialize(m_battleReward);
 
             InitializeCombatSystem(startRoom, m_stateMachine);
         }
 
-        private Player SpawnPlayer(RoomTileData startRoom)
-        {
-            ActionUserInput actionUserInput = new ActionUserInput(m_userInput);
-
-            List<MouseOverUIElement> mouseOverUIEvents = m_gameUI.GetComponentsInChildren<MouseOverUIElement>(true).ToList();
-            CombatUserInput turnBasedUserInput = new CombatUserInput(m_userInput, m_grid, mouseOverUIEvents);
-
-            Player playerInstance = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            playerInstance.Initialize(actionUserInput, turnBasedUserInput, m_gameUI, m_grid);
-
-            m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
-            m_camera.Initialize(playerInstance.transform, actionUserInput, turnBasedUserInput);
-
-            playerInstance.Enable();
-
-            return playerInstance;
-        }
-
         private void InitializeStateMachine(Player player)
         {
-            List<IActionStateListener> actionListeners = new List<IActionStateListener>()
-            { player };
+            m_mouseHover = new MouseHover(m_mouseListener, (PlayerTurnContext)player.TurnContext, m_battle);
 
-            ActionState actionState = new ActionState(actionListeners);
-
-            List<ICombatStateListener> combatStateListeners = new List<ICombatStateListener>()
-            {
-                player, m_camera, m_grid
-            };
-            
-            CombatState combatState = new CombatState(m_battle, combatStateListeners);
+            ActionState actionState = new ActionState(player.Controller, m_mouseHover);
+            CombatState combatState = new CombatState(m_camera, m_grid, m_mouseHover);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
-            m_battleReward.OnBattleRewardCalculated += m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
 
-            List<IRewardStateListener> rewardStateListeners = new List<IRewardStateListener>()
-            {
-                player, m_gameUI.RewardUI, m_battleReward
-            };
-            RewardState rewardState = new RewardState(rewardStateListeners);
+            RewardState rewardState = new RewardState(m_battleReward, player);
 
             m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
+            m_battle.OnBattleStarted += m_stateMachine.HandleOnBattleStarted;
             m_battle.OnBattleEnded += m_stateMachine.HandleOnBattleEnded;
-            m_battle.OnBattleEnded += m_gameUI.HandleOnBattleEnded;
+            m_gameUI.RewardUI.OnRewardPicked += m_stateMachine.HandleOnRewardPicked;
         }
 
         private void InitializeCombatSystem(RoomTileData startRoom, GameStateMachine stateMachine)
@@ -165,7 +141,7 @@ namespace MagmaHeart.Core.SceneLoading
                     if (roomTileData != bossRoom)
                     {
                         CombatAltar altarInstance = Instantiate(m_combatAltarPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                        altarInstance.Initialize(room, stateMachine);
+                        altarInstance.Initialize(room, m_battle);
                     }
                 }
             }
@@ -173,11 +149,13 @@ namespace MagmaHeart.Core.SceneLoading
 
         public void OnDisable()
         {
-            m_battle.Disable();
             m_battle.OnBattleStarted -= m_combatAI.HandleOnBattleStarted;
+            m_battle.OnBattleStarted -= m_stateMachine.HandleOnBattleStarted;
             m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
-            m_battle.OnBattleEnded -= m_gameUI.HandleOnBattleEnded;
-            m_battleReward.OnBattleRewardCalculated -= m_gameUI.RewardUI.HandleOnBattleRewardCalculated;
+            m_gameUI.RewardUI.OnRewardPicked -= m_stateMachine.HandleOnRewardPicked;
+
+            m_mouseHover.Disable();
+            m_inventory.Disable();
         }
     }
 }

@@ -6,11 +6,11 @@ namespace MagmaHeart.Core.StateMachines
 
         public StateMachine(IState startState) => m_currentState = startState;
 
-        public void ChangeState(IState state, params object[] args)
+        public void ChangeState(IState state)
         {
             m_currentState?.Exit();
             m_currentState = state;
-            m_currentState.Enter(args);
+            m_currentState.Enter();
         }
     }
 }

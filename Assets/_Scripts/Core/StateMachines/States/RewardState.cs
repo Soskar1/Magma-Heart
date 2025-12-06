@@ -1,23 +1,28 @@
-using System.Collections.Generic;
+using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 
 namespace MagmaHeart.Core.StateMachines
 {
     public class RewardState : IState
     {
-        private readonly List<IRewardStateListener> m_listeners;
+        private readonly BattleReward m_battleReward;
+        private readonly Player m_player;
 
-        public RewardState(List<IRewardStateListener> listeners) => m_listeners = listeners;
-
-        public void Enter(params object[] args)
+        public RewardState(BattleReward battleReward, Player player)
         {
-            foreach (IRewardStateListener listener in m_listeners)
-                listener.EnterRewardState();
+            m_battleReward = battleReward;
+            m_player = player;
+        }
+
+        public void Enter()
+        {
+            m_battleReward.Calculate();
+            m_player.Animation.PlayIdleAnimation();
         }
 
         public void Exit()
         {
-            foreach (IRewardStateListener listener in m_listeners)
-                listener.ExitRewardState();
+
         }
     }
 }
