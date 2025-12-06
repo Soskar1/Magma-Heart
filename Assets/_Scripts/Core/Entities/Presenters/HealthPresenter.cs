@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.Entities.Presenters
 
         private void HandleOnHealthChangedEvent(object obj, OnHealthChangedEventArgs e) => UpdateHealthBar(e.CurrentHealth, e.MaxHealth);
 
-        private void UpdateHealthBar(float currentHealth, float maxHealth)
+        public void UpdateHealthBar(float currentHealth, float maxHealth)
         {
             m_healthBar.fillAmount = currentHealth / maxHealth;
             m_text.text = $"{currentHealth}/{maxHealth}";

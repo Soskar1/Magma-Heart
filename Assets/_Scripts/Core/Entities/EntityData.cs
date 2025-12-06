@@ -10,5 +10,11 @@ namespace MagmaHeart.Core.Entities
 
         public string Name => m_name;
         public EntityStats Stats => m_stats;
+
+        public EntityData(string name, EntityStats stats)
+        {
+            m_name = name;
+            m_stats = stats;
+        }
     }
 }
