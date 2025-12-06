@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Presentation
 {
-    public class ActionHoverHandler : IHoverHandler
+    public class RaycastHoverHandler : IHoverHandler
     {
         private Entity m_currentEntity;
 

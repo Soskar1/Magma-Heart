@@ -7,13 +7,13 @@ namespace MagmaHeart.Core.StateMachines
     {
         private readonly PlayerController m_controller;
         private readonly HoverManager m_mouseHover;
-        private readonly ActionHoverHandler m_actionHoverHandler;
+        private readonly RaycastHoverHandler m_actionHoverHandler;
 
         public ActionState(PlayerController controller, HoverManager mouseHover)
         {
             m_controller = controller;
             m_mouseHover = mouseHover;
-            m_actionHoverHandler = new ActionHoverHandler();
+            m_actionHoverHandler = new RaycastHoverHandler();
         }
 
         public void Enter()
