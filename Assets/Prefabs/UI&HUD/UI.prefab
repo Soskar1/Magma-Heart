@@ -503,7 +503,6 @@ GameObject:
   - component: {fileID: 6350108026552781274}
   - component: {fileID: 7343314124994596682}
   - component: {fileID: 2233027685484516101}
-  - component: {fileID: 6369356148353499601}
   m_Layer: 5
   m_Name: EndTurnButton
   m_TagString: Untagged
@@ -613,18 +612,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6369356148353499601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2335779659382844979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97d79e187502e8f4cb190b75e4185f01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2475042544239473167
 GameObject:
   m_ObjectHideFlags: 0
