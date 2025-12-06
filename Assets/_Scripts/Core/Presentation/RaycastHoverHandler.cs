@@ -32,7 +32,9 @@ namespace MagmaHeart.Core.Presentation
             }
             else
             {
-                m_currentEntity?.Outline.RemoveOutline();
+                if (m_currentEntity != null)
+                    m_currentEntity.Outline.RemoveOutline();
+
                 m_currentEntity = null;
             }
         }
