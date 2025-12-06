@@ -59,7 +59,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public override void EndBattle()
         {
             base.EndBattle();
-            m_userInput.Disable();
 
             m_cancellationTokenSource.Cancel();
         }
