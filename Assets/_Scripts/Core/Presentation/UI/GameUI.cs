@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(player);
             m_energyHUD.Initialize(player);
-            m_entityInfoUI.Initialize(mouseHover);
+            m_entityInfoUI.Initialize(mouseHover, battle);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;

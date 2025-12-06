@@ -22,6 +22,7 @@ namespace MagmaHeart.Core.CombatSystem
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
         public event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
+        public event EventHandler<OnEntityDiedEventArgs> OnEntityDied;
 
         private bool m_battleEnded = false;
 
@@ -113,6 +114,9 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
+
+            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entityModel);
+            OnEntityDied?.Invoke(this, args);
         }
 
         private void End(bool isPlayerVictory)
