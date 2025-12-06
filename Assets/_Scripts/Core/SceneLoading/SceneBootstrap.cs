@@ -116,7 +116,7 @@ namespace MagmaHeart.Core.SceneLoading
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
 
-            RewardState rewardState = new RewardState(m_battleReward);
+            RewardState rewardState = new RewardState(m_battleReward, player);
 
             m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
             m_battle.OnBattleStarted += m_stateMachine.HandleOnBattleStarted;
