@@ -31,7 +31,6 @@ namespace MagmaHeart.Core.Presentation.UI
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                Debug.Log("Left mouse click detected on panel!");
                 OnCardClickedArgs args = new OnCardClickedArgs(m_currentArtifactData);
                 OnArtifactDataPicked?.Invoke(this, args);
             }

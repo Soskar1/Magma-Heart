@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.Entities
             m_grid = grid;
 
             Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
-            Model = new EntityModel(m_data.Stats, getCurrentTilePosition, isPlayer);
+            Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();
             Facing = GetComponent<Facing>();

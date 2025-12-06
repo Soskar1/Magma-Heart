@@ -22,6 +22,7 @@ namespace MagmaHeart.Core.CombatSystem
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
         public event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;
+        public event EventHandler<OnEntityDiedEventArgs> OnEntityDied;
 
         private bool m_battleEnded = false;
 
@@ -37,7 +38,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom = room;
 
             m_currentRoom.AddEntityToInspect(m_player);
-            for (int i = 0; i < 1; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
                 Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
                 m_currentRoom.AddEntityToInspect(spawnedEntity);
@@ -113,6 +114,9 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
+
+            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entityModel);
+            OnEntityDied?.Invoke(this, args);
         }
 
         private void End(bool isPlayerVictory)
