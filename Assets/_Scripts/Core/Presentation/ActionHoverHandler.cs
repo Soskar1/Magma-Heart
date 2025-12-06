@@ -33,7 +33,9 @@ namespace MagmaHeart.Core.Presentation
 
         public void ClearHover()
         {
-            m_currentEntity?.Outline.RemoveOutline();
+            if (m_currentEntity != null)
+                m_currentEntity?.Outline.RemoveOutline();
+
             m_currentEntity = null;
         }
     }
