@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerTurnContext : EntityTurnContext
     {
-        private readonly UserInput m_userInput;
+        private readonly MouseListener m_mouseListener;
 
         private readonly AttackAction m_attackAction;
         private readonly ActionSelector m_actionSelectorChain;
@@ -36,9 +36,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnContext(EntityModel model, UserInput userInput) : base(model)
+        public PlayerTurnContext(EntityModel model, MouseListener mouseListener) : base(model)
         {
-            m_userInput = userInput;
+            m_mouseListener = mouseListener;
 
             m_attackAction = model.PossibleActions.Get<AttackAction>();
             MovementAction movementAction = model.PossibleActions.Get<MovementAction>();
@@ -50,7 +50,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public override void StartBattle(CombatBoardState combatBoardState)
         {
             base.StartBattle(combatBoardState);
-            m_userInput.Enable();
 
             // Move player at the center of the current standing tile
             RoomTile roomTile = CurrentRoom.GetRoomTile(TypedModel.GetCurrentTilePosition());
@@ -69,7 +68,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             Task task = base.StartTurnTask();
 
-            m_userInput.OnLeftMouseButtonClick += HandleOnLeftMouseButtonClick;
+            m_mouseListener.OnGameLeftMouseButtonClick += HandleOnLeftMouseButtonClick;
             CanExecuteActions = true;
 
             return task;
@@ -77,7 +76,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public override void EndTurn()
         {
-            m_userInput.OnLeftMouseButtonClick -= HandleOnLeftMouseButtonClick;
+            m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnLeftMouseButtonClick;
 
             CanExecuteActions = false;
 
@@ -102,7 +101,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             return null;
         }
 
-        private async void HandleOnLeftMouseButtonClick(object sender, EventArgs e)
+        private async void HandleOnLeftMouseButtonClick()
         {
             if (m_currentAction == null || !CanExecuteActions)
                 return;

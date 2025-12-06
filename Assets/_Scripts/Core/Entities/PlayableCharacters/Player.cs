@@ -12,11 +12,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public event Action<Collider2D> OnTriggerEnter;
         public event Action<Collider2D> OnTriggerExit;
 
-        public void Initialize(UserInput userInput, DungeonGrid grid)
+        public void Initialize(UserInput userInput, MouseListener mouseListener, DungeonGrid grid)
         {
             base.Initialize(grid, true);
 
-            TurnContext = new PlayerTurnContext(Model, userInput);
+            TurnContext = new PlayerTurnContext(Model, mouseListener);
             Controller = new PlayerController(this, userInput);
         }
 

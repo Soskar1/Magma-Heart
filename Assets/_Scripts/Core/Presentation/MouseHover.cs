@@ -7,7 +7,7 @@ namespace MagmaHeart.Core.Presentation
 {
     public class MouseHover
     {
-        private readonly MousePositionListener m_mousePositionListener;
+        private readonly MouseListener m_mousePositionListener;
         private readonly PlayerTurnContext m_turnContext;
         private readonly RaycastHoverHandler m_raycastHoverHandler;
         private readonly CombatHoverHandler m_combatHoverHandler;
@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Presentation
 
         private readonly Battle m_battle;
 
-        public MouseHover(MousePositionListener mousePositionListener, PlayerTurnContext playerTurnContext, Battle battle)
+        public MouseHover(MouseListener mousePositionListener, PlayerTurnContext playerTurnContext, Battle battle)
         {
             m_mousePositionListener = mousePositionListener;
             m_turnContext = playerTurnContext;

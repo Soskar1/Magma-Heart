@@ -52,6 +52,6 @@ MonoBehaviour:
   m_teleporterPrefab: {fileID: 7001880076195291559, guid: bd596004a1ef0424ba53365e88845e9b, type: 3}
   m_combatAltarPrefab: {fileID: 8918392495559026645, guid: b4ea2020421ad15429d6d334566dcddb, type: 3}
   m_combatTilemapRendererPrefab: {fileID: 3941165013236252738, guid: 5d0c3fea19cbeba4d98b553af3557640, type: 3}
-  m_mousePositionListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
+  m_mouseListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
   m_enemyPrefab: {fileID: 5564779713819671306, guid: 742862497be07974a8a888e2f832ee26, type: 3}
   m_minDistanceFromPlayer: 2

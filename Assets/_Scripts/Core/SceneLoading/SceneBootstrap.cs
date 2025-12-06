@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private Teleporter m_teleporterPrefab;
         [SerializeField] private CombatAltar m_combatAltarPrefab;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRendererPrefab;
-        [SerializeField] private MousePositionListener m_mousePositionListenerPrefab;
+        [SerializeField] private MouseListener m_mouseListenerPrefab;
 
         [Header("Spawner Settings")]
         [SerializeField] private Enemy m_enemyPrefab;
@@ -46,12 +46,16 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Inventory m_inventory;
         private MouseHover m_mouseHover;
+        private MouseListener m_mouseListener;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void BootScene()
         {
             m_userInput = new UserInput();
+
+            m_mouseListener = Instantiate(m_mouseListenerPrefab);
+            m_mouseListener.Initialize(m_userInput);
 
             m_grid = Instantiate(m_gridPrefab);
             m_grid.Initialize();
@@ -74,7 +78,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             Player spawnedPlayer = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            spawnedPlayer.Initialize(m_userInput, m_grid);
+            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid);
 
             if (m_sceneLoader.SavedData != null)
             {
@@ -106,9 +110,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         private void InitializeStateMachine(Player player)
         {
-            MousePositionListener mousePositionListener = Instantiate(m_mousePositionListenerPrefab);
-            mousePositionListener.Initialize(m_userInput);
-            m_mouseHover = new MouseHover(mousePositionListener, (PlayerTurnContext)player.TurnContext, m_battle);
+            m_mouseHover = new MouseHover(m_mouseListener, (PlayerTurnContext)player.TurnContext, m_battle);
 
             ActionState actionState = new ActionState(player.Controller, m_mouseHover);
             CombatState combatState = new CombatState(m_camera, m_grid, m_mouseHover);

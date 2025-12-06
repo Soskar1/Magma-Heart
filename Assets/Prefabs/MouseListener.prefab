@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6724807745042386838}
   - component: {fileID: 2527205584613921446}
   m_Layer: 0
-  m_Name: MousePositionListener
+  m_Name: MouseListener
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
