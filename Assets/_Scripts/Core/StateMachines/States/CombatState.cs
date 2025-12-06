@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.StateMachines
         {
             m_camera.SwitchToTurnBasedCamera();
             m_grid.Corridors.gameObject.SetActive(true);
-            m_mouseHover.UseCombatHover();
+            m_mouseHover.UseTileHover();
         }
 
         public void Exit()

@@ -3,11 +3,10 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using UnityEngine;
 
 namespace MagmaHeart.Core.Presentation
 {
-    public class CombatHoverHandler : IHoverHandler
+    public class CombatHoverHandler : IHoverHandler<CombatHoverResult>
     {
         private readonly PlayerTurnContext m_turnContext;
         private RoomTile m_currentTile;
@@ -17,33 +16,25 @@ namespace MagmaHeart.Core.Presentation
 
         public CombatHoverHandler(PlayerTurnContext playerTurnContext) => m_turnContext = playerTurnContext;
 
-        public void HandleHover(Vector2 worldPosition)
+        public void HandleHoverResult(CombatHoverResult hoverResult)
         {
-            Vector3Int tilePosition = Room.Grid.WorldToTilePosition(worldPosition);
-            RoomTile hoveredTile = Room.GetRoomTile(tilePosition);
-            Room.TryGetEntity(hoveredTile, out Entity entity);
-
-            if (m_currentTile == hoveredTile)
+            if (m_currentTile == hoverResult.RoomTile)
                 return;
 
-            if (m_currentEntity != entity)
-                m_currentEntity?.Outline.RemoveOutline();
+            if (m_currentEntity != null && hoverResult.Entity != m_currentEntity)
+                m_currentEntity.Outline.RemoveOutline();
 
-            if (m_currentTile != null)
-                Room.HideCombatTileAt(m_currentTile);
-            
-            m_currentTile = hoveredTile;
-            m_currentEntity = entity;
+            if (m_currentTile != null && hoverResult.RoomTile != m_currentTile)
+                Room?.HideCombatTileAt(m_currentTile);
 
-            if (hoveredTile != null)
-                HandleHover();
-        }
+            m_currentEntity = hoverResult.Entity;
+            m_currentTile = hoverResult.RoomTile;
 
-        private void HandleHover()
-        {
+            if (m_currentTile == null)
+                return;
+
             UnitAction possibleAction = m_turnContext.SelectAction(m_currentTile);
 
-            // TODO: use strategy pattern
             if (possibleAction == null && m_currentEntity != null)
             {
                 if (m_currentEntity.Model.IsPlayer)
@@ -71,5 +62,7 @@ namespace MagmaHeart.Core.Presentation
             m_currentEntity = null;
             m_currentTile = null;
         }
+
+        public void HandleHoverResult(HoverResult hoverResult) => HandleHoverResult((CombatHoverResult)hoverResult);
     }
 }

@@ -1,6 +1,7 @@
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
+using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Presentation
@@ -9,19 +10,28 @@ namespace MagmaHeart.Core.Presentation
     {
         private readonly MouseListener m_mousePositionListener;
         private readonly PlayerTurnContext m_turnContext;
-        private readonly RaycastHoverHandler m_raycastHoverHandler;
-        private readonly CombatHoverHandler m_combatHoverHandler;
-        private IHoverHandler m_currentHandler;
         private Vector2 m_currentMousePosition;
 
+        private IMouseHoverStrategy m_currentHoverStrategy;
+        private readonly RaycastMouseHoverStrategy m_raycastHoverStrategy;
+        private readonly TileMouseHoverStrategy m_tileHoverStrategy;
+
+        private IHoverHandler m_currentHandler;
+        private readonly ActionHoverHandler m_actionHandler;
+        private readonly CombatHoverHandler m_combatHandler;
+
         private readonly Battle m_battle;
+
+        public event EventHandler<OnMouseHoverEventArgs> OnMouseHover;
 
         public MouseHover(MouseListener mousePositionListener, PlayerTurnContext playerTurnContext, Battle battle)
         {
             m_mousePositionListener = mousePositionListener;
             m_turnContext = playerTurnContext;
-            m_raycastHoverHandler = new RaycastHoverHandler();
-            m_combatHoverHandler = new CombatHoverHandler(playerTurnContext);
+            m_raycastHoverStrategy = new RaycastMouseHoverStrategy();
+            m_tileHoverStrategy = new TileMouseHoverStrategy(playerTurnContext);
+            m_actionHandler = new ActionHoverHandler();
+            m_combatHandler = new CombatHoverHandler(playerTurnContext);
 
             m_mousePositionListener.OnMouseWorldPositionChanged += HandleOnMousePositionChanged;
             m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
@@ -39,38 +49,54 @@ namespace MagmaHeart.Core.Presentation
             m_battle.OnTurnSwitched -= HandleOnTurnSwitched;
         }
 
-        public void UseRaycastHover() => m_currentHandler = m_raycastHoverHandler;
-        public void UseCombatHover() => m_currentHandler = m_combatHoverHandler;
+        public void UseRaycastHover()
+        {
+            m_currentHandler?.ClearHover();
+            m_currentHoverStrategy = m_raycastHoverStrategy;
+            m_currentHandler = m_actionHandler;
+        }
+
+        public void UseTileHover()
+        {
+            m_currentHandler?.ClearHover();
+            m_currentHoverStrategy = m_tileHoverStrategy;
+            m_currentHandler = m_combatHandler;
+        }
+
         private void HandleOnMousePositionChanged(object obj, OnMouseWorldPositionChangedEventArgs args)
         {
             m_currentMousePosition = args.WorldPosition;
-            TriggerHover();
+            Hover();
         }
 
         private void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            m_currentHandler.ClearHover();
-
             if (args.CurrentEntity.Model.IsPlayer)
-                UseCombatHover();
+                UseTileHover();
             else
                 UseRaycastHover();
         }
 
-        private void TriggerHover() => m_currentHandler?.HandleHover(m_currentMousePosition);
+        private void Hover()
+        {
+            HoverResult hoverResult = m_currentHoverStrategy?.Hover(m_currentMousePosition);
+            
+            OnMouseHoverEventArgs args = new OnMouseHoverEventArgs(hoverResult);
+            OnMouseHover?.Invoke(this, args);
+
+            m_currentHandler?.HandleHoverResult(hoverResult);
+        }
 
         private void HandleOnCombatActionExecutionStarted()
         {
-            m_currentHandler.ClearHover();
             UseRaycastHover();
-            TriggerHover();
+            Hover();
         }
 
         private void HandleOnCombatActionExecuted()
         {
-            m_currentHandler.ClearHover();
-            UseCombatHover();
-            TriggerHover();
+            UseTileHover();
+            Hover();
         }
     }
 }
