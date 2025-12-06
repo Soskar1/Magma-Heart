@@ -260,10 +260,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a768fe2e5037eee41a83108f961c5fa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_nameText: {fileID: 0}
-  m_rarityText: {fileID: 0}
-  m_descriptionText: {fileID: 0}
-  m_image: {fileID: 0}
+  m_nameText: {fileID: 1207135074887986285}
+  m_rarityText: {fileID: 8383316356925559091}
+  m_descriptionText: {fileID: 3945048419506178175}
+  m_image: {fileID: 97557900550092295}
 --- !u!1 &3144041596289573897
 GameObject:
   m_ObjectHideFlags: 0
