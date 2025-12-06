@@ -21,7 +21,9 @@ namespace MagmaHeart.Core.Presentation
 
             if (result.Entity != m_currentEntity)
             {
-                m_currentEntity?.Outline.RemoveOutline();
+                if (m_currentEntity != null)
+                    m_currentEntity.Outline.RemoveOutline();
+
                 m_currentEntity = result.Entity;
 
                 if (m_currentEntity.Model.IsPlayer)
