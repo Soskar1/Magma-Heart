@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: debfd526cb48a88449c718d2e6a25ca6
+guid: 9fb0eaa84fadd2f4e87b799da7badf5e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5153531809242559238
-    second: WarriorPortrait_0
+      213: -7564061221341227531
+    second: UnknownEntity_0
+  - first:
+      213: -4362740081193281569
+    second: UnknownEntity_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WarriorPortrait_0
+      name: UnknownEntity_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 1
-        width: 20
-        height: 35
+        x: 3
+        y: 13
+        width: 16
+        height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 603349c30e5058740800000000000000
-      internalID: 5153531809242559238
+      spriteID: 5f516a2356e070790800000000000000
+      internalID: -7564061221341227531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnknownEntity_1
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 6
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd79d1dc20f6473c0800000000000000
+      internalID: -4362740081193281569
       vertices: []
       indices: 
       edges: []
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      WarriorPortrait_0: 5153531809242559238
+      UnknownEntity_0: -7564061221341227531
+      UnknownEntity_1: -4362740081193281569
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

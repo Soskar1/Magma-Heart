@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: debfd526cb48a88449c718d2e6a25ca6
+guid: 32b06dd740361094a943cb7d4c19e8ab
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5153531809242559238
-    second: WarriorPortrait_0
+      213: 4260164725371602845
+    second: PortraitBG_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WarriorPortrait_0
+      name: PortraitBG_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 1
-        width: 20
-        height: 35
+        x: 0
+        y: 0
+        width: 24
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 603349c30e5058740800000000000000
-      internalID: 5153531809242559238
+      spriteID: d978c641f352f1b30800000000000000
+      internalID: 4260164725371602845
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      WarriorPortrait_0: 5153531809242559238
+      PortraitBG_0: 4260164725371602845
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
