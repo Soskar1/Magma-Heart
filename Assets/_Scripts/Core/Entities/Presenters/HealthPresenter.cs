@@ -37,7 +37,9 @@ namespace MagmaHeart.Core.Entities.Presenters
         public void UpdateHealthBar(float currentHealth, float maxHealth)
         {
             m_healthBar.fillAmount = currentHealth / maxHealth;
-            m_text.text = $"{currentHealth}/{maxHealth}";
+
+            if (m_text != null)
+                m_text.text = $"{currentHealth}/{maxHealth}";
         }
     }
 }

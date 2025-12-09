@@ -1,4 +1,5 @@
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private EnergyPresenter m_energyHUD;
         [SerializeField] private RewardUI m_rewardUI;
         [SerializeField] private EntityInfoUI m_entityInfoUI;
+        [SerializeField] private TurnOrderPresenter m_battleTurnOrder;
 
         public RewardUI RewardUI => m_rewardUI;
 
@@ -23,6 +25,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_endTurnButton.Initialize(player);
             m_energyHUD.Initialize(player);
             m_entityInfoUI.Initialize(mouseHover, battle);
+            m_battleTurnOrder.Initialize(battle);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;

@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private void DisplayEntityInfo(EntityModel model)
         {
-            m_entityName.text = model.Name;
+            m_entityName.text = model.Data.Name;
             m_healthPresenter.Register(model.Health);
         }
 

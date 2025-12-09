@@ -6,9 +6,11 @@ namespace MagmaHeart.Core.Entities
     public class EntityData : ScriptableObject
     {
         [SerializeField] private string m_name;
+        [SerializeField] private Sprite m_portraitImage;
         [SerializeField] private EntityStats m_stats;
 
         public string Name => m_name;
+        public Sprite PortraitImage => m_portraitImage;
         public EntityStats Stats => m_stats;
 
         public EntityData(string name, EntityStats stats)

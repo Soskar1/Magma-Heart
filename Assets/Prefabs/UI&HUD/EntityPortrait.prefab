@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7386951378813828958}
   - component: {fileID: 326492395814009827}
   - component: {fileID: 6075793584165449141}
+  - component: {fileID: 5593963246673625957}
   m_Layer: 5
   m_Name: HP
   m_TagString: Untagged
@@ -75,6 +76,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5593963246673625957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2284953985830823040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 253578c25bdf146409138d7fff9e8618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_healthBar: {fileID: 6075793584165449141}
+  m_text: {fileID: 0}
 --- !u!1 &4412179369628445297
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,6 +174,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7505891651770064127}
+  - component: {fileID: 5578440348063476408}
   m_Layer: 5
   m_Name: EntityPortrait
   m_TagString: Untagged
@@ -189,6 +205,20 @@ RectTransform:
   m_AnchoredPosition: {x: 9.6944, y: 214.7}
   m_SizeDelta: {x: 18.9742, y: 38.0321}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5578440348063476408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6319791418154458788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a425e8df3ced9e4bbf5f44944b55fac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_healthPresenter: {fileID: 5593963246673625957}
+  m_portrait: {fileID: 4294792022853487554}
 --- !u!1 &7127108422524992921
 GameObject:
   m_ObjectHideFlags: 0

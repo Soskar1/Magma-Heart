@@ -96,6 +96,9 @@ namespace MagmaHeart.Core.CombatSystem
             entityModel.Health.OnHealthChanged -= handler;
             m_healthHandlers.Remove(entityModel);
 
+            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
+            OnEntityDied?.Invoke(this, args);
+
             if (entityModel.IsPlayer)
             {
                 End(isPlayerVictory: false);
@@ -114,9 +117,6 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
-
-            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
-            OnEntityDied?.Invoke(this, args);
         }
 
         private void End(bool isPlayerVictory)

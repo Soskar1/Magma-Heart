@@ -468,6 +468,7 @@ MonoBehaviour:
   m_energyHUD: {fileID: 2256596116238844227}
   m_rewardUI: {fileID: 7447906932855217904}
   m_entityInfoUI: {fileID: 7084399564829114419}
+  m_battleTurnOrder: {fileID: 5185239101140423877}
 --- !u!1 &2090010933572652575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,6 +1598,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7884025818011270506}
   - component: {fileID: 606546120966490645}
+  - component: {fileID: 5185239101140423877}
   m_Layer: 5
   m_Name: TurnOrderUI
   m_TagString: Untagged
@@ -1613,16 +1615,16 @@ RectTransform:
   m_GameObject: {fileID: 6414242063154459385}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.17398, y: 4.17398, z: 4.17398}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7712709044074244730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0, y: -79}
+  m_AnchoredPosition: {x: -0, y: 0}
   m_SizeDelta: {x: 249.71, y: 37.849}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &606546120966490645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1649,6 +1651,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &5185239101140423877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6414242063154459385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9591a8536ba40fd45b1e800bf0879c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_entityPresenterPrefab: {fileID: 5578440348063476408, guid: d415b9e8e2472a84384d655bc0e92651, type: 3}
 --- !u!1 &6523119599973873577
 GameObject:
   m_ObjectHideFlags: 0
