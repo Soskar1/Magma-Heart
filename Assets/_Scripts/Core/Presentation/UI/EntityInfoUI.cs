@@ -63,7 +63,7 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private void HandleOnEntityDied(object obj, OnEntityDiedEventArgs args)
         {
-            if (args.Model == m_currentDisplayedEntity)
+            if (args.DiedEntity.Model == m_currentDisplayedEntity)
                 Hide();
         }
     }

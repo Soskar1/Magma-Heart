@@ -115,7 +115,7 @@ namespace MagmaHeart.Core.CombatSystem
 
             GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
 
-            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entityModel);
+            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
             OnEntityDied?.Invoke(this, args);
         }
 
