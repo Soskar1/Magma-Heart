@@ -33,7 +33,7 @@ namespace MagmaHeart.Core.CombatSystem.Presenters
             foreach (TurnContext<EntityModel> turnContext in args.TurnOrder)
             {
                 EntityPresenter presenterInstance = Instantiate(m_entityPresenterPrefab, transform);
-                presenterInstance.Initialize(turnContext.TypedModel);
+                presenterInstance.Initialize(turnContext.TypedModel, m_battle);
 
                 m_currentPresenters.Add(turnContext.TypedModel, presenterInstance);
             }
