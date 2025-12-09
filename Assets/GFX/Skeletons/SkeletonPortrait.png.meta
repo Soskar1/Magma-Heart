@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: fd3ca5fe7ca218a40a66b853bbb8432e
+guid: 20cc788c343b23146af04e5b51549515
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2107674926981308630
-    second: SkeletonWarriorPortrait_0
+      213: -7784474089416338291
+    second: SkeletonPortrait_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 24
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SkeletonWarriorPortrait_0
+      name: SkeletonPortrait_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 46
-        height: 59
+        x: 1
+        y: 1
+        width: 23
+        height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a2f184322d800c2e0800000000000000
-      internalID: -2107674926981308630
+      spriteID: d845b114f0ef7f390800000000000000
+      internalID: -7784474089416338291
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SkeletonWarriorPortrait_0: -2107674926981308630
+      SkeletonPortrait_0: -7784474089416338291
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
