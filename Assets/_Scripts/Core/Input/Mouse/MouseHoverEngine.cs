@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Input.Mouse
 {
@@ -7,6 +8,7 @@ namespace MagmaHeart.Core.Input.Mouse
         private readonly MouseListener m_listener;
         private MouseHoverStrategy m_activeHoverStrategyChain;
         private IHoverHandler m_activeHandler;
+        private Vector2 m_currentMousePosition;
 
         public event EventHandler<OnMouseHoverEventArgs> OnHover;
 
@@ -24,11 +26,19 @@ namespace MagmaHeart.Core.Input.Mouse
         {
             m_activeHandler?.ClearHover();
             m_activeHandler = handler;
+
+            Hover(m_currentMousePosition);
         }
 
         private void HandleMousePositionChanged(object obj, OnMouseWorldPositionChangedEventArgs args)
         {
-            HoverResult result = m_activeHoverStrategyChain.Hover(args.WorldPosition);
+            m_currentMousePosition = args.WorldPosition;
+            Hover(m_currentMousePosition);
+        }
+
+        private void Hover(Vector2 worldPosition)
+        {
+            HoverResult result = m_activeHoverStrategyChain.Hover(worldPosition);
 
             OnHover?.Invoke(this, new OnMouseHoverEventArgs(result));
 

@@ -57,11 +57,11 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
             CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
 
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
-            OnBattleStarted?.Invoke(this, args);
-
             foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);
+
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
+            OnBattleStarted?.Invoke(this, args);
 
             await ProcessBattle();
         }
