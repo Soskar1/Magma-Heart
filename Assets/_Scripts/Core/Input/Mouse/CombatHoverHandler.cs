@@ -67,6 +67,11 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
 
+            if (m_currentTile != null)
+                Room?.HideCombatTileAt(m_currentTile);
+
+            m_currentTile = null;
+
             if (!Room.TryGetEntity(presenter.Model, out Entity entity))
                 return;
 
