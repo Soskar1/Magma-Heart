@@ -96,17 +96,20 @@ namespace MagmaHeart.Core.CombatSystem
             entityModel.Health.OnHealthChanged -= handler;
             m_healthHandlers.Remove(entityModel);
 
-            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
-            OnEntityDied?.Invoke(this, args);
-
             if (entityModel.IsPlayer)
             {
+                GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
                 End(isPlayerVictory: false);
             }
             else
             {
                 m_currentTurnOrder.Remove(entity.TurnContext);
                 m_currentRoom.RemoveEntityFromRoom(entity);
+
+                OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
+                OnEntityDied?.Invoke(this, args);
+
+                GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
 
                 bool anyEnemiesInRoom = m_currentRoom.Models.Any(e => e.IsPlayer == false);
                 if (!anyEnemiesInRoom)
@@ -115,8 +118,6 @@ namespace MagmaHeart.Core.CombatSystem
                     End(isPlayerVictory: true);
                 }
             }
-
-            GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
         }
 
         private void End(bool isPlayerVictory)
