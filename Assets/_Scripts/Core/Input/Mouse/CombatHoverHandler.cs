@@ -67,12 +67,15 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
 
-            //m_currentEntity = presenter.Model;
+            if (!Room.TryGetEntity(presenter.Model, out Entity entity))
+                return;
 
-            //if (m_currentEntity.Model.IsPlayer)
-            //    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
-            //else
-            //    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+            m_currentEntity = entity;
+
+            if (m_currentEntity.Model.IsPlayer)
+                m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
+            else
+                m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
         }
 
         public void Visit(RaycastHoverResult result) { }
