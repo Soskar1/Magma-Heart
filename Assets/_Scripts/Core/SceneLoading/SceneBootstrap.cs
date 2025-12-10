@@ -11,7 +11,7 @@ using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.Presentation;
+using MagmaHeart.Core.Input.Mouse;
 
 namespace MagmaHeart.Core.SceneLoading
 {

@@ -1,5 +1,5 @@
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.Presentation;
+using MagmaHeart.Core.Input.Mouse;
 
 namespace MagmaHeart.Core.StateMachines
 {

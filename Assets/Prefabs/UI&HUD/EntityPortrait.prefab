@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 7505891651770064127}
   - component: {fileID: 5578440348063476408}
   - component: {fileID: 2500043105439559835}
-  - component: {fileID: 6465438163080044540}
+  - component: {fileID: 6285464609769065151}
   m_Layer: 5
   m_Name: EntityPortrait
   m_TagString: Untagged
@@ -360,7 +360,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
---- !u!114 &6465438163080044540
+--- !u!114 &6285464609769065151
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -369,7 +369,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6319791418154458788}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58366a1b7f688f549a80b2d89f6cf255, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b385f00ae043194683ac77ea63c9ddb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7127108422524992921

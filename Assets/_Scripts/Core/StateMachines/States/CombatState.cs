@@ -1,6 +1,6 @@
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Presentation;
+using MagmaHeart.Core.Input.Mouse;
 
 namespace MagmaHeart.Core.StateMachines
 {
