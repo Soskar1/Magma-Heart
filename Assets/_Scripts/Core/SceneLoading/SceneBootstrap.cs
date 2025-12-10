@@ -11,13 +11,13 @@ using UnityEngine;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.Presentation;
+using MagmaHeart.Core.Input.Mouse;
 
 namespace MagmaHeart.Core.SceneLoading
 {
     public class SceneBootstrap : MonoBehaviour
     {
-        [SerializeField] private Player m_player;
+        [SerializeField] private Player m_playerPrefab;
         [SerializeField] private CameraController m_cameraPrefab;
         [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
         [SerializeField] private GameUI m_uiPrefab;
@@ -45,7 +45,7 @@ namespace MagmaHeart.Core.SceneLoading
         private CombatAI m_combatAI;
 
         private Inventory m_inventory;
-        private MouseHover m_mouseHover;
+        private HoverModeController m_hoverModeController;
         private MouseListener m_mouseListener;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
@@ -77,7 +77,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_renderer.RenderedAllTiles -= BootSceneAfterRender;
 
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            Player spawnedPlayer = Instantiate(m_player, (Vector2)startRoom.WorldPosition, Quaternion.identity);
+            Player spawnedPlayer = Instantiate(m_playerPrefab, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid);
 
             if (m_sceneLoader.SavedData != null)
@@ -93,11 +93,12 @@ namespace MagmaHeart.Core.SceneLoading
             Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
             m_battle = new Battle(spawnedPlayer, spawner);
             m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
-
-            m_mouseHover = new MouseHover(m_mouseListener, (PlayerTurnContext)spawnedPlayer.TurnContext, m_battle);
-
+            
+            MouseHoverEngine hoverEngine = new MouseHoverEngine(m_mouseListener);
             m_gameUI = Instantiate(m_uiPrefab);
-            m_gameUI.Initialize(spawnedPlayer, m_battle, m_mouseHover);
+
+            m_hoverModeController = new HoverModeController(hoverEngine, (PlayerTurnContext)spawnedPlayer.TurnContext, m_gameUI.Raycaster);
+            m_gameUI.Initialize(spawnedPlayer, m_battle, hoverEngine);
 
             m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);
 
@@ -107,13 +108,13 @@ namespace MagmaHeart.Core.SceneLoading
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_battleReward);
 
-            InitializeCombatSystem(startRoom, m_stateMachine);
+            InitializeCombatSystem(startRoom);
         }
 
         private void InitializeStateMachine(Player player)
         {
-            ActionState actionState = new ActionState(player.Controller, m_mouseHover);
-            CombatState combatState = new CombatState(m_camera, m_grid, m_mouseHover);
+            ActionState actionState = new ActionState(player.Controller, m_hoverModeController);
+            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverModeController, m_battle, (PlayerTurnContext)player.TurnContext);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
@@ -126,7 +127,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.RewardUI.OnRewardPicked += m_stateMachine.HandleOnRewardPicked;
         }
 
-        private void InitializeCombatSystem(RoomTileData startRoom, GameStateMachine stateMachine)
+        private void InitializeCombatSystem(RoomTileData startRoom)
         {
             RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
@@ -154,7 +155,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
             m_gameUI.RewardUI.OnRewardPicked -= m_stateMachine.HandleOnRewardPicked;
 
-            m_mouseHover.Disable();
+            m_hoverModeController.Disable();
             m_inventory.Disable();
         }
     }

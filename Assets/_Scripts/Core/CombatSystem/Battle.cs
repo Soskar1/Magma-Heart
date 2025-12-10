@@ -57,11 +57,11 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
             CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
 
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
-            OnBattleStarted?.Invoke(this, args);
-
             foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);
+
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
+            OnBattleStarted?.Invoke(this, args);
 
             await ProcessBattle();
         }
@@ -98,12 +98,18 @@ namespace MagmaHeart.Core.CombatSystem
 
             if (entityModel.IsPlayer)
             {
+                GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
                 End(isPlayerVictory: false);
             }
             else
             {
                 m_currentTurnOrder.Remove(entity.TurnContext);
                 m_currentRoom.RemoveEntityFromRoom(entity);
+
+                OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
+                OnEntityDied?.Invoke(this, args);
+
+                GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
 
                 bool anyEnemiesInRoom = m_currentRoom.Models.Any(e => e.IsPlayer == false);
                 if (!anyEnemiesInRoom)
@@ -112,11 +118,6 @@ namespace MagmaHeart.Core.CombatSystem
                     End(isPlayerVictory: true);
                 }
             }
-
-            GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
-
-            OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entityModel);
-            OnEntityDied?.Invoke(this, args);
         }
 
         private void End(bool isPlayerVictory)

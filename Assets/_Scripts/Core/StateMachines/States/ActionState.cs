@@ -1,23 +1,23 @@
 using MagmaHeart.Core.Entities.PlayableCharacters;
-using MagmaHeart.Core.Presentation;
+using MagmaHeart.Core.Input.Mouse;
 
 namespace MagmaHeart.Core.StateMachines
 {
     public class ActionState : IState
     {
         private readonly PlayerController m_controller;
-        private readonly MouseHover m_mouseHover;
+        private readonly HoverModeController m_hoverModeController;
 
-        public ActionState(PlayerController controller, MouseHover mouseHover)
+        public ActionState(PlayerController controller, HoverModeController hoverModeController)
         {
             m_controller = controller;
-            m_mouseHover = mouseHover;
+            m_hoverModeController = hoverModeController;
         }
 
         public void Enter()
         {
             m_controller.Enable();
-            m_mouseHover.UseRaycastHover();
+            m_hoverModeController.UseRaycastHover();
         }
 
         public void Exit()

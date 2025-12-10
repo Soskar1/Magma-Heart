@@ -7,7 +7,6 @@ using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
 using System.Collections.Generic;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {

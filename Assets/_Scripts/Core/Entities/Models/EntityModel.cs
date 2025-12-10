@@ -15,12 +15,12 @@ namespace MagmaHeart.Core.Entities
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
         public EntityStats Stats { get; init; }
-        public string Name { get; init; }
+        public EntityData Data { get; init; }
 
         public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
         {
             Stats = data.Stats;
-            Name = data.Name;
+            Data = data;
 
             GetCurrentTilePosition = getCurrentTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
