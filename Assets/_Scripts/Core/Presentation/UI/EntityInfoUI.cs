@@ -12,22 +12,22 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private HealthPresenter m_healthPresenter;
         [SerializeField] private GameObject m_visual;
         [SerializeField] private TextMeshProUGUI m_entityName;
-        private MouseHover m_mouseHover;
+        private MouseHoverEngine m_mouseHoverEngine;
         private Battle m_battle;
         private EntityModel m_currentDisplayedEntity;
 
-        public void Initialize(MouseHover mouseHover, Battle battle)
+        public void Initialize(MouseHoverEngine mouseHoverEngine, Battle battle)
         {
-            m_mouseHover = mouseHover;
+            m_mouseHoverEngine = mouseHoverEngine;
             m_battle = battle;
 
-            m_mouseHover.OnMouseHover += HandleOnMouseHover;
+            m_mouseHoverEngine.OnHover += HandleOnMouseHover;
             m_battle.OnEntityDied += HandleOnEntityDied;
         }
 
         private void OnDisable()
         {
-            m_mouseHover.OnMouseHover -= HandleOnMouseHover;
+            m_mouseHoverEngine.OnHover -= HandleOnMouseHover;
             m_battle.OnEntityDied -= HandleOnEntityDied;
         }
         

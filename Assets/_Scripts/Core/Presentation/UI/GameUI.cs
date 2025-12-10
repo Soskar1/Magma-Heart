@@ -23,12 +23,12 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private Battle m_battle;
 
-        public void Initialize(Player player, Battle battle, MouseHover mouseHover)
+        public void Initialize(Player player, Battle battle, MouseHoverEngine mouseHoverEngine)
         {
             m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(player);
             m_energyHUD.Initialize(player);
-            m_entityInfoUI.Initialize(mouseHover, battle);
+            m_entityInfoUI.Initialize(mouseHoverEngine, battle);
             m_battleTurnOrder.Initialize(battle);
 
             m_battle = battle;
