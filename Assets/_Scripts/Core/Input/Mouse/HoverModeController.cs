@@ -7,8 +7,9 @@ namespace MagmaHeart.Core.Input.Mouse
     {
         private readonly MouseHoverEngine m_engine;
 
-        private readonly MouseHoverStrategy m_actionStrategy;
-        private readonly MouseHoverStrategy m_combatStrategy;
+        private readonly UIMouseHoverStrategy m_chainHead;
+        private readonly RaycastMouseHoverStrategy m_raycast;
+        private readonly TileMouseHoverStrategy m_tile;
 
         private readonly IHoverHandler m_actionHandler;
         private readonly IHoverHandler m_combatHandler;
@@ -16,11 +17,10 @@ namespace MagmaHeart.Core.Input.Mouse
         public HoverModeController(MouseHoverEngine engine, PlayerTurnContext turnContext, GraphicRaycaster raycaster)
         {
             m_engine = engine;
-            m_actionStrategy = new RaycastMouseHoverStrategy();
 
-            var uiStrategy = new UIMouseHoverStrategy(raycaster);
-            uiStrategy.Next = new TileMouseHoverStrategy(turnContext);
-            m_combatStrategy = uiStrategy;
+            m_chainHead = new UIMouseHoverStrategy(raycaster);
+            m_raycast = new RaycastMouseHoverStrategy();
+            m_tile = new TileMouseHoverStrategy(turnContext);
 
             m_actionHandler = new ActionHoverHandler();
             m_combatHandler = new CombatHoverHandler(turnContext);
@@ -30,13 +30,17 @@ namespace MagmaHeart.Core.Input.Mouse
         
         public void UseRaycastHover()
         {
-            m_engine.SetStrategyChain(m_actionStrategy);
+            m_chainHead.Next = m_raycast;
+
+            m_engine.SetStrategyChain(m_chainHead);
             m_engine.SetHandler(m_actionHandler);
         }
 
         public void UseTileHover()
         {
-            m_engine.SetStrategyChain(m_combatStrategy);
+            m_chainHead.Next = m_tile;
+
+            m_engine.SetStrategyChain(m_chainHead);
             m_engine.SetHandler(m_combatHandler);
         }
     }
