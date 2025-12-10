@@ -49,15 +49,21 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private void HandleOnMouseHover(object obj, OnMouseHoverEventArgs args)
         {
-            Entity entity = args.HoverResult.Entity;
-            if (entity == null || entity.Model.IsPlayer)
+            EntityInfoExtractor extractor = new EntityInfoExtractor();
+            args.HoverResult.Accept(extractor);
+            EntityModel model = extractor.Model;
+
+            if (model == null || model.IsPlayer)
             {
                 Hide();
                 return;
             }
 
-            m_currentDisplayedEntity = entity.Model;
-            DisplayEntityInfo(entity.Model);
+            if (m_currentDisplayedEntity == model)
+                return;
+
+            m_currentDisplayedEntity = model;
+            DisplayEntityInfo(model);
             Show();
         }
 

@@ -6,7 +6,14 @@ namespace MagmaHeart.Core.Presentation
     {
         private Entity m_currentEntity;
 
-        public void HandleHoverResult(HoverResult result)
+        public void ClearHover()
+        {
+            if (m_currentEntity != null)
+                m_currentEntity?.Outline.RemoveOutline();
+
+            m_currentEntity = null;
+        }
+        public void Visit(RaycastHoverResult result)
         {
             if (result.Entity == null)
             {
@@ -33,12 +40,8 @@ namespace MagmaHeart.Core.Presentation
             }
         }
 
-        public void ClearHover()
-        {
-            if (m_currentEntity != null)
-                m_currentEntity?.Outline.RemoveOutline();
+        public void Visit(UIHoverResult result) { }
 
-            m_currentEntity = null;
-        }
+        public void Visit(CombatHoverResult result) { }
     }
 }

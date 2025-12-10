@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Presentation
 {
-    public class TileMouseHoverStrategy : IMouseHoverStrategy
+    public class TileMouseHoverStrategy : MouseHoverStrategy
     {
         private readonly PlayerTurnContext m_turnContext;
 
@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.Presentation
 
         public TileMouseHoverStrategy(PlayerTurnContext playerTurnContext) => m_turnContext = playerTurnContext;
 
-        public HoverResult Hover(Vector2 worldPosition)
+        protected override HoverResult TryHover(Vector2 worldPosition)
         {
             Vector3Int tilePosition = Room.Grid.WorldToTilePosition(worldPosition);
             RoomTile hoveredTile = Room.GetRoomTile(tilePosition);

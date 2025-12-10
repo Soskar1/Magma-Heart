@@ -94,9 +94,8 @@ namespace MagmaHeart.Core.SceneLoading
             m_battle = new Battle(spawnedPlayer, spawner);
             m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
 
-            m_mouseHover = new MouseHover(m_mouseListener, (PlayerTurnContext)spawnedPlayer.TurnContext, m_battle);
-
             m_gameUI = Instantiate(m_uiPrefab);
+            m_mouseHover = new MouseHover(m_mouseListener, (PlayerTurnContext)spawnedPlayer.TurnContext, m_battle, m_gameUI.Raycaster);
             m_gameUI.Initialize(spawnedPlayer, m_battle, m_mouseHover);
 
             m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);

@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Presentation
 {
-    public class RaycastMouseHoverStrategy : IMouseHoverStrategy
+    public class RaycastMouseHoverStrategy : MouseHoverStrategy
     {
-        public HoverResult Hover(Vector2 worldPosition)
+        protected override HoverResult TryHover(Vector2 worldPosition)
         {
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector3.back, Mathf.Infinity);
 
             if (hit.collider != null && hit.collider.TryGetComponent(out Entity entity))
-                return new HoverResult(entity);
+                return new RaycastHoverResult(entity);
 
-            return new HoverResult(null);
+            return new RaycastHoverResult(null);
         }
     }
 }

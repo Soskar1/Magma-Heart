@@ -3,5 +3,8 @@ using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.Presentation
 {
-    public record CombatHoverResult(Entity Entity, RoomTile RoomTile) : HoverResult(Entity);
+    public record CombatHoverResult(Entity Entity, RoomTile RoomTile) : HoverResult
+    {
+        public override void Accept(IHoverResultVisitor visitor) => visitor.Visit(this);
+    }
 }

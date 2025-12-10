@@ -1,6 +1,7 @@
-﻿using MagmaHeart.Core.Entities;
-
-namespace MagmaHeart.Core.Presentation
+﻿namespace MagmaHeart.Core.Presentation
 {
-    public record HoverResult(Entity Entity);
+    public abstract record HoverResult
+    {
+        public abstract void Accept(IHoverResultVisitor visitor);
+    }
 }

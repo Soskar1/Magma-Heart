@@ -3,10 +3,11 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.Presentation
 {
-    public class CombatHoverHandler : IHoverHandler<CombatHoverResult>
+    public class CombatHoverHandler : IHoverHandler
     {
         private readonly PlayerTurnContext m_turnContext;
         private RoomTile m_currentTile;
@@ -16,19 +17,19 @@ namespace MagmaHeart.Core.Presentation
 
         public CombatHoverHandler(PlayerTurnContext playerTurnContext) => m_turnContext = playerTurnContext;
 
-        public void HandleHoverResult(CombatHoverResult hoverResult)
+        public void Visit(CombatHoverResult result)
         {
-            if (m_currentTile == hoverResult.RoomTile)
+            if (m_currentTile == result.RoomTile)
                 return;
 
-            if (m_currentEntity != null && hoverResult.Entity != m_currentEntity)
+            if (m_currentEntity != null && result.Entity != m_currentEntity)
                 m_currentEntity.Outline.RemoveOutline();
 
-            if (m_currentTile != null && hoverResult.RoomTile != m_currentTile)
+            if (m_currentTile != null && result.RoomTile != m_currentTile)
                 Room?.HideCombatTileAt(m_currentTile);
 
-            m_currentEntity = hoverResult.Entity;
-            m_currentTile = hoverResult.RoomTile;
+            m_currentEntity = result.Entity;
+            m_currentTile = result.RoomTile;
 
             if (m_currentTile == null)
                 return;
@@ -52,6 +53,29 @@ namespace MagmaHeart.Core.Presentation
             }
         }
 
+        public void Visit(UIHoverResult result)
+        {
+            if (result.UIElement == null)
+                return;
+
+            EntityPresenter presenter = result.UIElement.GetComponent<EntityPresenter>();
+
+            if (presenter == null)
+                return;
+
+            if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
+                m_currentEntity.Outline.RemoveOutline();
+
+            //m_currentEntity = presenter.Model;
+
+            //if (m_currentEntity.Model.IsPlayer)
+            //    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
+            //else
+            //    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+        }
+
+        public void Visit(RaycastHoverResult result) { }
+
         public void ClearHover()
         {
             m_currentEntity?.Outline.RemoveOutline();
@@ -61,8 +85,6 @@ namespace MagmaHeart.Core.Presentation
 
             m_currentEntity = null;
             m_currentTile = null;
-        }
-
-        public void HandleHoverResult(HoverResult hoverResult) => HandleHoverResult((CombatHoverResult)hoverResult);
+        }        
     }
 }

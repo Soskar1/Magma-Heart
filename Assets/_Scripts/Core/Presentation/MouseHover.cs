@@ -3,6 +3,7 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Presentation
 {
@@ -12,9 +13,10 @@ namespace MagmaHeart.Core.Presentation
         private readonly PlayerTurnContext m_turnContext;
         private Vector2 m_currentMousePosition;
 
-        private IMouseHoverStrategy m_currentHoverStrategy;
+        private MouseHoverStrategy m_currentHoverStrategy;
         private readonly RaycastMouseHoverStrategy m_raycastHoverStrategy;
-        private readonly TileMouseHoverStrategy m_tileHoverStrategy;
+        private readonly UIMouseHoverStrategy m_uiHoverStrategy;
+        private readonly MouseHoverStrategy m_combatHoverStrategy;
 
         private IHoverHandler m_currentHandler;
         private readonly ActionHoverHandler m_actionHandler;
@@ -24,12 +26,17 @@ namespace MagmaHeart.Core.Presentation
 
         public event EventHandler<OnMouseHoverEventArgs> OnMouseHover;
 
-        public MouseHover(MouseListener mousePositionListener, PlayerTurnContext playerTurnContext, Battle battle)
+        public MouseHover(MouseListener mousePositionListener, PlayerTurnContext playerTurnContext, Battle battle, GraphicRaycaster graphicRaycaster)
         {
             m_mousePositionListener = mousePositionListener;
             m_turnContext = playerTurnContext;
+            
             m_raycastHoverStrategy = new RaycastMouseHoverStrategy();
-            m_tileHoverStrategy = new TileMouseHoverStrategy(playerTurnContext);
+            m_uiHoverStrategy = new UIMouseHoverStrategy(graphicRaycaster);
+
+            m_combatHoverStrategy = m_uiHoverStrategy;
+            m_combatHoverStrategy.Next = new TileMouseHoverStrategy(playerTurnContext);
+
             m_actionHandler = new ActionHoverHandler();
             m_combatHandler = new CombatHoverHandler(playerTurnContext);
 
@@ -59,7 +66,7 @@ namespace MagmaHeart.Core.Presentation
         public void UseTileHover()
         {
             m_currentHandler?.ClearHover();
-            m_currentHoverStrategy = m_tileHoverStrategy;
+            m_currentHoverStrategy = m_combatHoverStrategy;
             m_currentHandler = m_combatHandler;
         }
 
@@ -84,7 +91,8 @@ namespace MagmaHeart.Core.Presentation
             OnMouseHoverEventArgs args = new OnMouseHoverEventArgs(hoverResult);
             OnMouseHover?.Invoke(this, args);
 
-            m_currentHandler?.HandleHoverResult(hoverResult);
+            if (m_currentHandler != null && hoverResult != null)
+                hoverResult.Accept(m_currentHandler);
         }
 
         private void HandleOnCombatActionExecutionStarted()
