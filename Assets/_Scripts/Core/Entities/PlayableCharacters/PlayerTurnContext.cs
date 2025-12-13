@@ -43,8 +43,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_attackAction = model.PossibleActions.Get<AttackAction>();
             MovementAction movementAction = model.PossibleActions.Get<MovementAction>();
 
-            m_actionSelectorChain = new AttackActionSelector(m_attackAction);
-            m_actionSelectorChain.Next = new MovementActionSelector(movementAction);
+            m_actionSelectorChain = new AttackActionSelector(m_attackAction, model);
+            m_actionSelectorChain.Next = new MovementActionSelector(movementAction, model);
         }
 
         public override void StartBattle(CombatBoardState combatBoardState)

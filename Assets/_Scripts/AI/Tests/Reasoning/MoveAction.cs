@@ -9,14 +9,14 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         public float m_speed;
 
-        public MoveAction(AIUnitModel actionPossessor, float speed) : base(actionPossessor)
+        public MoveAction(float speed)
         {
             m_speed = speed;
         }
 
         public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState gameState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(ActionPossessor);
+            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
@@ -37,13 +37,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return new List<StateChange>
             {
-                new MovementStateChange(ActionPossessor, possessorPosition.CurrentPosition, tmpPosition)
+                new MovementStateChange(args.Executor, possessorPosition.CurrentPosition, tmpPosition)
             };
         }
 
         public override bool CanExecute(MoveActionArgs args, BoardState gameState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(ActionPossessor);
+            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
 
             if (possessorPosition.Distance(args.Target) <= 1)
                 return false;
@@ -51,12 +51,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
             {
                 Position position = state.GetProperty<Position>(unit);
-                yield return new MoveActionArgs(position.CurrentPosition);
+                yield return new MoveActionArgs(executor, position.CurrentPosition);
             }
         }
     }

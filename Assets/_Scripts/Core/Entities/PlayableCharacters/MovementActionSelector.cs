@@ -8,16 +8,18 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class MovementActionSelector : ActionSelector
     {
         private readonly MovementAction m_movementAction;
+        private readonly EntityModel m_executor;
 
-        public MovementActionSelector(MovementAction movementAction)
+        public MovementActionSelector(MovementAction movementAction, EntityModel executor)
         {
             m_movementAction = movementAction;
+            m_executor = executor;
         }
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
-            Vector2 sourceTile = m_movementAction.ActionPossessor.GetCurrentTilePosition().ToVector2();
-            MovementActionArgs args = new MovementActionArgs(sourceTile, selectedTile.Position.ToVector2());
+            Vector2 sourceTile = m_executor.GetCurrentTilePosition().ToVector2();
+            MovementActionArgs args = new MovementActionArgs(m_executor, sourceTile, selectedTile.Position.ToVector2());
 
             if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
             {

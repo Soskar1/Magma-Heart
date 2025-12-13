@@ -38,7 +38,7 @@ namespace MagmaHeart.Core.Tests
             m_state = new CombatBoardState(room);
         }
 
-        public TurnContext AddEntity(Vector3Int position, bool isPlayer, int maxHealth = 5)
+        public TurnContext<EntityModel> AddEntity(Vector3Int position, bool isPlayer, int maxHealth = 5)
         {
             EntityStats stats = new EntityStats(maxHealth);
             EntityData data = new EntityData("", stats);

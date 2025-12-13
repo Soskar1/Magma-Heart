@@ -15,12 +15,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         public const int ATTACK_DISTANCE = 1;
         public const int ATTACK_DAMAGE = 1;
 
-        public AttackAction(EntityModel actionPossessor) : base(actionPossessor) { }
-
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
-                yield return new AttackActionArgs((EntityModel)unit);
+                yield return new AttackActionArgs((EntityModel)executor, (EntityModel)unit); // TODO: Remove casts
         }
 
         public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => ENERGY_COST;
@@ -31,7 +29,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>
             {
-                new ApplyDamageStateChange(ActionPossessor, args.Target, ATTACK_DAMAGE),
+                new ApplyDamageStateChange(args.TypedExecutor, args.Target, ATTACK_DAMAGE),
             });
         }
 
@@ -41,7 +39,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             if (!result)
                 return result;
 
-            PositionPropertySnapshot possessorPosition = gameState.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+            PositionPropertySnapshot possessorPosition = gameState.GetProperty<PositionPropertySnapshot>(args.TypedExecutor);
             PositionPropertySnapshot targetPosition = gameState.GetProperty<PositionPropertySnapshot>(args.Target);
 
             if (possessorPosition.ManhattanDistance(targetPosition) > ATTACK_DISTANCE)

@@ -26,8 +26,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             if (bestAction == null)
             {
                 bestAction = new BestAction(
-                    new DoNothingAction((EntityModel)m_currentTurnOrder.Current.Model),
-                    ActionArgs.Empty);
+                    new DoNothingAction(),
+                    new ActionArgs(m_currentTurnOrder.Current.Model));
             }
 
             return bestAction;

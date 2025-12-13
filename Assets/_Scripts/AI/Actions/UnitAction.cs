@@ -7,10 +7,6 @@ namespace MagmaHeart.AI.Actions
 {
     public abstract class UnitAction
     {
-        public AIUnitModel ActionPossessor { get; }
-
-        public UnitAction(AIUnitModel actionPossessor) => ActionPossessor = actionPossessor;
-
         public async Task ExecuteAsync(ActionArgs args, BoardState boardState, CancellationToken cancellationToken)
         {
             IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
@@ -26,13 +22,11 @@ namespace MagmaHeart.AI.Actions
         public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
         public abstract bool CanExecute(ActionArgs args, BoardState boardState);
         
-        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets);
+        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets);
     }
 
     public abstract class UnitAction<T> : UnitAction where T : ActionArgs
     {
-        public UnitAction(AIUnitModel actionPossessor) : base(actionPossessor) { }
-
         public async Task ExecuteAsync(T args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
 
         public abstract IEnumerable<StateChange> ProduceChanges(T args, BoardState boardState);

@@ -7,20 +7,13 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public abstract class CombatAction<T> : UnitAction<T> where T : ActionArgs
+    public abstract class CombatAction<T> : UnitAction<T> where T : ActionArgs<EntityModel>
     {
-        public new EntityModel ActionPossessor { get; }
-
-        public CombatAction(EntityModel actionPossessor) : base(actionPossessor)
-        {
-            ActionPossessor = actionPossessor;
-        }
-
         public abstract int GetEnergyCost(T args, BoardState boardState);
 
         public override bool CanExecute(T args, BoardState boardState)
         {
-            EnergyPropertySnapshot energy = boardState.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
+            EnergyPropertySnapshot energy = boardState.GetProperty<EnergyPropertySnapshot>(args.Executor);
 
             if (energy.CurrentEnergy < GetEnergyCost(args, boardState))
                 return false;
@@ -32,7 +25,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         {
             return new List<StateChange>
             {
-                new UpdateEnergyStateChange(ActionPossessor, ActionPossessor.Energy.CurrentEnergy - GetEnergyCost(args, boardState))
+                new UpdateEnergyStateChange(args.TypedExecutor, args.TypedExecutor.Energy.CurrentEnergy - GetEnergyCost(args, boardState))
             };
         }
     }

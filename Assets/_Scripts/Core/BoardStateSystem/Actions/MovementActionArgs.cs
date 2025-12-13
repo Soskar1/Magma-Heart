@@ -1,7 +1,9 @@
-﻿using MagmaHeart.AI.Actions;
+﻿using MagmaHeart.AI;
+using MagmaHeart.AI.Actions;
+using MagmaHeart.Core.Entities;
 using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public record MovementActionArgs(Vector2 SourceTile, Vector2 TileToMove) : ActionArgs;
+    public record MovementActionArgs(EntityModel TypedExecutor, Vector2 SourceTile, Vector2 TileToMove) : ActionArgs<EntityModel>(TypedExecutor);
 }

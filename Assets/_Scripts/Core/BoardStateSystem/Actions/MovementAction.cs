@@ -19,14 +19,14 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         private readonly AStar m_aStar;
         private const int m_movementDistanceInTilesForOneEnergy = 2;
 
-        public MovementAction(EntityModel actionPossessor) : base(actionPossessor)
+        public MovementAction()
         {
             m_aStar = new AStar(AStar.ManhattanDistance);
         }
 
         public override int GetEnergyCost(MovementActionArgs args, BoardState gameState)
         {
-            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Executor);
             List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
 
             if (path == null || !path.Any())
@@ -40,23 +40,23 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         {
             IEnumerable<StateChange> changes = base.ProduceChanges(args, gameState);
 
-            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(ActionPossessor);
+            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Executor);
             List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
 
             return changes.Concat(new List<StateChange>()
             {
-                new MoveEntityStateChange(ActionPossessor, path)
+                new MoveEntityStateChange(args.TypedExecutor, path)
             });
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
             {
-                Vector2 source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position.ToVector2();
+                Vector2 source = state.GetProperty<PositionPropertySnapshot>(executor).Position.ToVector2();
                 Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position.ToVector2();
 
-                EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
+                EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(executor);
 
                 Vector2[] adjacentTiles = new Vector2[]
                 {
@@ -78,7 +78,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                         continue;
 
                     Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy).Last();
-                    yield return new MovementActionArgs(source, targetTile);
+                    yield return new MovementActionArgs((EntityModel)executor, source, targetTile); // TODO: remove casts
                     break;
                 }
             }

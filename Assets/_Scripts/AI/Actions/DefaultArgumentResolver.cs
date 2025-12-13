@@ -12,7 +12,7 @@ namespace MagmaHeart.AI.Actions
                 .Where(u => u != executor)
                 .Where(u => executor.IsPlayer != u.IsPlayer);
 
-            return action.CreateSimulationArguments(state, targets);
+            return action.CreateSimulationArguments(state, executor, targets);
         }
     }
 }

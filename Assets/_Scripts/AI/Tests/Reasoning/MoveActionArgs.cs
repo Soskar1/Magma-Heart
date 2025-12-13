@@ -3,5 +3,5 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    public record MoveActionArgs(Vector2 Target) : ActionArgs;
+    public record MoveActionArgs(AIUnitModel Executor, Vector2 Target) : ActionArgs(Executor);
 }

@@ -1,7 +1,5 @@
 namespace MagmaHeart.AI.Actions
 {
-    public record ActionArgs
-    {
-        public static ActionArgs Empty => new ActionArgs();
-    }
+    public record ActionArgs(AIUnitModel Executor);
+    public record ActionArgs<T>(T TypedExecutor) : ActionArgs(TypedExecutor) where T : AIUnitModel;
 }

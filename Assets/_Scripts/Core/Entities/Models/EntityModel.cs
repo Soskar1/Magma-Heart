@@ -26,8 +26,8 @@ namespace MagmaHeart.Core.Entities
             Health = new HealthModel(Stats.MaxHealth);
             Energy = new EnergyModel(Stats.MaxEnergy);
 
-            PossibleActions.Add(new MovementAction(this));
-            PossibleActions.Add(new AttackAction(this));
+            PossibleActions.Add(new MovementAction());
+            PossibleActions.Add(new AttackAction());
         }
 
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()

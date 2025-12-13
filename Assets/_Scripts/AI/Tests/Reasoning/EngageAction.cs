@@ -11,21 +11,21 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private AttackAction m_damageAction;
         private float m_speed;
 
-        public EngageAction(AIUnitModel actionPossessor, float damage, float speed) : base(actionPossessor)
+        public EngageAction(float damage, float speed)
         {
             m_speed = speed;
-            m_moveAction = new MoveAction(actionPossessor, speed);
-            m_damageAction = new AttackAction(actionPossessor, damage);
+            m_moveAction = new MoveAction(speed);
+            m_damageAction = new AttackAction(damage);
         }
 
         public override IEnumerable<StateChange> ProduceChanges(EngageActionArgs args, BoardState gameState)
         {
             Position targetPosition = gameState.GetProperty<Position>(args.Target);
 
-            MoveActionArgs moveArgs = new MoveActionArgs(targetPosition.CurrentPosition);
+            MoveActionArgs moveArgs = new MoveActionArgs(args.Executor, targetPosition.CurrentPosition);
             IEnumerable<StateChange> movementChanges = m_moveAction.ProduceChanges(moveArgs, gameState);
 
-            AttackActionArgs attackArgs = new AttackActionArgs(args.Target);
+            AttackActionArgs attackArgs = new AttackActionArgs(args.Executor, args.Target);
             IEnumerable<StateChange> attackChanges = m_damageAction.ProduceChanges(attackArgs, gameState);
 
             return movementChanges.Concat(attackChanges).ToList();
@@ -33,7 +33,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override bool CanExecute(EngageActionArgs args, BoardState gameState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(ActionPossessor);
+            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
             Position targetPosition = gameState.GetProperty<Position>(args.Target);
 
             float distance = possessorPosition.Distance(targetPosition);
@@ -43,10 +43,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
-                yield return new EngageActionArgs(unit);
+                yield return new EngageActionArgs(executor, unit);
         }
     }
 }
