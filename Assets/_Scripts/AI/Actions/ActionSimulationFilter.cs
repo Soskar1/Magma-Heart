@@ -5,17 +5,17 @@ namespace MagmaHeart.AI.Actions
 {
     internal class ActionSimulationFilter
     {
-        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, IEnumerable<UnitAction> possibleActions)
+        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, AIUnitModel executor, IArgumentResolver argumentResolver)
         {
             List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
-            foreach (UnitAction action in possibleActions)
+            foreach (UnitAction action in executor.PossibleActions)
             {
                 ActionSimulation actionSimulation = new ActionSimulation(action);
-                List<ActionArgs> possibleSimulations = action.GetArguments(simulation);
+                IEnumerable<ActionArgs> resolvedArguments = argumentResolver.Resolve(action, executor, simulation);
 
-                foreach (ActionArgs args in possibleSimulations)
-                    if (action.CanExecute(args, simulation))
-                        actionSimulation.SimulationArgs.Add(args);
+                foreach (ActionArgs arguments in resolvedArguments)
+                    if (action.CanExecute(arguments, simulation))
+                        actionSimulation.SimulationArgs.Add(arguments);
 
                 if (actionSimulation.SimulationArgs.Count > 0)
                     actionSimulations.Add(actionSimulation);

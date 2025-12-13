@@ -13,6 +13,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
     internal class ActionSimulationFilterTests
     {
         private Board m_board;
+        private DefaultArgumentResolver m_argumentResolver;
 
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
         {
@@ -35,6 +36,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
                     graph.AddNode(new Vector2(i, j), BoardNodeType.Walkable);
 
             m_board = new Board(graph);
+            m_argumentResolver = new DefaultArgumentResolver();
         }
 
         [Test]
@@ -42,10 +44,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, Vector2.zero, false, m_board);
-            List<UnitAction> possibleActions = enemy.PossibleActions.ToList();
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
 
-            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, possibleActions);
+            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, enemy, m_argumentResolver);
             
             Assert.That(actionSimulations.Count, Is.EqualTo(2));
             Assert.That(actionSimulations.Any(a => a.Action is MoveAction));
@@ -63,10 +64,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, new Vector2(5, 3), false, m_board);
-            List<UnitAction> possibleActions = enemy.PossibleActions.ToList();
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
 
-            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, possibleActions);
+            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, enemy, m_argumentResolver);
             
             Assert.That(actionSimulations.Count, Is.EqualTo(3));
             Assert.That(actionSimulations.Any(a => a.Action is MoveAction));
@@ -89,10 +89,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player1 = Entity(10, new Vector2(2, 3), true, m_board);
             Entity player2 = Entity(10, new Vector2(4, 3), true, m_board);
             Entity enemy = Entity(10, new Vector2(3, 3), false, m_board);
-            List<UnitAction> possibleActions = enemy.PossibleActions.ToList();
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
 
-            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, possibleActions);
+            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, enemy, m_argumentResolver);
 
             Assert.That(actionSimulations.Count, Is.EqualTo(2));
             Assert.That(actionSimulations.Any(a => a.Action is AttackAction));

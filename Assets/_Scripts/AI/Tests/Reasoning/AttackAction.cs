@@ -31,6 +31,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             };
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit) => new List<AttackActionArgs>() { new AttackActionArgs(unit) };
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets)
+        {
+            foreach (AIUnitModel unit in targets)
+                yield return new AttackActionArgs(unit);
+        }
     }
 }

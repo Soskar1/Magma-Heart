@@ -25,26 +25,8 @@ namespace MagmaHeart.AI.Actions
 
         public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
         public abstract bool CanExecute(ActionArgs args, BoardState boardState);
-        internal List<ActionArgs> GetArguments(SimulatedBoardState state) // Right now it is a dumb solution
-        {
-            List<ActionArgs> args = new List<ActionArgs>();
-
-            foreach (AIUnitModel unit in state.Board.GetUnits())
-            {
-                if (unit == ActionPossessor)
-                    continue;
-
-                if ((ActionPossessor.IsPlayer && !unit.IsPlayer) ||
-                    (!ActionPossessor.IsPlayer && unit.IsPlayer))
-                {
-                    args.AddRange(CreateSimulationArgument(state, unit));
-                }
-            }
-
-            return args;
-        }
         
-        public abstract IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit);
+        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets);
     }
 
     public abstract class UnitAction<T> : UnitAction where T : ActionArgs

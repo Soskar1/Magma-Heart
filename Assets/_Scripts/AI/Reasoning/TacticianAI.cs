@@ -10,11 +10,14 @@ namespace MagmaHeart.AI.Reasoning
     {
         private int m_depth;
         private Strategy m_strategy;
+        private IArgumentResolver m_argumentResolver;
 
         public TacticianAI(Strategy strategy)
         {
             m_strategy = strategy;
             m_depth = m_strategy.LookAhead;
+
+            m_argumentResolver = new DefaultArgumentResolver();
         }
 
         public BestAction ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)
@@ -26,7 +29,7 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Model.PossibleActions);
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Model, m_argumentResolver);
 
             foreach (ActionSimulation possibleSimulation in possibleSimulations)
             {
@@ -62,7 +65,7 @@ namespace MagmaHeart.AI.Reasoning
                 return m_strategy.EvaluateState(simulation);
 
             currentTurnContext.StartTurn(simulation);
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit.PossibleActions);
+            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit, m_argumentResolver);
 
             if (!currentUnit.IsPlayer)
             {

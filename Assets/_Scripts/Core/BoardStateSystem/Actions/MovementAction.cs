@@ -49,35 +49,38 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             });
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, IEnumerable<AIUnitModel> targets)
         {
-            Vector2 source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position.ToVector2();
-            Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position.ToVector2();
-
-            EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
-
-            Vector2[] adjacentTiles = new Vector2[]
+            foreach (AIUnitModel unit in targets)
             {
+                Vector2 source = state.GetProperty<PositionPropertySnapshot>(ActionPossessor).Position.ToVector2();
+                Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position.ToVector2();
+
+                EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(ActionPossessor);
+
+                Vector2[] adjacentTiles = new Vector2[]
+                {
                 targetPosition + Vector2.up,
                 targetPosition + Vector2.down,
                 targetPosition + Vector2.left,
                 targetPosition + Vector2.right
-            };
+                };
 
-            List<Vector2> roomTiles =
-                adjacentTiles.Where(v => state.Board.Graph.ContainsNode(v) && state.Board.GetNodeType(v) == BoardNodeType.Walkable)
-                .OrderBy(t => DungeonGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
-                .ToList();
+                List<Vector2> roomTiles =
+                    adjacentTiles.Where(v => state.Board.Graph.ContainsNode(v) && state.Board.GetNodeType(v) == BoardNodeType.Walkable)
+                    .OrderBy(t => DungeonGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
+                    .ToList();
 
-            foreach (Vector2 tile in roomTiles)
-            {
-                List<Vector2> path = m_aStar.FindPath(state.Board.Graph, source, tile);
-                if (path == null || !path.Any())
-                    continue;
+                foreach (Vector2 tile in roomTiles)
+                {
+                    List<Vector2> path = m_aStar.FindPath(state.Board.Graph, source, tile);
+                    if (path == null || !path.Any())
+                        continue;
 
-                Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy).Last();
-                yield return new MovementActionArgs(source, targetTile);
-                break;
+                    Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy).Last();
+                    yield return new MovementActionArgs(source, targetTile);
+                    break;
+                }
             }
         }
     }
