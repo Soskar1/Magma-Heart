@@ -107,8 +107,7 @@ namespace MagmaHeart.Core.SceneLoading
             MouseHoverEngine hoverEngine = new MouseHoverEngine(m_mouseListener);
             m_gameUI = Instantiate(m_uiPrefab);
 
-            
-            m_hoverModeController = new HoverModeController(hoverEngine, spawnedPlayer, m_gameUI.Raycaster);
+            m_hoverModeController = new HoverModeController(hoverEngine, m_battle, m_gameUI.Raycaster, spawnedPlayer.CombatController);
             m_gameUI.Initialize(spawnedPlayer, m_battle, hoverEngine);
 
             m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);

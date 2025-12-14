@@ -1,23 +1,24 @@
 ﻿using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Input.Mouse
 {
     public class TileMouseHoverStrategy : MouseHoverStrategy
     {
-        private readonly PlayerTurnContext m_turnContext;
+        private readonly Battle m_battle;
 
-        private Room Room => m_turnContext.CurrentRoom;
-
-        public TileMouseHoverStrategy(PlayerTurnContext playerTurnContext) => m_turnContext = playerTurnContext;
+        public TileMouseHoverStrategy(Battle battle)
+        {
+            m_battle = battle;
+        }
 
         protected override HoverResult TryHover(Vector2 worldPosition)
         {
-            Vector3Int tilePosition = Room.Grid.WorldToTilePosition(worldPosition);
-            RoomTile hoveredTile = Room.GetRoomTile(tilePosition);
-            Room.TryGetEntity(hoveredTile, out Entity entity);
+            Vector3Int tilePosition = m_battle.CurrentRoom.Grid.WorldToTilePosition(worldPosition);
+            RoomTile hoveredTile = m_battle.CurrentRoom.GetRoomTile(tilePosition);
+            m_battle.CurrentRoom.TryGetEntity(hoveredTile, out Entity entity);
 
             return new CombatHoverResult(entity, hoveredTile);
         }

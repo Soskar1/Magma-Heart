@@ -1,7 +1,7 @@
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
 
@@ -9,16 +9,14 @@ namespace MagmaHeart.Core.Input.Mouse
 {
     public class CombatHoverHandler : IHoverHandler
     {
-        private readonly PlayerTurnContext m_turnContext;
+        private readonly Battle m_battle;
         private readonly IActionPreviewProvider m_actionPreviewProvider;
         private RoomTile m_currentTile;
         private Entity m_currentEntity;
 
-        private Room Room => m_turnContext.CurrentRoom;
-
-        public CombatHoverHandler(PlayerTurnContext playerTurnContext, IActionPreviewProvider actionPreviewProvider)
+        public CombatHoverHandler(Battle battle, IActionPreviewProvider actionPreviewProvider)
         {
-            m_turnContext = playerTurnContext;
+            m_battle = battle;
             m_actionPreviewProvider = actionPreviewProvider;
         }
 
@@ -31,7 +29,7 @@ namespace MagmaHeart.Core.Input.Mouse
                 m_currentEntity.Outline.RemoveOutline();
 
             if (m_currentTile != null && result.RoomTile != m_currentTile)
-                Room?.HideCombatTileAt(m_currentTile);
+                m_battle.CurrentRoom?.HideCombatTileAt(m_currentTile);
 
             m_currentEntity = result.Entity;
             m_currentTile = result.RoomTile;
@@ -53,7 +51,7 @@ namespace MagmaHeart.Core.Input.Mouse
             }
             else if (actionPreview.Action is MovementAction)
             {
-                Room.TryDisplayCombatTile(m_currentTile);
+                m_battle.CurrentRoom.TryDisplayCombatTile(m_currentTile);
             }
             else if (actionPreview.Action is AttackAction && m_currentEntity != null)
             {
@@ -75,11 +73,11 @@ namespace MagmaHeart.Core.Input.Mouse
                 m_currentEntity.Outline.RemoveOutline();
 
             if (m_currentTile != null)
-                Room?.HideCombatTileAt(m_currentTile);
+                m_battle.CurrentRoom?.HideCombatTileAt(m_currentTile);
 
             m_currentTile = null;
 
-            if (!Room.TryGetEntity(presenter.Model, out Entity entity))
+            if (!m_battle.CurrentRoom.TryGetEntity(presenter.Model, out Entity entity))
                 return;
 
             m_currentEntity = entity;
@@ -97,7 +95,7 @@ namespace MagmaHeart.Core.Input.Mouse
             m_currentEntity?.Outline.RemoveOutline();
 
             if (m_currentTile != null)
-                Room?.HideCombatTileAt(m_currentTile);
+                m_battle.CurrentRoom?.HideCombatTileAt(m_currentTile);
 
             m_currentEntity = null;
             m_currentTile = null;
