@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class TacticianAITests
+    internal class AIEngineTests
     {
         private EmptyTurnController m_player;
         private Board m_board;
