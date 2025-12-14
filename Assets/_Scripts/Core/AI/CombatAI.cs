@@ -10,12 +10,12 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class CombatAI
     {
-        private readonly TacticianAI m_tactician;
+        private readonly AIEngine m_tactician;
         private TurnOrder m_currentTurnOrder;
         private CombatBoardState m_currentBoardState;
 
         public CombatAI(Strategy strategy) {
-            m_tactician = new TacticianAI(strategy);
+            m_tactician = new AIEngine(strategy);
         }
 
         public BestAction GetBestAction()

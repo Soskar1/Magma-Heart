@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public class TacticianAI
+    public class AIEngine
     {
         private int m_depth;
         private Strategy m_strategy;
         private IArgumentResolver m_argumentResolver;
 
-        public TacticianAI(Strategy strategy)
+        public AIEngine(Strategy strategy)
         {
             m_strategy = strategy;
             m_depth = m_strategy.LookAhead;
