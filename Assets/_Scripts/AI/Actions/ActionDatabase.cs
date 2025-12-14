@@ -11,7 +11,7 @@ namespace MagmaHeart.AI.Actions
         private readonly TypeMap<UnitAction> m_actions = new();
         public IEnumerable<UnitAction> AllActions => m_actions;
 
-        public UnitAction Get<T>() where T : UnitAction => m_actions.Get<T>();
+        public T Get<T>() where T : UnitAction => m_actions.Get<T>();
         public UnitAction Get(Type type) => m_actions.Get(type);
 
         public ActionDatabase(Assembly assembly)

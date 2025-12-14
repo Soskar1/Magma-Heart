@@ -10,7 +10,7 @@ namespace MagmaHeart.AI.Reasoning
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public BasicStrategy(int lookAhead, AIUnitModel player) : base(lookAhead, player) { }
+        public BasicStrategy(AIUnitModel player) : base(player) { }
 
         public override float EvaluateState(SimulatedBoardState state)
         {

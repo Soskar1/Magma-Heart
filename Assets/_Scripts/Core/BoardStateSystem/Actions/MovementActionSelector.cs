@@ -1,29 +1,26 @@
 ﻿using MagmaHeart.BoardStateSystem.Actions;
-using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public class MovementActionSelector : ActionSelector
     {
         private readonly MovementAction m_movementAction;
-        private readonly EntityModel m_executor;
 
-        public MovementActionSelector(MovementAction movementAction, EntityModel executor)
+        public MovementActionSelector(MovementAction movementAction)
         {
             m_movementAction = movementAction;
-            m_executor = executor;
         }
 
-        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
+        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
         {
-            Vector2 sourceTile = m_executor.GetCurrentTilePosition().ToVector2();
+            Vector2 sourceTile = executor.GetCurrentTilePosition().ToVector2();
 
             // TODO: remove constant. Make it configurable per character or action.
             MovementActionPayload payload = new MovementActionPayload(MovementAction.MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY);
-            MovementActionArgs args = new MovementActionArgs(m_executor, sourceTile, selectedTile.Position.ToVector2(), payload);
+            MovementActionArgs args = new MovementActionArgs(executor, sourceTile, selectedTile.Position.ToVector2(), payload);
 
             if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
             {

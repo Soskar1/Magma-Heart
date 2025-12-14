@@ -10,7 +10,10 @@ using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Extensions;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -19,10 +22,12 @@ namespace MagmaHeart.Core.Tests
 {
     internal class AITests : CoreTests
     {
+        private ActionDatabase m_actionDatabase;
+
         private async Task<CombatAI> StartTurn(TurnOrder turnOrder, int lookAhead, AIUnitModel player)
         {
-            AggressiveStrategy strategy = new AggressiveStrategy(lookAhead, player);
-            CombatAI ai = new CombatAI(strategy);
+            AggressiveStrategy strategy = new AggressiveStrategy(player);
+            CombatAI ai = new CombatAI(strategy, m_actionDatabase, lookAhead);
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
             OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(turnOrder, State);
@@ -50,6 +55,20 @@ namespace MagmaHeart.Core.Tests
                     CreateWall(wallPosition.ToVector2());
                 }
             }
+        }
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            Assembly assembly = FindAssembly("MagmaHeart.Core");
+            m_actionDatabase = new ActionDatabase(assembly);
+        }
+
+        Assembly FindAssembly(string assemblyName)
+        {
+            return AppDomain.CurrentDomain
+                .GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == assemblyName);
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.Entities.PlayableCharacters;
+﻿using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Input.Mouse
@@ -14,16 +15,16 @@ namespace MagmaHeart.Core.Input.Mouse
         private readonly IHoverHandler m_actionHandler;
         private readonly IHoverHandler m_combatHandler;
 
-        public HoverModeController(MouseHoverEngine engine, PlayerTurnContext turnContext, GraphicRaycaster raycaster)
+        public HoverModeController(MouseHoverEngine engine, Player player, GraphicRaycaster raycaster)
         {
             m_engine = engine;
 
             m_chainHead = new UIMouseHoverStrategy(raycaster);
             m_raycast = new RaycastMouseHoverStrategy();
-            m_tile = new TileMouseHoverStrategy(turnContext);
+            m_tile = new TileMouseHoverStrategy((PlayerTurnContext)player.TurnContext);
 
             m_actionHandler = new ActionHoverHandler();
-            m_combatHandler = new CombatHoverHandler(turnContext);
+            m_combatHandler = new CombatHoverHandler((PlayerTurnContext)player.TurnContext, player.CombatController);
         }
 
         public void Disable() => m_engine.Disable();

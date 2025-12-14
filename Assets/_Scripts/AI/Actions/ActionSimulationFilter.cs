@@ -5,17 +5,25 @@ namespace MagmaHeart.AI.Actions
 {
     internal class ActionSimulationFilter
     {
-        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, AIUnitModel executor, IArgumentResolver argumentResolver)
+        private readonly IArgumentResolver m_argumentResolver;
+        private readonly ActionDatabase m_database;
+
+        public ActionSimulationFilter(IArgumentResolver argumentResolver, ActionDatabase database)
+        {
+            m_argumentResolver = argumentResolver;
+            m_database = database;
+        }
+
+        public List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, AIUnitModel executor)
         {
             List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
 
-            foreach (ActionEntry entry in executor.PossibleActionEntries)
+            foreach (ActionEntry entry in executor.PossibleActions)
             {
-                // TODO: use database
-                UnitAction action = executor.PossibleActions[entry.ActionType];
+                UnitAction action = m_database.Get(entry.ActionType);
 
                 ActionSimulation actionSimulation = new ActionSimulation(action);
-                IEnumerable<ActionArgs> resolvedArguments = argumentResolver.Resolve(action, executor, entry.Payload, simulation);
+                IEnumerable<ActionArgs> resolvedArguments = m_argumentResolver.Resolve(action, executor, entry.Payload, simulation);
 
                 foreach (ActionArgs arguments in resolvedArguments)
                     if (action.CanExecute(arguments, simulation))

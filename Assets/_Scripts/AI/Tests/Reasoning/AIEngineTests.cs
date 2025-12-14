@@ -5,6 +5,7 @@ using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
@@ -14,6 +15,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private EmptyTurnController m_player;
         private Board m_board;
         private DummyActualGameState m_state;
+        private Assembly m_assembly;
 
         internal class EmptyTurnController : TurnContext
         {
@@ -31,21 +33,20 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
         {
             Entity entity = new Entity(health, position, isPlayer);
-            entity.PossibleActions.Add(new AttackAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(4)));
-
-            entity.PossibleActions.Add(new MoveAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(MoveAction), new MoveActionPayload(3)));
-
-            entity.PossibleActions.Add(new EngageAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(EngageAction), new EngageActionPayload(4, 1)));
-
-            entity.PossibleActions.Add(new RunAwayAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(RunAwayAction), new RunAwayActionPayload(3)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(4)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(MoveAction), new MoveActionPayload(3)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(EngageAction), new EngageActionPayload(4, 1)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(RunAwayAction), new RunAwayActionPayload(3)));
 
             board.AddUnit(position, entity);
             return entity;
         };
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            m_assembly = Assembly.GetExecutingAssembly();
+        }
 
         [SetUp]
         public void SetUp()
@@ -63,8 +64,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
-            BasicStrategy strategy = new BasicStrategy(1, m_player.Model);
-            AIEngine tactician = new AIEngine(strategy);
+            BasicStrategy strategy = new BasicStrategy(m_player.Model);
+            AIEngine tactician = new AIEngine(strategy, new ActionDatabase(m_assembly), 1);
             EmptyTurnController enemy = new EmptyTurnController(Entity(10, Vector2.zero, false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
@@ -78,8 +79,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [TestCase(2)]
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            BasicStrategy strategy = new BasicStrategy(depth, m_player.Model);
-            AIEngine tactician = new AIEngine(strategy);
+            BasicStrategy strategy = new BasicStrategy(m_player.Model);
+            AIEngine tactician = new AIEngine(strategy, new ActionDatabase(m_assembly), depth);
             EmptyTurnController enemy = new EmptyTurnController(Entity(10, new Vector2(5, 3), false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
@@ -91,8 +92,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
-            BasicStrategy strategy = new BasicStrategy(2, m_player.Model);
-            AIEngine tactician = new AIEngine(strategy);
+            BasicStrategy strategy = new BasicStrategy(m_player.Model);
+            AIEngine tactician = new AIEngine(strategy, new ActionDatabase(m_assembly), 2);
             EmptyTurnController enemy = new EmptyTurnController(Entity(1, new Vector2(4, 5), false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 

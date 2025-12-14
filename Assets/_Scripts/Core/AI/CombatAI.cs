@@ -14,8 +14,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         private TurnOrder m_currentTurnOrder;
         private CombatBoardState m_currentBoardState;
 
-        public CombatAI(Strategy strategy) {
-            m_tactician = new AIEngine(strategy);
+        public CombatAI(Strategy strategy, ActionDatabase database, int lookAhead) {
+            m_tactician = new AIEngine(strategy, database, lookAhead);
         }
 
         public BestAction GetBestAction()

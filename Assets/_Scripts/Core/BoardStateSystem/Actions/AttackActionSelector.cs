@@ -1,26 +1,23 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
+﻿using MagmaHeart.Core.Entities;
 
-namespace MagmaHeart.Core.Entities.PlayableCharacters
+namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public class AttackActionSelector : ActionSelector
     {
         private readonly AttackAction m_attack;
-        private readonly EntityModel m_executor;
 
-        public AttackActionSelector(AttackAction action, EntityModel executor)
+        public AttackActionSelector(AttackAction action)
         {
             m_attack = action;
-            m_executor = executor;
         }
 
-        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
+        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
         {
             if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
             {
                 // TODO: remove constants. Move these parameters to config or entity stats
                 AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
-                AttackActionArgs args = new AttackActionArgs(m_executor, payload, target);
+                AttackActionArgs args = new AttackActionArgs(executor, payload, target);
 
                 if (!target.IsPlayer && m_attack.CanExecute(args, combatBoardState))
                 {

@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnitAction = MagmaHeart.AI.Actions.UnitAction;
 
@@ -14,25 +15,25 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         private Board m_board;
         private DefaultArgumentResolver m_argumentResolver;
+        private Assembly m_assembly;
 
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
         {
             Entity entity = new Entity(health, position, isPlayer);
-            entity.PossibleActions.Add(new AttackAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(4)));
-
-            entity.PossibleActions.Add(new MoveAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(MoveAction), new MoveActionPayload(3)));
-
-            entity.PossibleActions.Add(new EngageAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(EngageAction), new EngageActionPayload(4, 1)));
-
-            entity.PossibleActions.Add(new RunAwayAction());
-            entity.PossibleActionEntries.Add(new ActionEntry(typeof(RunAwayAction), new RunAwayActionPayload(3)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(4)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(MoveAction), new MoveActionPayload(3)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(EngageAction), new EngageActionPayload(4, 1)));
+            entity.PossibleActions.Add(new ActionEntry(typeof(RunAwayAction), new RunAwayActionPayload(3)));
             board.AddUnit(position, entity);
 
             return entity;
         };
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            m_assembly = Assembly.GetExecutingAssembly();
+        }   
 
         [SetUp]
         public void SetUp()
@@ -52,8 +53,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, Vector2.zero, false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
+            ActionSimulationFilter filter = new ActionSimulationFilter(m_argumentResolver, new ActionDatabase(m_assembly));
 
-            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, enemy, m_argumentResolver);
+            List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
             
             Assert.That(actionSimulations.Count, Is.EqualTo(2));
             Assert.That(actionSimulations.Any(a => a.Action is MoveAction));
@@ -72,8 +74,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, new Vector2(5, 3), false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
+            ActionSimulationFilter filter = new ActionSimulationFilter(m_argumentResolver, new ActionDatabase(m_assembly));
 
-            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, enemy, m_argumentResolver);
+            List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
             
             Assert.That(actionSimulations.Count, Is.EqualTo(3));
             Assert.That(actionSimulations.Any(a => a.Action is MoveAction));
@@ -97,8 +100,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player2 = Entity(10, new Vector2(4, 3), true, m_board);
             Entity enemy = Entity(10, new Vector2(3, 3), false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
+            ActionSimulationFilter filter = new ActionSimulationFilter(m_argumentResolver, new ActionDatabase(m_assembly));
 
-            List<ActionSimulation> actionSimulations = ActionSimulationFilter.GetActionSimulations(simulation, enemy, m_argumentResolver);
+            List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
 
             Assert.That(actionSimulations.Count, Is.EqualTo(2));
             Assert.That(actionSimulations.Any(a => a.Action is AttackAction));

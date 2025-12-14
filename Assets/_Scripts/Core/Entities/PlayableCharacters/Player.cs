@@ -1,4 +1,5 @@
 using System;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using UnityEngine;
@@ -8,16 +9,19 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class Player : Entity
     {
         public PlayerController Controller { get; private set; }
+        public PlayerCombatController CombatController { get; private set; }
 
         public event Action<Collider2D> OnTriggerEnter;
         public event Action<Collider2D> OnTriggerExit;
 
-        public void Initialize(UserInput userInput, MouseListener mouseListener, DungeonGrid grid)
+        public void Initialize(UserInput userInput, MouseListener mouseListener, DungeonGrid grid, IActionPreviewService previewService)
         {
             base.Initialize(grid, true);
 
-            TurnContext = new PlayerTurnContext(Model, mouseListener);
+            PlayerTurnContext turnContext = new PlayerTurnContext(Model);
+            TurnContext = turnContext;
             Controller = new PlayerController(this, userInput);
+            CombatController = new PlayerCombatController(turnContext, mouseListener, previewService);
         }
 
         private void Update() => Animation.PlayAnimations();

@@ -1,4 +1,3 @@
-using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities;
@@ -11,12 +10,17 @@ namespace MagmaHeart.Core.Input.Mouse
     public class CombatHoverHandler : IHoverHandler
     {
         private readonly PlayerTurnContext m_turnContext;
+        private readonly IActionPreviewProvider m_actionPreviewProvider;
         private RoomTile m_currentTile;
         private Entity m_currentEntity;
 
         private Room Room => m_turnContext.CurrentRoom;
 
-        public CombatHoverHandler(PlayerTurnContext playerTurnContext) => m_turnContext = playerTurnContext;
+        public CombatHoverHandler(PlayerTurnContext playerTurnContext, IActionPreviewProvider actionPreviewProvider)
+        {
+            m_turnContext = playerTurnContext;
+            m_actionPreviewProvider = actionPreviewProvider;
+        }
 
         public void Visit(CombatHoverResult result)
         {
@@ -35,20 +39,23 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentTile == null)
                 return;
 
-            UnitAction possibleAction = m_turnContext.SelectAction(m_currentTile);
+            ActionPreview actionPreview = m_actionPreviewProvider.Preview(m_currentTile);
 
-            if (possibleAction == null && m_currentEntity != null)
+            if (actionPreview == null)
             {
-                if (m_currentEntity.Model.IsPlayer)
-                    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
-                else
-                    m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+                if (m_currentEntity != null)
+                {
+                    if (m_currentEntity.Model.IsPlayer)
+                        m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
+                    else
+                        m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+                }
             }
-            else if (possibleAction is MovementAction)
+            else if (actionPreview.Action is MovementAction)
             {
                 Room.TryDisplayCombatTile(m_currentTile);
             }
-            else if (possibleAction is AttackAction && m_currentEntity != null)
+            else if (actionPreview.Action is AttackAction && m_currentEntity != null)
             {
                 m_currentEntity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
             }

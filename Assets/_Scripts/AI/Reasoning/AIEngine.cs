@@ -8,16 +8,20 @@ namespace MagmaHeart.AI.Reasoning
 {
     public class AIEngine
     {
-        private int m_depth;
+        private readonly int m_depth;
+        private readonly ActionDatabase m_actionDatabase;
+        private readonly ActionSimulationFilter m_filter;
         private Strategy m_strategy;
         private IArgumentResolver m_argumentResolver;
 
-        public AIEngine(Strategy strategy)
+        public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead)
         {
             m_strategy = strategy;
-            m_depth = m_strategy.LookAhead;
+            m_depth = lookAhead;
+            m_actionDatabase = database;
 
             m_argumentResolver = new DefaultArgumentResolver();
+            m_filter = new ActionSimulationFilter(m_argumentResolver, m_actionDatabase);
         }
 
         public BestAction ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)
@@ -29,7 +33,7 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, unitTurns.Value.Model, m_argumentResolver);
+            List<ActionSimulation> possibleSimulations = m_filter.GetActionSimulations(simulation, unitTurns.Value.Model);
 
             foreach (ActionSimulation possibleSimulation in possibleSimulations)
             {
@@ -65,7 +69,7 @@ namespace MagmaHeart.AI.Reasoning
                 return m_strategy.EvaluateState(simulation);
 
             currentTurnContext.StartTurn(simulation);
-            List<ActionSimulation> possibleSimulations = ActionSimulationFilter.GetActionSimulations(simulation, currentUnit, m_argumentResolver);
+            List<ActionSimulation> possibleSimulations = m_filter.GetActionSimulations(simulation, currentUnit);
 
             if (!currentUnit.IsPlayer)
             {
