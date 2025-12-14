@@ -5,15 +5,8 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class RunAwayAction : UnitAction<RunAwayActionArgs>
+    internal class RunAwayAction : UnitAction<RunAwayActionArgs, RunAwayActionPayload>
     {
-        public float m_speed;
-
-        public RunAwayAction(float speed)
-        {
-            m_speed = speed;
-        }
-
         public override IEnumerable<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState gameState)
         {
             Position targetPosition = gameState.GetProperty<Position>(args.RunAwayFrom);
@@ -22,8 +15,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
             Vector2 direction = -(targetPosition.CurrentPosition - tmpPosition);
-            float xMovement = m_speed;
-            float yMovement = m_speed;
+            float xMovement = args.Speed;
+            float yMovement = args.Speed;
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;
@@ -43,10 +36,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override bool CanExecute(RunAwayActionArgs args, BoardState gameState) => true;
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, RunAwayActionPayload payload, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
-                yield return new RunAwayActionArgs(executor, unit);
+                yield return new RunAwayActionArgs(executor, unit, payload.Speed);
         }
     }
 }

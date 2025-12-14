@@ -2,6 +2,7 @@ using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using MagmaHeart.BoardStateSystem.Actions;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
@@ -67,7 +68,8 @@ namespace MagmaHeart.Core.Tests
             BestAction best = ai.GetBestAction();
 
             Assert.That(best.Action, Is.TypeOf<MovementAction>());
-            Assert.That(best.Args, Is.EqualTo(new MovementActionArgs(enemy.TypedModel, enemyPosition.ToVector2(), new Vector2(3, 3))));
+            MovementActionPayload payload = new MovementActionPayload(MovementAction.MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY);
+            Assert.That(best.Args, Is.EqualTo(new MovementActionArgs(enemy.TypedModel, enemyPosition.ToVector2(), new Vector2(3, 3), payload)));
         }
 
         [Test]
@@ -85,7 +87,8 @@ namespace MagmaHeart.Core.Tests
             BestAction best = ai.GetBestAction();
 
             Assert.That(best.Action, Is.TypeOf<AttackAction>());
-            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, player.TypedModel)));
+            AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
+            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, payload, player.TypedModel)));
         }
 
         [Test]
@@ -103,7 +106,8 @@ namespace MagmaHeart.Core.Tests
             BestAction best = ai.GetBestAction();
 
             Assert.That(best.Action, Is.TypeOf<AttackAction>());
-            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, player.TypedModel)));
+            AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
+            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, payload, player.TypedModel)));
         }
 
         [Test]

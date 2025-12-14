@@ -4,15 +4,8 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class AttackAction : UnitAction<AttackActionArgs>
+    internal class AttackAction : UnitAction<AttackActionArgs, AttackActionPayload>
     {
-        public float Damage { get; init; }
-
-        public AttackAction(float damage)
-        {
-            Damage = damage;
-        }
-
         public override bool CanExecute(AttackActionArgs args, BoardState gameState)
         {
             Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
@@ -27,14 +20,14 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
             return new List<StateChange> {
-                new ApplyDamageStateChange(Damage, args.Target)
+                new ApplyDamageStateChange(args.Damage, args.Target)
             };
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, AttackActionPayload payload, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
-                yield return new AttackActionArgs(executor, unit);
+                yield return new AttackActionArgs(executor, unit, payload.Damage);
         }
     }
 }

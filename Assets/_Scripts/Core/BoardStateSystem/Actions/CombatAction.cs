@@ -7,11 +7,13 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public abstract class CombatAction<T> : UnitAction<T> where T : ActionArgs<EntityModel>
+    public abstract class CombatAction<TArgs, TPayload> : UnitAction<TArgs, TPayload>
+        where TArgs : ActionArgs<EntityModel>
+        where TPayload : ActionPayload
     {
-        public abstract int GetEnergyCost(T args, BoardState boardState);
+        public abstract int GetEnergyCost(TArgs args, BoardState boardState);
 
-        public override bool CanExecute(T args, BoardState boardState)
+        public override bool CanExecute(TArgs args, BoardState boardState)
         {
             EnergyPropertySnapshot energy = boardState.GetProperty<EnergyPropertySnapshot>(args.Executor);
 
@@ -21,7 +23,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return true;
         }
 
-        public override IEnumerable<StateChange> ProduceChanges(T args, BoardState boardState)
+        public override IEnumerable<StateChange> ProduceChanges(TArgs args, BoardState boardState)
         {
             return new List<StateChange>
             {

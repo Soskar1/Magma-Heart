@@ -6,10 +6,13 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public class DoNothingAction : CombatAction<ActionArgs<EntityModel>>
-    {
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets) => new List<ActionArgs>() { new ActionArgs(executor) };
+    public record EmptyPayload : ActionPayload;
+    public record EmptyArgs(EntityModel TypedExecutor, EmptyPayload TypedPayload) : ActionArgs<EntityModel>(TypedExecutor);
 
-        public override int GetEnergyCost(ActionArgs<EntityModel> args, BoardState boardState) => 0;
+    public class DoNothingAction : CombatAction<EmptyArgs, EmptyPayload>
+    {
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, EmptyPayload payload, IEnumerable<AIUnitModel> targets) => new List<ActionArgs>() { new ActionArgs(executor) };
+
+        public override int GetEnergyCost(EmptyArgs args, BoardState boardState) => 0;
     }
 }

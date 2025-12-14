@@ -8,10 +8,14 @@ namespace MagmaHeart.AI.Actions
         public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, AIUnitModel executor, IArgumentResolver argumentResolver)
         {
             List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
-            foreach (UnitAction action in executor.PossibleActions)
+
+            foreach (ActionEntry entry in executor.PossibleActionEntries)
             {
+                // TODO: use database
+                UnitAction action = executor.PossibleActions[entry.ActionType];
+
                 ActionSimulation actionSimulation = new ActionSimulation(action);
-                IEnumerable<ActionArgs> resolvedArguments = argumentResolver.Resolve(action, executor, simulation);
+                IEnumerable<ActionArgs> resolvedArguments = argumentResolver.Resolve(action, executor, entry.Payload, simulation);
 
                 foreach (ActionArgs arguments in resolvedArguments)
                     if (action.CanExecute(arguments, simulation))

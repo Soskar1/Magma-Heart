@@ -5,6 +5,6 @@ namespace MagmaHeart.AI.Actions
 {
     internal interface IArgumentResolver
     {
-        public IEnumerable<ActionArgs> Resolve(UnitAction action, AIUnitModel executor, SimulatedBoardState state);
+        public IEnumerable<ActionArgs> Resolve(UnitAction action, AIUnitModel executor, ActionPayload payload, SimulatedBoardState state);
     }
 }

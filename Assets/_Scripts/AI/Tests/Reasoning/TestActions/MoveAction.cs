@@ -5,15 +5,8 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class MoveAction : UnitAction<MoveActionArgs>
+    internal class MoveAction : UnitAction<MoveActionArgs, MoveActionPayload>
     {
-        public float m_speed;
-
-        public MoveAction(float speed)
-        {
-            m_speed = speed;
-        }
-
         public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState gameState)
         {
             Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
@@ -21,8 +14,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
             Vector2 direction = args.Target - tmpPosition;
-            float xMovement = Mathf.Min(Mathf.Abs(direction.x), m_speed);
-            float yMovement = Mathf.Min(Mathf.Abs(direction.y), m_speed);
+            float xMovement = Mathf.Min(Mathf.Abs(direction.x), args.Speed);
+            float yMovement = Mathf.Min(Mathf.Abs(direction.y), args.Speed);
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;
@@ -51,12 +44,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, MoveActionPayload payload, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
             {
                 Position position = state.GetProperty<Position>(unit);
-                yield return new MoveActionArgs(executor, position.CurrentPosition);
+                yield return new MoveActionArgs(executor, position.CurrentPosition, payload.Speed);
             }
         }
     }

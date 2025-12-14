@@ -3,6 +3,7 @@ using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.States;
+using MagmaHeart.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
@@ -14,10 +15,10 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public class MovementAction : CombatAction<MovementActionArgs>
+    public class MovementAction : CombatAction<MovementActionArgs, MovementActionPayload>
     {
         private readonly AStar m_aStar;
-        private const int m_movementDistanceInTilesForOneEnergy = 2;
+        public const int MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY = 2;
 
         public MovementAction()
         {
@@ -33,7 +34,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 return int.MaxValue;
 
             int distance = path.Count - 1;
-            return Mathf.CeilToInt(distance / (float)m_movementDistanceInTilesForOneEnergy);
+            return Mathf.CeilToInt(distance / (float)args.Payload.MovementDistanceInTilesForOneEnergy);
         }
 
         public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState gameState)
@@ -49,7 +50,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             });
         }
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, MovementActionPayload payload, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
             {
@@ -77,8 +78,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                     if (path == null || !path.Any())
                         continue;
 
-                    Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * m_movementDistanceInTilesForOneEnergy).Last();
-                    yield return new MovementActionArgs((EntityModel)executor, source, targetTile); // TODO: remove casts
+                    Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * payload.MovementDistanceInTilesForOneEnergy).Last();
+                    yield return new MovementActionArgs((EntityModel)executor, source, targetTile, payload); // TODO: remove casts
                     break;
                 }
             }

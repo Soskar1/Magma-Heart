@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI
 {
@@ -8,11 +9,13 @@ namespace MagmaHeart.AI
     {
         public bool IsPlayer { get; init; }
         public TypeMap<UnitAction> PossibleActions { get; init; }
+        public List<ActionEntry> PossibleActionEntries { get; init; }
 
         public AIUnitModel(bool isPlayer)
         {
             IsPlayer = isPlayer;
             PossibleActions = new TypeMap<UnitAction>();
+            PossibleActionEntries = new List<ActionEntry>();
         }
 
         public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()

@@ -16,11 +16,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
-            if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel entity))
+            if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
             {
-                AttackActionArgs args = new AttackActionArgs(m_executor, entity);
+                // TODO: remove constants. Move these parameters to config or entity stats
+                AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
+                AttackActionArgs args = new AttackActionArgs(m_executor, payload, target);
 
-                if (!entity.IsPlayer && m_attack.CanExecute(args, combatBoardState))
+                if (!target.IsPlayer && m_attack.CanExecute(args, combatBoardState))
                 {
                     int energyCost = m_attack.GetEnergyCost(args, combatBoardState);
                     return new ActionSelectionResult(m_attack, args, energyCost);

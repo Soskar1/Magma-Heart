@@ -21,18 +21,27 @@ namespace MagmaHeart.AI.Actions
 
         public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
         public abstract bool CanExecute(ActionArgs args, BoardState boardState);
-        
-        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets);
+
+        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, ActionPayload payload, IEnumerable<AIUnitModel> targets);
     }
 
-    public abstract class UnitAction<T> : UnitAction where T : ActionArgs
+    public abstract class UnitAction<TPayload> : UnitAction
+        where TPayload : ActionPayload
     {
-        public async Task ExecuteAsync(T args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
+        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, TPayload payload, IEnumerable<AIUnitModel> targets);
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, ActionPayload payload, IEnumerable<AIUnitModel> targets) => CreateSimulationArguments(state, executor, (TPayload)payload, targets);
+    }
 
-        public abstract IEnumerable<StateChange> ProduceChanges(T args, BoardState boardState);
-        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((T)args, boardState);
+    public abstract class UnitAction<TArgs, TPayload> : UnitAction<TPayload>
+        where TArgs : ActionArgs
+        where TPayload : ActionPayload
+    {
+        public async Task ExecuteAsync(TArgs args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
 
-        public abstract bool CanExecute(T args, BoardState boardState);
-        public override bool CanExecute(ActionArgs args, BoardState boardState) => CanExecute((T)args, boardState);
+        public abstract IEnumerable<StateChange> ProduceChanges(TArgs args, BoardState boardState);
+        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((TArgs)args, boardState);
+
+        public abstract bool CanExecute(TArgs args, BoardState boardState);
+        public override bool CanExecute(ActionArgs args, BoardState boardState) => CanExecute((TArgs)args, boardState);
     }
 }

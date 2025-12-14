@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.BoardStateSystem.Actions;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Extensions;
 using UnityEngine;
@@ -19,7 +20,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, RoomTile selectedTile)
         {
             Vector2 sourceTile = m_executor.GetCurrentTilePosition().ToVector2();
-            MovementActionArgs args = new MovementActionArgs(m_executor, sourceTile, selectedTile.Position.ToVector2());
+
+            // TODO: remove constant. Make it configurable per character or action.
+            MovementActionPayload payload = new MovementActionPayload(MovementAction.MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY);
+            MovementActionArgs args = new MovementActionArgs(m_executor, sourceTile, selectedTile.Position.ToVector2(), payload);
 
             if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
             {

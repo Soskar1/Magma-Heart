@@ -9,19 +9,19 @@ using System.Linq;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public class AttackAction : CombatAction<AttackActionArgs>
+    public class AttackAction : CombatAction<AttackActionArgs, AttackActionPayload>
     {
         public const int ENERGY_COST = 2;
         public const int ATTACK_DISTANCE = 1;
         public const int ATTACK_DAMAGE = 1;
 
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, IEnumerable<AIUnitModel> targets)
+        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, AttackActionPayload payload, IEnumerable<AIUnitModel> targets)
         {
             foreach (AIUnitModel unit in targets)
-                yield return new AttackActionArgs((EntityModel)executor, (EntityModel)unit); // TODO: Remove casts
+                yield return new AttackActionArgs((EntityModel)executor, payload, (EntityModel)unit); // TODO: Remove casts
         }
 
-        public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => ENERGY_COST;
+        public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => args.Payload.EnergyCost;
 
         public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>
             {
-                new ApplyDamageStateChange(args.TypedExecutor, args.Target, ATTACK_DAMAGE),
+                new ApplyDamageStateChange(args.TypedExecutor, args.Target, args.Payload.AttackDamage),
             });
         }
 
@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             PositionPropertySnapshot possessorPosition = gameState.GetProperty<PositionPropertySnapshot>(args.TypedExecutor);
             PositionPropertySnapshot targetPosition = gameState.GetProperty<PositionPropertySnapshot>(args.Target);
 
-            if (possessorPosition.ManhattanDistance(targetPosition) > ATTACK_DISTANCE)
+            if (possessorPosition.ManhattanDistance(targetPosition) > args.Payload.AttackDistance)
                 return false;
 
             return true;
