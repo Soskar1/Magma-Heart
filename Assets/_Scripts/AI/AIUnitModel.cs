@@ -8,12 +8,14 @@ namespace MagmaHeart.AI
     public record AIUnitModel
     {
         public bool IsPlayer { get; init; }
-        public List<ActionEntry> PossibleActions { get; init; }
+        public List<ActionDefinition> PossibleActions { get; init; }
+        public TypeMap<ActionData> PossibleActionDatas { get; init; }
 
         public AIUnitModel(bool isPlayer)
         {
             IsPlayer = isPlayer;
-            PossibleActions = new List<ActionEntry>();
+            PossibleActions = new List<ActionDefinition>();
+            PossibleActionDatas = new TypeMap<ActionData>();
         }
 
         public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()

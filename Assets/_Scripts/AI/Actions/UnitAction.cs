@@ -21,20 +21,10 @@ namespace MagmaHeart.AI.Actions
 
         public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
         public abstract bool CanExecute(ActionArgs args, BoardState boardState);
-
-        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, ActionPayload payload, IEnumerable<AIUnitModel> targets);
     }
 
-    public abstract class UnitAction<TPayload> : UnitAction
-        where TPayload : ActionPayload
-    {
-        public abstract IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, TPayload payload, IEnumerable<AIUnitModel> targets);
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, ActionPayload payload, IEnumerable<AIUnitModel> targets) => CreateSimulationArguments(state, executor, (TPayload)payload, targets);
-    }
-
-    public abstract class UnitAction<TArgs, TPayload> : UnitAction<TPayload>
+    public abstract class UnitAction<TArgs> : UnitAction
         where TArgs : ActionArgs
-        where TPayload : ActionPayload
     {
         public async Task ExecuteAsync(TArgs args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
 

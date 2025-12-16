@@ -18,8 +18,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             public override bool CanExecute(ActionArgs args, BoardState boardState) => true;
 
-            public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, ActionPayload payload, IEnumerable<AIUnitModel> targets) => new List<ActionArgs>() { new ActionArgs(executor) };
-
             public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => new List<StateChange>();
         }
 

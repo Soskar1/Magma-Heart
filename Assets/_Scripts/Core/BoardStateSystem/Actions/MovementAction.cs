@@ -1,24 +1,16 @@
-using MagmaHeart.AI;
-using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.States;
-using MagmaHeart.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
-using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
-using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public class MovementAction : CombatAction<MovementActionArgs, MovementActionPayload>
+    public class MovementAction : CombatAction<MovementActionArgs>
     {
         private readonly AStar m_aStar;
-        public const int MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY = 2;
 
         public MovementAction()
         {
@@ -34,7 +26,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 return int.MaxValue;
 
             int distance = path.Count - 1;
-            return Mathf.CeilToInt(distance / (float)args.Payload.MovementDistanceInTilesForOneEnergy);
+
+            return Mathf.CeilToInt(distance / (float)args.MovementDistanceInTilesForOneEnergy);
         }
 
         public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState gameState)
@@ -48,41 +41,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             {
                 new MoveEntityStateChange(args.TypedExecutor, path)
             });
-        }
-
-        public override IEnumerable<ActionArgs> CreateSimulationArguments(SimulatedBoardState state, AIUnitModel executor, MovementActionPayload payload, IEnumerable<AIUnitModel> targets)
-        {
-            foreach (AIUnitModel unit in targets)
-            {
-                Vector2 source = state.GetProperty<PositionPropertySnapshot>(executor).Position.ToVector2();
-                Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(unit).Position.ToVector2();
-
-                EnergyPropertySnapshot energy = state.GetProperty<EnergyPropertySnapshot>(executor);
-
-                Vector2[] adjacentTiles = new Vector2[]
-                {
-                targetPosition + Vector2.up,
-                targetPosition + Vector2.down,
-                targetPosition + Vector2.left,
-                targetPosition + Vector2.right
-                };
-
-                List<Vector2> roomTiles =
-                    adjacentTiles.Where(v => state.Board.Graph.ContainsNode(v) && state.Board.GetNodeType(v) == BoardNodeType.Walkable)
-                    .OrderBy(t => DungeonGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
-                    .ToList();
-
-                foreach (Vector2 tile in roomTiles)
-                {
-                    List<Vector2> path = m_aStar.FindPath(state.Board.Graph, source, tile);
-                    if (path == null || !path.Any())
-                        continue;
-
-                    Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * payload.MovementDistanceInTilesForOneEnergy).Last();
-                    yield return new MovementActionArgs((EntityModel)executor, source, targetTile, payload); // TODO: remove casts
-                    break;
-                }
-            }
         }
     }
 }

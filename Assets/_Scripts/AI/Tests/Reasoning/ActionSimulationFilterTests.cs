@@ -14,16 +14,20 @@ namespace MagmaHeart.AI.Reasoning.Tests
     internal class ActionSimulationFilterTests
     {
         private Board m_board;
-        private DefaultArgumentResolver m_argumentResolver;
         private Assembly m_assembly;
 
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
         {
             Entity entity = new Entity(health, position, isPlayer);
-            entity.PossibleActions.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(4)));
-            entity.PossibleActions.Add(new ActionEntry(typeof(MoveAction), new MoveActionPayload(3)));
-            entity.PossibleActions.Add(new ActionEntry(typeof(EngageAction), new EngageActionPayload(4, 1)));
-            entity.PossibleActions.Add(new ActionEntry(typeof(RunAwayAction), new RunAwayActionPayload(3)));
+            AttackActionData attackData = new AttackActionData(4);
+            MoveActionData moveData = new MoveActionData(3);
+            EngageActionData engageData = new EngageActionData(4, 1);
+            RunAwayActionData runAwayData = new RunAwayActionData(3);
+
+            entity.PossibleActions.Add(attackData.GetDefinition());
+            entity.PossibleActions.Add(moveData.GetDefinition());
+            entity.PossibleActions.Add(engageData.GetDefinition());
+            entity.PossibleActions.Add(runAwayData.GetDefinition());
             board.AddUnit(position, entity);
 
             return entity;
@@ -44,7 +48,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
                     graph.AddNode(new Vector2(i, j), BoardNodeType.Walkable);
 
             m_board = new Board(graph);
-            m_argumentResolver = new DefaultArgumentResolver();
         }
 
         [Test]
@@ -53,7 +56,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, Vector2.zero, false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
-            ActionSimulationFilter filter = new ActionSimulationFilter(m_argumentResolver, new ActionDatabase(m_assembly));
+            ActionSimulationFilter filter = new ActionSimulationFilter(new ActionDatabase(m_assembly));
 
             List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
             
@@ -74,7 +77,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, new Vector2(5, 3), false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
-            ActionSimulationFilter filter = new ActionSimulationFilter(m_argumentResolver, new ActionDatabase(m_assembly));
+            ActionSimulationFilter filter = new ActionSimulationFilter(new ActionDatabase(m_assembly));
 
             List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
             
@@ -100,7 +103,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player2 = Entity(10, new Vector2(4, 3), true, m_board);
             Entity enemy = Entity(10, new Vector2(3, 3), false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
-            ActionSimulationFilter filter = new ActionSimulationFilter(m_argumentResolver, new ActionDatabase(m_assembly));
+            ActionSimulationFilter filter = new ActionSimulationFilter(new ActionDatabase(m_assembly));
 
             List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
 

@@ -33,10 +33,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
         {
             Entity entity = new Entity(health, position, isPlayer);
-            entity.PossibleActions.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(4)));
-            entity.PossibleActions.Add(new ActionEntry(typeof(MoveAction), new MoveActionPayload(3)));
-            entity.PossibleActions.Add(new ActionEntry(typeof(EngageAction), new EngageActionPayload(4, 1)));
-            entity.PossibleActions.Add(new ActionEntry(typeof(RunAwayAction), new RunAwayActionPayload(3)));
+            AttackActionData attackData = new AttackActionData(4);
+            MoveActionData moveData = new MoveActionData(3);
+            EngageActionData engageData = new EngageActionData(4, 1);
+            RunAwayActionData runAwayData = new RunAwayActionData(3);
+
+            entity.PossibleActions.Add(attackData.GetDefinition());
+            entity.PossibleActions.Add(moveData.GetDefinition());
+            entity.PossibleActions.Add(engageData.GetDefinition());
+            entity.PossibleActions.Add(runAwayData.GetDefinition());
 
             board.AddUnit(position, entity);
             return entity;

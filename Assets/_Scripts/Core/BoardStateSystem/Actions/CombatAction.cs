@@ -7,9 +7,8 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public abstract class CombatAction<TArgs, TPayload> : UnitAction<TArgs, TPayload>
+    public abstract class CombatAction<TArgs> : UnitAction<TArgs>
         where TArgs : ActionArgs<EntityModel>
-        where TPayload : ActionPayload
     {
         public abstract int GetEnergyCost(TArgs args, BoardState boardState);
 

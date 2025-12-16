@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.BoardStateSystem.Actions.Data;
+using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
@@ -6,18 +7,16 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
     {
         private readonly AttackAction m_attack;
 
-        public AttackActionSelector(AttackAction action)
-        {
-            m_attack = action;
-        }
+        public AttackActionSelector(AttackAction action) => m_attack = action;
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
         {
             if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
             {
-                // TODO: remove constants. Move these parameters to config or entity stats
-                AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
-                AttackActionArgs args = new AttackActionArgs(executor, payload, target);
+                AttackActionData attackActionData = executor.PossibleActionDatas.Get<AttackActionData>();
+
+                // TODO: use argument creator here
+                AttackActionArgs args = new AttackActionArgs(executor, target, attackActionData.EnergyCost, attackActionData.AttackDistance, attackActionData.AttackDamage);
 
                 if (!target.IsPlayer && m_attack.CanExecute(args, combatBoardState))
                 {

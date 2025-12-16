@@ -1,10 +1,13 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Extensions;
 using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Tests
@@ -41,7 +44,12 @@ namespace MagmaHeart.Core.Tests
         public TurnContext<EntityModel> AddEntity(Vector3Int position, bool isPlayer, int maxHealth = 5)
         {
             EntityStats stats = new EntityStats(maxHealth);
-            EntityData data = new EntityData("", stats);
+            List<ActionData> actions = new List<ActionData>
+            {
+                new AttackActionData(2, 1, 1),
+                new MovementActionData(2)
+            };
+            EntityData data = new EntityData("", stats, actions);
             EntityModel model = new EntityModel(data, () => position, isPlayer);
             m_state.Room.AddUnit(position.ToVector2(), model);
             m_state.Room.ChangeNodeType(position.ToVector2(), BoardNodeType.Obstacle);

@@ -12,7 +12,6 @@ namespace MagmaHeart.AI.Reasoning
         private readonly ActionDatabase m_actionDatabase;
         private readonly ActionSimulationFilter m_filter;
         private Strategy m_strategy;
-        private IArgumentResolver m_argumentResolver;
 
         public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead)
         {
@@ -20,8 +19,7 @@ namespace MagmaHeart.AI.Reasoning
             m_depth = lookAhead;
             m_actionDatabase = database;
 
-            m_argumentResolver = new DefaultArgumentResolver();
-            m_filter = new ActionSimulationFilter(m_argumentResolver, m_actionDatabase);
+            m_filter = new ActionSimulationFilter(m_actionDatabase);
         }
 
         public BestAction ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)

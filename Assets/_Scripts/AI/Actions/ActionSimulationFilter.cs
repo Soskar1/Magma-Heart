@@ -5,12 +5,10 @@ namespace MagmaHeart.AI.Actions
 {
     internal class ActionSimulationFilter
     {
-        private readonly IArgumentResolver m_argumentResolver;
         private readonly ActionDatabase m_database;
 
-        public ActionSimulationFilter(IArgumentResolver argumentResolver, ActionDatabase database)
+        public ActionSimulationFilter(ActionDatabase database)
         {
-            m_argumentResolver = argumentResolver;
             m_database = database;
         }
 
@@ -18,16 +16,20 @@ namespace MagmaHeart.AI.Actions
         {
             List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
 
-            foreach (ActionEntry entry in executor.PossibleActions)
+            foreach (ActionDefinition actionDefinition in executor.PossibleActions)
             {
-                UnitAction action = m_database.Get(entry.ActionType);
+                UnitAction action = m_database.Get(actionDefinition.ActionType);
 
                 ActionSimulation actionSimulation = new ActionSimulation(action);
-                IEnumerable<ActionArgs> resolvedArguments = m_argumentResolver.Resolve(action, executor, entry.Payload, simulation);
 
-                foreach (ActionArgs arguments in resolvedArguments)
-                    if (action.CanExecute(arguments, simulation))
-                        actionSimulation.SimulationArgs.Add(arguments);
+                foreach (AIUnitModel target in actionDefinition.TargetSelector.SelectTargets(simulation, executor))
+                {
+                    IEnumerable<ActionArgs> generatedArguments = actionDefinition.CreateArguments(executor, target, simulation);
+
+                    foreach (ActionArgs arguments in generatedArguments)
+                        if (action.CanExecute(arguments, simulation))
+                            actionSimulation.SimulationArgs.Add(arguments);
+                }
 
                 if (actionSimulation.SimulationArgs.Count > 0)
                     actionSimulations.Add(actionSimulation);

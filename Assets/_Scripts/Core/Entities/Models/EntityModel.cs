@@ -1,9 +1,7 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.States;
-using MagmaHeart.BoardStateSystem.Actions;
 using MagmaHeart.Collections;
-using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.Properties;
 using System;
@@ -28,8 +26,11 @@ namespace MagmaHeart.Core.Entities
             Health = new HealthModel(Stats.MaxHealth);
             Energy = new EnergyModel(Stats.MaxEnergy);
 
-            PossibleActions.Add(new ActionEntry(typeof(MovementAction), new MovementActionPayload(MovementAction.MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY)));
-            PossibleActions.Add(new ActionEntry(typeof(AttackAction), new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE)));
+            foreach (ActionData actionData in data.Actions)
+            {
+                PossibleActions.Add(actionData.GetDefinition());
+                PossibleActionDatas.Add(actionData.GetType(), actionData);
+            }
         }
 
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()
