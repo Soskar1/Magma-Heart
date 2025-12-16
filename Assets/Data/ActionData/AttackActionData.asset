@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fcf03e026ec0064db4d9fc5093f453f, type: 3}
   m_Name: AttackActionData
   m_EditorClassIdentifier: 
-  m_energyCost: 0
-  m_attackDistance: 0
-  m_attackDamage: 0
+  m_energyCost: 2
+  m_attackDistance: 1
+  m_attackDamage: 1
