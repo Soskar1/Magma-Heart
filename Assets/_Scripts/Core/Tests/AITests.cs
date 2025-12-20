@@ -2,6 +2,7 @@ using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.BoardStateSystem.Actions;
@@ -76,10 +77,10 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task MovementAction_AggressiveStrategy_MovesTowardsPlayer(int depth)
+        public async Task MovementPlan_AggressiveStrategy_MovesTowardsPlayer(int depth)
         {
-            Vector3Int enemyPosition = new Vector3Int(4, 3);
-            TurnContext player = AddEntity(new Vector3Int(2, 3), true);
+            Vector3Int enemyPosition = new Vector3Int(0, 0);
+            TurnContext player = AddEntity(new Vector3Int(9, 9), true);
             TurnContext<EntityModel> enemy = AddEntity(enemyPosition, false);
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
@@ -96,7 +97,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task AttackAction_AggressiveStrategy_AttacksPlayer(int depth)
+        public async Task AttackPlan_AggressiveStrategy_AttacksPlayer(int depth)
         {
             TurnContext<EntityModel> player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext<EntityModel> enemy = AddEntity(new Vector3Int(3, 3), false);
@@ -105,8 +106,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
-            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(2));
+            Assert.That(best.ExecutedTasks.All(task => task.Action.GetType() == typeof(AttackAction)));
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -115,7 +116,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task AttackAction_EnemyLowHPAggressiveStrategy_AttacksPlayer(int depth)
+        public async Task AttackPlan_EnemyWithLowHealthAndAggressiveStrategy_AttacksPlayer(int depth)
         {
             TurnContext<EntityModel> player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext<EntityModel> enemy = AddEntity(new Vector3Int(3, 3), false, 1);
@@ -124,8 +125,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
-            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(2));
+            Assert.That(best.ExecutedTasks.All(task => task.Action.GetType() == typeof(AttackAction)));
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -170,7 +171,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task MovementAction_OnePlayerTwoEnemiesWithLowHealth_EnemyMovesTowardsPlayer(int depth)
+        public async Task MovementWithContinuousAttackPlan_OnePlayerTwoEnemiesWithLowHealth_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
         {
             TurnContext player = AddEntity(new Vector3Int(3, 3), true, 4);
             TurnContext enemy1 = AddEntity(new Vector3Int(1, 1), false, 1);
@@ -180,8 +181,10 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
-            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
+            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            Assert.That(executedTasks.Count, Is.EqualTo(2));
+            Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
+            Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -190,7 +193,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task MovementAction_OnePlayerTwoEnemies_EnemyMovesTowardsPlayer(int depth)
+        public async Task MovementWithContinuousAttackPlan_OnePlayerTwoEnemies_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
         {
             TurnContext player = AddEntity(new Vector3Int(2, 2), true, 5);
             TurnContext enemy1 = AddEntity(new Vector3Int(2, 1), false, 5);
@@ -200,8 +203,11 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
-            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
+            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            Assert.That(executedTasks.Count, Is.EqualTo(3));
+            Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
+            Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
+            Assert.That(executedTasks[2].Action, Is.TypeOf<AttackAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
     }
