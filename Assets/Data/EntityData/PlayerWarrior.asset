@@ -18,3 +18,6 @@ MonoBehaviour:
     m_maxHealth: 5
     m_maxEnergy: 7
     m_energyRegenerationPerTurn: 5
+  m_actions:
+  - {fileID: 11400000, guid: f4955115fc77d664e81742aaf3a4d62d, type: 2}
+  - {fileID: 11400000, guid: 4fd8e72a5b434e54c832596064888f7e, type: 2}

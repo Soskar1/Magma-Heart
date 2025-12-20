@@ -12,15 +12,17 @@ namespace MagmaHeart.Core.StateMachines
         private readonly DungeonGrid m_grid;
         private readonly HoverModeController m_hoverModeController;
         private readonly Battle m_battle;
-        private readonly PlayerTurnContext m_player;
+        private readonly Player m_player;
+        private readonly PlayerTurnContext m_turnContext;
 
-        public CombatState(CameraController camera, DungeonGrid grid, HoverModeController hoverModeController, Battle battle, PlayerTurnContext player)
+        public CombatState(CameraController camera, DungeonGrid grid, HoverModeController hoverModeController, Battle battle, Player player)
         {
             m_camera = camera;
             m_grid = grid;
             m_hoverModeController = hoverModeController;
             m_battle = battle;
             m_player = player;
+            m_turnContext = (PlayerTurnContext)m_player.TurnContext;
         }
 
         public void Enter()
@@ -31,8 +33,10 @@ namespace MagmaHeart.Core.StateMachines
             m_hoverModeController.UseTileHover();
 
             m_battle.OnTurnSwitched += HandleTurnSwitched;
-            m_player.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
-            m_player.OnCombatActionExecuted += HandleOnCombatActionExecuted;
+            m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
+            m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
+
+            m_player.CombatController.Enable();
         }
 
         public void Exit()
@@ -42,8 +46,10 @@ namespace MagmaHeart.Core.StateMachines
             m_hoverModeController.UseRaycastHover();
 
             m_battle.OnTurnSwitched -= HandleTurnSwitched;
-            m_player.OnCombatActionExecutionStarted -= HandleOnCombatActionExecutionStarted;
-            m_player.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
+            m_turnContext.OnCombatActionExecutionStarted -= HandleOnCombatActionExecutionStarted;
+            m_turnContext.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
+
+            m_player.CombatController.Disable();
         }
 
         private void HandleOnCombatActionExecutionStarted() => m_hoverModeController.UseRaycastHover();

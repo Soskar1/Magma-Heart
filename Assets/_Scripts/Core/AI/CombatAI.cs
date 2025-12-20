@@ -3,32 +3,24 @@ using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class CombatAI
     {
-        private readonly TacticianAI m_tactician;
+        private readonly AIEngine m_tactician;
         private TurnOrder m_currentTurnOrder;
         private CombatBoardState m_currentBoardState;
 
-        public CombatAI(Strategy strategy) {
-            m_tactician = new TacticianAI(strategy);
+        public CombatAI(Strategy strategy, ActionDatabase database, int lookAhead) {
+            m_tactician = new AIEngine(strategy, database, lookAhead);
         }
 
-        public BestAction GetBestAction()
+        public BestPlan GetBestAction()
         {
             ChainNode<TurnContext> chain = m_currentTurnOrder.ToChainNode();
-            BestAction bestAction = m_tactician.ChooseBestMove(chain, m_currentBoardState);
-
-            if (bestAction == null)
-            {
-                bestAction = new BestAction(
-                    new DoNothingAction((EntityModel)m_currentTurnOrder.Current.Model),
-                    ActionArgs.Empty);
-            }
+            BestPlan bestAction = m_tactician.ChooseBestMove(chain, m_currentBoardState);
 
             return bestAction;
         }

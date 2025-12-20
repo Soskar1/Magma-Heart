@@ -11,8 +11,8 @@ namespace MagmaHeart.Collections
         public TypeMap() { }
         public TypeMap(Dictionary<Type, TBase> items) => m_items = new Dictionary<Type, TBase>(items);
 
-        public void Add<T>(T item) where T : TBase
-            => m_items[typeof(T)] = item;
+        public void Add<T>(T item) where T : TBase => m_items[typeof(T)] = item;
+        public void Add(Type type, TBase item) => m_items[type] = item;
 
         public TBase this[Type type]
         {
@@ -20,8 +20,8 @@ namespace MagmaHeart.Collections
             set => m_items[type] = value;
         }
 
-        public T Get<T>() where T : TBase
-            => (T)m_items[typeof(T)];
+        public T Get<T>() where T : TBase => (T)m_items[typeof(T)];
+        public TBase Get(Type type) => m_items[type];
 
         public bool TryGet<T>(out T item) where T : TBase
         {
@@ -35,11 +35,9 @@ namespace MagmaHeart.Collections
             return false;
         }
 
-        public void Remove<T>() where T : TBase
-            => m_items.Remove(typeof(T));
+        public void Remove<T>() where T : TBase => m_items.Remove(typeof(T));
 
-        public bool Contains<T>() where T : TBase
-            => m_items.ContainsKey(typeof(T));
+        public bool Contains<T>() where T : TBase => m_items.ContainsKey(typeof(T));
 
         public TypeMap<TBase> DeepCopy(Func<TBase, TBase> cloneFunc = null)
         {

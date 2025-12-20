@@ -1,8 +1,12 @@
 ﻿using MagmaHeart.AI;
+using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.Properties;
 using System;
+using System.Collections.Generic;
 
 namespace MagmaHeart.Core.AI
 {
@@ -12,7 +16,20 @@ namespace MagmaHeart.Core.AI
         private const float DISTANCE_WEIGHT = 0.4f;
         private const float AI_IS_NOT_ALIVE_POINTS = -50;
 
-        public AggressiveStrategy(int lookAhead, AIUnitModel player) : base(lookAhead, player) { }
+        public AggressiveStrategy(AIUnitModel player) : base(player) {
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(MovementAction))
+            }, new EnemyTargetSelector()));
+
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(AttackAction), true),
+            }, new EnemyTargetSelector()));
+
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(MovementAction)),
+                new PlanTaskDefinition(typeof(AttackAction), true)
+            }, new EnemyTargetSelector()));
+        }
 
         public override float EvaluateState(SimulatedBoardState state)
         {

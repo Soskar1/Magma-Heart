@@ -1,17 +1,20 @@
+using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
-using MagmaHeart.Core.StateMachines;
-using MagmaHeart.Core.Presentation.UI;
-using UnityEngine;
-using MagmaHeart.AI.Boards;
-using MagmaHeart.Core.AI;
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Input.Mouse;
+using MagmaHeart.Core.Presentation.UI;
+using MagmaHeart.Core.StateMachines;
+using System.Reflection;
+using UnityEngine;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -76,9 +79,14 @@ namespace MagmaHeart.Core.SceneLoading
         {
             m_renderer.RenderedAllTiles -= BootSceneAfterRender;
 
+            ActionDatabase database = new ActionDatabase(Assembly.GetExecutingAssembly());
+            ActionSelector actionSelectorChain = new AttackActionSelector(database.Get<AttackAction>());
+            actionSelectorChain.Next = new MovementActionSelector(database.Get<MovementAction>());
+            ActionPreviewService previewService = new ActionPreviewService(actionSelectorChain);
+
             RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             Player spawnedPlayer = Instantiate(m_playerPrefab, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid);
+            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid, previewService);
 
             if (m_sceneLoader.SavedData != null)
             {
@@ -87,8 +95,9 @@ namespace MagmaHeart.Core.SceneLoading
                 spawnedPlayer.Health.CurrentHealth = savedData.health;
             }
 
-            AggressiveStrategy strategy = new AggressiveStrategy(2, spawnedPlayer.Model);
-            m_combatAI = new CombatAI(strategy);
+            AggressiveStrategy strategy = new AggressiveStrategy(spawnedPlayer.Model);
+            
+            m_combatAI = new CombatAI(strategy, database, 2);
 
             Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
             m_battle = new Battle(spawnedPlayer, spawner);
@@ -97,7 +106,7 @@ namespace MagmaHeart.Core.SceneLoading
             MouseHoverEngine hoverEngine = new MouseHoverEngine(m_mouseListener);
             m_gameUI = Instantiate(m_uiPrefab);
 
-            m_hoverModeController = new HoverModeController(hoverEngine, (PlayerTurnContext)spawnedPlayer.TurnContext, m_gameUI.Raycaster);
+            m_hoverModeController = new HoverModeController(hoverEngine, m_battle, m_gameUI.Raycaster, spawnedPlayer.CombatController);
             m_gameUI.Initialize(spawnedPlayer, m_battle, hoverEngine);
 
             m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);
@@ -114,7 +123,7 @@ namespace MagmaHeart.Core.SceneLoading
         private void InitializeStateMachine(Player player)
         {
             ActionState actionState = new ActionState(player.Controller, m_hoverModeController);
-            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverModeController, m_battle, (PlayerTurnContext)player.TurnContext);
+            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverModeController, m_battle, player);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);

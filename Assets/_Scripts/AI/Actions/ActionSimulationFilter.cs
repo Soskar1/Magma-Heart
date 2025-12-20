@@ -1,27 +1,62 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI.Reasoning.Plans;
+using MagmaHeart.AI.States;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MagmaHeart.AI.Actions
 {
     internal class ActionSimulationFilter
     {
-        public static List<ActionSimulation> GetActionSimulations(SimulatedBoardState simulation, IEnumerable<UnitAction> possibleActions)
+        private readonly ActionDatabase m_database;
+        private readonly Strategy m_strategy;
+
+        public ActionSimulationFilter(Strategy strategy, ActionDatabase database)
         {
-            List<ActionSimulation> actionSimulations = new List<ActionSimulation>();
-            foreach (UnitAction action in possibleActions)
+            m_database = database;
+            m_strategy = strategy;
+        }
+
+        public List<PlanSimulation> GetPossiblePlans(SimulatedBoardState simulation, AIUnitModel executor)
+        {
+            List<PlanSimulation> planSimulations = new List<PlanSimulation>();
+
+            foreach (PlanDefinition planDefinition in m_strategy.Plans)
             {
-                ActionSimulation actionSimulation = new ActionSimulation(action);
-                List<ActionArgs> possibleSimulations = action.GetArguments(simulation);
+                Plan plan = TryCreatePlan(planDefinition, executor);
 
-                foreach (ActionArgs args in possibleSimulations)
-                    if (action.CanExecute(args, simulation))
-                        actionSimulation.SimulationArgs.Add(args);
+                if (plan == null)
+                    continue;
 
-                if (actionSimulation.SimulationArgs.Count > 0)
-                    actionSimulations.Add(actionSimulation);
+                List<AIUnitModel> targets = planDefinition.TargetSelector.SelectTargets(simulation, executor).ToList();
+                PlanSimulation planSimulation = new PlanSimulation(plan, targets);
+
+                if (targets.Count > 0)
+                    planSimulations.Add(planSimulation);
             }
 
-            return actionSimulations;
+            return planSimulations;
+        }
+
+        private Plan TryCreatePlan(PlanDefinition planDefinition, AIUnitModel executor)
+        {
+            List<PlanTask> planTasks = new List<PlanTask>();
+
+            foreach (PlanTaskDefinition taskDefinition in planDefinition.TaskDefinitions)
+            {
+                Type actionType = taskDefinition.ActionType;
+                ActionDefinition actionDefinition = executor.PossibleActions.Where(action => action.ActionType == actionType).FirstOrDefault();
+
+                if (actionDefinition is null)
+                    return null;
+
+                UnitAction action = m_database.Get(actionDefinition.ActionType);
+                PlanTask planTask = new PlanTask(action, actionDefinition, taskDefinition.ExecuteUntilFail);
+                planTasks.Add(planTask);
+            }
+
+            return new Plan(planTasks);
         }
     }
 }

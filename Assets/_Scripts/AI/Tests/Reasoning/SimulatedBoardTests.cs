@@ -16,11 +16,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         internal class EmptyAction : UnitAction
         {
-            public EmptyAction(AIUnitModel actionPossessor) : base(actionPossessor) { }
-
             public override bool CanExecute(ActionArgs args, BoardState boardState) => true;
-
-            public override IEnumerable<ActionArgs> CreateSimulationArgument(SimulatedBoardState state, AIUnitModel unit) => new List<ActionArgs>() { ActionArgs.Empty };
 
             public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => new List<StateChange>();
         }
@@ -63,8 +59,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ApplyStateChanges_AddsStateChangeToHistoryStack()
         {
-            MoveAction moveAction = new MoveAction(m_entity, 1);
-            MoveActionArgs args = new MoveActionArgs(Vector2.up);
+            MoveAction moveAction = new MoveAction();
+            MoveActionArgs args = new MoveActionArgs(m_entity, Vector2.up, 1);
 
             moveAction.Execute(args, m_state);
 
@@ -93,8 +89,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = new Entity(10, Vector2.up, true);
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
-            EngageAction action = new EngageAction(m_entity, 1, 1);
-            EngageActionArgs args = new EngageActionArgs(player);
+            EngageAction action = new EngageAction();
+            EngageActionArgs args = new EngageActionArgs(m_entity, player, 1, 1);
 
             action.Execute(args, m_state);
 
@@ -113,8 +109,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = new Entity(10, Vector2.up, true);
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
-            EngageAction action = new EngageAction(m_entity, 1, 1);
-            EngageActionArgs args = new EngageActionArgs(player);
+            EngageAction action = new EngageAction();
+            EngageActionArgs args = new EngageActionArgs(m_entity, player, 1, 1);
             action.Execute(args, m_state);
 
             m_state.Undo();
@@ -130,11 +126,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = new Entity(10, Vector2.up, true);
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
-            EngageAction action = new EngageAction(m_entity, 1, 1);
-            EngageActionArgs args = new EngageActionArgs(player);
-            EmptyAction emptyAction = new EmptyAction(player);
+            EngageAction action = new EngageAction();
+            EngageActionArgs args = new EngageActionArgs(m_entity, player, 1, 1);
+            EmptyAction emptyAction = new EmptyAction();
             action.Execute(args, m_state);
-            emptyAction.Execute(ActionArgs.Empty, m_state);
+            emptyAction.Execute(new ActionArgs(player), m_state);
 
             m_state.Undo();
 
