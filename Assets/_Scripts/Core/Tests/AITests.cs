@@ -1,6 +1,7 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.BoardStateSystem.Actions;
@@ -83,12 +84,10 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<MovementAction>());
-            
-            //MovementActionPayload payload = new MovementActionPayload(MovementAction.MOVEMENT_DISTANCE_IN_TILES_FOR_ONE_ENERGY);
-            //Assert.That(best.Args, Is.EqualTo(new MovementActionArgs(enemy.TypedModel, enemyPosition.ToVector2(), new Vector2(3, 3), payload)));
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Args, Is.EqualTo(new MovementActionArgs(enemy.TypedModel, enemyPosition.ToVector2(), new Vector2(3, 3), 2)));
         }
 
         [Test]
@@ -103,11 +102,10 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<AttackAction>());
-            //AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
-            //Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, payload, player.TypedModel)));
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, player.TypedModel, 2, 1, 1)));
         }
 
         [Test]
@@ -122,11 +120,10 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<AttackAction>());
-            //AttackActionPayload payload = new AttackActionPayload(AttackAction.ENERGY_COST, AttackAction.ATTACK_DISTANCE, AttackAction.ATTACK_DAMAGE);
-            //Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, payload, player.TypedModel)));
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, player.TypedModel, 2, 1, 1)));
         }
 
         [Test]
@@ -142,9 +139,9 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<DoNothingAction>());
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<DoNothingAction>());
         }
 
         [Test]
@@ -160,9 +157,9 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy, player });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<DoNothingAction>());
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<DoNothingAction>());
         }
 
         [Test]
@@ -178,9 +175,9 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy1, player, enemy2 });
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<MovementAction>());
         }
 
         [Test]
@@ -196,9 +193,9 @@ namespace MagmaHeart.Core.Tests
             TurnOrder turnOrder = new TurnOrder(new List<TurnContext>() { enemy2, player, enemy1});
             CombatAI ai = await StartTurn(turnOrder, depth, player.Model);
 
-            BestAction best = ai.GetBestAction();
+            BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Plan.Task.Action, Is.TypeOf<MovementAction>());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Plans;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
@@ -19,10 +20,10 @@ namespace MagmaHeart.AI.Reasoning
             m_depth = lookAhead;
             m_actionDatabase = database;
 
-            m_filter = new ActionSimulationFilter(m_actionDatabase);
+            m_filter = new ActionSimulationFilter(strategy, m_actionDatabase);
         }
 
-        public BestAction ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)
+        public BestPlan ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)
         {  
             SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
 
@@ -30,31 +31,33 @@ namespace MagmaHeart.AI.Reasoning
             float beta = float.MaxValue;
             float bestValue = float.MinValue;
 
-            BestAction bestAction = null;
-            List<ActionSimulation> possibleSimulations = m_filter.GetActionSimulations(simulation, unitTurns.Value.Model);
+            BestPlan bestPlan = null;
+            List<PlanSimulation> possiblePlans = m_filter.GetPossiblePlans(simulation, unitTurns.Value.Model);
 
-            foreach (ActionSimulation possibleSimulation in possibleSimulations)
+            foreach (PlanSimulation possiblePlan in possiblePlans)
             {
-                UnitAction action = possibleSimulation.Action;
-                foreach (ActionArgs args in possibleSimulation.SimulationArgs)
+                Plan plan = possiblePlan.Plan;
+                foreach (ActionArgs args in possiblePlan.SimulationArgs)
                 {
-                    action.Execute(args, simulation);
-
-                    float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
-
-                    simulation.Undo();
-                    
-                    if (evaluation > bestValue)
+                    bool isExecuted = plan.TryExecute(simulation, args);
+                    if (isExecuted)
                     {
-                        bestValue = evaluation;
-                        bestAction = new BestAction(action, args);
+                        float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
+
+                        simulation.Undo();
+
+                        if (evaluation > bestValue)
+                        {
+                            bestValue = evaluation;
+                            bestPlan = new BestPlan(plan, args);
+                        }
+
+                        alpha = Math.Max(alpha, bestValue);
                     }
-                    
-                    alpha = Math.Max(alpha, bestValue);
                 }
             }
 
-            return bestAction;
+            return bestPlan;
         }
 
         private float Minimax(SimulatedBoardState simulation, ChainNode<TurnContext> turns, int currentDepth, float alpha, float beta)
@@ -67,28 +70,30 @@ namespace MagmaHeart.AI.Reasoning
                 return m_strategy.EvaluateState(simulation);
 
             currentTurnContext.StartTurn(simulation);
-            List<ActionSimulation> possibleSimulations = m_filter.GetActionSimulations(simulation, currentUnit);
+            List<PlanSimulation> possiblePlans = m_filter.GetPossiblePlans(simulation, currentUnit);
 
             if (!currentUnit.IsPlayer)
             {
                 // AI
                 float maxEvaluation = float.MinValue;
-                foreach (ActionSimulation possibleSimulation in possibleSimulations)
+                foreach (PlanSimulation possiblePlan in possiblePlans)
                 {
-                    UnitAction action = possibleSimulation.Action;
-                    foreach (ActionArgs args in possibleSimulation.SimulationArgs)
+                    Plan plan = possiblePlan.Plan;
+                    foreach (ActionArgs args in possiblePlan.SimulationArgs)
                     {
-                        action.Execute(args, simulation);
-                        
-                        float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
-                        
-                        simulation.Undo();
-                        
-                        maxEvaluation = Math.Max(maxEvaluation, evaluation);
-                        alpha = Math.Max(alpha, evaluation);
+                        bool isExecuted = plan.TryExecute(simulation, args);
+                        if (isExecuted)
+                        {
+                            float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                        if (beta <= alpha)
-                            break;
+                            simulation.Undo();
+
+                            maxEvaluation = Math.Max(maxEvaluation, evaluation);
+                            alpha = Math.Max(alpha, evaluation);
+
+                            if (beta <= alpha)
+                                break;
+                        }
                     }
                 }
 
@@ -99,22 +104,24 @@ namespace MagmaHeart.AI.Reasoning
             {
                 // PLAYER
                 float minEvaluation = float.MaxValue;
-                foreach (ActionSimulation possibleSimulation in possibleSimulations)
+                foreach (PlanSimulation possiblePlan in possiblePlans)
                 {
-                    UnitAction action = possibleSimulation.Action;
-                    foreach (ActionArgs args in possibleSimulation.SimulationArgs)
+                    Plan plan = possiblePlan.Plan;
+                    foreach (ActionArgs args in possiblePlan.SimulationArgs)
                     {
-                        action.Execute(args, simulation);
+                        bool isExecuted = plan.TryExecute(simulation, args);
+                        if (isExecuted)
+                        {
+                            float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                        float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
-                        
-                        simulation.Undo();
+                            simulation.Undo();
 
-                        minEvaluation = Math.Min(minEvaluation, evaluation);
-                        beta = Math.Min(beta, evaluation);
+                            minEvaluation = Math.Min(minEvaluation, evaluation);
+                            beta = Math.Min(beta, evaluation);
 
-                        if (beta <= alpha)
-                            break;
+                            if (beta <= alpha)
+                                break;
+                        }
                     }
                 }
 

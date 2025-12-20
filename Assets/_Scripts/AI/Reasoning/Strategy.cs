@@ -1,15 +1,16 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Plans;
+using MagmaHeart.AI.States;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning
 {
     public abstract class Strategy
     {
-        // public Action[] ActionsToConsider { get; init; }
         public AIUnitModel Player { get; init; }
+        public List<PlanDefinition> Plans { get; init; } = new List<PlanDefinition>();
 
         public Strategy(AIUnitModel player)
         {
-            // ActionsToConsider = actionsToConsider;
             Player = player;
         }
 

@@ -1,16 +1,21 @@
-﻿using MagmaHeart.AI.Reasoning.Tests;
+﻿using MagmaHeart.AI.Plans;
 using MagmaHeart.AI.States;
 using System;
 using System.Collections.Generic;
 
-namespace MagmaHeart.AI.Reasoning
+namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class BasicStrategy : Strategy
     {
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public BasicStrategy(AIUnitModel player) : base(player) { }
+        public BasicStrategy(AIUnitModel player) : base(player) {
+            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(MoveAction))));
+            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(AttackAction))));
+            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(EngageAction))));
+            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(RunAwayAction))));
+        }
 
         public override float EvaluateState(SimulatedBoardState state)
         {

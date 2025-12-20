@@ -1,4 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
+﻿using MagmaHeart.AI.Reasoning;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,8 +20,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
             m_cancellationTokenSource = new CancellationTokenSource();
 
-            BestAction action = m_ai.GetBestAction();
-            await action.Action.ExecuteAsync(action.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
+            BestPlan best = m_ai.GetBestAction();
+            await best.Plan.Task.Action.ExecuteAsync(best.Args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
         }
 
         public override void EndBattle()

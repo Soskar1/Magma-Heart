@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Plans;
 using MagmaHeart.AI.States;
 using NUnit.Framework;
 using System;
@@ -14,7 +15,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
     internal class ActionSimulationFilterTests
     {
         private Board m_board;
-        private Assembly m_assembly;
+        private BasicStrategy m_strategy;
+        private ActionDatabase m_database;
 
         private Func<int, Vector2, bool, Board, Entity> Entity = (health, position, isPlayer, board) =>
         {
@@ -36,7 +38,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            m_assembly = Assembly.GetExecutingAssembly();
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            m_database = new ActionDatabase(assembly);
+            m_strategy = new BasicStrategy(null);
         }   
 
         [SetUp]
@@ -56,74 +60,35 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity player = Entity(10, new Vector2(5, 5), true, m_board);
             Entity enemy = Entity(10, Vector2.zero, false, m_board);
             SimulatedBoardState simulation = new SimulatedBoardState(m_board);
-            ActionSimulationFilter filter = new ActionSimulationFilter(new ActionDatabase(m_assembly));
+            ActionSimulationFilter filter = new ActionSimulationFilter(m_strategy, m_database);
 
-            List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
+            List<PlanSimulation> actionSimulations = filter.GetPossiblePlans(simulation, enemy);
             
-            Assert.That(actionSimulations.Count, Is.EqualTo(2));
-            Assert.That(actionSimulations.Any(a => a.Action is MoveAction));
-            Assert.That(actionSimulations.Any(a => a.Action is RunAwayAction));
+            Assert.That(actionSimulations.Count, Is.EqualTo(4));
+            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(MoveAction)));
+            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(RunAwayAction)));
+            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(AttackAction)));
+            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(EngageAction)));
             List<MoveActionArgs> moveActionArgs = GetArguments<MoveAction>(actionSimulations).Select(a => (MoveActionArgs)a).ToList();
             Assert.That(moveActionArgs.Count, Is.EqualTo(1));
             Assert.That(moveActionArgs.First().Target, Is.EqualTo(player.Position));
             List<RunAwayActionArgs> runAwayActionArgs = GetArguments<RunAwayAction>(actionSimulations).Select(a => (RunAwayActionArgs)a).ToList();
             Assert.That(runAwayActionArgs.Count, Is.EqualTo(1));
             Assert.That(runAwayActionArgs.First().RunAwayFrom, Is.EqualTo(player));
-        }
-
-        [Test]
-        public void GetActionSimulations_From3PossibleActions_Returns3ActionsWith1PossibleArgument()
-        {
-            Entity player = Entity(10, new Vector2(5, 5), true, m_board);
-            Entity enemy = Entity(10, new Vector2(5, 3), false, m_board);
-            SimulatedBoardState simulation = new SimulatedBoardState(m_board);
-            ActionSimulationFilter filter = new ActionSimulationFilter(new ActionDatabase(m_assembly));
-
-            List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
-            
-            Assert.That(actionSimulations.Count, Is.EqualTo(3));
-            Assert.That(actionSimulations.Any(a => a.Action is MoveAction));
-            Assert.That(actionSimulations.Any(a => a.Action is EngageAction));
-            Assert.That(actionSimulations.Any(a => a.Action is RunAwayAction));
-            List<MoveActionArgs> moveActionArgs = GetArguments<MoveAction>(actionSimulations).Select(a => (MoveActionArgs)a).ToList();
-            Assert.That(moveActionArgs.Count, Is.EqualTo(1));
-            Assert.That(moveActionArgs.First().Target, Is.EqualTo(player.Position));
+            List<AttackActionArgs> attackActionArgs = GetArguments<AttackAction>(actionSimulations).Select(a => (AttackActionArgs)a).ToList();
+            Assert.That(attackActionArgs.Count, Is.EqualTo(1));
+            Assert.That(attackActionArgs.First().Damage, Is.EqualTo(4));
+            Assert.That(attackActionArgs.First().Target, Is.EqualTo(player));
             List<EngageActionArgs> engageActionArgs = GetArguments<EngageAction>(actionSimulations).Select(a => (EngageActionArgs)a).ToList();
             Assert.That(engageActionArgs.Count, Is.EqualTo(1));
+            Assert.That(engageActionArgs.First().Damage, Is.EqualTo(4));
             Assert.That(engageActionArgs.First().Target, Is.EqualTo(player));
-            List<RunAwayActionArgs> runAwayActionArgs = GetArguments<RunAwayAction>(actionSimulations).Select(a => (RunAwayActionArgs)a).ToList();
-            Assert.That(runAwayActionArgs.Count, Is.EqualTo(1));
-            Assert.That(runAwayActionArgs.First().RunAwayFrom, Is.EqualTo(player));
         }
 
-        [Test]
-        public void GetActionSimulations_OneEnemyBetweenTwoPlayers_Returns2ActionsWith2PossibleArguments()
-        {
-            Entity player1 = Entity(10, new Vector2(2, 3), true, m_board);
-            Entity player2 = Entity(10, new Vector2(4, 3), true, m_board);
-            Entity enemy = Entity(10, new Vector2(3, 3), false, m_board);
-            SimulatedBoardState simulation = new SimulatedBoardState(m_board);
-            ActionSimulationFilter filter = new ActionSimulationFilter(new ActionDatabase(m_assembly));
-
-            List<ActionSimulation> actionSimulations = filter.GetActionSimulations(simulation, enemy);
-
-            Assert.That(actionSimulations.Count, Is.EqualTo(2));
-            Assert.That(actionSimulations.Any(a => a.Action is AttackAction));
-            Assert.That(actionSimulations.Any(a => a.Action is RunAwayAction));
-            List<AttackActionArgs> attackActionArgs = GetArguments<AttackAction>(actionSimulations).Select(a => (AttackActionArgs)a).ToList();
-            Assert.That(attackActionArgs.Count, Is.EqualTo(2));
-            Assert.That(attackActionArgs.Any(a => a.Target == player1));
-            Assert.That(attackActionArgs.Any(a => a.Target == player2));
-            List<RunAwayActionArgs> runAwayActionArgs = GetArguments<RunAwayAction>(actionSimulations).Select(a => (RunAwayActionArgs)a).ToList();
-            Assert.That(runAwayActionArgs.Count, Is.EqualTo(2));
-            Assert.That(runAwayActionArgs.Any(a => a.RunAwayFrom == player1));
-            Assert.That(runAwayActionArgs.Any(a => a.RunAwayFrom == player2));
-        }
-
-        private List<ActionArgs> GetArguments<T>(List<ActionSimulation> simulations) where T : UnitAction
+        private List<ActionArgs> GetArguments<T>(List<PlanSimulation> simulations) where T : UnitAction
         {
             return simulations.Select(s => s)
-                .Where(s => s.Action.GetType() == typeof(T))
+                .Where(s => s.Plan.Task.Action.GetType() == typeof(T))
                 .First()
                 .SimulationArgs;
         }

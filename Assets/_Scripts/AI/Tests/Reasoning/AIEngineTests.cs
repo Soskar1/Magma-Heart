@@ -70,13 +70,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
             BasicStrategy strategy = new BasicStrategy(m_player.Model);
-            AIEngine tactician = new AIEngine(strategy, new ActionDatabase(m_assembly), 1);
+            AIEngine engine = new AIEngine(strategy, new ActionDatabase(m_assembly), 1);
             EmptyTurnController enemy = new EmptyTurnController(Entity(10, Vector2.zero, false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
-            BestAction bestAction = tactician.ChooseBestMove(turnOrder, m_state);
+            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestAction.Action, Is.TypeOf<MoveAction>());
+            Assert.That(bestPlan.Plan.Task.Action, Is.TypeOf<MoveAction>());
         }
 
         [Test]
@@ -85,26 +85,26 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
             BasicStrategy strategy = new BasicStrategy(m_player.Model);
-            AIEngine tactician = new AIEngine(strategy, new ActionDatabase(m_assembly), depth);
+            AIEngine engine = new AIEngine(strategy, new ActionDatabase(m_assembly), depth);
             EmptyTurnController enemy = new EmptyTurnController(Entity(10, new Vector2(5, 3), false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
-            BestAction bestAction = tactician.ChooseBestMove(turnOrder, m_state);
+            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestAction.Action, Is.TypeOf<EngageAction>());
+            Assert.That(bestPlan.Plan.Task.Action, Is.TypeOf<EngageAction>());
         }
 
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
             BasicStrategy strategy = new BasicStrategy(m_player.Model);
-            AIEngine tactician = new AIEngine(strategy, new ActionDatabase(m_assembly), 2);
+            AIEngine engine = new AIEngine(strategy, new ActionDatabase(m_assembly), 2);
             EmptyTurnController enemy = new EmptyTurnController(Entity(1, new Vector2(4, 5), false, m_board));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
 
-            BestAction bestAction = tactician.ChooseBestMove(turnOrder, m_state);
+            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestAction.Action, Is.TypeOf<RunAwayAction>());
+            Assert.That(bestPlan.Plan.Task.Action, Is.TypeOf<RunAwayAction>());
         }
     }
 }
