@@ -1,6 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.States;
-using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {

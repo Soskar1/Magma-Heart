@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Tests
 
             ActionDatabase actionDatabase = new ActionDatabase(assembly);
 
-            Assert.That(actionDatabase.AllActions.Count(), Is.EqualTo(3));
+            Assert.That(actionDatabase.AllActions.Count(), Is.EqualTo(2));
             Assert.That(actionDatabase.Get<MovementAction>(), Is.Not.Null);
             Assert.That(actionDatabase.Get<AttackAction>(), Is.Not.Null);
         }
