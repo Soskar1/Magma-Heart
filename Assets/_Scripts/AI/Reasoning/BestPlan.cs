@@ -1,7 +1,7 @@
-using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Reasoning.Plans;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public record BestPlan(Plan Plan, AIUnitModel Target);
+    public record BestPlan(IEnumerable<PlanTask> ExecutedTasks, AIUnitModel Target);
 }

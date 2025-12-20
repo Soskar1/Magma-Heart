@@ -86,8 +86,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -105,8 +105,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<AttackAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -124,8 +124,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<AttackAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -180,8 +180,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
@@ -200,8 +200,8 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
             Assert.That(best.Target, Is.EqualTo(player.Model));
         }
     }

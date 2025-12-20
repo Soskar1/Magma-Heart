@@ -49,7 +49,7 @@ namespace MagmaHeart.AI.Reasoning
                         if (evaluation > bestValue)
                         {
                             bestValue = evaluation;
-                            bestPlan = new BestPlan(plan, target);
+                            bestPlan = new BestPlan(plan.ExecutedTasks, target);
                         }
 
                         alpha = Math.Max(alpha, bestValue);

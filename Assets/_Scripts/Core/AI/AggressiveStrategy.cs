@@ -22,13 +22,12 @@ namespace MagmaHeart.Core.AI
             }, new EnemyTargetSelector()));
 
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(AttackAction)),
-                new PlanTaskDefinition(typeof(AttackAction))
+                new PlanTaskDefinition(typeof(AttackAction), true),
             }, new EnemyTargetSelector()));
 
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(MovementAction)),
-                new PlanTaskDefinition(typeof(AttackAction))
+                new PlanTaskDefinition(typeof(AttackAction), true)
             }, new EnemyTargetSelector()));
         }
 

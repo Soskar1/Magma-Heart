@@ -44,8 +44,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestPlan.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(bestPlan.Plan.Tasks.First().Action, Is.TypeOf<MoveAction>());
+            Assert.That(bestPlan.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(bestPlan.ExecutedTasks.First().Action, Is.TypeOf<MoveAction>());
         }
 
         [Test]
@@ -60,8 +60,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestPlan.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(bestPlan.Plan.Tasks.First().Action, Is.TypeOf<EngageAction>());
+            Assert.That(bestPlan.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(bestPlan.ExecutedTasks.First().Action, Is.TypeOf<EngageAction>());
         }
 
         [Test]
@@ -74,8 +74,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestPlan.Plan.Tasks.Count(), Is.EqualTo(1));
-            Assert.That(bestPlan.Plan.Tasks.First().Action, Is.TypeOf<RunAwayAction>());
+            Assert.That(bestPlan.ExecutedTasks.Count(), Is.EqualTo(1));
+            Assert.That(bestPlan.ExecutedTasks.First().Action, Is.TypeOf<RunAwayAction>());
         }
     }
 }

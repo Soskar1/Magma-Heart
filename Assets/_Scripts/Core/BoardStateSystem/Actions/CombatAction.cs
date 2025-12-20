@@ -24,9 +24,11 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public override IEnumerable<StateChange> ProduceChanges(TArgs args, BoardState boardState)
         {
+            EnergyPropertySnapshot energy = boardState.GetProperty<EnergyPropertySnapshot>(args.Executor);
+
             return new List<StateChange>
             {
-                new UpdateEnergyStateChange(args.TypedExecutor, args.TypedExecutor.Energy.CurrentEnergy - GetEnergyCost(args, boardState))
+                new UpdateEnergyStateChange(args.TypedExecutor, energy.CurrentEnergy - GetEnergyCost(args, boardState))
             };
         }
     }

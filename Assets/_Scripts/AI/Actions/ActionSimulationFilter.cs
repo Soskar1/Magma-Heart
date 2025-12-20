@@ -52,7 +52,7 @@ namespace MagmaHeart.AI.Actions
                     return null;
 
                 UnitAction action = m_database.Get(actionDefinition.ActionType);
-                PlanTask planTask = new PlanTask(action, actionDefinition);
+                PlanTask planTask = new PlanTask(action, actionDefinition, taskDefinition.ExecuteUntilFail);
                 planTasks.Add(planTask);
             }
 
