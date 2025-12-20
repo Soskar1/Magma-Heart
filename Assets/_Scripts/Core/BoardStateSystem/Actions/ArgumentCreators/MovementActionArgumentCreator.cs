@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.ArgumentCreators
             m_aStar = new AStar(AStar.ManhattanDistance);
         }
 
-        public IEnumerable<ActionArgs> CreateArguments(MovementActionData data, AIUnitModel executor, AIUnitModel target, BoardState state)
+        public ActionArgs CreateArguments(MovementActionData data, AIUnitModel executor, AIUnitModel target, BoardState state)
         {
             Vector2 source = state.GetProperty<PositionPropertySnapshot>(executor).Position.ToVector2();
             Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(target).Position.ToVector2();
@@ -51,11 +51,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.ArgumentCreators
                     continue;
 
                 Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * data.MovementDistanceInTilesForOneEnergy).Last();
-                yield return new MovementActionArgs((EntityModel)executor, source, targetTile, data.MovementDistanceInTilesForOneEnergy); // TODO: remove casts
-                break;
+                return new MovementActionArgs((EntityModel)executor, source, targetTile, data.MovementDistanceInTilesForOneEnergy); // TODO: remove casts
             }
+
+            return null;
         }
 
-        public IEnumerable<ActionArgs> CreateArguments(ActionData data, AIUnitModel executor, AIUnitModel target, BoardState state) => CreateArguments((MovementActionData)data, executor, target, state);
+        public ActionArgs CreateArguments(ActionData data, AIUnitModel executor, AIUnitModel target, BoardState state) => CreateArguments((MovementActionData)data, executor, target, state);
     }
 }

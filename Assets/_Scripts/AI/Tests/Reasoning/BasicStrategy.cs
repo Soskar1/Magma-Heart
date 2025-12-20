@@ -1,4 +1,5 @@
-﻿using MagmaHeart.AI.Reasoning.Plans;
+﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,21 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private const float DISTANCE_WEIGHT = 0.1f;
 
         public BasicStrategy(AIUnitModel player) : base(player) {
-            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(MoveAction))));
-            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(AttackAction))));
-            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(EngageAction))));
-            Plans.Add(new PlanDefinition(new PlanTaskDefinition(typeof(RunAwayAction))));
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(MoveAction))
+            }, new EnemyTargetSelector()));
+
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(AttackAction))
+            }, new EnemyTargetSelector()));
+
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(EngageAction))
+            }, new EnemyTargetSelector()));
+
+            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+                new PlanTaskDefinition(typeof(RunAwayAction))
+            }, new EnemyTargetSelector()));
         }
 
         public override float EvaluateState(SimulatedBoardState state)

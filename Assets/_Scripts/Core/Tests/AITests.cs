@@ -86,8 +86,9 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<MovementAction>());
-            Assert.That(best.Args, Is.EqualTo(new MovementActionArgs(enemy.TypedModel, enemyPosition.ToVector2(), new Vector2(3, 3), 2)));
+            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
         [Test]
@@ -104,8 +105,9 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<AttackAction>());
-            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, player.TypedModel, 2, 1, 1)));
+            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
         [Test]
@@ -122,8 +124,9 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<AttackAction>());
-            Assert.That(best.Args, Is.EqualTo(new AttackActionArgs(enemy.TypedModel, player.TypedModel, 2, 1, 1)));
+            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<AttackAction>());
+            Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
         [Test]
@@ -131,7 +134,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task DoNothingAction_PlayerSurroundedByWalls_EnemyDoesNothing(int depth)
+        public async Task Null_PlayerSurroundedByWalls_EnemyDoesNothing(int depth)
         {
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
             SurroundEntityWithWalls((EntityModel)player.Model);
@@ -141,7 +144,7 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<DoNothingAction>());
+            Assert.That(best, Is.Null);
         }
 
         [Test]
@@ -149,7 +152,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task DoNothingAction_EnemySurroundedByWalls_EnemyDoesNothing(int depth)
+        public async Task Null_EnemySurroundedByWalls_EnemyDoesNothing(int depth)
         {
             TurnContext player = AddEntity(new Vector3Int(2, 3), true);
             TurnContext enemy = AddEntity(new Vector3Int(4, 3), false, 1);
@@ -159,7 +162,7 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<DoNothingAction>());
+            Assert.That(best, Is.Null);
         }
 
         [Test]
@@ -177,7 +180,9 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Target, Is.EqualTo(player.Model));
         }
 
         [Test]
@@ -195,7 +200,9 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = ai.GetBestAction();
 
-            Assert.That(best.Plan.Task.Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(best.Plan.Tasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Target, Is.EqualTo(player.Model));
         }
     }
 }

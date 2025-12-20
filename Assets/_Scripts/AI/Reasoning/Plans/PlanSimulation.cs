@@ -6,12 +6,12 @@ namespace MagmaHeart.AI.Reasoning.Plans
     internal class PlanSimulation
     {
         public Plan Plan { get; init; }
-        public List<ActionArgs> SimulationArgs { get; init; }
+        public IEnumerable<AIUnitModel> Targets { get; init; }
 
-        public PlanSimulation(Plan plan)
+        public PlanSimulation(Plan plan, IEnumerable<AIUnitModel> targets)
         {
             Plan = plan;
-            SimulationArgs = new List<ActionArgs>();
+            Targets = targets;
         }
     }
 }

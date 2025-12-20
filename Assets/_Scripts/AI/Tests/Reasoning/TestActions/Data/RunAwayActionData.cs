@@ -13,7 +13,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override ActionDefinition GetDefinition()
         {
-            return new ActionDefinition(typeof(RunAwayAction), this, new RunAwayActionArgumentCreator(), new EnemyTargetSelector());
+            return new ActionDefinition(typeof(RunAwayAction), this, new RunAwayActionArgumentCreator());
         }
     }
 }

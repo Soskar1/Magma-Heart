@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnitAction = MagmaHeart.AI.Actions.UnitAction;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
@@ -65,32 +64,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             List<PlanSimulation> actionSimulations = filter.GetPossiblePlans(simulation, enemy);
             
             Assert.That(actionSimulations.Count, Is.EqualTo(4));
-            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(MoveAction)));
-            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(RunAwayAction)));
-            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(AttackAction)));
-            Assert.That(actionSimulations.Any(a => a.Plan.Task.Action.GetType() == typeof(EngageAction)));
-            List<MoveActionArgs> moveActionArgs = GetArguments<MoveAction>(actionSimulations).Select(a => (MoveActionArgs)a).ToList();
-            Assert.That(moveActionArgs.Count, Is.EqualTo(1));
-            Assert.That(moveActionArgs.First().Target, Is.EqualTo(player.Position));
-            List<RunAwayActionArgs> runAwayActionArgs = GetArguments<RunAwayAction>(actionSimulations).Select(a => (RunAwayActionArgs)a).ToList();
-            Assert.That(runAwayActionArgs.Count, Is.EqualTo(1));
-            Assert.That(runAwayActionArgs.First().RunAwayFrom, Is.EqualTo(player));
-            List<AttackActionArgs> attackActionArgs = GetArguments<AttackAction>(actionSimulations).Select(a => (AttackActionArgs)a).ToList();
-            Assert.That(attackActionArgs.Count, Is.EqualTo(1));
-            Assert.That(attackActionArgs.First().Damage, Is.EqualTo(4));
-            Assert.That(attackActionArgs.First().Target, Is.EqualTo(player));
-            List<EngageActionArgs> engageActionArgs = GetArguments<EngageAction>(actionSimulations).Select(a => (EngageActionArgs)a).ToList();
-            Assert.That(engageActionArgs.Count, Is.EqualTo(1));
-            Assert.That(engageActionArgs.First().Damage, Is.EqualTo(4));
-            Assert.That(engageActionArgs.First().Target, Is.EqualTo(player));
-        }
-
-        private List<ActionArgs> GetArguments<T>(List<PlanSimulation> simulations) where T : UnitAction
-        {
-            return simulations.Select(s => s)
-                .Where(s => s.Plan.Task.Action.GetType() == typeof(T))
-                .First()
-                .SimulationArgs;
+            Assert.That(actionSimulations.Any(a => a.Plan.Tasks.First().Action.GetType() == typeof(MoveAction)));
+            Assert.That(actionSimulations.Any(a => a.Plan.Tasks.First().Action.GetType() == typeof(RunAwayAction)));
+            Assert.That(actionSimulations.Any(a => a.Plan.Tasks.First().Action.GetType() == typeof(AttackAction)));
+            Assert.That(actionSimulations.Any(a => a.Plan.Tasks.First().Action.GetType() == typeof(EngageAction)));
+            Assert.That(actionSimulations.All(simulation => simulation.Targets.Count() == 1));
+            Assert.That(actionSimulations.All(simulation => simulation.Targets.First() == player));
         }
     }
 }

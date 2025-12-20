@@ -1,23 +1,42 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.States;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Plans
 {
     public class Plan
     {
-        //private List<PlanTask> m_tasks = new List<PlanTask>();
-        public PlanTask Task { get; init; }
+        public IEnumerable<PlanTask> Tasks { get; init; }
+        private readonly List<PlanTask> m_executedTasks;
 
-        public Plan(PlanTask task)
+        public Plan(IEnumerable<PlanTask> tasks)
         {
-            Task = task;
+            Tasks = tasks;
+            m_executedTasks = new List<PlanTask>();
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, ActionArgs args)
+        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, AIUnitModel target)
         {
-            return Task.TryExecute(simulation, args);
+            m_executedTasks.Clear();
 
-            // TODO: Handle TryExecute false case after adding task chaining
+            foreach (PlanTask task in Tasks)
+            {
+                bool executed = task.TryExecute(simulation, executor, target);
+
+                if (executed)
+                {
+                    m_executedTasks.Add(task);
+                }
+                else
+                {
+                    foreach (PlanTask _ in m_executedTasks)
+                        simulation.Undo();
+
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

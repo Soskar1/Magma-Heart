@@ -24,7 +24,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Data
 
         public override ActionDefinition GetDefinition()
         {
-            return new ActionDefinition(typeof(AttackAction), this, new AttackActionArgumentCreator(), new EnemyTargetSelector());
+            return new ActionDefinition(typeof(AttackAction), this, new AttackActionArgumentCreator());
         }
     }
 }

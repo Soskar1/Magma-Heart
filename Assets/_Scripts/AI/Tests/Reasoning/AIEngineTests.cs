@@ -5,6 +5,7 @@ using MagmaHeart.Collections;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -76,7 +77,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestPlan.Plan.Task.Action, Is.TypeOf<MoveAction>());
+            Assert.That(bestPlan.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(bestPlan.Plan.Tasks.First().Action, Is.TypeOf<MoveAction>());
         }
 
         [Test]
@@ -91,7 +93,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestPlan.Plan.Task.Action, Is.TypeOf<EngageAction>());
+            Assert.That(bestPlan.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(bestPlan.Plan.Tasks.First().Action, Is.TypeOf<EngageAction>());
         }
 
         [Test]
@@ -104,7 +107,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
-            Assert.That(bestPlan.Plan.Task.Action, Is.TypeOf<RunAwayAction>());
+            Assert.That(bestPlan.Plan.Tasks.Count(), Is.EqualTo(1));
+            Assert.That(bestPlan.Plan.Tasks.First().Action, Is.TypeOf<RunAwayAction>());
         }
     }
 }

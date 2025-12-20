@@ -7,6 +7,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public float Speed { get; init; }
         public MoveActionData(float speed) => Speed = speed;
 
-        public override ActionDefinition GetDefinition() => new ActionDefinition(typeof(MoveAction), this, new MoveActionArgumentCreator(), new EnemyTargetSelector());
+        public override ActionDefinition GetDefinition() => new ActionDefinition(typeof(MoveAction), this, new MoveActionArgumentCreator());
     }
 }

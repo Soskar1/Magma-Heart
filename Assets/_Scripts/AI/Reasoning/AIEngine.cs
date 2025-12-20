@@ -37,9 +37,9 @@ namespace MagmaHeart.AI.Reasoning
             foreach (PlanSimulation possiblePlan in possiblePlans)
             {
                 Plan plan = possiblePlan.Plan;
-                foreach (ActionArgs args in possiblePlan.SimulationArgs)
+                foreach (AIUnitModel target in possiblePlan.Targets)
                 {
-                    bool isExecuted = plan.TryExecute(simulation, args);
+                    bool isExecuted = plan.TryExecute(simulation, unitTurns.Value.Model, target);
                     if (isExecuted)
                     {
                         float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
@@ -49,7 +49,7 @@ namespace MagmaHeart.AI.Reasoning
                         if (evaluation > bestValue)
                         {
                             bestValue = evaluation;
-                            bestPlan = new BestPlan(plan, args);
+                            bestPlan = new BestPlan(plan, target);
                         }
 
                         alpha = Math.Max(alpha, bestValue);
@@ -79,9 +79,9 @@ namespace MagmaHeart.AI.Reasoning
                 foreach (PlanSimulation possiblePlan in possiblePlans)
                 {
                     Plan plan = possiblePlan.Plan;
-                    foreach (ActionArgs args in possiblePlan.SimulationArgs)
+                    foreach (AIUnitModel target in possiblePlan.Targets)
                     {
-                        bool isExecuted = plan.TryExecute(simulation, args);
+                        bool isExecuted = plan.TryExecute(simulation, currentUnit, target);
                         if (isExecuted)
                         {
                             float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
@@ -107,9 +107,9 @@ namespace MagmaHeart.AI.Reasoning
                 foreach (PlanSimulation possiblePlan in possiblePlans)
                 {
                     Plan plan = possiblePlan.Plan;
-                    foreach (ActionArgs args in possiblePlan.SimulationArgs)
+                    foreach (AIUnitModel target in possiblePlan.Targets)
                     {
-                        bool isExecuted = plan.TryExecute(simulation, args);
+                        bool isExecuted = plan.TryExecute(simulation, currentUnit, target);
                         if (isExecuted)
                         {
                             float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);

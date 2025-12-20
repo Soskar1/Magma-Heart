@@ -24,30 +24,39 @@ namespace MagmaHeart.AI.Actions
 
             foreach (PlanDefinition planDefinition in m_strategy.Plans)
             {
-                Type actionType = planDefinition.TaskDefinition.ActionType;
-                ActionDefinition actionDefinition = executor.PossibleActions.Where(action => action.ActionType == actionType).FirstOrDefault();
+                Plan plan = TryCreatePlan(planDefinition, executor);
 
-                if (actionDefinition is null)
+                if (plan == null)
                     continue;
 
-                UnitAction action = m_database.Get(actionDefinition.ActionType);
-                PlanTask planTask = new PlanTask(action);
-                Plan plan = new Plan(planTask);
-                PlanSimulation planSimulation = new PlanSimulation(plan);
+                List<AIUnitModel> targets = planDefinition.TargetSelector.SelectTargets(simulation, executor).ToList();
+                PlanSimulation planSimulation = new PlanSimulation(plan, targets);
 
-                foreach (AIUnitModel target in actionDefinition.TargetSelector.SelectTargets(simulation, executor))
-                {
-                    IEnumerable<ActionArgs> generatedArguments = actionDefinition.CreateArguments(executor, target, simulation);
-
-                    foreach (ActionArgs arguments in generatedArguments)
-                        planSimulation.SimulationArgs.Add(arguments);
-                }
-
-                if (planSimulation.SimulationArgs.Count > 0)
+                if (targets.Count > 0)
                     planSimulations.Add(planSimulation);
             }
 
             return planSimulations;
+        }
+
+        private Plan TryCreatePlan(PlanDefinition planDefinition, AIUnitModel executor)
+        {
+            List<PlanTask> planTasks = new List<PlanTask>();
+
+            foreach (PlanTaskDefinition taskDefinition in planDefinition.TaskDefinitions)
+            {
+                Type actionType = taskDefinition.ActionType;
+                ActionDefinition actionDefinition = executor.PossibleActions.Where(action => action.ActionType == actionType).FirstOrDefault();
+
+                if (actionDefinition is null)
+                    return null;
+
+                UnitAction action = m_database.Get(actionDefinition.ActionType);
+                PlanTask planTask = new PlanTask(action, actionDefinition);
+                planTasks.Add(planTask);
+            }
+
+            return new Plan(planTasks);
         }
     }
 }

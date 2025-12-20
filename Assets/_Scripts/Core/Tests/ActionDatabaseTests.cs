@@ -19,7 +19,6 @@ namespace MagmaHeart.Core.Tests
             Assert.That(actionDatabase.AllActions.Count(), Is.EqualTo(3));
             Assert.That(actionDatabase.Get<MovementAction>(), Is.Not.Null);
             Assert.That(actionDatabase.Get<AttackAction>(), Is.Not.Null);
-            Assert.That(actionDatabase.Get<DoNothingAction>(), Is.Not.Null);
         }
 
         Assembly FindAssembly(string assemblyName)
