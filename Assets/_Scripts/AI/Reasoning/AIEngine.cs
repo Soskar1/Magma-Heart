@@ -44,7 +44,7 @@ namespace MagmaHeart.AI.Reasoning
                     {
                         float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
 
-                        simulation.Undo();
+                        plan.Undo(simulation);
 
                         if (evaluation > bestValue)
                         {
@@ -86,7 +86,7 @@ namespace MagmaHeart.AI.Reasoning
                         {
                             float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                            simulation.Undo();
+                            plan.Undo(simulation);
 
                             maxEvaluation = Math.Max(maxEvaluation, evaluation);
                             alpha = Math.Max(alpha, evaluation);
@@ -114,7 +114,7 @@ namespace MagmaHeart.AI.Reasoning
                         {
                             float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                            simulation.Undo();
+                            plan.Undo(simulation);
 
                             minEvaluation = Math.Min(minEvaluation, evaluation);
                             beta = Math.Min(beta, evaluation);

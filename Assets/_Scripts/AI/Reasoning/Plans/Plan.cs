@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.States;
 using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Plans
@@ -29,14 +28,19 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 }
                 else
                 {
-                    foreach (PlanTask _ in m_executedTasks)
-                        simulation.Undo();
+                    Undo(simulation);
 
                     return false;
                 }
             }
 
             return true;
+        }
+
+        internal void Undo(SimulatedBoardState simulation)
+        {
+            foreach (PlanTask _ in m_executedTasks)
+                simulation.Undo();
         }
     }
 }
