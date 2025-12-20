@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.AI.Actions;
 using System.Collections.Generic;
 
-namespace MagmaHeart.AI.Plans
+namespace MagmaHeart.AI.Reasoning.Plans
 {
     internal class PlanSimulation
     {

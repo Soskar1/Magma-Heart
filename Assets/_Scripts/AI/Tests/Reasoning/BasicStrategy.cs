@@ -1,4 +1,4 @@
-﻿using MagmaHeart.AI.Plans;
+﻿using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using System;
 using System.Collections.Generic;

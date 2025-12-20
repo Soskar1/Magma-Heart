@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MagmaHeart.AI.Plans
+namespace MagmaHeart.AI.Reasoning.Plans
 {
     public record PlanTaskDefinition(Type ActionType);
 }

@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.AI;
-using MagmaHeart.AI.Plans;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.Properties;
