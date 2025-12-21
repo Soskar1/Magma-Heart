@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.CombatSystem
                 dungeonTile = roomTileData.GetTileAtIndex(Random.Range(0, roomTileData.TileCount - 1));
             } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
 
-            Enemy prefabToSpawn = m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Count - 1)];
+            Enemy prefabToSpawn = m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Count)];
 
             // TODO: Use object pooling
             Enemy entityInstance = Object.Instantiate(prefabToSpawn, m_grid.ToTileCenter(dungeonTile.Position), Quaternion.identity);
