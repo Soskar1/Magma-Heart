@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 AttackActionData attackActionData = executor.PossibleActionDatas.Get<AttackActionData>();
 
                 // TODO: use argument creator here
-                AttackActionArgs args = new AttackActionArgs(executor, target, attackActionData.EnergyCost, attackActionData.AttackDistance, attackActionData.AttackDamage);
+                AttackActionArgs args = new AttackActionArgs(executor, target, attackActionData.EnergyCost, attackActionData.AttackDistance, attackActionData.AttackDamage, attackActionData.AttackType);
 
                 if (!target.IsPlayer && m_attack.CanExecute(args, combatBoardState))
                 {

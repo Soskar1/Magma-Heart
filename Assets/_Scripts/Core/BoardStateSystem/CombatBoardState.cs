@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.BoardStateSystem
         {
             Room = room;
             MovementService = new EntityMovementService();
-            AttackService = new EntityAttackService();
+            AttackService = new EntityAttackService(this);
         }
     }
 }

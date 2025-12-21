@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>
             {
-                new ApplyDamageStateChange(args.TypedExecutor, args.Target, args.AttackDamage),
+                new AttackStateChange(args.TypedExecutor, args.Target, args.AttackDamage, args.AttackType),
             });
         }
 

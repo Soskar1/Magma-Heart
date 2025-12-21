@@ -16,7 +16,7 @@ namespace MagmaHeart.AI.States
         }
 
         public abstract T GetProperty<T>(AIUnitModel unit) where T : PropertySnapshot;
-        internal virtual async Task ApplyStateChangesAsync(IEnumerable<StateChange> stateChanges, CancellationToken cancellationToken)
+        public virtual async Task ApplyStateChangesAsync(IEnumerable<StateChange> stateChanges, CancellationToken cancellationToken)
         {
             foreach (StateChange change in stateChanges)
                 await change.ApplyToAsync(this, cancellationToken);
