@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Pathfinding.Tests
 {
-    public class AStarTests
+    internal class AStarTests
     {
         [Test]
         public void AStar_FindPathInOneNodeGraph_ShouldReturnPathWithStartNode()

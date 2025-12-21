@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Pathfinding.Tests
 {
-    public static class BoardGraphCreator
+    internal static class BoardGraphCreator
     {
         // Grid-like graph
         public static (BoardGraph, Vector2[,]) Create3x3Graph()
