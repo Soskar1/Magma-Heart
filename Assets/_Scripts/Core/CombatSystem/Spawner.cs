@@ -1,6 +1,7 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -9,17 +10,14 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly DungeonGrid m_grid;
         private readonly CombatAI m_ai;
-        private readonly Enemy m_enemyPrefab;
+        private readonly List<Enemy> m_enemyPrefabs;
         private readonly Player m_player;
         private readonly float m_minDistanceFromPlayer;
 
-        // TODO: Do something with this
-        private readonly Vector3 m_offset = new Vector2(0.5f, 0.5f); // Used for offsetting spawned enemies
-
-        public Spawner(Player player, Enemy enemyPrefab, float minDistanceFromPlayer, DungeonGrid grid, CombatAI ai)
+        public Spawner(Player player, List<Enemy> enemyPrefabs, float minDistanceFromPlayer, DungeonGrid grid, CombatAI ai)
         {
             m_player = player;
-            m_enemyPrefab = enemyPrefab;
+            m_enemyPrefabs = enemyPrefabs;
             m_minDistanceFromPlayer = minDistanceFromPlayer;
             m_grid = grid;
             m_ai = ai;
@@ -33,8 +31,10 @@ namespace MagmaHeart.Core.CombatSystem
                 dungeonTile = roomTileData.GetTileAtIndex(Random.Range(0, roomTileData.TileCount - 1));
             } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
 
+            Enemy prefabToSpawn = m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Count - 1)];
+
             // TODO: Use object pooling
-            Enemy entityInstance = Object.Instantiate(m_enemyPrefab, dungeonTile.Position.ToVector3() + m_offset, Quaternion.identity);
+            Enemy entityInstance = Object.Instantiate(prefabToSpawn, m_grid.ToTileCenter(dungeonTile.Position), Quaternion.identity);
             entityInstance.Initialize(m_grid, m_ai);
 
             return entityInstance;

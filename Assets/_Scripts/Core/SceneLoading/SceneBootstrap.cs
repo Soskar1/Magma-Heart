@@ -13,6 +13,7 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.StateMachines;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
         [Header("Spawner Settings")]
-        [SerializeField] private Enemy m_enemyPrefab;
+        [SerializeField] private List<Enemy> m_enemyPrefabs;
         [SerializeField] private float m_minDistanceFromPlayer;
 
         private SceneLoader m_sceneLoader;
@@ -99,7 +100,7 @@ namespace MagmaHeart.Core.SceneLoading
             
             m_combatAI = new CombatAI(strategy, database, 2);
 
-            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
+            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefabs, m_minDistanceFromPlayer, m_grid, m_combatAI);
             m_battle = new Battle(spawnedPlayer, spawner);
             m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
             
