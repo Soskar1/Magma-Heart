@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.AI
     public class AggressiveStrategy : Strategy
     {
         private const float PLAYER_HEALTH_WEIGHT = 0.8f;
-        private const float DISTANCE_WEIGHT = 0.4f;
+        private const float DISTANCE_WEIGHT = 0.1f;
         private const float AI_IS_NOT_ALIVE_POINTS = -50;
 
         public AggressiveStrategy(AIUnitModel player) : base(player) {
