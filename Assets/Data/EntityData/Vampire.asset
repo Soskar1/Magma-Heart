@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Vampire
   m_EditorClassIdentifier: 
   m_name: Vampire
-  m_portraitImage: {fileID: 0}
+  m_portraitImage: {fileID: 21300000, guid: f8308fe4dbf6f7444b8eb57d610f1c9e, type: 3}
   m_stats:
     m_maxHealth: 3
     m_maxEnergy: 7
