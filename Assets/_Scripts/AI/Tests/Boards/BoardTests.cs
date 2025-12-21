@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Boards.Tests
 {
-    public class BoardTests
+    internal class BoardTests
     {
         private Board m_board;
         private AIUnitModel Unit => new AIUnitModel(false);

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace MagmaHeart.AI.Boards.Tests
 {
-    public class BoardGraphTests
+    internal class BoardGraphTests
     {
         [Test]
         public void AddNode_OneNode_Success()

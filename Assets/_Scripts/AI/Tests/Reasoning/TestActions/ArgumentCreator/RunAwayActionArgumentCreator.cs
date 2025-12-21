@@ -3,7 +3,7 @@ using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    public class RunAwayActionArgumentCreator : IActionArgumentCreator<RunAwayActionData>
+    internal class RunAwayActionArgumentCreator : IActionArgumentCreator<RunAwayActionData>
     {
         public ActionArgs CreateArguments(RunAwayActionData data, AIUnitModel executor, AIUnitModel target, BoardState state)
         {

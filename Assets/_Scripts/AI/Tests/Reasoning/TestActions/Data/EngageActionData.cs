@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    public class EngageActionData : ActionData
+    internal class EngageActionData : ActionData
     {
         public float Damage { get; init; }
         public float Speed { get; init; }

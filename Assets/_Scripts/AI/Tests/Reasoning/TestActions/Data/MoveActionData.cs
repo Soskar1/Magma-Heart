@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    public class MoveActionData : ActionData
+    internal class MoveActionData : ActionData
     {
         public float Speed { get; init; }
         public MoveActionData(float speed) => Speed = speed;

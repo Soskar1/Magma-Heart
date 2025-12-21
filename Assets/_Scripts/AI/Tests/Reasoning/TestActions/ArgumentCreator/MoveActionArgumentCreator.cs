@@ -3,7 +3,7 @@ using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    public class MoveActionArgumentCreator : IActionArgumentCreator<MoveActionData>
+    internal class MoveActionArgumentCreator : IActionArgumentCreator<MoveActionData>
     {
         public ActionArgs CreateArguments(MoveActionData data, AIUnitModel executor, AIUnitModel target, BoardState state)
         {
