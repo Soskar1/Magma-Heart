@@ -12,7 +12,7 @@ namespace MagmaHeart.Bresenham.Tests
         {
             var points = BresenhamLine.DrawLine(start, end);
 
-            Assert.That(points, Is.EqualTo(expected));
+            CollectionAssert.AreEquivalent(expected, points);
         }
 
         private static IEnumerable<TestCaseData> DrawLineCases()
