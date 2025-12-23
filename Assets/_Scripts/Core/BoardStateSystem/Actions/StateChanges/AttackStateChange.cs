@@ -1,5 +1,10 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
+using MagmaHeart.Bresenham;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.Properties;
+using MagmaHeart.Extensions;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,20 +23,23 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
-            if (AttackType == AttackType.Melee)
+            if (AttackType == AttackType.Ranged)
             {
-                ApplyDamageStateChange damageStateChange = new ApplyDamageStateChange(Attacker, Target, Damage);
-                simulation.ProduceStateChange(damageStateChange);
+                Vector2Int attackerPosition = simulation.GetProperty<PositionPropertySnapshot>(Attacker).Position.ToVector2Int();
+                Vector2Int targetPosition = simulation.GetProperty<PositionPropertySnapshot>(Target).Position.ToVector2Int();
+                IEnumerable<Vector2Int> tiles = BresenhamLine.DrawLine(attackerPosition, targetPosition);
+
+                foreach (Vector2Int tile in tiles)
+                {
+                    bool isObstacle = simulation.Board.GetNodeType(tile) == BoardNodeType.Obstacle;
+
+                    if (isObstacle && tile != attackerPosition && tile != targetPosition)
+                        return;
+                }
             }
-            else
-            {
-                Debug.Log("[AttackStateChange] Handle ranged attacks!");
-                // TODO:
-                // 1) Get all tiles in line between attacker and target
-                // 2) Find walls
-                // 3) If found at least one wall, then do not produce any changes to the state
-                // 4) No walls - produce ApplyDamageStateChange
-            }
+
+            ApplyDamageStateChange damageStateChange = new ApplyDamageStateChange(Attacker, Target, Damage);
+            simulation.ProduceStateChange(damageStateChange);
         }
     }
 }
