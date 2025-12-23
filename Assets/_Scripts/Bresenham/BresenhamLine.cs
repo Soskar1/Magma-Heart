@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace MagmaHeart.Bresenham
 {
+    // Reference: https://www.youtube.com/watch?v=CceepU1vIKo
     public static class BresenhamLine
     {
-        public static List<Vector2Int> DrawLine(Vector2Int start, Vector2Int end)
+        public static IEnumerable<Vector2Int> DrawLine(Vector2Int start, Vector2Int end)
         {
             if (Mathf.Abs(end.x - start.x) > Mathf.Abs(end.y - start.y))
                 return DrawHorizontalLine(start, end);
@@ -13,10 +14,8 @@ namespace MagmaHeart.Bresenham
                 return DrawVerticalLine(start, end);
         }
 
-        private static List<Vector2Int> DrawHorizontalLine(Vector2Int start, Vector2Int end)
+        private static IEnumerable<Vector2Int> DrawHorizontalLine(Vector2Int start, Vector2Int end)
         {
-            List<Vector2Int> points = new List<Vector2Int>();
-
             if (start.x > end.x)
             {
                 Vector2Int tmp = start;
@@ -31,28 +30,23 @@ namespace MagmaHeart.Bresenham
             if (difference.x != 0)
             {
                 int currentY = start.y;
-                int distanceDifference = 2 * difference.y - difference.x;
+                int decision = 2 * difference.y - difference.x;
                 for (int i = 0; i <= difference.x; ++i)
                 {
-                    Vector2Int point = new Vector2Int(start.x + i, currentY);
-                    points.Add(point);
+                    yield return new Vector2Int(start.x + i, currentY);
 
-                    if (distanceDifference >= 0)
+                    if (decision >= 0)
                     {
                         currentY += direction;
-                        distanceDifference -= 2 * difference.x;
+                        decision -= 2 * difference.x;
                     }
-                    distanceDifference += 2 * difference.y;
+                    decision += 2 * difference.y;
                 }
             }
-
-            return points;
         }
 
-        private static List<Vector2Int> DrawVerticalLine(Vector2Int start, Vector2Int end)
+        private static IEnumerable<Vector2Int> DrawVerticalLine(Vector2Int start, Vector2Int end)
         {
-            List<Vector2Int> points = new List<Vector2Int>();
-
             if (start.y > end.y)
             {
                 Vector2Int tmp = start;
@@ -67,22 +61,19 @@ namespace MagmaHeart.Bresenham
             if (difference.y != 0)
             {
                 int currentX = start.x;
-                int distanceDifference = 2 * difference.x - difference.y;
+                int decision = 2 * difference.x - difference.y;
                 for (int i = 0; i <= difference.y; ++i)
                 {
-                    Vector2Int point = new Vector2Int(currentX, start.y + i);
-                    points.Add(point);
+                    yield return new Vector2Int(currentX, start.y + i);
 
-                    if (distanceDifference >= 0)
+                    if (decision >= 0)
                     {
                         currentX += direction;
-                        distanceDifference -= 2 * difference.y;
+                        decision -= 2 * difference.y;
                     }
-                    distanceDifference += 2 * difference.x;
+                    decision += 2 * difference.x;
                 }
             }
-
-            return points;
         }
     }
 }
