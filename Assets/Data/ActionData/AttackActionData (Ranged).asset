@@ -15,3 +15,4 @@ MonoBehaviour:
   m_energyCost: 2
   m_attackDistance: 6
   m_attackDamage: 1
+  m_attackType: 1
