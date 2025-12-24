@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace MagmaHeart.Spawning
 {
-    public class Spawner
+    public class SpawnService
     {
         private readonly Dictionary<GameObject, ISpawnConfig> m_configs;
         private readonly IInstantiator m_instantiator;
 
-        public Spawner(Dictionary<GameObject, ISpawnConfig> configs, IInstantiator instantiator)
+        public SpawnService(Dictionary<GameObject, ISpawnConfig> configs, IInstantiator instantiator)
         {
             m_configs = configs;
             m_instantiator = instantiator;

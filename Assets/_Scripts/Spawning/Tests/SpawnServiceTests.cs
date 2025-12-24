@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Spawning.Tests
 {
-    internal class SpawnerTests
+    internal class SpawnServiceTests
     {
         [Test]
         public void Spawn_ReturnsInitializedGameObject()
@@ -12,7 +12,7 @@ namespace MagmaHeart.Spawning.Tests
             GameObject testPrefab = new GameObject("TestPrefab");
             TestSpawnConfig config = new TestSpawnConfig(testPrefab);
             FakeInstantiator instantiator = new FakeInstantiator();
-            Spawner spawner = new Spawner(
+            SpawnService spawner = new SpawnService(
                 new Dictionary<GameObject, ISpawnConfig>
                 {
                     { testPrefab, config }
