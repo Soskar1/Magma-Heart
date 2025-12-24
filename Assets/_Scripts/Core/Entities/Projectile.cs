@@ -58,10 +58,17 @@ namespace MagmaHeart.Core.Entities
 
         public async void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out Entity entity) && entity.Model == m_target)
-                await Hit();
+            if (collision.TryGetComponent(out Entity entity))
+            {
+                if (entity.Model == m_attacker)
+                    return;
+
+                if (entity.Model == m_target)
+                    await Hit();
+            }
 
             m_projectileHit.SetResult(true);
+            Destroy(gameObject);
         }
 
         private async Task Hit()
