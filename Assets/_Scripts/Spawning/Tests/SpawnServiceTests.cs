@@ -13,7 +13,7 @@ namespace MagmaHeart.Spawning.Tests
             TestSpawnConfig config = new TestSpawnConfig(testPrefab);
             FakeInstantiator instantiator = new FakeInstantiator();
             SpawnService spawner = new SpawnService(
-                new Dictionary<GameObject, ISpawnConfig>
+                new Dictionary<GameObject, SpawnConfig>
                 {
                     { testPrefab, config }
                 },
