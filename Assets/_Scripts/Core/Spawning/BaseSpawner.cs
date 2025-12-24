@@ -9,6 +9,6 @@ namespace MagmaHeart.Core.Spawning
 
         public BaseSpawner(SpawnService spawnService) => SpawnService = spawnService;
 
-        public abstract GameObject Spawn(Vector2 position);
+        public abstract GameObject Spawn(TContext context);
     }
 }

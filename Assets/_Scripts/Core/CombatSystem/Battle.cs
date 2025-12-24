@@ -57,7 +57,7 @@ namespace MagmaHeart.Core.CombatSystem
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
-            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
+            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner);
 
             foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);

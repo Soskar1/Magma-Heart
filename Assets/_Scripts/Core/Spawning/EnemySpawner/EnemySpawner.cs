@@ -4,6 +4,7 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Spawning;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace MagmaHeart.Core.Spawning
 {
@@ -12,24 +13,20 @@ namespace MagmaHeart.Core.Spawning
         private readonly List<GameObject> m_enemyPrefabs;
         private readonly Player m_player;
         private readonly float m_minDistanceFromPlayer;
-        private readonly SpawnService m_spawnService;
         private readonly EnemySpawnContextFactory m_enemySpawnContextFactory;
 
         public EnemySpawner(SpawnService spawnService, Player player, float minDistanceFromPlayer, List<GameObject> enemyPrefabs, EnemySpawnContextFactory factory) : base(spawnService)
         {
-            m_spawnService = spawnService;
             m_player = player;
             m_minDistanceFromPlayer = minDistanceFromPlayer;
             m_enemyPrefabs = enemyPrefabs;
             m_enemySpawnContextFactory = factory;
         }
 
-        public override GameObject Spawn(Vector2 position)
+        public override GameObject Spawn(EnemySpawnContext context)
         {
             GameObject prefabToSpawn = m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Count)];
-            SpawnContext context = m_enemySpawnContextFactory.CreateSpawnContext(position);
-
-            return m_spawnService.Spawn(prefabToSpawn, context);
+            return SpawnService.Spawn(prefabToSpawn, context);
         }
 
         public Enemy SpawnInRoomTile(RoomTileData roomTileData)
@@ -40,7 +37,8 @@ namespace MagmaHeart.Core.Spawning
                 dungeonTile = roomTileData.GetTileAtIndex(Random.Range(0, roomTileData.TileCount - 1));
             } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(m_player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
 
-            return Spawn(dungeonTile.Position).GetComponent<Enemy>();
+            EnemySpawnContext context = (EnemySpawnContext)m_enemySpawnContextFactory.CreateSpawnContext(dungeonTile.Position);
+            return Spawn(context).GetComponent<Enemy>();
         }
     }
 }
