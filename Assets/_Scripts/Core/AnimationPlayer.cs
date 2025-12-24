@@ -17,17 +17,32 @@ namespace MagmaHeart.Core
             set
             {
                 m_currentAnimationState = value;
+                NextAnimationState = -1;
                 Animator.CrossFade(CurrentAnimationState, 0);
             }
         }
 
-        public void Awake() => Animator = GetComponent<Animator>();
+        private int m_nextAnimationState;
+        public int NextAnimationState
+        {
+            get => m_nextAnimationState;
+            set => m_nextAnimationState = value;
+        }
+
+        public void Awake()
+        {
+            Animator = GetComponent<Animator>();
+            NextAnimationState = -1;
+        }
 
         public void PlayAnimations()
         {
             if (DoesCurrentAnimationEnded())
             {
-                Animator.CrossFade(CurrentAnimationState, 0, 0, 0);
+                if (NextAnimationState != -1)
+                    CurrentAnimationState = NextAnimationState;
+                else
+                    Animator.CrossFade(CurrentAnimationState, 0, 0, 0);
 
                 if (m_animationEnded != null)
                 { 

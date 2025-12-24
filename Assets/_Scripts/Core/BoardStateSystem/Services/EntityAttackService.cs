@@ -27,17 +27,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
             attacker.Facing.TryUpdateFacing(targetX - attackerX);
 
             await attacker.Animation.PlayAttackAnimationAsync();
-            
+            attacker.Animation.NextAnimationState = attacker.Animation.GetIdleAnimation();
+
             if (attackType == AttackType.Melee)
                 await ApplyDamage(attacker, target, damage, cancellationToken);
             else
                 await WaitForProjectileHit(attacker, target, damage);
-
-            if (cancellationToken.IsCancellationRequested)
-                return;
-
-            await attacker.Animation.WaitForAnimationEnd();
-            attacker.Animation.PlayIdleAnimation();
         }
 
         private async Task ApplyDamage(Entity attacker, Entity target, float damage, CancellationToken cancellationToken)
