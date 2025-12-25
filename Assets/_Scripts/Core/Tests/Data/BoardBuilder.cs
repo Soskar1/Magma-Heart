@@ -47,10 +47,8 @@ namespace MagmaHeart.Core.Tests
 
         public static void CreateWall(Board board, Vector2 position) => board.ChangeNodeType(position, BoardNodeType.Obstacle);
 
-        public static void SurroundWithWalls(Board board, EntityModel model)
+        public static void SurroundWithWalls(Board board, Vector2 position)
         {
-            Vector3Int position = model.GetCurrentTilePosition();
-
             for (int x = -1; x <= 1; ++x)
             {
                 for (int y = -1; y <= 1; ++y)
@@ -58,8 +56,8 @@ namespace MagmaHeart.Core.Tests
                     if (x == 0 && y == 0)
                         continue;
 
-                    Vector3Int wallPosition = new Vector3Int(position.x + x, position.y + y);
-                    CreateWall(board, wallPosition.ToVector2());
+                    Vector2 wallPosition = new Vector2(position.x + x, position.y + y);
+                    CreateWall(board, wallPosition);
                 }
             }
         }
