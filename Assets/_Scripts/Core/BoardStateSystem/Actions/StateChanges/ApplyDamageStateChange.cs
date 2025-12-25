@@ -17,9 +17,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
             HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(Target);
-            simulation.UpdateProperty(Target, new HealthPropertySnapshot(health.CurrentHealth - Damage, health.MaxHealth));
+            float newHealth = health.CurrentHealth - Damage;
+            simulation.UpdateProperty(Target, new HealthPropertySnapshot(newHealth, health.MaxHealth));
 
-            if (Damage <= 0)
+            if (newHealth <= 0)
                 simulation.UpdateProperty(Target, new IsAlivePropertySnapshot(false));
         }
     }

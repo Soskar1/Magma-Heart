@@ -1,6 +1,7 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
@@ -56,7 +57,7 @@ namespace MagmaHeart.Core.Tests
             HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
             IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(-1));
-            Assert.That(isAlive.IsAlive, Is.True);
+            Assert.That(isAlive.IsAlive, Is.False);
         }
 
         [Test]
@@ -133,6 +134,21 @@ namespace MagmaHeart.Core.Tests
             Assert.That(simulation.Board.TryGetUnits(initialPosition, out _), Is.False);
             Assert.That(simulation.Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
             Assert.That(simulation.Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
+        }
+
+        [Test]
+        public void AttackStateChange_MeleeAttack_CreatesApplyDamageStateChange()
+        {
+            EntityModel player = (EntityModel)AddEntity(new Vector3Int(2, 3), true).Model;
+            EntityModel enemy = (EntityModel)AddEntity(new Vector3Int(3, 3), false).Model;
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Room);
+            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Melee);
+
+            stateChange.ApplyChangeToSimulation(simulation);
+
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
+            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
+            Assert.That(health.CurrentHealth, Is.EqualTo(3));
         }
     }
 }
