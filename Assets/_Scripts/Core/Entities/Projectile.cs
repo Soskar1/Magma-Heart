@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using MagmaHeart.AI.States;
-using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -12,25 +7,17 @@ namespace MagmaHeart.Core.Entities
     {
         [SerializeField] private float m_speed;
         [SerializeField] private float m_lifeTimeInSeconds;
-
-        private EntityModel m_attacker;
-        private EntityModel m_target;
-        private float m_damage;
-        private CombatBoardState m_boardState;
-        
         private float m_lifeTimeTimer;
 
-        private CancellationTokenSource m_cancellationTokenSource;
-        private TaskCompletionSource<bool> m_projectileHit;
+        private EntityModel m_attacker;
 
-        public void Initialize(CombatBoardState boardState, EntityModel attacker, EntityModel target, float damage)
+        private TaskCompletionSource<EntityModel> m_projectileHit;
+
+        public void Initialize(EntityModel attacker)
         {
-            m_boardState = boardState;
             m_attacker = attacker;
-            m_target = target;
-            m_damage = damage;
 
-            m_projectileHit = new TaskCompletionSource<bool>();
+            m_projectileHit = new TaskCompletionSource<EntityModel>();
             m_lifeTimeTimer = m_lifeTimeInSeconds;
         }
 
@@ -47,37 +34,30 @@ namespace MagmaHeart.Core.Entities
                 if (m_projectileHit != null)
                 {
                     Debug.LogWarning($"{nameof(m_projectileHit)} is null");
-                    m_projectileHit.SetResult(true);
+                    m_projectileHit.SetResult(null);
                 }
 
                 Destroy(gameObject);
             }
         }
 
-        public Task OnHit() => m_projectileHit.Task;
+        public Task<EntityModel> OnHit() => m_projectileHit.Task;
 
-        public async void OnTriggerEnter2D(Collider2D collision)
+        public void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.TryGetComponent(out Entity entity))
             {
                 if (entity.Model == m_attacker)
                     return;
 
-                if (entity.Model == m_target)
-                    await Hit();
+                m_projectileHit.TrySetResult(entity.Model);
+            }
+            else
+            {
+                m_projectileHit.TrySetResult(null);
             }
 
-            m_projectileHit.SetResult(true);
             Destroy(gameObject);
-        }
-
-        private async Task Hit()
-        {
-            m_cancellationTokenSource = new CancellationTokenSource();
-            await m_boardState.ApplyStateChangesAsync(new List<StateChange>()
-            {
-                new ApplyDamageStateChange(m_attacker, m_target, m_damage)
-            }, m_cancellationTokenSource.Token);
         }
     }
 }

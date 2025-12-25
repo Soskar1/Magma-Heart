@@ -30,27 +30,29 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
             await attacker.Animation.PlayAttackAnimationAsync();
             attacker.Animation.NextAnimationState = attacker.Animation.GetIdleAnimation();
 
-            if (attackType == AttackType.Melee)
+            EntityModel targetToHit = target.Model;
+            if (attackType == AttackType.Ranged)
+                targetToHit = await WaitForProjectileHit(attacker, target);
+
+            if (targetToHit != null)
                 await ApplyDamage(attacker, target, damage, cancellationToken);
-            else
-                await WaitForProjectileHit(attacker, target, damage);
+        }
+
+        private async Task<EntityModel> WaitForProjectileHit(Entity attacker, Entity target)
+        {
+            Projectile projectile = m_spawner.ProjectileSpawner.Spawn(attacker.transform.position, attacker.Model);
+
+            Vector2 direction = target.transform.position - attacker.transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            projectile.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
+            return await projectile.OnHit();
         }
 
         private async Task ApplyDamage(Entity attacker, Entity target, float damage, CancellationToken cancellationToken)
         {
             ApplyDamageStateChange damageStateChange = new ApplyDamageStateChange(attacker.Model, target.Model, damage);
             await m_boardState.ApplyStateChangesAsync(new List<StateChange>() { damageStateChange }, cancellationToken);
-        }
-
-        private async Task WaitForProjectileHit(Entity attacker, Entity target, float damage)
-        {
-            Projectile projectile = m_spawner.ProjectileSpawner.Spawn(attacker.transform.position, attacker.Model, target.Model, damage, m_boardState);
-
-            Vector2 direction = target.transform.position - attacker.transform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            projectile.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-
-            await projectile.OnHit();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Spawning
                 throw new ArgumentException("Invalid context type for ProjectileSpawnContext");
 
             Projectile projectile = instance.GetComponent<Projectile>();
-            projectile.Initialize(projectileSpawnContext.BoardState, projectileSpawnContext.Attacker, projectileSpawnContext.Target, projectileSpawnContext.Damage);
+            projectile.Initialize(projectileSpawnContext.Attacker);
         }
     }
 }

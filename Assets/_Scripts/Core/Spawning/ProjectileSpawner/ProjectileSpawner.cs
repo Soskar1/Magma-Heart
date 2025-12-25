@@ -1,4 +1,3 @@
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Spawning;
 using UnityEngine;
@@ -19,9 +18,9 @@ namespace MagmaHeart.Core.Spawning
             return SpawnService.Spawn(m_projectilePrefab, context);
         }
 
-        public Projectile Spawn(Vector2 position, EntityModel attacker, EntityModel target, float damage, CombatBoardState boardState)
+        public Projectile Spawn(Vector2 position, EntityModel attacker)
         {
-            ProjectileSpawnContext context = new ProjectileSpawnContext(position, attacker, target, damage, boardState);
+            ProjectileSpawnContext context = new ProjectileSpawnContext(position, attacker);
             return Spawn(context).GetComponent<Projectile>();
         }
     }
