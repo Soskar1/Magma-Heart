@@ -1,8 +1,11 @@
 using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace MagmaHeart.Core.Tests
 {
@@ -12,7 +15,6 @@ namespace MagmaHeart.Core.Tests
         private List<ActionData> m_actions;
         private int m_health = 5;
         private bool m_isPlayer = false;
-        private bool m_surroundWithWalls = false;
 
         public EntityBuilder(AIScenarioBuilder scenario) => m_scenario = scenario;
 
@@ -34,19 +36,14 @@ namespace MagmaHeart.Core.Tests
             return this;
         }
 
-        public EntityBuilder SurroundWithWalls()
-        {
-            m_surroundWithWalls = true;
-            return this;
-        }
-
         public AIScenarioBuilder At(int x, int y)
         {
-            EntityInitializationData data = new EntityInitializationData(new Vector3Int(x, y), m_isPlayer, m_health, m_actions);
-            EntityModel model = BoardBuilder.AddEntity(m_scenario.Board, data);
-
-            if (m_surroundWithWalls)
-                BoardBuilder.SurroundWithWalls(m_scenario.Board, new Vector2(x, y));
+            Vector2 position = new Vector2(x, y);
+            EntityStats stats = new EntityStats(m_health);
+            EntityData data = new EntityData("", stats, m_actions == null ? new List<ActionData>() : m_actions);
+            EntityModel model = new EntityModel(data, () => position.ToVector3Int(), m_isPlayer);
+            m_scenario.Board.AddUnit(position, model);
+            m_scenario.Board.ChangeNodeType(position, BoardNodeType.Obstacle);
 
             EnemyCombatController combatController = new EnemyCombatController(model, null);
 

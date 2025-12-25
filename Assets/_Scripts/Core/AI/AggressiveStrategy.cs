@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.AI
         private const float DISTANCE_WEIGHT = 0.1f;
         private const float AI_IS_NOT_ALIVE_POINTS = -50;
 
-        public AggressiveStrategy(AIUnitModel player) : base(player) {
+        public AggressiveStrategy() {
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(MovementAction))
             }, new EnemyTargetSelector()));
@@ -42,9 +42,19 @@ namespace MagmaHeart.Core.AI
             float playerIsNotAlivePoints = 0;
             int aiNotAliveCount = 0;
 
-            PositionPropertySnapshot playerPosition = state.GetProperty<PositionPropertySnapshot>(Player);
-            bool playerIsAlive = state.GetProperty<IsAlivePropertySnapshot>(Player);
-            HealthPropertySnapshot playerHealth = state.GetProperty<HealthPropertySnapshot>(Player);
+            AIUnitModel player = null;
+            foreach (AIUnitModel unitModel in state.Board.GetUnits())
+            {
+                if (unitModel.IsPlayer)
+                {
+                    player = unitModel;
+                    break;
+                }
+            }
+
+            PositionPropertySnapshot playerPosition = state.GetProperty<PositionPropertySnapshot>(player);
+            bool playerIsAlive = state.GetProperty<IsAlivePropertySnapshot>(player);
+            HealthPropertySnapshot playerHealth = state.GetProperty<HealthPropertySnapshot>(player);
             float playerHealthDifference = playerHealth.MaxHealth - playerHealth.CurrentHealth;
 
             if (!playerIsAlive)

@@ -10,11 +10,11 @@ using System.Threading;
 
 namespace MagmaHeart.Core.Tests
 {
-    internal record AIScenario(CombatBoardState State, TurnOrder TurnOrder, EntityModel Player)
+    internal record AIScenario(CombatBoardState State, TurnOrder TurnOrder)
     {
         public async Task<BestPlan> RunAI(int depth, ActionDatabase actionDatabase)
         {
-            AggressiveStrategy strategy = new AggressiveStrategy(Player);
+            AggressiveStrategy strategy = new AggressiveStrategy();
             CombatAI ai = new CombatAI(strategy, actionDatabase, depth);
 
             OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(TurnOrder, State);

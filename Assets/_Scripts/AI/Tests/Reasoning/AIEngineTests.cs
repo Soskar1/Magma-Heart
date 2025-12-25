@@ -37,7 +37,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
-            BasicStrategy strategy = new BasicStrategy(m_player.Model);
+            BasicStrategy strategy = new BasicStrategy();
             AIEngine engine = new AIEngine(strategy, Database, 1);
             EmptyTurnController enemy = new EmptyTurnController(CreateEntity(10, Vector2.zero, false));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
@@ -53,7 +53,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [TestCase(2)]
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
-            BasicStrategy strategy = new BasicStrategy(m_player.Model);
+            BasicStrategy strategy = new BasicStrategy();
             AIEngine engine = new AIEngine(strategy, Database, depth);
             EmptyTurnController enemy = new EmptyTurnController(CreateEntity(10, new Vector2(5, 3), false));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
@@ -67,7 +67,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
-            BasicStrategy strategy = new BasicStrategy(m_player.Model);
+            BasicStrategy strategy = new BasicStrategy();
             AIEngine engine = new AIEngine(strategy, Database, 2);
             EmptyTurnController enemy = new EmptyTurnController(CreateEntity(1, new Vector2(4, 5), false));
             CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };

@@ -13,63 +13,72 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Tests
 {
-    internal class SimulationTests
+    internal class SimulationTests : CoreTests
     {
-        private BoardDimensions m_dimensions = new BoardDimensions(Vector2Int.zero, new Vector2Int(10, 10));
-
-        internal PlayerVsEnemyBoard EnemyAndPlayerNearEachOther()
+        internal (EntityModel, EntityModel) EnemyAndPlayerNearEachOther()
         {
-            EntityInitializationData playerData = new EntityInitializationData(new Vector3Int(2, 3), true, 5, null);
-            EntityInitializationData enemyData = new EntityInitializationData(new Vector3Int(3, 3), false, 5, null);
-            return BoardBuilder.PlayerVsEnemy(m_dimensions, playerData, enemyData);
+            Vector2Int playerPosition = new Vector2Int(2, 3);
+            Vector2Int enemyPosition = new Vector2Int(3, 3);
+            AIScenario scenario = AIScenarioBuilder.Create(State)
+                .AddEntity().IsPlayer(true).At(playerPosition.x, playerPosition.y)
+                .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
+                .Build();
+
+            State.Room.TryGetUnit(playerPosition.ToVector2(), out EntityModel player);
+            State.Room.TryGetUnit(enemyPosition.ToVector2(), out EntityModel enemy);
+
+            return (player, enemy);
         }
 
-        internal (Board, EntityModel) BoardWithOneEntity()
+        internal EntityModel BoardWithOneEntity()
         {
-            EntityInitializationData entityData = new EntityInitializationData(new Vector3Int(3, 3), true, 5, null);
-            Board board = BoardBuilder.CreateEmptyBoard(m_dimensions);
-            EntityModel model = BoardBuilder.AddEntity(board, entityData);
-            return (board, model);
+            Vector2Int entityPosition = new Vector2Int(3, 3);
+            AIScenario scenario = AIScenarioBuilder.Create(State)
+                .AddEntity().At(entityPosition.x, entityPosition.y)
+                .Build();
+
+            State.Room.TryGetUnit(entityPosition.ToVector2(), out EntityModel entity);
+            return entity;
         }
 
         [Test]
         public void ApplyDamageStateChange_OneExecution_AppliesDamageToTargetInSimulation()
         {
-            PlayerVsEnemyBoard board = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(board.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(board.Enemy, board.Player, 1);
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
+            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 1);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(board.Player);
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(4));
         }
 
         [Test]
         public void ApplyDamageStateChange_TwoExecutions_AppliesDamageToTargetInSimulation()
         {
-            PlayerVsEnemyBoard board = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(board.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(board.Enemy, board.Player, 2);
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
+            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 2);
 
             stateChange.ApplyChangeToSimulation(simulation);
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(board.Player);
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(1));
         }
 
         [Test]
         public void ApplyDamageStateChange_DamageIsGreaterThanTargetsCurrentHealth_SetsTargetIsAliveToFalse()
         {
-            PlayerVsEnemyBoard board = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(board.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(board.Enemy, board.Player, 6);
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
+            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 6);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(board.Player);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(board.Player);
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
+            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(-1));
             Assert.That(isAlive.IsAlive, Is.False);
         }
@@ -77,8 +86,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_OneExecution_UpdatesEnergyForTargetInSimulation()
         {
-            (Board board, EntityModel entity) = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            EntityModel entity = BoardWithOneEntity();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, 3);
 
             energyChange.ApplyChangeToSimulation(simulation);
@@ -90,8 +99,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_TwoExecutions_LastExecutionIsAppliedToSimulation()
         {
-            (Board board, EntityModel entity) = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            EntityModel entity = BoardWithOneEntity();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, 3);
             UpdateEnergyStateChange energyChange2 = new UpdateEnergyStateChange(entity, 4);
 
@@ -105,8 +114,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_NewEnergyValueIsAboveMaxEnergy_SetsEnergyValueToMaxEnergy()
         {
-            (Board board, EntityModel entity) = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            EntityModel entity = BoardWithOneEntity();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             int energyToSet = entity.Energy.MaxEnergy + 1;
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, energyToSet);
 
@@ -119,8 +128,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void UpdateEnergyStateChange_NewEnergyValueIsNegative_SetsEnergyValueToZero()
         {
-            (Board board, EntityModel entity) = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            EntityModel entity = BoardWithOneEntity();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, -1);
 
             energyChange.ApplyChangeToSimulation(simulation);
@@ -132,8 +141,8 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void MoveEntityStateChange_UpdatesBoardNodeTypesAndMovesEntity()
         {
-            (Board board, EntityModel entity) = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            EntityModel entity = BoardWithOneEntity();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
 
             Vector2Int initialPosition = entity.GetCurrentTilePosition().ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
@@ -154,41 +163,45 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void AttackStateChange_MeleeAttack_CreatesApplyDamageStateChange()
         {
-            PlayerVsEnemyBoard board = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(board.Board);
-            AttackStateChange stateChange = new AttackStateChange(board.Enemy, board.Player, 2, AttackType.Melee);
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
+            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Melee);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(board.Player);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(board.Player);
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
+            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(3));
         }
 
         [Test]
         public void AttackStateChange_RangedAttack_CreatesApplyDamageStateChange()
         {
-            PlayerVsEnemyBoard board = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(board.Board);
-            AttackStateChange stateChange = new AttackStateChange(board.Enemy, board.Player, 2, AttackType.Ranged);
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
+            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Ranged);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(board.Player);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(board.Player);
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
+            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(3));
         }
 
         [Test]
         public void AttackStateChange_RangedAttackHitsWall_DoesNotCreateApplyDamageStateChange()
         {
-            Board board = BoardBuilder.CreateEmptyBoard(m_dimensions);
-            EntityInitializationData playerData = new EntityInitializationData(new Vector3Int(2, 3), true, 5, null);
-            EntityInitializationData enemyData = new EntityInitializationData(new Vector3Int(4, 3), false, 5, null);
-            EntityModel player = BoardBuilder.AddEntity(board, playerData);
-            EntityModel enemy = BoardBuilder.AddEntity(board, enemyData);
-            BoardBuilder.CreateWall(board, new Vector2(3, 3));
-            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            Vector2Int playerPosition = new Vector2Int(2, 3);
+            Vector2Int enemyPosition = new Vector2Int(4, 3);
+            AIScenario scenario = AIScenarioBuilder.Create(State)
+                .AddEntity().IsPlayer(true).At(playerPosition.x, playerPosition.y)
+                .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
+                .ModifyBoard().PlaceWallAt(3, 3).Bake()
+                .Build();
+
+            State.Room.TryGetUnit(playerPosition.ToVector2(), out EntityModel player);
+            State.Room.TryGetUnit(enemyPosition.ToVector2(), out EntityModel enemy);
+            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Ranged);
 
             stateChange.ApplyChangeToSimulation(simulation);
