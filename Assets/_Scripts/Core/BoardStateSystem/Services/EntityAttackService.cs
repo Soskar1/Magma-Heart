@@ -6,6 +6,7 @@ using MagmaHeart.Core.Spawning;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Services
 {
@@ -44,6 +45,11 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
         private async Task WaitForProjectileHit(Entity attacker, Entity target, float damage)
         {
             Projectile projectile = m_spawner.ProjectileSpawner.Spawn(attacker.transform.position, attacker.Model, target.Model, damage, m_boardState);
+
+            Vector2 direction = target.transform.position - attacker.transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            projectile.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
             await projectile.OnHit();
         }
     }
