@@ -15,20 +15,20 @@ namespace MagmaHeart.Core.Tests
 {
     internal class SimulationTests
     {
+        private BoardDimensions m_dimensions = new BoardDimensions(Vector2Int.zero, new Vector2Int(10, 10));
+
         internal PlayerVsEnemyBoard EnemyAndPlayerNearEachOther()
         {
-            BoardDimensions dimensions = new BoardDimensions(Vector2Int.zero, new Vector2Int(10, 10));
             EntityInitializationData playerData = new EntityInitializationData(new Vector3Int(2, 3), true, 5, null);
-            EntityInitializationData enemyData = new EntityInitializationData(new Vector3Int(3, 3), true, 5, null);
-            return BoardPresets.PlayerVsEnemy(dimensions, playerData, enemyData);
+            EntityInitializationData enemyData = new EntityInitializationData(new Vector3Int(3, 3), false, 5, null);
+            return BoardBuilder.PlayerVsEnemy(m_dimensions, playerData, enemyData);
         }
 
         internal (Board, EntityModel) BoardWithOneEntity()
         {
-            BoardDimensions dimensions = new BoardDimensions(Vector2Int.zero, new Vector2Int(10, 10));
             EntityInitializationData entityData = new EntityInitializationData(new Vector3Int(3, 3), true, 5, null);
-            Board board = BoardPresets.CreateEmptyBoard(dimensions);
-            EntityModel model = BoardPresets.AddEntity(board, entityData);
+            Board board = BoardBuilder.CreateEmptyBoard(m_dimensions);
+            EntityModel model = BoardBuilder.AddEntity(board, entityData);
             return (board, model);
         }
 
@@ -177,6 +177,24 @@ namespace MagmaHeart.Core.Tests
             HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(board.Player);
             IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(board.Player);
             Assert.That(health.CurrentHealth, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void AttackStateChange_RangedAttackHitsWall_DoesNotCreateApplyDamageStateChange()
+        {
+            Board board = BoardBuilder.CreateEmptyBoard(m_dimensions);
+            EntityInitializationData playerData = new EntityInitializationData(new Vector3Int(2, 3), true, 5, null);
+            EntityInitializationData enemyData = new EntityInitializationData(new Vector3Int(4, 3), false, 5, null);
+            EntityModel player = BoardBuilder.AddEntity(board, playerData);
+            EntityModel enemy = BoardBuilder.AddEntity(board, enemyData);
+            BoardBuilder.CreateWall(board, new Vector2(3, 3));
+            SimulatedBoardState simulation = new SimulatedBoardState(board);
+            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Ranged);
+
+            stateChange.ApplyChangeToSimulation(simulation);
+
+            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
+            Assert.That(health.CurrentHealth, Is.EqualTo(5));
         }
     }
 }
