@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Services;
+using MagmaHeart.Core.Spawning;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
@@ -12,8 +13,13 @@ namespace MagmaHeart.Core.BoardStateSystem
         public CombatBoardState(Room room) : base(room)
         {
             Room = room;
+        }
+
+        public CombatBoardState(Room room, MagmaHeartSpawner spawner) : base(room)
+        {
+            Room = room;
             MovementService = new EntityMovementService();
-            AttackService = new EntityAttackService();
+            AttackService = new EntityAttackService(this, spawner);
         }
     }
 }

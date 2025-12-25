@@ -1,5 +1,4 @@
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.Presenters;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {

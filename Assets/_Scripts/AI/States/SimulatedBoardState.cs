@@ -100,5 +100,7 @@ namespace MagmaHeart.AI.States
             NodeTypeUpdateBoardSimulationOperation operation = new NodeTypeUpdateBoardSimulationOperation(position, oldNodeType, newNodeType);
             m_currentSimulationOperations.Add(operation);
         }
+
+        public void ProduceStateChange(StateChange stateChange) => stateChange.ApplyChangeToSimulation(this);
     }
 }

@@ -2,6 +2,7 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Spawning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Entity m_player;
-        private readonly Spawner m_spawner;
+        private readonly MagmaHeartSpawner m_spawner;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
 
         private Room m_currentRoom;
@@ -27,7 +28,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private bool m_battleEnded = false;
 
-        public Battle(Entity player, Spawner spawner)
+        public Battle(Entity player, MagmaHeartSpawner spawner)
         {
             m_player = player;
             m_spawner = spawner;
@@ -41,7 +42,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom.AddEntityToInspect(m_player);
             for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
-                Enemy spawnedEntity = m_spawner.SpawnEnemy(room.RoomTileData);
+                Enemy spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomTileData);
                 m_currentRoom.AddEntityToInspect(spawnedEntity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
@@ -56,7 +57,7 @@ namespace MagmaHeart.Core.CombatSystem
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
-            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom);
+            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner);
 
             foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);

@@ -2,6 +2,7 @@
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
@@ -46,7 +47,7 @@ namespace MagmaHeart.Core.Tests
             EntityStats stats = new EntityStats(maxHealth);
             List<ActionData> actions = new List<ActionData>
             {
-                new AttackActionData(2, 1, 1),
+                new AttackActionData(2, 1, 1, AttackType.Melee),
                 new MovementActionData(2)
             };
             EntityData data = new EntityData("", stats, actions);

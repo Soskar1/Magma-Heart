@@ -12,6 +12,7 @@ namespace MagmaHeart.Core.Entities
 
         private TaskCompletionSource<bool> m_animationTrigger;
 
+        public int GetIdleAnimation() => m_idleAnimationID;
         public void PlayIdleAnimation() => CurrentAnimationState = m_idleAnimationID;
         public void PlayRunAnimation() => CurrentAnimationState = m_runAnimationID;
         public void PlayAttackAnimation() => CurrentAnimationState = m_attackAnimationID;

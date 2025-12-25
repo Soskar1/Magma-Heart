@@ -12,7 +12,10 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
+using MagmaHeart.Core.Spawning;
 using MagmaHeart.Core.StateMachines;
+using MagmaHeart.Spawning;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -30,8 +33,9 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRendererPrefab;
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
-        [Header("Spawner Settings")]
-        [SerializeField] private Enemy m_enemyPrefab;
+        [Header("SpawnService Settings")]
+        [SerializeField] private GameObject m_projectilePrefab;
+        [SerializeField] private List<GameObject> m_enemyPrefabs;
         [SerializeField] private float m_minDistanceFromPlayer;
 
         private SceneLoader m_sceneLoader;
@@ -99,7 +103,23 @@ namespace MagmaHeart.Core.SceneLoading
             
             m_combatAI = new CombatAI(strategy, database, 2);
 
-            Spawner spawner = new Spawner(spawnedPlayer, m_enemyPrefab, m_minDistanceFromPlayer, m_grid, m_combatAI);
+            Dictionary<GameObject, SpawnConfig> configs = new Dictionary<GameObject, SpawnConfig>();
+            foreach (GameObject prefab in m_enemyPrefabs)
+            {
+                EnemySpawnConfig config = new EnemySpawnConfig(prefab);
+                configs.Add(prefab, config);
+            }
+            ProjectileSpawnConfig projectileConfig = new ProjectileSpawnConfig(m_projectilePrefab);
+            configs.Add(m_projectilePrefab, projectileConfig);
+
+            SpawnService spawnService = new SpawnService(configs, new UnityInstantiator());
+            EnemySpawnContextFactory factory = new EnemySpawnContextFactory(m_grid, m_combatAI);
+            
+            EnemySpawner enemySpawner = new EnemySpawner(spawnService, spawnedPlayer, m_minDistanceFromPlayer, m_enemyPrefabs, factory);
+            ProjectileSpawner projectileSpawner = new ProjectileSpawner(spawnService, m_projectilePrefab);
+
+            MagmaHeartSpawner spawner = new MagmaHeartSpawner(enemySpawner, projectileSpawner);
+
             m_battle = new Battle(spawnedPlayer, spawner);
             m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
             
