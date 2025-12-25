@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Tests
 {
-    internal static class BoardPresets
+    internal static class BoardBuilder
     {
         public static Board CreateEmptyBoard(BoardDimensions dimensions)
         {
@@ -44,5 +44,7 @@ namespace MagmaHeart.Core.Tests
 
             return model;
         }
+
+        public static void CreateWall(Board board, Vector2 position) => board.ChangeNodeType(position, BoardNodeType.Obstacle);
     }
 }
