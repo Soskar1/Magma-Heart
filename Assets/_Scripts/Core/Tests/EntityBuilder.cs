@@ -13,6 +13,7 @@ namespace MagmaHeart.Core.Tests
         private readonly AIScenarioBuilder m_scenario;
         private List<ActionData> m_actions;
         private int m_health = 5;
+        private int m_energy = 5;
         private bool m_isPlayer = false;
 
         public EntityBuilder(AIScenarioBuilder scenario) => m_scenario = scenario;
@@ -29,6 +30,12 @@ namespace MagmaHeart.Core.Tests
             return this;
         }
 
+        public EntityBuilder WithEnergy(int energy)
+        {
+            m_energy = energy;
+            return this;
+        }
+
         public EntityBuilder IsPlayer(bool isPlayer)
         {
             m_isPlayer = isPlayer;
@@ -38,7 +45,7 @@ namespace MagmaHeart.Core.Tests
         public AIScenarioBuilder At(int x, int y)
         {
             Vector2 position = new Vector2(x, y);
-            EntityStats stats = new EntityStats(m_health);
+            EntityStats stats = new EntityStats(m_health, m_energy, m_energy);
             EntityData data = new EntityData("", stats, m_actions == null ? new List<ActionData>() : m_actions);
             EntityModel model = new EntityModel(data, () => position.ToVector3Int(), m_isPlayer);
             m_scenario.Board.AddUnit(position, model);

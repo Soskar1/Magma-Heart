@@ -130,9 +130,9 @@ namespace MagmaHeart.Core.Tests
         public async Task MovementWithContinuousAttackPlan_OnePlayerTwoEnemies_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(State)
-                .AddEntity().IsPlayer(false).WithHealth(2).WithActions(ActionPresets.MeleeAttacker).At(0, 1)
-                .AddEntity().IsPlayer(true).WithHealth(5).WithActions(ActionPresets.MeleeAttacker).At(2, 2)
-                .AddEntity().IsPlayer(false).WithHealth(5).WithActions(ActionPresets.MeleeAttacker).At(2, 1)
+                .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(0, 1)
+                .AddEntity().IsPlayer(true).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 2)
+                .AddEntity().IsPlayer(false).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 1)
                 .Build();
 
             BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
@@ -152,8 +152,8 @@ namespace MagmaHeart.Core.Tests
         public async Task RangedAttack_WallPlacedBetweenEnemyAndPlayer_EnemyDoNotUseRangedAttackAsAFirstAction(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(State)
-                .AddEntity().IsPlayer(false).WithHealth(2).WithActions(ActionPresets.RangedAttacker).At(2, 0)
-                .AddEntity().IsPlayer(true).WithHealth(5).WithActions(ActionPresets.MeleeAttacker).At(2, 2)
+                .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.RangedAttacker).At(2, 0)
+                .AddEntity().IsPlayer(true).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 2)
                 .ModifyBoard().PlaceWallAt(2, 1).Bake()
                 .Build();
 
@@ -173,8 +173,8 @@ namespace MagmaHeart.Core.Tests
         public async Task RangedAttack_EnemyIsFarAwayFromPlayer_EnemyUseRangedAttack(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(State)
-                .AddEntity().IsPlayer(false).WithHealth(2).WithActions(ActionPresets.RangedAttacker).At(2, 0)
-                .AddEntity().IsPlayer(true).WithHealth(5).WithActions(ActionPresets.MeleeAttacker).At(2, 4)
+                .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.RangedAttacker).At(2, 0)
+                .AddEntity().IsPlayer(true).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 4)
                 .Build();
 
             BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
