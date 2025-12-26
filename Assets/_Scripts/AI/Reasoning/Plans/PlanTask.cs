@@ -16,7 +16,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
             ExecuteUntilFail = executeUntilFail;
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, AIUnitModel target)
+        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor)
         {
             if (!ActionDefinition.TryResolve(executor, simulation, out ActionArgs args))
                 return false;

@@ -14,13 +14,13 @@ namespace MagmaHeart.AI.Reasoning.Plans
             ExecutedTasks = new List<PlanTask>();
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, AIUnitModel target)
+        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor)
         {
             ExecutedTasks.Clear();
 
             foreach (PlanTask task in Tasks)
             {
-                bool executed = task.TryExecute(simulation, executor, target);
+                bool executed = task.TryExecute(simulation, executor);
 
                 if (executed)
                 {
@@ -34,7 +34,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 }
 
                 if (task.ExecuteUntilFail)
-                    while (task.TryExecute(simulation, executor, target))
+                    while (task.TryExecute(simulation, executor))
                         ExecutedTasks.Add(task);
             }
 

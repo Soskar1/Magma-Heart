@@ -11,7 +11,7 @@ namespace MagmaHeart.AI.Reasoning
     {
         private readonly int m_depth;
         private readonly ActionDatabase m_actionDatabase;
-        private readonly ActionSimulationFilter m_filter;
+        private readonly Planner m_planner;
         private Strategy m_strategy;
 
         public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead)
@@ -20,7 +20,7 @@ namespace MagmaHeart.AI.Reasoning
             m_depth = lookAhead;
             m_actionDatabase = database;
 
-            m_filter = new ActionSimulationFilter(strategy, m_actionDatabase);
+            m_planner = new Planner(strategy, m_actionDatabase);
         }
 
         public BestPlan ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)
@@ -32,29 +32,25 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestPlan bestPlan = null;
-            List<PlanSimulation> possiblePlans = m_filter.GetPossiblePlans(simulation, unitTurns.Value.Model);
+            List<Plan> plans = m_planner.GetPlans(unitTurns.Value.Model);
 
-            foreach (PlanSimulation possiblePlan in possiblePlans)
+            foreach (Plan plan in plans)
             {
-                Plan plan = possiblePlan.Plan;
-                foreach (AIUnitModel target in possiblePlan.Targets)
+                bool isExecuted = plan.TryExecute(simulation, unitTurns.Value.Model);
+                if (!isExecuted)
+                    continue;
+
+                float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
+
+                plan.Undo(simulation);
+
+                if (evaluation > bestValue)
                 {
-                    bool isExecuted = plan.TryExecute(simulation, unitTurns.Value.Model, target);
-                    if (isExecuted)
-                    {
-                        float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
-
-                        plan.Undo(simulation);
-
-                        if (evaluation > bestValue)
-                        {
-                            bestValue = evaluation;
-                            bestPlan = new BestPlan(plan.ExecutedTasks, target);
-                        }
-
-                        alpha = Math.Max(alpha, bestValue);
-                    }
+                    bestValue = evaluation;
+                    bestPlan = new BestPlan(plan.ExecutedTasks);
                 }
+
+                alpha = Math.Max(alpha, bestValue);
             }
 
             return bestPlan;
@@ -70,31 +66,27 @@ namespace MagmaHeart.AI.Reasoning
                 return m_strategy.EvaluateState(simulation);
 
             currentTurnContext.StartTurn(simulation);
-            List<PlanSimulation> possiblePlans = m_filter.GetPossiblePlans(simulation, currentUnit);
+            List<Plan> plans = m_planner.GetPlans(currentUnit);
 
             if (!currentUnit.IsPlayer)
             {
                 // AI
                 float maxEvaluation = float.MinValue;
-                foreach (PlanSimulation possiblePlan in possiblePlans)
+                foreach (Plan plan in plans)
                 {
-                    Plan plan = possiblePlan.Plan;
-                    foreach (AIUnitModel target in possiblePlan.Targets)
-                    {
-                        bool isExecuted = plan.TryExecute(simulation, currentUnit, target);
-                        if (isExecuted)
-                        {
-                            float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
+                    bool isExecuted = plan.TryExecute(simulation, currentUnit);
+                    if (!isExecuted)
+                        continue;
 
-                            plan.Undo(simulation);
+                    float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                            maxEvaluation = Math.Max(maxEvaluation, evaluation);
-                            alpha = Math.Max(alpha, evaluation);
+                    plan.Undo(simulation);
 
-                            if (beta <= alpha)
-                                break;
-                        }
-                    }
+                    maxEvaluation = Math.Max(maxEvaluation, evaluation);
+                    alpha = Math.Max(alpha, evaluation);
+
+                    if (beta <= alpha)
+                        break;
                 }
 
                 currentTurnContext.UndoTurn(simulation);
@@ -104,25 +96,21 @@ namespace MagmaHeart.AI.Reasoning
             {
                 // PLAYER
                 float minEvaluation = float.MaxValue;
-                foreach (PlanSimulation possiblePlan in possiblePlans)
+                foreach (Plan plan in plans)
                 {
-                    Plan plan = possiblePlan.Plan;
-                    foreach (AIUnitModel target in possiblePlan.Targets)
-                    {
-                        bool isExecuted = plan.TryExecute(simulation, currentUnit, target);
-                        if (isExecuted)
-                        {
-                            float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
+                    bool isExecuted = plan.TryExecute(simulation, currentUnit);
+                    if (!isExecuted)
+                        continue;
 
-                            plan.Undo(simulation);
+                    float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                            minEvaluation = Math.Min(minEvaluation, evaluation);
-                            beta = Math.Min(beta, evaluation);
+                    plan.Undo(simulation);
 
-                            if (beta <= alpha)
-                                break;
-                        }
-                    }
+                    minEvaluation = Math.Min(minEvaluation, evaluation);
+                    beta = Math.Min(beta, evaluation);
+
+                    if (beta <= alpha)
+                        break;
                 }
 
                 currentTurnContext.UndoTurn(simulation);
