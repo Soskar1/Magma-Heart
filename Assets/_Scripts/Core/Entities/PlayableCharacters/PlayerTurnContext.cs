@@ -10,11 +10,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     public class PlayerTurnContext : EntityTurnContext
     {
         private bool m_canExecuteActions;
-        private CancellationTokenSource m_cancellationTokenSource;
 
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
         public event Action OnCombatActionExecutionStarted;
         public event Action OnCombatActionExecuted;
+
+        private TaskCompletionSource<bool> m_turnFinished;
+        private CancellationTokenSource m_cancellationTokenSource;
 
         public bool CanExecuteActions
         {
@@ -47,20 +49,25 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_cancellationTokenSource.Cancel();
         }
 
-        public override Task StartTurnTask()
+        public override async Task StartTurnTask()
         {
-            Task task = base.StartTurnTask();
+            m_cancellationTokenSource = new CancellationTokenSource();
+            await StartTurnAsync(CurrentCombatBoardState, m_cancellationTokenSource.Token);
+
+            if (m_cancellationTokenSource.IsCancellationRequested)
+                return;
 
             CanExecuteActions = true;
 
-            return task;
+            m_turnFinished = new TaskCompletionSource<bool>();
+            await m_turnFinished.Task;
         }
 
         public override void EndTurn()
         {
             CanExecuteActions = false;
 
-            base.EndTurn();
+            m_turnFinished.SetResult(true);
         }
 
         public async Task Execute(ActionPreview preview)
