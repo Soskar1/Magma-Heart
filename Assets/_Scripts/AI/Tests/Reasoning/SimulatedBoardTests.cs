@@ -60,7 +60,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ApplyStateChanges_AddsStateChangeToHistoryStack()
         {
             MoveAction moveAction = new MoveAction();
-            MoveActionArgs args = new MoveActionArgs(m_entity, Vector2.up, 1);
+            MoveActionArgs args = new MoveActionArgs(m_entity, Vector2.up, new MoveActionData(1));
 
             moveAction.Execute(args, m_state);
 
@@ -90,7 +90,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
             EngageAction action = new EngageAction();
-            EngageActionArgs args = new EngageActionArgs(m_entity, player, 1, 1);
+            EngageActionArgs args = new EngageActionArgs(m_entity, player, new EngageActionData(1, 1));
 
             action.Execute(args, m_state);
 
@@ -110,7 +110,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
             EngageAction action = new EngageAction();
-            EngageActionArgs args = new EngageActionArgs(m_entity, player, 1, 1);
+            EngageActionArgs args = new EngageActionArgs(m_entity, player, new EngageActionData(1, 1));
             action.Execute(args, m_state);
 
             m_state.Undo();
@@ -127,10 +127,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
             EngageAction action = new EngageAction();
-            EngageActionArgs args = new EngageActionArgs(m_entity, player, 1, 1);
+            EngageActionArgs args = new EngageActionArgs(m_entity, player, new EngageActionData(1, 1));
             EmptyAction emptyAction = new EmptyAction();
             action.Execute(args, m_state);
-            emptyAction.Execute(new ActionArgs(player), m_state);
+            emptyAction.Execute(new ActionArgs(player, null), m_state);
 
             m_state.Undo();
 

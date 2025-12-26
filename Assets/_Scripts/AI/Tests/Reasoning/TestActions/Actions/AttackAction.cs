@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class AttackAction : UnitAction<AttackActionArgs>
+    internal class AttackAction : UnitAction
     {
-        public override bool CanExecute(AttackActionArgs args, BoardState gameState)
+        public override bool CanExecute(ActionArgs args, BoardState gameState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
-            Position targetPosition = gameState.GetProperty<Position>(args.Target);
+            AttackActionArgs attackActionArgs = args as AttackActionArgs;
+
+            Position possessorPosition = gameState.GetProperty<Position>(attackActionArgs.Executor);
+            Position targetPosition = gameState.GetProperty<Position>(attackActionArgs.Target);
 
             if (possessorPosition.Distance(targetPosition) > 1)
                 return false;
@@ -17,10 +19,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState gameState)
         {
+            AttackActionArgs attackActionArgs = args as AttackActionArgs;
+
             return new List<StateChange> {
-                new ApplyDamageStateChange(args.Damage, args.Target)
+                new ApplyDamageStateChange(attackActionArgs.AttackActionData.Damage, attackActionArgs.Target)
             };
         }
     }

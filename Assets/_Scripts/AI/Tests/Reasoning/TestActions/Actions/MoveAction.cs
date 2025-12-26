@@ -5,17 +5,18 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class MoveAction : UnitAction<MoveActionArgs>
+    internal class MoveAction : UnitAction
     {
-        public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState gameState)
         {
+            MoveActionArgs moveActionArgs = args as MoveActionArgs;
             Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
-            Vector2 direction = args.Target - tmpPosition;
-            float xMovement = Mathf.Min(Mathf.Abs(direction.x), args.Speed);
-            float yMovement = Mathf.Min(Mathf.Abs(direction.y), args.Speed);
+            Vector2 direction = moveActionArgs.Target - tmpPosition;
+            float xMovement = Mathf.Min(Mathf.Abs(direction.x), moveActionArgs.MoveActionData.Speed);
+            float yMovement = Mathf.Min(Mathf.Abs(direction.y), moveActionArgs.MoveActionData.Speed);
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;
@@ -34,11 +35,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             };
         }
 
-        public override bool CanExecute(MoveActionArgs args, BoardState gameState)
+        public override bool CanExecute(ActionArgs args, BoardState gameState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
+            MoveActionArgs moveActionArgs = args as MoveActionArgs;
+            Position possessorPosition = gameState.GetProperty<Position>(moveActionArgs.Executor);
 
-            if (possessorPosition.Distance(args.Target) <= 1)
+            if (possessorPosition.Distance(moveActionArgs.Target) <= 1)
                 return false;
 
             return true;

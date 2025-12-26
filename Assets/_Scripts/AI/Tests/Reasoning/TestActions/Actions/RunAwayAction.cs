@@ -5,18 +5,20 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class RunAwayAction : UnitAction<RunAwayActionArgs>
+    internal class RunAwayAction : UnitAction
     {
-        public override IEnumerable<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState gameState)
         {
-            Position targetPosition = gameState.GetProperty<Position>(args.RunAwayFrom);
-            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
+            RunAwayActionArgs runAwayArgs = args as RunAwayActionArgs;
+
+            Position targetPosition = gameState.GetProperty<Position>(runAwayArgs.RunAwayFrom);
+            Position possessorPosition = gameState.GetProperty<Position>(runAwayArgs.Executor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
             Vector2 direction = -(targetPosition.CurrentPosition - tmpPosition);
-            float xMovement = args.Speed;
-            float yMovement = args.Speed;
+            float xMovement = runAwayArgs.RunAwayActionData.Speed;
+            float yMovement = runAwayArgs.RunAwayActionData.Speed;
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;
@@ -34,6 +36,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
             };
         }
 
-        public override bool CanExecute(RunAwayActionArgs args, BoardState gameState) => true;
+        public override bool CanExecute(ActionArgs args, BoardState gameState) => true;
     }
 }

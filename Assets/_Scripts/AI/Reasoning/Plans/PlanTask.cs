@@ -18,9 +18,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
 
         public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, AIUnitModel target)
         {
-            ActionArgs args = ActionDefinition.CreateArguments(executor, target, simulation);
-
-            if (args == null)
+            if (!ActionDefinition.TryResolve(executor, simulation, out ActionArgs args))
                 return false;
 
             if (!Action.CanExecute(args, simulation))

@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             {
                 foreach (PlanTask task in best.ExecutedTasks)
                 {
-                    ActionArgs args = task.ActionDefinition.CreateArguments(Model, best.Target, CurrentCombatBoardState);
+                    ActionArgs args = new ActionArgs(Model, task.ActionDefinition.Data);
                     await task.Action.ExecuteAsync(args, CurrentCombatBoardState, m_cancellationTokenSource.Token);
                 }
             }

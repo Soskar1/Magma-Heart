@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             MovementActionData data = executor.PossibleActionDatas.Get<MovementActionData>();
 
             Vector2 sourceTile = executor.GetCurrentTilePosition().ToVector2();
-            MovementActionArgs args = new MovementActionArgs(executor, sourceTile, selectedTile.Position.ToVector2(), data.MovementDistanceInTilesForOneEnergy);
+            MovementActionArgs args = new MovementActionArgs(executor, sourceTile, selectedTile.Position.ToVector2(), data);
 
             if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
             {

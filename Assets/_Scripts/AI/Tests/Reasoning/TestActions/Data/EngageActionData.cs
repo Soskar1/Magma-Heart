@@ -15,7 +15,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override ActionDefinition GetDefinition()
         {
-            return new ActionDefinition(typeof(EngageAction), this, new EngageActionArgumentCreator());
+            return new ActionDefinition(typeof(EngageAction), this, new EngageActionResolver());
         }
     }
 }
