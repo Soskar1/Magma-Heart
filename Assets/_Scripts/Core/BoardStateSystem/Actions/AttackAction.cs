@@ -7,37 +7,30 @@ using System.Linq;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public class AttackAction : CombatAction
+    public class AttackAction : CombatAction<AttackActionArgs>
     {
-        public override int GetEnergyCost(ActionArgs args, BoardState gameState)
-        {
-            AttackActionArgs attackArgs = args as AttackActionArgs;
-            return attackArgs.AttackActionData.EnergyCost;
-        }
+        public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => args.AttackActionData.EnergyCost;
 
-        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
-            AttackActionArgs attackArgs = args as AttackActionArgs;
             IEnumerable<StateChange> changes = base.ProduceChanges(args, gameState);
 
             return changes.Concat(new List<StateChange>
             {
-                new AttackStateChange(attackArgs.TypedExecutor, attackArgs.Target, attackArgs.AttackActionData.AttackDamage, attackArgs.AttackActionData.AttackType),
+                new AttackStateChange(args.TypedExecutor, args.Target, args.AttackActionData.AttackDamage, args.AttackActionData.AttackType),
             });
         }
 
-        public override bool CanExecute(ActionArgs args, BoardState gameState)
+        public override bool CanExecute(AttackActionArgs args, BoardState gameState)
         {
-            AttackActionArgs attackArgs = args as AttackActionArgs;
-
             bool result = base.CanExecute(args, gameState);
             if (!result)
                 return result;
 
-            PositionPropertySnapshot possessorPosition = gameState.GetProperty<PositionPropertySnapshot>(attackArgs.TypedExecutor);
-            PositionPropertySnapshot targetPosition = gameState.GetProperty<PositionPropertySnapshot>(attackArgs.Target);
+            PositionPropertySnapshot possessorPosition = gameState.GetProperty<PositionPropertySnapshot>(args.TypedExecutor);
+            PositionPropertySnapshot targetPosition = gameState.GetProperty<PositionPropertySnapshot>(args.Target);
 
-            if (possessorPosition.ManhattanDistance(targetPosition) > attackArgs.AttackActionData.AttackDistance)
+            if (possessorPosition.ManhattanDistance(targetPosition) > args.AttackActionData.AttackDistance)
                 return false;
 
             return true;

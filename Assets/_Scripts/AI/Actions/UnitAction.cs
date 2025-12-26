@@ -22,4 +22,16 @@ namespace MagmaHeart.AI.Actions
         public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
         public abstract bool CanExecute(ActionArgs args, BoardState boardState);
     }
+
+    public abstract class UnitAction<TArgs> : UnitAction
+        where TArgs : ActionArgs
+    {
+        public async Task ExecuteAsync(TArgs args, BoardState boardState, CancellationToken cancellationToken) => await ExecuteAsync((ActionArgs)args, boardState, cancellationToken);
+
+        public abstract IEnumerable<StateChange> ProduceChanges(TArgs args, BoardState boardState);
+        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((TArgs)args, boardState);
+
+        public abstract bool CanExecute(TArgs args, BoardState boardState);
+        public override bool CanExecute(ActionArgs args, BoardState boardState) => CanExecute((TArgs)args, boardState);
+    }
 }

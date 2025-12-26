@@ -1,4 +1,3 @@
-using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
@@ -9,7 +8,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public class MovementAction : CombatAction
+    public class MovementAction : CombatAction<MovementActionArgs>
     {
         private readonly AStar m_aStar;
 
@@ -18,33 +17,29 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             m_aStar = new AStar(AStar.ManhattanDistance);
         }
 
-        public override int GetEnergyCost(ActionArgs args, BoardState gameState)
+        public override int GetEnergyCost(MovementActionArgs args, BoardState gameState)
         {
-            MovementActionArgs movementArgs = args as MovementActionArgs;
-
             PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Executor);
-            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, movementArgs.SourceTile, movementArgs.TileToMove);
+            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
 
             if (path == null || !path.Any())
                 return int.MaxValue;
 
             int distance = path.Count - 1;
 
-            return Mathf.CeilToInt(distance / (float)movementArgs.MovementActionData.MovementDistanceInTilesForOneEnergy);
+            return Mathf.CeilToInt(distance / (float)args.MovementActionData.MovementDistanceInTilesForOneEnergy);
         }
 
-        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState gameState)
         {
-            MovementActionArgs movementArgs = args as MovementActionArgs;
-
             IEnumerable<StateChange> changes = base.ProduceChanges(args, gameState);
 
             PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Executor);
-            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, movementArgs.SourceTile, movementArgs.TileToMove);
+            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
 
             return changes.Concat(new List<StateChange>()
             {
-                new MoveEntityStateChange(movementArgs.TypedExecutor, path)
+                new MoveEntityStateChange(args.TypedExecutor, path)
             });
         }
     }
