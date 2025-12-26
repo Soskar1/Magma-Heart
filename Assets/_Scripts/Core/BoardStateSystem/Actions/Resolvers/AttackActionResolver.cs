@@ -18,6 +18,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 if (potentialTarget == executor)
                     continue;
 
+                if (executor.IsPlayer && potentialTarget.IsPlayer)
+                    continue;
+
+                if (!executor.IsPlayer && !potentialTarget.IsPlayer)
+                    continue;
+
                 PositionPropertySnapshot attackerPos = state.GetProperty<PositionPropertySnapshot>(executor);
                 PositionPropertySnapshot targetPos = state.GetProperty<PositionPropertySnapshot>(potentialTarget);
 

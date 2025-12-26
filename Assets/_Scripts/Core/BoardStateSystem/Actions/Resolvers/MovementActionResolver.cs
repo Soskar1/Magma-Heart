@@ -35,6 +35,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 if (potentialTarget == executor)
                     continue;
 
+                if (executor.IsPlayer && potentialTarget.IsPlayer)
+                    continue;
+
+                if (!executor.IsPlayer && !potentialTarget.IsPlayer)
+                    continue;
+
                 Vector2 targetPosition = state.GetProperty<PositionPropertySnapshot>(potentialTarget).Position.ToVector2();
 
                 Vector2[] adjacentTiles =
