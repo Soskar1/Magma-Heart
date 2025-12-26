@@ -19,16 +19,16 @@ namespace MagmaHeart.Core.AI
         public AggressiveStrategy() {
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(MovementAction))
-            }, new EnemyTargetSelector()));
+            }));
 
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(AttackAction), true),
-            }, new EnemyTargetSelector()));
+            }));
 
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(MovementAction)),
                 new PlanTaskDefinition(typeof(AttackAction), true)
-            }, new EnemyTargetSelector()));
+            }));
         }
 
         public override float EvaluateState(SimulatedBoardState state)

@@ -1,3 +1,4 @@
+using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities.Properties;
@@ -8,7 +9,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public class AttackAction : CombatAction<AttackActionArgs>
     {
-        public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => args.EnergyCost;
+        public override int GetEnergyCost(AttackActionArgs args, BoardState gameState) => args.AttackActionData.EnergyCost;
 
         public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
@@ -16,7 +17,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>
             {
-                new AttackStateChange(args.TypedExecutor, args.Target, args.AttackDamage, args.AttackType),
+                new AttackStateChange(args.TypedExecutor, args.Target, args.AttackActionData.AttackDamage, args.AttackActionData.AttackType),
             });
         }
 
@@ -29,7 +30,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             PositionPropertySnapshot possessorPosition = gameState.GetProperty<PositionPropertySnapshot>(args.TypedExecutor);
             PositionPropertySnapshot targetPosition = gameState.GetProperty<PositionPropertySnapshot>(args.Target);
 
-            if (possessorPosition.ManhattanDistance(targetPosition) > args.AttackDistance)
+            if (possessorPosition.ManhattanDistance(targetPosition) > args.AttackActionData.AttackDistance)
                 return false;
 
             return true;

@@ -15,8 +15,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
             Vector2 direction = -(targetPosition.CurrentPosition - tmpPosition);
-            float xMovement = args.Speed;
-            float yMovement = args.Speed;
+            float xMovement = args.RunAwayActionData.Speed;
+            float yMovement = args.RunAwayActionData.Speed;
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;

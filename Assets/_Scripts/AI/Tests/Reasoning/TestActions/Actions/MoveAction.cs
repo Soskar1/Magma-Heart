@@ -14,8 +14,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
             Vector2 direction = args.Target - tmpPosition;
-            float xMovement = Mathf.Min(Mathf.Abs(direction.x), args.Speed);
-            float yMovement = Mathf.Min(Mathf.Abs(direction.y), args.Speed);
+            float xMovement = Mathf.Min(Mathf.Abs(direction.x), args.MoveActionData.Speed);
+            float yMovement = Mathf.Min(Mathf.Abs(direction.y), args.MoveActionData.Speed);
 
             if (direction.x > 0)
                 tmpPosition.x += xMovement;

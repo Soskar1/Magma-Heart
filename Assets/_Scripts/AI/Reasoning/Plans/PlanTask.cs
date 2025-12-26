@@ -16,17 +16,18 @@ namespace MagmaHeart.AI.Reasoning.Plans
             ExecuteUntilFail = executeUntilFail;
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, AIUnitModel target)
+        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, out ExecutedTask executedTask)
         {
-            ActionArgs args = ActionDefinition.CreateArguments(executor, target, simulation);
+            executedTask = null;
 
-            if (args == null)
+            if (!ActionDefinition.TryResolve(executor, simulation, out ActionArgs args))
                 return false;
 
             if (!Action.CanExecute(args, simulation))
                 return false;
 
             Action.Execute(args, simulation);
+            executedTask = new ExecutedTask(Action, args);
             return true;
         }
     }

@@ -1,5 +1,4 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.Core.BoardStateSystem.Actions.ArgumentCreators;
 using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.Data
@@ -27,7 +26,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Data
 
         public override ActionDefinition GetDefinition()
         {
-            return new ActionDefinition(typeof(AttackAction), this, new AttackActionArgumentCreator());
+            IActionResolver resolver = m_attackType == AttackType.Melee ? new AttackActionResolver() : new RangedAttackActionResolver();
+            return new ActionDefinition(typeof(AttackAction), this, resolver);
         }
     }
 }

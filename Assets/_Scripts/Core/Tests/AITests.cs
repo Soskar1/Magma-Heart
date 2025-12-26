@@ -116,7 +116,7 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
 
-            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(2));
             Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
             Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
@@ -137,7 +137,7 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
 
-            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(3));
             Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
             Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
@@ -159,7 +159,7 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
 
-            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(2));
             Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
             Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
@@ -179,7 +179,7 @@ namespace MagmaHeart.Core.Tests
 
             BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
 
-            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(2));
             Assert.That(executedTasks[0].Action, Is.TypeOf<AttackAction>());
             Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());

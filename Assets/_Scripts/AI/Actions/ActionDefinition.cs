@@ -1,5 +1,5 @@
-﻿using MagmaHeart.AI.States;
-using System;
+﻿using System;
+using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Actions
 {
@@ -7,15 +7,16 @@ namespace MagmaHeart.AI.Actions
     {
         public Type ActionType { get; init; }
         public ActionData Data { get; init; }
-        public IActionArgumentCreator ArgumentCreator { get; init; }
 
-        public ActionDefinition(Type actionType, ActionData data, IActionArgumentCreator argumentCreator)
+        private IActionResolver m_actionResolver;
+
+        public ActionDefinition(Type actionType, ActionData data, IActionResolver actionResolver)
         {
             ActionType = actionType;
             Data = data;
-            ArgumentCreator = argumentCreator;
+            m_actionResolver = actionResolver;
         }
 
-        public ActionArgs CreateArguments(AIUnitModel executor, AIUnitModel target, BoardState state) => ArgumentCreator.CreateArguments(Data, executor, target, state);
+        public bool TryResolve(AIUnitModel executor, BoardState state, out ActionArgs args) => m_actionResolver.TryResolve(this, executor, state, out args);
     }
 }

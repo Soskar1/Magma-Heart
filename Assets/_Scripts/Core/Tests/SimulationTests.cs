@@ -187,27 +187,5 @@ namespace MagmaHeart.Core.Tests
             IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
             Assert.That(health.CurrentHealth, Is.EqualTo(3));
         }
-
-        [Test]
-        public void AttackStateChange_RangedAttackHitsWall_DoesNotCreateApplyDamageStateChange()
-        {
-            Vector2Int playerPosition = new Vector2Int(2, 3);
-            Vector2Int enemyPosition = new Vector2Int(4, 3);
-            AIScenario scenario = AIScenarioBuilder.Create(State)
-                .AddEntity().IsPlayer(true).At(playerPosition.x, playerPosition.y)
-                .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
-                .ModifyBoard().PlaceWallAt(3, 3).Bake()
-                .Build();
-
-            State.Room.TryGetUnit(playerPosition.ToVector2(), out EntityModel player);
-            State.Room.TryGetUnit(enemyPosition.ToVector2(), out EntityModel enemy);
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Ranged);
-
-            stateChange.ApplyChangeToSimulation(simulation);
-
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(5));
-        }
     }
 }

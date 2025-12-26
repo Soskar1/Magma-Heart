@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public abstract class CombatAction<TArgs> : UnitAction<TArgs>
-        where TArgs : ActionArgs<EntityModel>
+        where TArgs : ActionArgs
     {
         public abstract int GetEnergyCost(TArgs args, BoardState boardState);
 
@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return new List<StateChange>
             {
-                new UpdateEnergyStateChange(args.TypedExecutor, energy.CurrentEnergy - GetEnergyCost(args, boardState))
+                new UpdateEnergyStateChange((EntityModel)args.Executor, energy.CurrentEnergy - GetEnergyCost(args, boardState))
             };
         }
     }

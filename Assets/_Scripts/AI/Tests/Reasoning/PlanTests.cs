@@ -64,7 +64,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 planTasks.Add(m_attackTask);
             Plan plan = new Plan(planTasks);
 
-            bool executed = plan.TryExecute(simulation, enemy, player);
+            bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.True);
             Health health = simulation.GetProperty<Health>(player);
@@ -85,7 +85,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             for (int i = 0; i < executionTimes; ++i)
                 planTasks.Add(m_attackTask);
             Plan plan = new Plan(planTasks);
-            plan.TryExecute(simulation, enemy, player);
+            plan.TryExecute(simulation, enemy);
 
             plan.Undo(simulation);
 
@@ -103,7 +103,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             List<PlanTask> planTasks = new List<PlanTask>() { m_attackTask };
             Plan plan = new Plan(planTasks);
             
-            bool executed = plan.TryExecute(simulation, enemy, player);
+            bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.False);
             Health health = simulation.GetProperty<Health>(player);
@@ -123,7 +123,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             };
             Plan plan = new Plan(planTasks);
 
-            bool executed = plan.TryExecute(simulation, enemy, player);
+            bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.False);
             Health health = simulation.GetProperty<Health>(player);

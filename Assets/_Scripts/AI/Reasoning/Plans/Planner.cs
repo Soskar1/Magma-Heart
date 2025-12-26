@@ -1,26 +1,24 @@
-﻿using MagmaHeart.AI.Reasoning;
-using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.AI.States;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MagmaHeart.AI.Actions;
 
-namespace MagmaHeart.AI.Actions
+namespace MagmaHeart.AI.Reasoning.Plans
 {
-    internal class ActionSimulationFilter
+    internal class Planner
     {
         private readonly ActionDatabase m_database;
         private readonly Strategy m_strategy;
 
-        public ActionSimulationFilter(Strategy strategy, ActionDatabase database)
+        public Planner(Strategy strategy, ActionDatabase database)
         {
             m_database = database;
             m_strategy = strategy;
         }
 
-        public List<PlanSimulation> GetPossiblePlans(SimulatedBoardState simulation, AIUnitModel executor)
+        public List<Plan> GetPlans(AIUnitModel executor)
         {
-            List<PlanSimulation> planSimulations = new List<PlanSimulation>();
+            List<Plan> plans = new List<Plan>();
 
             foreach (PlanDefinition planDefinition in m_strategy.Plans)
             {
@@ -29,14 +27,10 @@ namespace MagmaHeart.AI.Actions
                 if (plan == null)
                     continue;
 
-                List<AIUnitModel> targets = planDefinition.TargetSelector.SelectTargets(simulation, executor).ToList();
-                PlanSimulation planSimulation = new PlanSimulation(plan, targets);
-
-                if (targets.Count > 0)
-                    planSimulations.Add(planSimulation);
+                plans.Add(plan);
             }
 
-            return planSimulations;
+            return plans;
         }
 
         private Plan TryCreatePlan(PlanDefinition planDefinition, AIUnitModel executor)

@@ -20,10 +20,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             Position targetPosition = gameState.GetProperty<Position>(args.Target);
 
-            MoveActionArgs moveArgs = new MoveActionArgs(args.Executor, targetPosition.CurrentPosition, args.Speed);
+            MoveActionArgs moveArgs = new MoveActionArgs(args.Executor, targetPosition, new MoveActionData(args.EngageActionData.Speed));
             IEnumerable<StateChange> movementChanges = m_moveAction.ProduceChanges(moveArgs, gameState);
 
-            AttackActionArgs attackArgs = new AttackActionArgs(args.Executor, args.Target, args.Damage);
+            AttackActionArgs attackArgs = new AttackActionArgs(args.Executor, args.Target, new AttackActionData(args.EngageActionData.Damage));
             IEnumerable<StateChange> attackChanges = m_damageAction.ProduceChanges(attackArgs, gameState);
 
             return movementChanges.Concat(attackChanges).ToList();
@@ -35,7 +35,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Position targetPosition = gameState.GetProperty<Position>(args.Target);
 
             float distance = possessorPosition.Distance(targetPosition);
-            if (distance > args.Speed + 1 || distance <= 1)
+            if (distance > args.EngageActionData.Speed + 1 || distance <= 1)
                 return false;
 
             return true;

@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             int distance = path.Count - 1;
 
-            return Mathf.CeilToInt(distance / (float)args.MovementDistanceInTilesForOneEnergy);
+            return Mathf.CeilToInt(distance / (float)args.MovementActionData.MovementDistanceInTilesForOneEnergy);
         }
 
         public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState gameState)

@@ -20,7 +20,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
             return new List<StateChange> {
-                new ApplyDamageStateChange(args.Damage, args.Target)
+                new ApplyDamageStateChange(args.AttackActionData.Damage, args.Target)
             };
         }
     }
