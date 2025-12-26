@@ -17,9 +17,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public override async Task StartTurnTask()
         {
-            base.StartTurnTask();
-
             m_cancellationTokenSource = new CancellationTokenSource();
+            await StartTurnAsync(CurrentCombatBoardState, m_cancellationTokenSource.Token);
 
             BestPlan best = m_ai.GetBestAction();
 
@@ -34,6 +33,12 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
         {
             base.EndBattle();
             m_cancellationTokenSource.Cancel();
+        }
+
+        public override void EndTurn()
+        {
+            if (!m_cancellationTokenSource.IsCancellationRequested)
+                m_cancellationTokenSource.Cancel();
         }
     }
 }

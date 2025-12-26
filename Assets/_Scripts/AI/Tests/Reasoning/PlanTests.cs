@@ -16,7 +16,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private AttackActionData m_attackData;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void InitializeTasks()
         {
             m_attackData = new AttackActionData(4);
             MoveActionData moveData = new MoveActionData(1);

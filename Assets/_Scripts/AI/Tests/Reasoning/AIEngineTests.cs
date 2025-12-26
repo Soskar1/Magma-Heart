@@ -28,7 +28,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         }
 
         [SetUp]
-        public void SetUp()
+        public void Initialize()
         {
             m_player = new EmptyTurnController(CreateEntity(10, new Vector2(5, 5), true));
             m_state = new DummyActualGameState(Board);
