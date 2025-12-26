@@ -143,5 +143,46 @@ namespace MagmaHeart.Core.Tests
             Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
             Assert.That(executedTasks[2].Action, Is.TypeOf<AttackAction>());
         }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task RangedAttack_WallPlacedBetweenEnemyAndPlayer_EnemyDoNotUseRangedAttackAsAFirstAction(int depth)
+        {
+            AIScenario scenario = AIScenarioBuilder.Create(State)
+                .AddEntity().IsPlayer(false).WithHealth(2).WithActions(ActionPresets.RangedAttacker).At(2, 0)
+                .AddEntity().IsPlayer(true).WithHealth(5).WithActions(ActionPresets.MeleeAttacker).At(2, 2)
+                .ModifyBoard().PlaceWallAt(2, 1).Bake()
+                .Build();
+
+            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+
+            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            Assert.That(executedTasks.Count, Is.EqualTo(2));
+            Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
+            Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task RangedAttack_EnemyIsFarAwayFromPlayer_EnemyUseRangedAttack(int depth)
+        {
+            AIScenario scenario = AIScenarioBuilder.Create(State)
+                .AddEntity().IsPlayer(false).WithHealth(2).WithActions(ActionPresets.RangedAttacker).At(2, 0)
+                .AddEntity().IsPlayer(true).WithHealth(5).WithActions(ActionPresets.MeleeAttacker).At(2, 4)
+                .Build();
+
+            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+
+            List<PlanTask> executedTasks = best.ExecutedTasks.ToList();
+            Assert.That(executedTasks.Count, Is.EqualTo(2));
+            Assert.That(executedTasks[0].Action, Is.TypeOf<AttackAction>());
+            Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
+        }
     }
 }

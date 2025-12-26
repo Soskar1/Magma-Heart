@@ -4,7 +4,6 @@ using MagmaHeart.Core.AI;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
-using MagmaHeart.Core.Entities;
 using System.Threading.Tasks;
 using System.Threading;
 

@@ -5,7 +5,6 @@ using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace MagmaHeart.Core.Tests
 {
