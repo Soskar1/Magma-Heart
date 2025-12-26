@@ -17,7 +17,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             Database = new ActionDatabase(assembly);
-            Strategy = new BasicStrategy(null);
+            Strategy = new BasicStrategy();
         }
 
         [SetUp]

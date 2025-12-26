@@ -11,7 +11,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private const float HEALTH_WEIGHT = 0.8f;
         private const float DISTANCE_WEIGHT = 0.1f;
 
-        public BasicStrategy(AIUnitModel player) : base(player) {
+        public BasicStrategy() {
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(MoveAction))
             }, new EnemyTargetSelector()));
