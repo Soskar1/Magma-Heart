@@ -16,8 +16,10 @@ namespace MagmaHeart.AI.Reasoning.Plans
             ExecuteUntilFail = executeUntilFail;
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor)
+        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, out ExecutedTask executedTask)
         {
+            executedTask = null;
+
             if (!ActionDefinition.TryResolve(executor, simulation, out ActionArgs args))
                 return false;
 
@@ -25,6 +27,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 return false;
 
             Action.Execute(args, simulation);
+            executedTask = new ExecutedTask(Action, args);
             return true;
         }
     }
