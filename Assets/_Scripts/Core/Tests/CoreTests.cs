@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.Tests
         private BoardDimensions m_boardDimensions;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void InitializeBoardDimensions()
         {
             m_boardDimensions = new BoardDimensions(Vector2Int.zero, new Vector2Int(10, 10));
         }

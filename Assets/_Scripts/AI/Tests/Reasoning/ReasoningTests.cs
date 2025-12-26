@@ -13,7 +13,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public ActionDatabase Database { get; private set; }
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void InitializeDatabase()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             Database = new ActionDatabase(assembly);
@@ -21,7 +21,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         }
 
         [SetUp]
-        public void SetUp()
+        public void InitializeBoard()
         {
             BoardGraph graph = new BoardGraph();
             for (int i = -10; i < 10; ++i)

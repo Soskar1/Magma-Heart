@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Tests
         private ActionDatabase m_actionDatabase;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void InitializeDatabase()
         {
             Assembly assembly = FindAssembly("MagmaHeart.Core");
             m_actionDatabase = new ActionDatabase(assembly);
