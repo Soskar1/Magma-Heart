@@ -2,7 +2,6 @@
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities
