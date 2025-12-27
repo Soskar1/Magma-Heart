@@ -80,7 +80,6 @@ namespace MagmaHeart.Core.SceneLoading
             TextAsset configFile = ExternalResources.LoadTextAsset(m_configFileName);
             DungeonGeneratorData data = DungeonGeneratorDataDeserializer.Deserialize(configFile, random);
             DungeonGenerator dungeonGenerator = new DungeonGenerator(data);
-            m_roomRenderer.Initialize(m_dungeonTilemap);
 
             RoomModel roomModel = dungeonGenerator.GenerateRoom();
             await m_roomRenderer.DrawRoom(roomModel, m_floorTile, m_wallTile);
@@ -137,6 +136,8 @@ namespace MagmaHeart.Core.SceneLoading
 
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_battleReward);
+
+            await m_battle.Start(room);
         }
 
         private void InitializeStateMachine(Player player)

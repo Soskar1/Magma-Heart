@@ -1,10 +1,10 @@
 <?xml version ="1.0"?>
 <DungeonGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Data/DungeonGenerator.xsd">
-	<RoomSpace XSize="200" YSize="200"/>
+	<RoomSpace XSize="50" YSize="50"/>
 	
 	<RoomGenerators>
-		<Boxed XSize="25" YSize="25"/>
-		<DiffusionLimitedAggregation TilesToPlace="100"/>
+		<Boxed XSize="20" YSize="10"/>
+		<DiffusionLimitedAggregation TilesToPlace="70"/>
 		<TilePropagation Length="2"/>
 		<UnreachableTileCapture/>
 		<TileFill/>

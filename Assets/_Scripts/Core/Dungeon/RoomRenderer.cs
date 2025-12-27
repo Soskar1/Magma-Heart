@@ -8,12 +8,10 @@ namespace MagmaHeart.Core.Dungeon
 {
     public class RoomRenderer : MonoBehaviour
     {
+        [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private int m_tilesPerFrame = 256;
-        private Tilemap m_tilemap;
 
         private TaskCompletionSource<bool> m_renderedAllTiles;
-
-        public void Initialize(Tilemap tilemap) => m_tilemap = tilemap;
 
         public async Task DrawRoom(RoomModel roomModel, TileBase floor, TileBase wall)
         {
