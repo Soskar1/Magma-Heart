@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Services;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Spawning;
 
 namespace MagmaHeart.Core.BoardStateSystem

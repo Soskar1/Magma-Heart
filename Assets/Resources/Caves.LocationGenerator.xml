@@ -1,17 +1,13 @@
 <?xml version ="1.0"?>
-<LocationGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Data/LocationGenerator.xsd">
-	<LocationSpace XSize="200" YSize="200"/>
-	<RoomSpace XBorderOffset="3" YBorderOffset="3"/>
-	<SpacePartitioning MaxPartitions="50" RoomXMinSize="40" RoomYMinSize="40"/>
+<DungeonGenerator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Data/DungeonGenerator.xsd">
+	<RoomSpace XSize="50" YSize="50"/>
 	
 	<RoomGenerators>
-		<Boxed XSize="25" YSize="25"/>
-		<DiffusionLimitedAggregation TilesToPlace="100"/>
+		<Boxed XSize="20" YSize="10"/>
+		<DiffusionLimitedAggregation TilesToPlace="70"/>
 		<TilePropagation Length="2"/>
 		<UnreachableTileCapture/>
 		<TileFill/>
 		<UnreachableTileDestructor/>
 	</RoomGenerators>
-
-	<CorridorGenerator CorridorSize="3"/>
-</LocationGenerator>
+</DungeonGenerator>

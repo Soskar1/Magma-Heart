@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {

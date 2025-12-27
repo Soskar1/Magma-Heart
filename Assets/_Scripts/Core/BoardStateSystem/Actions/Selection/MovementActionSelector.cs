@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions.Data;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using UnityEngine;

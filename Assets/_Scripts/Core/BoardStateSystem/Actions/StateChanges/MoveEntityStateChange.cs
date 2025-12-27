@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;

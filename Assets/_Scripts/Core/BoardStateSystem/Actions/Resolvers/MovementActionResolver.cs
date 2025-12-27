@@ -53,7 +53,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 List<Vector2> roomTiles =
                     adjacentTiles.Where(v => state.Board.Graph.ContainsNode(v) && state.Board.GetNodeType(v) == BoardNodeType.Walkable)
-                    .OrderBy(t => DungeonGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
+                    .OrderBy(t => RoomGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
                     .ToList();
 
                 foreach (Vector2 tile in roomTiles)

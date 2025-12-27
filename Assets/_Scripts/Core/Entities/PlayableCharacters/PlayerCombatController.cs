@@ -1,5 +1,5 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
+﻿using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using System;
 

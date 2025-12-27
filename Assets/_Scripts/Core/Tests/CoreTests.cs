@@ -1,5 +1,6 @@
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.Dungeon;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -20,8 +21,9 @@ namespace MagmaHeart.Core.Tests
         public void SetUp()
         {
             Board board = BoardPresets.CreateEmptyBoard(m_boardDimensions);
-            Room room = new Room(null, null, null, board.Graph);
-            State = new CombatBoardState(room);
+            //Room room = new Room(null, null, null);
+            //State = new CombatBoardState(room);
+            throw new System.Exception("FIX THIS");
         }
     }
 }
