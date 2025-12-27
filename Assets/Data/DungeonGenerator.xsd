@@ -1,26 +1,13 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="LocationGenerator">
+	<xs:element name="DungeonGenerator">
 		<xs:complexType>
 			<xs:all>
-				<xs:element name="LocationSpace">
+				<xs:element name="RoomSpace">
 					<xs:complexType>
 						<xs:attribute name="XSize" type="xs:int" use="required"/>
 						<xs:attribute name="YSize" type="xs:int" use="required"/>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="RoomSpace">
-					<xs:complexType>
-						<xs:attribute name="YBorderOffset" type="xs:int" use="required"/>
-						<xs:attribute name="XBorderOffset" type="xs:int" use="required"/>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="SpacePartitioning" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:attribute name="MaxPartitions" type="xs:int" use="required"/>
-						<xs:attribute name="RoomXMinSize" type="xs:int" use="required"/>
-						<xs:attribute name="RoomYMinSize" type="xs:int" use="required"/>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="RoomGenerators" minOccurs="0" maxOccurs="1">
@@ -57,11 +44,6 @@
 							<xs:element name="UnreachableTileCapture"/>
 							<xs:element name="UnreachableTileDestructor"/>
 						</xs:choice>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="CorridorGenerator" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:attribute name="CorridorSize" type="xs:int" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:all>

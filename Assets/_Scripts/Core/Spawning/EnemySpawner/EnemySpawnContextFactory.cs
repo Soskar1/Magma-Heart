@@ -8,10 +8,10 @@ namespace MagmaHeart.Core.Spawning
 {
     public class EnemySpawnContextFactory : SpawnContextFactory
     {
-        private readonly DungeonGrid m_grid;
+        private readonly RoomGrid m_grid;
         private readonly CombatAI m_combatAi;
 
-        public EnemySpawnContextFactory(DungeonGrid grid, CombatAI combatAi)
+        public EnemySpawnContextFactory(RoomGrid grid, CombatAI combatAi)
         {
             m_grid = grid;
             m_combatAi = combatAi;

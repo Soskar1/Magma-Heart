@@ -6,26 +6,27 @@ using MagmaHeart.Core.Entities;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
 using System.Collections.Generic;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.DungeonGeneration;
+using MagmaHeart.Core.BoardStateSystem;
 
-namespace MagmaHeart.Core.BoardStateSystem
+namespace MagmaHeart.Core.Dungeon
 {
     public class Room : Board
     {
         private readonly Dictionary<EntityModel, Entity> m_entities;
         private readonly CombatTilemapRenderer m_renderer;
 
-        public RoomModel RoomTileData { get; init; }
-        public DungeonGrid Grid { get; init; }
+        public RoomModel RoomModel { get; init; }
+        public RoomGrid Grid { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;
 
-        public Room(RoomModel roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
+        public Room(RoomModel roomModel, RoomGrid grid, CombatTilemapRenderer renderer) : base(BoardGraphBuilder.GenerateBoardGraph(roomModel))
         {
-            RoomTileData = roomTileData;
-            Grid = gameGrid;
+            RoomModel = roomModel;
+            Grid = grid;
             m_renderer = renderer;
             m_entities = new Dictionary<EntityModel, Entity>();
         }
@@ -73,7 +74,7 @@ namespace MagmaHeart.Core.BoardStateSystem
 
         public bool TileIsAccessable(RoomTile roomTile)
         {
-            DungeonTile tile = RoomTileData.GetTile((Vector2Int)roomTile.Position);
+            DungeonTile tile = RoomModel.GetTile((Vector2Int)roomTile.Position);
 
             if (tile == null || tile.Type == TileType.Wall || EntityIsOnTile(roomTile, out _))
                 return false;

@@ -1,6 +1,6 @@
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;

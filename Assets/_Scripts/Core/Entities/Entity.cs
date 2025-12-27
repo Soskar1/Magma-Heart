@@ -13,7 +13,6 @@ namespace MagmaHeart.Core.Entities
     public class Entity : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
-        private DungeonGrid m_grid;
 
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
@@ -24,11 +23,9 @@ namespace MagmaHeart.Core.Entities
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
 
-        public virtual void Initialize(DungeonGrid grid, bool isPlayer)
+        public virtual void Initialize(RoomGrid grid, bool isPlayer)
         {
-            m_grid = grid;
-
-            Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
+            Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
             Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
 
             TurnBasedMovement = GetComponent<TurnBasedMovement>();

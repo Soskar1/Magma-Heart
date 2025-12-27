@@ -1,5 +1,5 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.CombatSystem;
+﻿using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
 

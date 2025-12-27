@@ -7,10 +7,10 @@ namespace MagmaHeart.Core.Spawning
 {
     public class EnemySpawnContext : SpawnContext
     {
-        public DungeonGrid Grid { get; private set; }
+        public RoomGrid Grid { get; private set; }
         public CombatAI CombatAI { get; private set; }
 
-        public EnemySpawnContext(Vector2 position, DungeonGrid grid, CombatAI combatAI) : base(position)
+        public EnemySpawnContext(Vector2 position, RoomGrid grid, CombatAI combatAI) : base(position)
         {
             Grid = grid;
             CombatAI = combatAI;

@@ -1,7 +1,8 @@
-﻿using MagmaHeart.Extensions;
+﻿using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Extensions;
 using UnityEngine;
 
-namespace MagmaHeart.Core.BoardStateSystem
+namespace MagmaHeart.Core.Dungeon
 {
     public class RoomTile
     {

@@ -1,4 +1,6 @@
-﻿namespace MagmaHeart.Core.BoardStateSystem.Actions
+﻿using MagmaHeart.Core.Dungeon;
+
+namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public interface IActionPreviewProvider
     {

@@ -22,11 +22,13 @@ namespace MagmaHeart.Core.Input
             m_userInput.OnLeftMouseButtonClick += HandleOnLeftMouseButtonClick;
         }
 
-        public void OnDisable()
+        public void Disable()
         {
             m_userInput.OnMousePositionChanged -= HandleOnMousePositionChanged;
             m_userInput.OnLeftMouseButtonClick -= HandleOnLeftMouseButtonClick;
         }
+
+        public void OnDisable() => Disable();
 
         private void HandleOnMousePositionChanged(object obj, OnMousePositionChangedEventArgs args) => m_currentMouseScreenPosition = args.Position;
 

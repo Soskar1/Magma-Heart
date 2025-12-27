@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public event Action<Collider2D> OnTriggerEnter;
         public event Action<Collider2D> OnTriggerExit;
 
-        public void Initialize(UserInput userInput, MouseListener mouseListener, DungeonGrid grid, IActionPreviewService previewService)
+        public void Initialize(UserInput userInput, MouseListener mouseListener, RoomGrid grid, IActionPreviewService previewService)
         {
             base.Initialize(grid, true);
 

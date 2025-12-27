@@ -1,5 +1,4 @@
 using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.BoardStateSystem;
@@ -14,10 +13,13 @@ using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.Spawning;
 using MagmaHeart.Core.StateMachines;
+using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Spawning;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -25,13 +27,19 @@ namespace MagmaHeart.Core.SceneLoading
     {
         [SerializeField] private Player m_playerPrefab;
         [SerializeField] private CameraController m_cameraPrefab;
-        [SerializeField] private DungeonGenerator m_locationGeneratorPrefab;
         [SerializeField] private GameUI m_uiPrefab;
-        [SerializeField] private DungeonGrid m_gridPrefab;
-        [SerializeField] private Teleporter m_teleporterPrefab;
-        [SerializeField] private CombatAltar m_combatAltarPrefab;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRendererPrefab;
         [SerializeField] private MouseListener m_mouseListenerPrefab;
+
+        [Header("Dungeon")]
+        [SerializeField] private Tilemap m_dungeonTilemap;
+        [SerializeField] private Grid m_dungeonGrid;
+        [SerializeField] private RoomRenderer m_roomRenderer;
+        [SerializeField] private int m_seed;
+        [SerializeField] private string m_configFileName;
+        [SerializeField] private TileBase m_floorTile;
+        [SerializeField] private TileBase m_wallTile;
+        private RoomGrid m_roomGrid;
 
         [Header("SpawnService Settings")]
         [SerializeField] private GameObject m_projectilePrefab;
@@ -39,10 +47,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private float m_minDistanceFromPlayer;
 
         private SceneLoader m_sceneLoader;
-        private Location m_location;
-        private LocationRenderer m_renderer;
         private UserInput m_userInput;
-        private DungeonGrid m_grid;
         private CameraController m_camera;
 
         private GameUI m_gameUI;
@@ -57,46 +62,42 @@ namespace MagmaHeart.Core.SceneLoading
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
-        public async void BootScene()
+        public async void Awake()
         {
+            await BootScene();
+        }
+
+        public async Task BootScene()
+        {
+            // Input
             m_userInput = new UserInput();
 
             m_mouseListener = Instantiate(m_mouseListenerPrefab);
             m_mouseListener.Initialize(m_userInput);
 
-            m_grid = Instantiate(m_gridPrefab);
-            m_grid.Initialize();
+            //// Dungeon
 
-            DungeonGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
-            m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
+            TextAsset configFile = ExternalResources.LoadTextAsset(m_configFileName);
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(configFile, m_seed);
+            m_roomRenderer.Initialize(m_dungeonTilemap);
 
-            m_renderer.RenderedAllTiles += BootSceneAfterRender;
+            RoomModel roomModel = dungeonGenerator.GenerateRoom();
+            await m_roomRenderer.DrawRoom(roomModel, m_floorTile, m_wallTile);
 
-            m_location = await locationGeneratorInstance.GenerateRoom(Vector2Int.zero);
-            m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
-            m_renderer.AddTilesToDraw(m_location.WallTiles, m_grid.Walls, m_grid.WallTile);
-            m_renderer.DrawTiles();
-        }
+            m_roomGrid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
 
-        private void BootSceneAfterRender()
-        {
-            m_renderer.RenderedAllTiles -= BootSceneAfterRender;
+            CombatTilemapRenderer renderer = Instantiate(m_combatTilemapRendererPrefab, roomModel.WorldPosition.ToVector3(), Quaternion.identity);
+            Room room = new Room(roomModel, m_roomGrid, renderer);
+            
+            /////
 
             ActionDatabase database = new ActionDatabase(Assembly.GetExecutingAssembly());
             ActionSelector actionSelectorChain = new AttackActionSelector(database.Get<AttackAction>());
             actionSelectorChain.Next = new MovementActionSelector(database.Get<MovementAction>());
             ActionPreviewService previewService = new ActionPreviewService(actionSelectorChain);
 
-            RoomModel startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
-            Player spawnedPlayer = Instantiate(m_playerPrefab, (Vector2)startRoom.WorldPosition, Quaternion.identity);
-            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid, previewService);
-
-            if (m_sceneLoader.SavedData != null)
-            {
-                SaveData savedData = m_sceneLoader.SavedData;
-
-                spawnedPlayer.Health.CurrentHealth = savedData.health;
-            }
+            Player spawnedPlayer = Instantiate(m_playerPrefab, (Vector2)roomModel.WorldPosition, Quaternion.identity);
+            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_roomGrid, previewService);
 
             AggressiveStrategy strategy = new AggressiveStrategy();
             
@@ -112,7 +113,7 @@ namespace MagmaHeart.Core.SceneLoading
             configs.Add(m_projectilePrefab, projectileConfig);
 
             SpawnService spawnService = new SpawnService(configs, new UnityInstantiator());
-            EnemySpawnContextFactory factory = new EnemySpawnContextFactory(m_grid, m_combatAI);
+            EnemySpawnContextFactory factory = new EnemySpawnContextFactory(m_roomGrid, m_combatAI);
             
             EnemySpawner enemySpawner = new EnemySpawner(spawnService, spawnedPlayer, m_minDistanceFromPlayer, m_enemyPrefabs, factory);
             ProjectileSpawner projectileSpawner = new ProjectileSpawner(spawnService, m_projectilePrefab);
@@ -130,19 +131,17 @@ namespace MagmaHeart.Core.SceneLoading
 
             m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);
 
-            m_camera = Instantiate(m_cameraPrefab, new Vector3(startRoom.WorldPosition.x, startRoom.WorldPosition.y, -10), Quaternion.identity);
+            m_camera = Instantiate(m_cameraPrefab, new Vector3(roomModel.WorldPosition.x, roomModel.WorldPosition.y, -10), Quaternion.identity);
             m_camera.Initialize(spawnedPlayer.transform, m_userInput, m_battle);
 
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_battleReward);
-
-            InitializeCombatSystem(startRoom);
         }
 
         private void InitializeStateMachine(Player player)
         {
             ActionState actionState = new ActionState(player.Controller, m_hoverModeController);
-            CombatState combatState = new CombatState(m_camera, m_grid, m_hoverModeController, m_battle, player);
+            CombatState combatState = new CombatState(m_camera, m_roomGrid, m_hoverModeController, m_battle, player);
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
@@ -153,27 +152,6 @@ namespace MagmaHeart.Core.SceneLoading
             m_battle.OnBattleStarted += m_stateMachine.HandleOnBattleStarted;
             m_battle.OnBattleEnded += m_stateMachine.HandleOnBattleEnded;
             m_gameUI.RewardUI.OnRewardPicked += m_stateMachine.HandleOnRewardPicked;
-        }
-
-        private void InitializeCombatSystem(RoomModel startRoom)
-        {
-            RoomModel bossRoom = m_location.GetFarthestRoomFrom(startRoom);
-
-            foreach (RoomModel roomTileData in m_location.Rooms)
-            {
-                if (roomTileData != startRoom)
-                {
-                    CombatTilemapRenderer renderer = Instantiate(m_combatTilemapRendererPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                    BoardGraph graph = BoardGraphBuilder.GenerateBoardGraph(roomTileData);
-                    Room room = new Room(roomTileData, m_grid, renderer, graph);
-
-                    if (roomTileData != bossRoom)
-                    {
-                        CombatAltar altarInstance = Instantiate(m_combatAltarPrefab, roomTileData.WorldPosition.ToVector3(), Quaternion.identity);
-                        altarInstance.Initialize(room, m_battle);
-                    }
-                }
-            }
         }
 
         public void OnDisable()

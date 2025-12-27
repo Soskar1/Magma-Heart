@@ -1,10 +1,9 @@
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Spawning;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace MagmaHeart.Core.Spawning
 {

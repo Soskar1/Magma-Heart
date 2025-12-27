@@ -1,4 +1,5 @@
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
@@ -42,7 +43,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom.AddEntityToInspect(m_player);
             for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
-                Enemy spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomTileData);
+                Enemy spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomModel);
                 m_currentRoom.AddEntityToInspect(spawnedEntity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>

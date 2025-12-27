@@ -134,5 +134,7 @@ namespace MagmaHeart.DungeonGeneration
                     yield return m_tiles[sourceTile + Vector2Int.left];
             }
         }
+
+        public IEnumerable<DungeonTile> GetAdjacentTiles(DungeonTile sourceTile) => GetAdjacentTiles(sourceTile.Position);
     }
 }

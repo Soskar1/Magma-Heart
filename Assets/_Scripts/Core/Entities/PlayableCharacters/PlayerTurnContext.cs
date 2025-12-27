@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Core.Dungeon;
 using System;
 using System.Collections.Generic;
 using System.Threading;

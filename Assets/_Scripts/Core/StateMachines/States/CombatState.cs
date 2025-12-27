@@ -9,13 +9,13 @@ namespace MagmaHeart.Core.StateMachines
     public class CombatState : IState
     {
         private readonly CameraController m_camera;
-        private readonly DungeonGrid m_grid;
+        private readonly RoomGrid m_grid;
         private readonly HoverModeController m_hoverModeController;
         private readonly Battle m_battle;
         private readonly Player m_player;
         private readonly PlayerTurnContext m_turnContext;
 
-        public CombatState(CameraController camera, DungeonGrid grid, HoverModeController hoverModeController, Battle battle, Player player)
+        public CombatState(CameraController camera, RoomGrid grid, HoverModeController hoverModeController, Battle battle, Player player)
         {
             m_camera = camera;
             m_grid = grid;
@@ -28,7 +28,6 @@ namespace MagmaHeart.Core.StateMachines
         public void Enter()
         {
             m_camera.SwitchToTurnBasedCamera();
-            m_grid.Corridors.gameObject.SetActive(true);
             
             m_hoverModeController.UseTileHover();
 
@@ -42,7 +41,6 @@ namespace MagmaHeart.Core.StateMachines
         public void Exit()
         {
             m_camera.SwitchToActionCamera();
-            m_grid.Corridors.gameObject.SetActive(false);
             m_hoverModeController.UseRaycastHover();
 
             m_battle.OnTurnSwitched -= HandleTurnSwitched;

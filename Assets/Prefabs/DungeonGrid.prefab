@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6302063833350110277}
   - component: {fileID: 8178175205904008628}
-  - component: {fileID: 4452162205607023936}
   m_Layer: 0
   m_Name: DungeonGrid
   m_TagString: Untagged
@@ -48,23 +47,6 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &4452162205607023936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2074181153661419815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66887db6b6851c542ba1405058de0555, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_floor: {fileID: 5674877247717651502}
-  m_walls: {fileID: 9000574779768550844}
-  m_corridors: {fileID: 6770508513910676463}
-  m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
-  m_wallTile: {fileID: 11400000, guid: 22c9f328675568942a63b2770a6a63dc, type: 2}
 --- !u!1 &5689789330045909716
 GameObject:
   m_ObjectHideFlags: 0

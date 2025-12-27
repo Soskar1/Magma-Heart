@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+using MagmaHeart.Core.Dungeon;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

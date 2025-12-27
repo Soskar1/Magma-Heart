@@ -9,9 +9,6 @@ namespace MagmaHeart.Core.SceneLoading
     {
         private Dictionary<string, SceneBootstrap> m_bootstraps;
         [SerializeField] private SceneBootstrapKeyValue[] m_bootstrapsKeyValues;
-        private SaveData m_data;
-
-        public SaveData SavedData => m_data;
 
         private void Awake()
         {
@@ -32,12 +29,6 @@ namespace MagmaHeart.Core.SceneLoading
             SceneBootstrap bootstrapInstance = Instantiate(prefab);
             bootstrapInstance.Initialize(this);
             bootstrapInstance.BootScene();
-        }
-
-        public void LoadNextScene(SaveData data)
-        {
-            m_data = data;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 
