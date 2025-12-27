@@ -76,9 +76,10 @@ namespace MagmaHeart.Core.SceneLoading
             m_mouseListener.Initialize(m_userInput);
 
             //// Dungeon
-
+            System.Random random = new System.Random(m_seed);
             TextAsset configFile = ExternalResources.LoadTextAsset(m_configFileName);
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(configFile, m_seed);
+            DungeonGeneratorData data = DungeonGeneratorDataDeserializer.Deserialize(configFile, random);
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(data);
             m_roomRenderer.Initialize(m_dungeonTilemap);
 
             RoomModel roomModel = dungeonGenerator.GenerateRoom();

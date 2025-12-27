@@ -1,4 +1,4 @@
-namespace MagmaHeart.DungeonGeneration.RoomGeneration
+namespace MagmaHeart.DungeonGeneration
 {
     public interface IRoomGenerator
     {

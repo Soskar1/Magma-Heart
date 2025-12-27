@@ -1,26 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Random = System.Random;
-using System;
-using MagmaHeart.DungeonGeneration.RoomGeneration;
 
 namespace MagmaHeart.DungeonGeneration
 {
     public class DungeonGenerator
     {
-        private readonly Random m_random;
         private readonly DungeonGeneratorData m_data;
 
-        public DungeonGenerator(TextAsset configFile, int seed = -1)
-        {
-            if (seed == -1)
-                seed = Environment.TickCount;
-
-            m_random = new Random(seed);
-
-            DungeonGeneratorDataDeserializer deserializer = new DungeonGeneratorDataDeserializer(configFile, m_random);
-            m_data = deserializer.Deserialize();
-        }
+        public DungeonGenerator(DungeonGeneratorData data) => m_data = data;
 
         public RoomModel GenerateRoom()
         {

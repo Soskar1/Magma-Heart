@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using MagmaHeart.DungeonGeneration;
 using UnityEngine;
 
-namespace MagmaHeart.DungeonGeneration.RoomGeneration
+namespace MagmaHeart.Core.Dungeon.RoomGeneration
 {
     public class TileFill : IRoomGenerator
     {

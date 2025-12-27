@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using MagmaHeart.DungeonGeneration;
 using UnityEngine;
 using Random = System.Random;
 
-namespace MagmaHeart.DungeonGeneration.RoomGeneration
+namespace MagmaHeart.Core.Dungeon.RoomGeneration
 {
     public class RoomWallGenerator : IRoomGenerator
     {

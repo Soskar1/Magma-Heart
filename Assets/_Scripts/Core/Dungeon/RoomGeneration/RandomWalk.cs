@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
-namespace MagmaHeart.DungeonGeneration
+namespace MagmaHeart.Core.Dungeon.RoomGeneration
 {
     public class RandomWalk
     {

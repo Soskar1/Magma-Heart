@@ -2,29 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using MagmaHeart.DungeonGeneration.RoomGeneration;
+using MagmaHeart.Core.Dungeon.RoomGeneration;
+using MagmaHeart.DungeonGeneration;
 using UnityEngine;
 using Random = System.Random;
 
-namespace MagmaHeart.DungeonGeneration
+namespace MagmaHeart.Core.Dungeon
 {
-    public class DungeonGeneratorDataDeserializer
+    public static class DungeonGeneratorDataDeserializer
     {
-        private readonly XmlDocument m_document;
-        private Random m_random;
-
         private const string LOCATION_GENERATOR_XPATH = "//DungeonGenerator";
 
-        public DungeonGeneratorDataDeserializer(TextAsset configFile, Random random)
+        public static DungeonGeneratorData Deserialize(TextAsset configFile, Random random)
         {
-            m_document = new XmlDocument();
-            m_document.Load(new StringReader(configFile.text));
-            m_random = random;
-        }
+            XmlDocument document = new XmlDocument();
+            document.Load(new StringReader(configFile.text));
 
-        public DungeonGeneratorData Deserialize()
-        {
-            XmlElement root = m_document.DocumentElement;
+            XmlElement root = document.DocumentElement;
             if (root == null)
             {
                 Debug.LogWarning("root element is null. Returning empty DungeonGeneratorData");
@@ -42,7 +36,7 @@ namespace MagmaHeart.DungeonGeneration
             {
                 foreach (XmlNode roomGenerator in roomGenerators.ChildNodes)
                 {
-                    IRoomGenerator generator = DeserializeRoomGenerator(roomGenerator);
+                    IRoomGenerator generator = DeserializeRoomGenerator(roomGenerator, random);
                     generators.Add(generator);
                 }
             }
@@ -50,7 +44,7 @@ namespace MagmaHeart.DungeonGeneration
             return new DungeonGeneratorData(roomSpaceSize, generators);
         }
 
-        private IRoomGenerator DeserializeRoomGenerator(XmlNode node)
+        private static IRoomGenerator DeserializeRoomGenerator(XmlNode node, Random random)
         {
             switch (node.Name)
             {
@@ -61,15 +55,15 @@ namespace MagmaHeart.DungeonGeneration
                     return new BoxedRoomGenerator(xSize, ySize);
                 case "RandomWalk":
                     int iterations = Int32.Parse(node.Attributes["Iterations"].Value);
-                    return new RandomWalkRoomGenerator(m_random, iterations);
+                    return new RandomWalkRoomGenerator(random, iterations);
                 case "DiffusionLimitedAggregation":
                     int tilesToPlace = Int32.Parse(node.Attributes["TilesToPlace"].Value);
-                    return new DiffusionLimitedAggregatoinRoomGenerator(m_random, tilesToPlace);
+                    return new DiffusionLimitedAggregatoinRoomGenerator(random, tilesToPlace);
                 case "WallGenerator":
                     XmlAttributeCollection wallGeneratorAttributes = node.Attributes;
                     int maxWallLength = Int32.Parse(wallGeneratorAttributes["MaxWallLength"].Value);
                     int amountOfWalls = Int32.Parse(wallGeneratorAttributes["AmountOfWalls"].Value);
-                    return new RoomWallGenerator(m_random, amountOfWalls, maxWallLength);
+                    return new RoomWallGenerator(random, amountOfWalls, maxWallLength);
                 case "TilePropagation":
                     int length = Int32.Parse(node.Attributes["Length"].Value);
                     return new TilePropagation(length);

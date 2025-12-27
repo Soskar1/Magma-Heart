@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace MagmaHeart.DungeonGeneration
 {
-    public static class TileOutline
+    internal static class TileOutline
     {
-        public static HashSet<DungeonTile> GetOutline(HashSet<DungeonTile> tiles)
+        internal static HashSet<DungeonTile> GetOutline(HashSet<DungeonTile> tiles)
         {
             HashSet<Vector2Int> tilePositions = tiles.Select(tile => tile.Position).ToHashSet();
             HashSet<DungeonTile> outlineTiles = new HashSet<DungeonTile>();

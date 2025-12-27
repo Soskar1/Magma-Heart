@@ -1,6 +1,7 @@
+using MagmaHeart.DungeonGeneration;
 using UnityEngine;
 
-namespace MagmaHeart.DungeonGeneration.RoomGeneration
+namespace MagmaHeart.Core.Dungeon.RoomGeneration
 {
     public class BoxedRoomGenerator : IRoomGenerator
     {
