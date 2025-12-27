@@ -7,60 +7,35 @@ using Random = System.Random;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public struct LocationGeneratorData
-    {
-        public Vector2Int locationSpaceSize;
-        public Vector2Int roomBorderOffsets;
+    public record DungeonGeneratorData(Vector2Int RoomSpaceSize, List<IRoomGenerator> Generators);
 
-        public BinarySpacePartitioning partitioning;
-        public CorridorGenerator corridorGenerator;
-        
-        public List<IRoomGenerator> generators;
-    }
-
-    public class LocationGeneratorDeserializer
+    public class DungeonGeneratorDataDeserializer
     {
-        private XmlDocument m_document;
+        private readonly XmlDocument m_document;
         private Random m_random;
 
-        private const string LOCATION_GENERATOR_XPATH = "//LocationGenerator";
+        private const string LOCATION_GENERATOR_XPATH = "//DungeonGenerator";
 
-        public LocationGeneratorDeserializer(TextAsset configFile, Random random)
+        public DungeonGeneratorDataDeserializer(TextAsset configFile, Random random)
         {
             m_document = new XmlDocument();
             m_document.Load(new StringReader(configFile.text));
             m_random = random;
         }
 
-        public LocationGeneratorData Deserialize()
+        public DungeonGeneratorData Deserialize()
         {
-            LocationGeneratorData data = new LocationGeneratorData();
-
             XmlElement root = m_document.DocumentElement;
             if (root == null)
             {
-                Debug.LogWarning("root element is null. Returning empty LocationGeneratorData");
-                return new LocationGeneratorData();
+                Debug.LogWarning("root element is null. Returning empty DungeonGeneratorData");
+                return null;
             }
-
-            XmlAttributeCollection locationSpaceElementAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/LocationSpace").Attributes;
-            int xSize = Int32.Parse(locationSpaceElementAttributes["XSize"].Value);
-            int ySize = Int32.Parse(locationSpaceElementAttributes["YSize"].Value);
-            data.locationSpaceSize = new Vector2Int(xSize, ySize);
 
             XmlAttributeCollection roomSpaceElementAttributes = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomSpace").Attributes;
-            int xBorderOffset = Int32.Parse(roomSpaceElementAttributes["XBorderOffset"].Value);
-            int yBorderOffset = Int32.Parse(roomSpaceElementAttributes["YBorderOffset"].Value);
-            data.roomBorderOffsets = new Vector2Int(xBorderOffset, yBorderOffset);
-
-            XmlNode spacePartitioningNode = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/SpacePartitioning");
-            if (spacePartitioningNode != null) {
-                XmlAttributeCollection attributes = spacePartitioningNode.Attributes;
-                int maxPartitions = Int32.Parse(attributes["MaxPartitions"].Value);
-                int roomXMinSize = Int32.Parse(attributes["RoomXMinSize"].Value);
-                int roomYMinSize = Int32.Parse(attributes["RoomYMinSize"].Value);
-                data.partitioning = new BinarySpacePartitioning(m_random, roomXMinSize, roomYMinSize, maxPartitions);
-            }
+            int xSize = Int32.Parse(roomSpaceElementAttributes["XSize"].Value);
+            int ySize = Int32.Parse(roomSpaceElementAttributes["YSize"].Value);
+            Vector2Int roomSpaceSize = new Vector2Int(xSize, ySize);
 
             List<IRoomGenerator> generators = new List<IRoomGenerator>();
             XmlNode roomGenerators = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/RoomGenerators");
@@ -72,15 +47,8 @@ namespace MagmaHeart.Core.Dungeon
                     generators.Add(generator);
                 }
             }
-            data.generators = generators;
 
-            XmlNode corridorGeneratorNode = root.SelectSingleNode($"{LOCATION_GENERATOR_XPATH}/CorridorGenerator");
-            if (corridorGeneratorNode != null) {
-                int corridorSize = Int32.Parse(corridorGeneratorNode.Attributes["CorridorSize"].Value);
-                data.corridorGenerator = new CorridorGenerator(m_random, corridorSize);
-            }
-
-            return data;
+            return new DungeonGeneratorData(roomSpaceSize, generators);
         }
 
         private IRoomGenerator DeserializeRoomGenerator(XmlNode node)

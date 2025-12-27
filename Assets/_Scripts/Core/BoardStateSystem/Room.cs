@@ -15,14 +15,14 @@ namespace MagmaHeart.Core.BoardStateSystem
         private readonly Dictionary<EntityModel, Entity> m_entities;
         private readonly CombatTilemapRenderer m_renderer;
 
-        public RoomTileData RoomTileData { get; init; }
+        public RoomModel RoomTileData { get; init; }
         public DungeonGrid Grid { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;
 
-        public Room(RoomTileData roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
+        public Room(RoomModel roomTileData, DungeonGrid gameGrid, CombatTilemapRenderer renderer, BoardGraph boardGraph) : base(boardGraph)
         {
             RoomTileData = roomTileData;
             Grid = gameGrid;

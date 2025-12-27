@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    [CustomEditor(typeof(LocationGenerator))]
+    [CustomEditor(typeof(DungeonGenerator))]
     public class LocationGeneratorEditor : Editor
     {
         private SerializedProperty m_generatorConfigFileName;

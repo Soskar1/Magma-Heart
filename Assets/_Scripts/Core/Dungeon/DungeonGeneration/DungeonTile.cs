@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.Dungeon
 
     public class DungeonTile
     {
-        private Vector2Int m_position;
+        private readonly Vector2Int m_position;
         private TileType m_type;
 
         public Vector2Int Position => m_position;

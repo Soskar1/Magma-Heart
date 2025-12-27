@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.Spawning
             return SpawnService.Spawn(prefabToSpawn, context);
         }
 
-        public Enemy SpawnInRoomTile(RoomTileData roomTileData)
+        public Enemy SpawnInRoomTile(RoomModel roomTileData)
         {
             DungeonTile dungeonTile = null;
             do

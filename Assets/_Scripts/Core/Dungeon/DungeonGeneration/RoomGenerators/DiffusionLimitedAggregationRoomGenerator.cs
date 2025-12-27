@@ -28,19 +28,19 @@ namespace MagmaHeart.Core.Dungeon
             m_random = random;
         }
 
-        public void GenerateRoom(in RoomTileData roomTileData)
+        public void GenerateRoom(in RoomModel roomModel)
         {
             int tilesToPlace = m_tilesToPlace;
 
-            int localLeftBorder = roomTileData.TileData.LeftMostTile.x - START_POINT_OFFSET;
-            int localRightBorder = roomTileData.TileData.RightMostTile.x + START_POINT_OFFSET;
-            int localBottomBorder = roomTileData.TileData.BottomMostTile.y - START_POINT_OFFSET;
-            int localTopBorder = roomTileData.TileData.TopMostTile.y + START_POINT_OFFSET;
+            int localLeftBorder = roomModel.LeftMostTile.x - START_POINT_OFFSET;
+            int localRightBorder = roomModel.RightMostTile.x + START_POINT_OFFSET;
+            int localBottomBorder = roomModel.BottomMostTile.y - START_POINT_OFFSET;
+            int localTopBorder = roomModel.TopMostTile.y + START_POINT_OFFSET;
 
-            localLeftBorder = Mathf.Max(localLeftBorder, roomTileData.LeftBorder);
-            localRightBorder = Mathf.Min(localRightBorder, roomTileData.RightBorder);
-            localBottomBorder = Mathf.Max(localBottomBorder, roomTileData.BottomBorder);
-            localTopBorder = Mathf.Min(localTopBorder, roomTileData.TopBorder);
+            localLeftBorder = Mathf.Max(localLeftBorder, roomModel.LeftBorder);
+            localRightBorder = Mathf.Min(localRightBorder, roomModel.RightBorder);
+            localBottomBorder = Mathf.Max(localBottomBorder, roomModel.BottomBorder);
+            localTopBorder = Mathf.Min(localTopBorder, roomModel.TopBorder);
 
             while (tilesToPlace > 0)
             {
@@ -75,24 +75,24 @@ namespace MagmaHeart.Core.Dungeon
                     if (newPosition.y < localBottomBorder)
                         newPosition.y = localTopBorder;
 
-                    if (!roomTileData.ContainsTileAtPosition(currentPosition) && roomTileData.ContainsTileAtPosition(newPosition))
+                    if (!roomModel.ContainsTileAtPosition(currentPosition) && roomModel.ContainsTileAtPosition(newPosition))
                         hitTile = true;
                     else
                         currentPosition = newPosition;
                 }
 
-                roomTileData.AddTile(currentPosition, TileType.Floor);
+                roomModel.AddTile(currentPosition, TileType.Floor);
                 --tilesToPlace;
 
                 if (currentPosition.x - START_POINT_OFFSET < localLeftBorder)
-                    localLeftBorder = Mathf.Max(currentPosition.x - START_POINT_OFFSET, roomTileData.LeftBorder);
+                    localLeftBorder = Mathf.Max(currentPosition.x - START_POINT_OFFSET, roomModel.LeftBorder);
                 else if (currentPosition.x + START_POINT_OFFSET > localRightBorder)
-                    localRightBorder = Mathf.Min(currentPosition.x + START_POINT_OFFSET, roomTileData.RightBorder);
+                    localRightBorder = Mathf.Min(currentPosition.x + START_POINT_OFFSET, roomModel.RightBorder);
                 
                 if (currentPosition.y - START_POINT_OFFSET < localBottomBorder)
-                    localBottomBorder = Mathf.Max(currentPosition.y - START_POINT_OFFSET, roomTileData.BottomBorder);
+                    localBottomBorder = Mathf.Max(currentPosition.y - START_POINT_OFFSET, roomModel.BottomBorder);
                 else if (currentPosition.y + START_POINT_OFFSET > localTopBorder)
-                    localTopBorder = Mathf.Min(currentPosition.y + START_POINT_OFFSET, roomTileData.TopBorder);
+                    localTopBorder = Mathf.Min(currentPosition.y + START_POINT_OFFSET, roomModel.TopBorder);
             }
         }
     }

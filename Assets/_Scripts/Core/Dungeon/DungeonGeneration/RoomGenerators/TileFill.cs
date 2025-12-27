@@ -19,15 +19,15 @@ namespace MagmaHeart.Core.Dungeon
             };
         }
 
-        public void GenerateRoom(in RoomTileData roomTileData)
+        public void GenerateRoom(in RoomModel roomModel)
         {
             HashSet<Vector2Int> emptyTiles = new HashSet<Vector2Int>();
 
-            for (int x = roomTileData.LeftBorder; x <= roomTileData.RightBorder; ++x)
-                for (int y = roomTileData.BottomBorder; y <= roomTileData.TopBorder; ++y)
+            for (int x = roomModel.LeftBorder; x <= roomModel.RightBorder; ++x)
+                for (int y = roomModel.BottomBorder; y <= roomModel.TopBorder; ++y)
                     emptyTiles.Add(new Vector2Int(x, y));
 
-            emptyTiles.ExceptWith(roomTileData.GetTilePositions());
+            emptyTiles.ExceptWith(roomModel.GetTilePositions());
 
             while (emptyTiles.Count > 0)
             {
@@ -47,10 +47,10 @@ namespace MagmaHeart.Core.Dungeon
                     {
                         Vector2Int neighbourTile = tile + direction;
 
-                        if (neighbourTile.x >= roomTileData.LeftBorder && neighbourTile.x <= roomTileData.RightBorder &&
-                            neighbourTile.y >= roomTileData.BottomBorder && neighbourTile.y <= roomTileData.TopBorder)
+                        if (neighbourTile.x >= roomModel.LeftBorder && neighbourTile.x <= roomModel.RightBorder &&
+                            neighbourTile.y >= roomModel.BottomBorder && neighbourTile.y <= roomModel.TopBorder)
                         {
-                            if (!roomTileData.ContainsTileAtPosition(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
+                            if (!roomModel.ContainsTileAtPosition(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                                 tilesToVisit.Enqueue(neighbourTile);
                         }
                         else
@@ -61,7 +61,7 @@ namespace MagmaHeart.Core.Dungeon
                 }
 
                 if (!touchesBorder)
-                    roomTileData.AddTiles(filledSpace, TileType.Floor);
+                    roomModel.AddTiles(filledSpace, TileType.Floor);
 
                 emptyTiles.ExceptWith(filledSpace);
             }

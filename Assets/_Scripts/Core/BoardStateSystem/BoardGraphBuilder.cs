@@ -7,7 +7,7 @@ namespace MagmaHeart.Core.BoardStateSystem
 {
     public static class BoardGraphBuilder
     {
-        public static BoardGraph GenerateBoardGraph(RoomTileData roomTileData)
+        public static BoardGraph GenerateBoardGraph(RoomModel roomTileData)
         {
             BoardGraph graph = new BoardGraph();
 

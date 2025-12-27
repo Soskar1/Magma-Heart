@@ -21,14 +21,14 @@ namespace MagmaHeart.Core.Dungeon
             m_progagationLength = propagationLength;
         }
 
-        public void GenerateRoom(in RoomTileData roomTileData)
+        public void GenerateRoom(in RoomModel roomModel)
         {
-            HashSet<Vector2Int> tilesToVisit = roomTileData.GetTilePositions();
+            HashSet<Vector2Int> tilesToVisit = roomModel.GetTilePositions();
 
             foreach (Vector2Int tile in tilesToVisit)
                 foreach (Vector2Int direction in m_directionsToVisit)
                     for (int i = 1; i <= m_progagationLength; ++i)
-                        roomTileData.AddTile(tile + direction * i, TileType.Floor);
+                        roomModel.AddTile(tile + direction * i, TileType.Floor);
         }
     }
 }

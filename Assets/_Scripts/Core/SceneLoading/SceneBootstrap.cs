@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.SceneLoading
     {
         [SerializeField] private Player m_playerPrefab;
         [SerializeField] private CameraController m_cameraPrefab;
-        [SerializeField] private LocationGenerator m_locationGeneratorPrefab;
+        [SerializeField] private DungeonGenerator m_locationGeneratorPrefab;
         [SerializeField] private GameUI m_uiPrefab;
         [SerializeField] private DungeonGrid m_gridPrefab;
         [SerializeField] private Teleporter m_teleporterPrefab;
@@ -67,15 +67,14 @@ namespace MagmaHeart.Core.SceneLoading
             m_grid = Instantiate(m_gridPrefab);
             m_grid.Initialize();
 
-            LocationGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
+            DungeonGenerator locationGeneratorInstance = Instantiate(m_locationGeneratorPrefab);
             m_renderer = locationGeneratorInstance.GetComponent<LocationRenderer>();
 
             m_renderer.RenderedAllTiles += BootSceneAfterRender;
 
-            m_location = await locationGeneratorInstance.GenerateLocation(Vector2Int.zero);
+            m_location = await locationGeneratorInstance.GenerateRoom(Vector2Int.zero);
             m_renderer.AddTilesToDraw(m_location.FloorTiles, m_grid.Floor, m_grid.FloorTile);
             m_renderer.AddTilesToDraw(m_location.WallTiles, m_grid.Walls, m_grid.WallTile);
-            m_renderer.AddTilesToDraw(m_location.CorridorEntranceTiles, m_grid.Corridors, m_grid.WallTile);
             m_renderer.DrawTiles();
         }
 
@@ -88,7 +87,7 @@ namespace MagmaHeart.Core.SceneLoading
             actionSelectorChain.Next = new MovementActionSelector(database.Get<MovementAction>());
             ActionPreviewService previewService = new ActionPreviewService(actionSelectorChain);
 
-            RoomTileData startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
+            RoomModel startRoom = m_location.Rooms[Random.Range(0, m_location.Rooms.Count)];
             Player spawnedPlayer = Instantiate(m_playerPrefab, (Vector2)startRoom.WorldPosition, Quaternion.identity);
             spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_grid, previewService);
 
@@ -156,11 +155,11 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.RewardUI.OnRewardPicked += m_stateMachine.HandleOnRewardPicked;
         }
 
-        private void InitializeCombatSystem(RoomTileData startRoom)
+        private void InitializeCombatSystem(RoomModel startRoom)
         {
-            RoomTileData bossRoom = m_location.GetFarthestRoomFrom(startRoom);
+            RoomModel bossRoom = m_location.GetFarthestRoomFrom(startRoom);
 
-            foreach (RoomTileData roomTileData in m_location.Rooms)
+            foreach (RoomModel roomTileData in m_location.Rooms)
             {
                 if (roomTileData != startRoom)
                 {
