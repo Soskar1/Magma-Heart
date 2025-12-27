@@ -4,7 +4,6 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input.Mouse;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Presentation.UI
 {
@@ -16,10 +15,8 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private RewardUI m_rewardUI;
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_battleTurnOrder;
-        [SerializeField] private GraphicRaycaster m_raycaster;
 
         public RewardUI RewardUI => m_rewardUI;
-        public GraphicRaycaster Raycaster => m_raycaster;
 
         private Battle m_battle;
 

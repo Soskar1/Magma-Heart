@@ -1,6 +1,5 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Input.Mouse
