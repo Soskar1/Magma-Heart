@@ -47,7 +47,6 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private float m_minDistanceFromPlayer;
 
         private SceneLoader m_sceneLoader;
-        private UserInput m_userInput;
         private CameraController m_camera;
 
         private GameUI m_gameUI;
@@ -58,7 +57,8 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Inventory m_inventory;
         private HoverModeController m_hoverModeController;
-        private MouseListener m_mouseListener;
+
+        private InputInstaller m_inputInstaller;
 
         public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
@@ -70,10 +70,8 @@ namespace MagmaHeart.Core.SceneLoading
         public async Task BootScene()
         {
             // Input
-            m_userInput = new UserInput();
-
-            m_mouseListener = Instantiate(m_mouseListenerPrefab);
-            m_mouseListener.Initialize(m_userInput);
+            m_inputInstaller = new InputInstaller();
+            InputContext inputContext = m_inputInstaller.Install(m_mouseListenerPrefab);
 
             //// Dungeon
             System.Random random = new System.Random(m_seed);
@@ -97,7 +95,7 @@ namespace MagmaHeart.Core.SceneLoading
             ActionPreviewService previewService = new ActionPreviewService(actionSelectorChain);
 
             Player spawnedPlayer = Instantiate(m_playerPrefab, (Vector2)roomModel.WorldPosition, Quaternion.identity);
-            spawnedPlayer.Initialize(m_userInput, m_mouseListener, m_roomGrid, previewService);
+            spawnedPlayer.Initialize(inputContext.UserInput, inputContext.mouseListener, m_roomGrid, previewService);
 
             AggressiveStrategy strategy = new AggressiveStrategy();
             
@@ -123,16 +121,15 @@ namespace MagmaHeart.Core.SceneLoading
             m_battle = new Battle(spawnedPlayer, spawner);
             m_battle.OnBattleStarted += m_combatAI.HandleOnBattleStarted;
             
-            MouseHoverEngine hoverEngine = new MouseHoverEngine(m_mouseListener);
             m_gameUI = Instantiate(m_uiPrefab);
 
-            m_hoverModeController = new HoverModeController(hoverEngine, m_battle, m_gameUI.Raycaster, spawnedPlayer.CombatController);
-            m_gameUI.Initialize(spawnedPlayer, m_battle, hoverEngine);
+            m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, m_battle, m_gameUI.Raycaster, spawnedPlayer.CombatController);
+            m_gameUI.Initialize(spawnedPlayer, m_battle, inputContext.MouseHoverEngine);
 
             m_inventory = new Inventory(spawnedPlayer.Model, m_gameUI.RewardUI);
 
             m_camera = Instantiate(m_cameraPrefab, new Vector3(roomModel.WorldPosition.x, roomModel.WorldPosition.y, -10), Quaternion.identity);
-            m_camera.Initialize(spawnedPlayer.transform, m_userInput, m_battle);
+            m_camera.Initialize(spawnedPlayer.transform, inputContext.UserInput, m_battle);
 
             InitializeStateMachine(spawnedPlayer);
             m_gameUI.RewardUI.Initialize(m_battleReward);
@@ -158,6 +155,8 @@ namespace MagmaHeart.Core.SceneLoading
 
         public void OnDisable()
         {
+            m_inputInstaller.Dispose();
+
             m_battle.OnBattleStarted -= m_combatAI.HandleOnBattleStarted;
             m_battle.OnBattleStarted -= m_stateMachine.HandleOnBattleStarted;
             m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
