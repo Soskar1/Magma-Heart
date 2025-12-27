@@ -21,9 +21,11 @@ namespace MagmaHeart.Core.SceneLoading
 {
     public class SceneBootstrap : MonoBehaviour
     {
+        [Header("Player")]
         [SerializeField] private Player m_playerPrefab;
         [SerializeField] private CameraController m_cameraPrefab;
-        [SerializeField] private GameUI m_uiPrefab;
+
+        [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
         [Header("Dungeon")]
@@ -43,12 +45,11 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private float m_minDistanceFromPlayer;
 
         [Header("UI")]
+        [SerializeField] private GameUI m_gameUI;
         [SerializeField] private GraphicRaycaster m_graphicRaycaster;
 
-        private SceneLoader m_sceneLoader;
         private CameraController m_camera;
 
-        private GameUI m_gameUI;
         private Battle m_battle;
         private BattleReward m_battleReward;
         private GameStateMachine m_stateMachine;
@@ -63,8 +64,6 @@ namespace MagmaHeart.Core.SceneLoading
         private SpawnerInstaller m_spawnerInstaller;
 
         private AIContext m_aiContext;
-
-        public void Initialize(SceneLoader sceneLoader) => m_sceneLoader = sceneLoader;
 
         public async void Awake()
         {
@@ -102,8 +101,10 @@ namespace MagmaHeart.Core.SceneLoading
             
             m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, m_battle, m_graphicRaycaster, player.CombatController);
 
-            m_gameUI = Instantiate(m_uiPrefab);
-            m_gameUI.Initialize(player, m_battle, inputContext.MouseHoverEngine);
+            ArtifactDatabase database = new ArtifactDatabase();
+            m_battleReward = new BattleReward(database);
+
+            m_gameUI.Initialize(player, m_battle, inputContext.MouseHoverEngine, m_battleReward);
 
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
 
@@ -111,7 +112,6 @@ namespace MagmaHeart.Core.SceneLoading
             m_camera.Initialize(player.transform, inputContext.UserInput, m_battle);
 
             InitializeStateMachine(player);
-            m_gameUI.RewardUI.Initialize(m_battleReward);
 
             await m_battle.Start(room);
         }
@@ -120,10 +120,6 @@ namespace MagmaHeart.Core.SceneLoading
         {
             ActionState actionState = new ActionState(player.Controller, m_hoverModeController);
             CombatState combatState = new CombatState(m_camera, m_roomGrid, m_hoverModeController, m_battle, player);
-
-            ArtifactDatabase database = new ArtifactDatabase();
-            m_battleReward = new BattleReward(database);
-
             RewardState rewardState = new RewardState(m_battleReward, player);
 
             m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
