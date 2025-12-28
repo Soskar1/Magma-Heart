@@ -3345,6 +3345,7 @@ MonoBehaviour:
   m_minDistanceFromPlayer: 2
   m_gameUI: {fileID: 1222064955}
   m_graphicRaycaster: {fileID: 1666368229}
+  m_travelSpeed: 12
 --- !u!114 &8144084751900217157
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,11 +11,13 @@ namespace MagmaHeart.Core.StateMachines
     {
         private readonly MagmaHeartStateMachine m_stateMachine;
         private readonly MagmaHeartContext m_context;
+        private readonly int m_travelSpeed;
 
-        public TravelState(MagmaHeartStateMachine stateMachine, MagmaHeartContext context)
+        public TravelState(MagmaHeartStateMachine stateMachine, MagmaHeartContext context, int travelSpeed)
         {
             m_stateMachine = stateMachine;
             m_context = context;
+            m_travelSpeed = travelSpeed;
         }
 
         public async Task EnterAsync()
@@ -32,7 +34,7 @@ namespace MagmaHeart.Core.StateMachines
             RoomTile end = room.GetRoomTile(room.RoomModel.WorldPosition.ToVector3Int());
             List<RoomTile> path = new List<RoomTile>() { start, end };
             
-            await m_context.EntityMovementService.MoveEntityAsync(player, path);
+            await m_context.EntityMovementService.MoveEntityAsync(player, path, m_travelSpeed);
 
             await m_stateMachine.FireTrigger(StateMachineTriggers.BattleStarted);
         }

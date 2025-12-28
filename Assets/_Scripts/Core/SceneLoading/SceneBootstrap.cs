@@ -50,6 +50,9 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private GameUI m_gameUI;
         [SerializeField] private GraphicRaycaster m_graphicRaycaster;
 
+        [Header("Travel")]
+        [SerializeField] private int m_travelSpeed;
+
         private Battle m_battle;
 
         private Inventory m_inventory;
@@ -116,7 +119,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, player, m_hoverModeController, entityMovementService, camera, m_battle, battleReward, m_gameUI);
-            MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
+            MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext, m_travelSpeed);
             await stateMachine.Start();
         }
 
