@@ -30,9 +30,6 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentEntity != null && result.Entity != m_currentEntity)
                 m_currentEntity.Outline.RemoveOutline();
 
-            //if (m_currentTile != null && result.RoomTile != m_currentTile)
-            //    m_tileHighlighter.Hide(m_currentTile);
-
             m_currentEntity = result.Entity;
             m_currentTile = result.RoomTile;
 
@@ -60,9 +57,6 @@ namespace MagmaHeart.Core.Input.Mouse
 
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
-
-            //if (m_currentTile != null)
-            //    m_tileHighlighter.Hide(m_currentTile);
 
             m_currentTile = null;
 
