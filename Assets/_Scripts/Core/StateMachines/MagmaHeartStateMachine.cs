@@ -32,10 +32,10 @@ namespace MagmaHeart.Core.StateMachines
         private readonly RewardState m_rewardState;
         private readonly GameOverState m_gameOverState;
         
-        public MagmaHeartStateMachine(MagmaHeartContext context)
+        public MagmaHeartStateMachine(MagmaHeartContext context, int travelSpeed)
         {
             m_startupState = new StartupState(this, context);
-            m_travelState = new TravelState(this, context);
+            m_travelState = new TravelState(this, context, travelSpeed);
             m_battleState = new BattleState(this, context);
             m_rewardState = new RewardState(this, context);
             m_gameOverState = new GameOverState();
