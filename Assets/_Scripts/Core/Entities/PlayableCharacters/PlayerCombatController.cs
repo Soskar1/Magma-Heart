@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private ActionPreview m_currentPreview;
 
-        public event Action<ActionPreview> OnPreviewChanged;
+        public event EventHandler<OnActionPreviewChangedEventArgs> OnPreviewChanged;
 
         public PlayerCombatController(PlayerTurnContext turnContext, MouseListener mouseListener, IActionPreviewService previewService)
         {
@@ -33,14 +33,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 return m_currentPreview;
 
             m_currentPreview = newPreview;
-            OnPreviewChanged?.Invoke(newPreview);
 
-            // TODO: maybe it is possible to move it to another place?
-            // Or maybe we can remove PreviewCost from Energy model?
-            if (newPreview != null)
-                m_turnContext.TypedModel.Energy.PreviewCost = newPreview.EnergyCost;
-            else
-                m_turnContext.TypedModel.Energy.PreviewCost = 0;
+            OnActionPreviewChangedEventArgs args = new OnActionPreviewChangedEventArgs(newPreview);
+            OnPreviewChanged?.Invoke(this, args);
 
             return m_currentPreview;
         }
