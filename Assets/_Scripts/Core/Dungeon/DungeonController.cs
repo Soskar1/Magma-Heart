@@ -1,5 +1,4 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.DungeonGeneration;
+﻿using MagmaHeart.DungeonGeneration;
 using System;
 
 namespace MagmaHeart.Core.Dungeon
@@ -7,23 +6,21 @@ namespace MagmaHeart.Core.Dungeon
     public class DungeonController
     {
         public Room CurrentRoom { get; private set; }
+        public RoomGrid Grid { get; init; }
         private DungeonGenerator m_generator;
-        private RoomGrid m_grid;
-        private CombatTilemapRenderer m_tilemapRenderer;
 
         public EventHandler<OnRoomGeneratedEventArgs> OnRoomGenerated;
         
-        public DungeonController(DungeonGenerator generator, RoomGrid roomGrid, CombatTilemapRenderer combatTilemapRenderer)
+        public DungeonController(DungeonGenerator generator, RoomGrid roomGrid)
         {
             m_generator = generator;
-            m_grid = roomGrid;
-            m_tilemapRenderer = combatTilemapRenderer;
+            Grid = roomGrid;
         }
 
         public void GenerateRoom()
         {
             RoomModel roomModel = m_generator.GenerateRoom();
-            CurrentRoom = new Room(roomModel, m_grid, m_tilemapRenderer);
+            CurrentRoom = new Room(roomModel, Grid);
 
             OnRoomGeneratedEventArgs args = new OnRoomGeneratedEventArgs(CurrentRoom);
             OnRoomGenerated?.Invoke(this, args);

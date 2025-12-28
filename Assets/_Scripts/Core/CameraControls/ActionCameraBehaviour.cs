@@ -1,4 +1,3 @@
-using MagmaHeart.Core.Input;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CameraControls
