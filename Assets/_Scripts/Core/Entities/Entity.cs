@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    [RequireComponent(typeof(TurnBasedMovement))]
+    [RequireComponent(typeof(TileBasedMovement))]
     [RequireComponent(typeof(Facing))]
     [RequireComponent(typeof(EntityAnimation))]
     [RequireComponent(typeof(Outline))]
@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.Entities
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
         public EntityTurnContext TurnContext { get; protected set; }
-        public TurnBasedMovement TurnBasedMovement { get; private set; }
+        public TileBasedMovement TurnBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.Entities
             Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
             Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
 
-            TurnBasedMovement = GetComponent<TurnBasedMovement>();
+            TurnBasedMovement = GetComponent<TileBasedMovement>();
             Facing = GetComponent<Facing>();
             Animation = GetComponent<EntityAnimation>();
             Outline = GetComponent<Outline>();

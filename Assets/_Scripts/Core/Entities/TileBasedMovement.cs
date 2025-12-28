@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class TurnBasedMovement : MonoBehaviour
+    public class TileBasedMovement : MonoBehaviour
     {
         [SerializeField] private int m_speed = 5;
         [SerializeField] private float m_changePointAtDistance = 0.001f;
