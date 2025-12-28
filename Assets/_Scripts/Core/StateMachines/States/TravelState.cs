@@ -22,6 +22,8 @@ namespace MagmaHeart.Core.StateMachines
         {
             Debug.Log("Enter Travel state");
 
+            m_context.DungeonController.GenerateRoom();
+
             Player player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
