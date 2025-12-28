@@ -20,8 +20,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public async Task EnterAsync()
         {
-            Debug.Log("Enter Travel state");
-
             m_context.DungeonController.GenerateRoom();
 
             Player player = m_context.Player;
@@ -41,7 +39,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public Task ExitAsync()
         {
-            Debug.Log("Exit Travel state");
             return Task.CompletedTask;
         }
     }

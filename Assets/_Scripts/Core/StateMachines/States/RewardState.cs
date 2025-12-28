@@ -1,7 +1,6 @@
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.SceneLoading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
@@ -18,8 +17,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public Task EnterAsync()
         {
-            Debug.Log("Enter Reward state");
-
             m_context.BattleReward.Calculate();
             m_context.Player.Animation.PlayIdleAnimation();
 
@@ -30,8 +27,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public Task ExitAsync()
         {
-            Debug.Log("Exit Reward state");
-
             m_context.UI.RewardUI.OnRewardPicked -= HandleOnRewardPicked;
             return Task.CompletedTask; 
         }

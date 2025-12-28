@@ -2,7 +2,6 @@
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines.States
 {
@@ -19,8 +18,6 @@ namespace MagmaHeart.Core.StateMachines.States
 
         public async Task EnterAsync()
         {
-            Debug.Log("Entered startup state");
-
             Player player = m_context.Player;
             DungeonController dungeon = m_context.DungeonController;
 
@@ -31,7 +28,6 @@ namespace MagmaHeart.Core.StateMachines.States
 
         public Task ExitAsync()
         {
-            Debug.Log("Exit startup state");
             return Task.CompletedTask;
         }
     }

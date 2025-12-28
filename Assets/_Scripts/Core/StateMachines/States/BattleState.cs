@@ -4,7 +4,6 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
@@ -31,8 +30,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public async Task EnterAsync()
         {
-            Debug.Log("Enter Battle state");
-
             m_battle.OnBattleEnded += HandleOnBattleEnded;
             m_battle.OnTurnSwitched += HandleTurnSwitched;
             m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
@@ -46,8 +43,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public Task ExitAsync()
         {
-            Debug.Log("Exit Battle state");
-
             m_camera.SwitchToActionCamera();
             m_hoverModeController.UseRaycastHover();
 
