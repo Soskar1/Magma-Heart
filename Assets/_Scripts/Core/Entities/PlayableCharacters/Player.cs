@@ -8,13 +8,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         public PlayerCombatController CombatController { get; private set; }
 
-        public void Initialize(MouseListener mouseListener, RoomGrid grid, IActionPreviewService previewService)
+        public void Initialize(MouseListener mouseListener, RoomGrid grid, IActionPreviewProvider previewProvider)
         {
             base.Initialize(grid, true);
 
             PlayerTurnContext turnContext = new PlayerTurnContext(Model);
             TurnContext = turnContext;
-            CombatController = new PlayerCombatController(turnContext, mouseListener, previewService);
+            CombatController = new PlayerCombatController(turnContext, mouseListener, previewProvider);
         }
 
         private void Update() => Animation.PlayAnimations();

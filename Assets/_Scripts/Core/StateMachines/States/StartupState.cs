@@ -1,5 +1,4 @@
-﻿using MagmaHeart.Core.AI;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
 using System.Threading.Tasks;
@@ -26,8 +25,8 @@ namespace MagmaHeart.Core.StateMachines.States
             DungeonController dungeon = m_context.DungeonController;
 
             dungeon.GenerateRoom();
-            player.gameObject.SetActive(true);
             player.transform.position = new Vector2(dungeon.CurrentRoom.RoomModel.LeftBorder, dungeon.CurrentRoom.RoomModel.WorldPosition.y);
+            player.gameObject.SetActive(true);
 
             await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete);
         }

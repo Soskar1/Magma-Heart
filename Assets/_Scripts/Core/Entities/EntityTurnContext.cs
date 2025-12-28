@@ -1,7 +1,6 @@
 ﻿using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
-using MagmaHeart.Core.Dungeon;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,7 +8,6 @@ namespace MagmaHeart.Core.Entities
 {
     public abstract class EntityTurnContext : TurnContext<EntityModel>
     {
-        public Room CurrentRoom => CurrentCombatBoardState.Room;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
 
         public EntityTurnContext(EntityModel model) : base(model) { }

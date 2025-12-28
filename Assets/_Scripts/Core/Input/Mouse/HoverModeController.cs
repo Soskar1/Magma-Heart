@@ -1,5 +1,5 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions.Preview;
 using MagmaHeart.Core.Dungeon;
 using UnityEngine.UI;
 
@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.Input.Mouse
         private readonly IHoverHandler m_actionHandler;
         private readonly IHoverHandler m_combatHandler;
 
-        public HoverModeController(MouseHoverEngine engine, DungeonController dungeonController, GraphicRaycaster raycaster, IActionPreviewProvider actionPreviewProvider)
+        public HoverModeController(MouseHoverEngine engine, DungeonController dungeonController, GraphicRaycaster raycaster, IActionPreviewProvider actionPreviewProvider, ICombatTileHighlighter tileHighlighter)
         {
             m_engine = engine;
 
@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Input.Mouse
             m_tile = new TileMouseHoverStrategy(dungeonController);
 
             m_actionHandler = new ActionHoverHandler();
-            m_combatHandler = new CombatHoverHandler(dungeonController, actionPreviewProvider);
+            m_combatHandler = new CombatHoverHandler(dungeonController, actionPreviewProvider, tileHighlighter);
         }
 
         public void Disable() => m_engine.Disable();

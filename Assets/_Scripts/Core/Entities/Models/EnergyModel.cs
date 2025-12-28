@@ -6,10 +6,8 @@ namespace MagmaHeart.Core.Entities.Models
     public class EnergyModel
     {
         private int m_currentEnergy;
-        private int m_previewCost;
 
         public event EventHandler<OnEnergyChangedEventArgs> OnEnergyChanged;
-        public event EventHandler<OnPreviewEnergyChangedEventArgs> OnPreviewEnergyChanged;
 
         public int MaxEnergy { get; init; }
 
@@ -31,18 +29,6 @@ namespace MagmaHeart.Core.Entities.Models
 
                 OnEnergyChangedEventArgs args = new OnEnergyChangedEventArgs(CurrentEnergy, MaxEnergy);
                 OnEnergyChanged?.Invoke(this, args);
-            }
-        }
-
-        public int PreviewCost
-        {
-            get => m_previewCost;
-            set
-            {
-                m_previewCost = Mathf.Clamp(value, 0, MaxEnergy);
-
-                OnPreviewEnergyChangedEventArgs args = new OnPreviewEnergyChangedEventArgs(PreviewCost, CurrentEnergy);
-                OnPreviewEnergyChanged?.Invoke(this, args);
             }
         }
 

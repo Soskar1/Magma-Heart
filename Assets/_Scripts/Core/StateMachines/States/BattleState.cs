@@ -41,7 +41,7 @@ namespace MagmaHeart.Core.StateMachines
             m_camera.SwitchToTurnBasedCamera();
             m_player.CombatController.Enable();
 
-            await m_battle.Start(m_context.DungeonController.CurrentRoom);
+            await m_battle.Start(m_context.DungeonController.CurrentRoom, m_player);
         }
 
         public Task ExitAsync()

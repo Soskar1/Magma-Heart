@@ -3,6 +3,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Spawning;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly Entity m_player;
         private readonly MagmaHeartSpawner m_spawner;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
+        private readonly EntityMovementService m_movementService;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
@@ -29,21 +30,21 @@ namespace MagmaHeart.Core.CombatSystem
 
         private bool m_battleEnded = false;
 
-        public Battle(Entity player, MagmaHeartSpawner spawner)
+        public Battle(MagmaHeartSpawner spawner, EntityMovementService movementService)
         {
-            m_player = player;
             m_spawner = spawner;
+            m_movementService = movementService;
         }
 
-        public async Task Start(Room room)
+        public async Task Start(Room room, Player player)
         {
             m_battleEnded = false;
             m_currentRoom = room;
 
-            m_currentRoom.AddEntityToInspect(m_player);
+            m_currentRoom.AddEntityToInspect(player);
             for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
-                Enemy spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomModel);
+                Enemy spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomModel, player.transform.position);
                 m_currentRoom.AddEntityToInspect(spawnedEntity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
@@ -58,7 +59,7 @@ namespace MagmaHeart.Core.CombatSystem
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
-            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner);
+            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner, m_movementService);
 
             foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);

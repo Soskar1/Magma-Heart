@@ -20,7 +20,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         public override int GetEnergyCost(MovementActionArgs args, BoardState gameState)
         {
             PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Executor);
-            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
+            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TargetTile);
 
             if (path == null || !path.Any())
                 return int.MaxValue;
@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             IEnumerable<StateChange> changes = base.ProduceChanges(args, gameState);
 
             PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Executor);
-            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TileToMove);
+            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, args.SourceTile, args.TargetTile);
 
             return changes.Concat(new List<StateChange>()
             {

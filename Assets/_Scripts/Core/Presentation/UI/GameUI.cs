@@ -1,3 +1,4 @@
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities.PlayableCharacters;
@@ -20,11 +21,11 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private Battle m_battle;
 
-        public void Initialize(Player player, Battle battle, MouseHoverEngine mouseHoverEngine, BattleReward battleReward)
+        public void Initialize(Player player, Battle battle, MouseHoverEngine mouseHoverEngine, BattleReward battleReward, IActionPreviewProvider previewProvider)
         {
             m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(player);
-            m_energyHUD.Initialize(player);
+            m_energyHUD.Initialize(player, previewProvider);
             m_entityInfoUI.Initialize(mouseHoverEngine, battle);
             m_battleTurnOrder.Initialize(battle);
             m_rewardUI.Initialize(battleReward);

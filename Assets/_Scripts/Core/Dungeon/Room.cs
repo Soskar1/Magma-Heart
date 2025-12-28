@@ -1,7 +1,6 @@
 using MagmaHeart.Extensions;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI;
@@ -18,16 +17,14 @@ namespace MagmaHeart.Core.Dungeon
         
         public RoomModel RoomModel { get; init; }
         public RoomGrid Grid { get; init; }
-        public Tilemap CombatTilemap => m_renderer.CombatTilemap;
 
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;
 
-        public Room(RoomModel model, RoomGrid grid, CombatTilemapRenderer renderer) : base(BoardGraphBuilder.GenerateBoardGraph(model))
+        public Room(RoomModel model, RoomGrid grid) : base(BoardGraphBuilder.GenerateBoardGraph(model))
         {
             RoomModel = model;
             Grid = grid;
-            m_renderer = renderer;
             m_entities = new Dictionary<EntityModel, Entity>();
         }
 
@@ -54,22 +51,7 @@ namespace MagmaHeart.Core.Dungeon
         public RoomTile GetRoomTile(Vector3 worldPosition)
         {
             Vector3Int position = Grid.WorldToTilePosition(worldPosition);
-            return new RoomTile(this, position);
-        }
-
-        public void TryDisplayCombatTile(RoomTile roomTile)
-        {
-            if (!TileIsAccessable(roomTile))
-                return;
-
-            CombatTile combatTile = roomTile.ToCombatTile();
-            m_renderer.DisplayCombatTile(combatTile);
-        }
-
-        public void HideCombatTileAt(RoomTile roomTile)
-        {
-            CombatTile combatTile = roomTile.ToCombatTile();
-            m_renderer.HideCombatTileAt(combatTile);
+            return new RoomTile(position, Grid);
         }
 
         public bool TileIsAccessable(RoomTile roomTile)

@@ -1,48 +1,33 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
-using System;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerCombatController : IActionPreviewProvider
+    public class PlayerCombatController
     {
-        private readonly IActionPreviewService m_actionPreviewService;
+        private readonly IActionPreviewProvider m_actionPreviewProvider;
         private readonly PlayerTurnContext m_turnContext;
         private readonly MouseListener m_mouseListener;
 
         private ActionPreview m_currentPreview;
 
-        public event Action<ActionPreview> OnPreviewChanged;
-
-        public PlayerCombatController(PlayerTurnContext turnContext, MouseListener mouseListener, IActionPreviewService previewService)
+        public PlayerCombatController(PlayerTurnContext turnContext, MouseListener mouseListener, IActionPreviewProvider previewProvider)
         {
             m_turnContext = turnContext;
             m_mouseListener = mouseListener;
-            m_actionPreviewService = previewService;
+            m_actionPreviewProvider = previewProvider;
         }
 
-        public void Enable() => m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
-        public void Disable() => m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
-
-        public ActionPreview Preview(RoomTile tile)
+        public void Enable()
         {
-            ActionPreview newPreview = m_actionPreviewService.Preview(m_turnContext.CurrentCombatBoardState, m_turnContext.TypedModel, tile);
+            m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
+            m_actionPreviewProvider.OnActionPreviewChanged += HandleOnActionPreviewChanged;
+        }
 
-            if (Equals(m_currentPreview, newPreview))
-                return m_currentPreview;
-
-            m_currentPreview = newPreview;
-            OnPreviewChanged?.Invoke(newPreview);
-
-            // TODO: maybe it is possible to move it to another place?
-            // Or maybe we can remove PreviewCost from Energy model?
-            if (newPreview != null)
-                m_turnContext.TypedModel.Energy.PreviewCost = newPreview.EnergyCost;
-            else
-                m_turnContext.TypedModel.Energy.PreviewCost = 0;
-
-            return m_currentPreview;
+        public void Disable()
+        {
+            m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
+            m_actionPreviewProvider.OnActionPreviewChanged -= HandleOnActionPreviewChanged;
         }
 
         private async void HandleOnGameLeftMouseButtonClick()
@@ -52,5 +37,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             await m_turnContext.Execute(m_currentPreview);
         }
+
+        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args) => m_currentPreview = args.ActionPreview;
     }
 }
