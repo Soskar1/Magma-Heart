@@ -40,6 +40,8 @@ namespace MagmaHeart.Core.Presentation.UI
 
         public void GetReward()
         {
+            Hide();
+
             OnRewardPickedArgs args = new OnRewardPickedArgs(m_currentlyPickedArtifact);
             OnRewardPicked?.Invoke(this, args);
         }
