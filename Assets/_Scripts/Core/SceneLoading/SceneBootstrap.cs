@@ -13,6 +13,7 @@ using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.Spawning;
 using MagmaHeart.Core.StateMachines;
 using MagmaHeart.DungeonGeneration;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -73,7 +74,11 @@ namespace MagmaHeart.Core.SceneLoading
             m_inputInstaller = new InputInstaller();
             InputContext inputContext = m_inputInstaller.Install(m_mouseListenerPrefab);
 
+            if (m_seed == -1)
+                m_seed = Environment.TickCount;
+
             System.Random random = new System.Random(m_seed);
+
             m_dungeonInstaller = new DungeonInstaller();
             DungeonGenerator dungeonGenerator = m_dungeonInstaller.Install(random, m_configFileName);
 
