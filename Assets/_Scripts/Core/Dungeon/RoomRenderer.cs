@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Threading.Tasks;
 using MagmaHeart.DungeonGeneration;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,17 +9,26 @@ namespace MagmaHeart.Core.Dungeon
     {
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private int m_tilesPerFrame = 256;
+        [SerializeField] private TileBase m_floor;
+        [SerializeField] private TileBase m_wall;
 
-        private TaskCompletionSource<bool> m_renderedAllTiles;
+        private DungeonController m_controller;
 
-        public async Task DrawRoom(RoomModel roomModel, TileBase floor, TileBase wall)
+        public void Initialize(DungeonController dungeonController)
         {
-            m_renderedAllTiles = new TaskCompletionSource<bool>();
-            StartCoroutine(DrawTiles(roomModel, floor, wall));
-            await m_renderedAllTiles.Task;
+            m_controller = dungeonController;
+            dungeonController.OnRoomGenerated += HandleOnRoomGenerated;
         }
 
-        private IEnumerator DrawTiles(RoomModel roomModel, TileBase floor, TileBase wall)
+        public void OnDisable() => m_controller.OnRoomGenerated -= HandleOnRoomGenerated;
+
+        public void HandleOnRoomGenerated(object obj, OnRoomGeneratedEventArgs args)
+        {
+            Clear();
+            StartCoroutine(DrawTiles(args.Room.RoomModel));
+        }
+
+        private IEnumerator DrawTiles(RoomModel roomModel)
         {
             int renderedTiles = 0;
             foreach (DungeonTile tile in roomModel)
@@ -28,17 +36,15 @@ namespace MagmaHeart.Core.Dungeon
                 Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)tile.Position);
 
                 if (tile.Type == TileType.Floor)
-                    m_tilemap.SetTile(tilePosition, floor);
+                    m_tilemap.SetTile(tilePosition, m_floor);
                 else
-                    m_tilemap.SetTile(tilePosition, wall);
+                    m_tilemap.SetTile(tilePosition, m_wall);
 
                 ++renderedTiles;
 
                 if (renderedTiles % m_tilesPerFrame == 0)
                     yield return new WaitForEndOfFrame();
             }
-
-            m_renderedAllTiles.SetResult(true);
         }
 
         public void Clear() => m_tilemap.ClearAllTiles();

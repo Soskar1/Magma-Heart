@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.Dungeon
     {
         private readonly Dictionary<EntityModel, Entity> m_entities;
         private readonly CombatTilemapRenderer m_renderer;
-
+        
         public RoomModel RoomModel { get; init; }
         public RoomGrid Grid { get; init; }
         public Tilemap CombatTilemap => m_renderer.CombatTilemap;
@@ -23,9 +23,9 @@ namespace MagmaHeart.Core.Dungeon
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;
 
-        public Room(RoomModel roomModel, RoomGrid grid, CombatTilemapRenderer renderer) : base(BoardGraphBuilder.GenerateBoardGraph(roomModel))
+        public Room(RoomModel model, RoomGrid grid, CombatTilemapRenderer renderer) : base(BoardGraphBuilder.GenerateBoardGraph(model))
         {
-            RoomModel = roomModel;
+            RoomModel = model;
             Grid = grid;
             m_renderer = renderer;
             m_entities = new Dictionary<EntityModel, Entity>();

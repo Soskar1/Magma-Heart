@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace MagmaHeart.Core.StateMachines
 {
     public interface IState
     {
-        public void Enter();
-        public void Exit();
+        public Task EnterAsync();
+        public Task ExitAsync();
     }
 }

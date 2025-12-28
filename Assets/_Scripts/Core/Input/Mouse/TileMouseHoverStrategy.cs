@@ -7,18 +7,18 @@ namespace MagmaHeart.Core.Input.Mouse
 {
     public class TileMouseHoverStrategy : MouseHoverStrategy
     {
-        private readonly Battle m_battle;
+        private readonly DungeonController m_dungeonController;
 
-        public TileMouseHoverStrategy(Battle battle)
+        public TileMouseHoverStrategy(DungeonController dungeonController)
         {
-            m_battle = battle;
+            m_dungeonController = dungeonController;
         }
 
         protected override HoverResult TryHover(Vector2 worldPosition)
         {
-            Vector3Int tilePosition = m_battle.CurrentRoom.Grid.WorldToTilePosition(worldPosition);
-            RoomTile hoveredTile = m_battle.CurrentRoom.GetRoomTile(tilePosition);
-            m_battle.CurrentRoom.TryGetEntity(hoveredTile, out Entity entity);
+            Vector3Int tilePosition = m_dungeonController.CurrentRoom.Grid.WorldToTilePosition(worldPosition);
+            RoomTile hoveredTile = m_dungeonController.CurrentRoom.GetRoomTile(tilePosition);
+            m_dungeonController.CurrentRoom.TryGetEntity(hoveredTile, out Entity entity);
 
             return new CombatHoverResult(entity, hoveredTile);
         }
