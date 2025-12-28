@@ -52,7 +52,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         private Battle m_battle;
         private BattleReward m_battleReward;
-        private GameStateMachine m_stateMachine;
+        private MagmaHeartStateMachine m_stateMachine;
 
         private Inventory m_inventory;
         private HoverModeController m_hoverModeController;
@@ -79,27 +79,28 @@ namespace MagmaHeart.Core.SceneLoading
             m_dungeonInstaller = new DungeonInstaller();
             DungeonGenerator dungeonGenerator = m_dungeonInstaller.Install(random, m_configFileName);
 
-            // I think, we will need to move this to another place
-            RoomModel roomModel = dungeonGenerator.GenerateRoom();
-            await m_roomRenderer.DrawRoom(roomModel, m_floorTile, m_wallTile);
-
             m_roomGrid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
-            Room room = new Room(roomModel, m_roomGrid, m_combatTilemapRenderer);
-            //
+            DungeonController dungeonController = new DungeonController(dungeonGenerator, m_roomGrid, m_combatTilemapRenderer);
+            m_roomRenderer.Initialize(dungeonController);
 
             m_aiInstaller = new AIInstaller();
             m_aiContext = m_aiInstaller.Install();
 
             m_playerInstaller = new PlayerInstaller();
-            Player player = m_playerInstaller.Install(m_playerPrefab, inputContext, m_aiContext.ActionDatabase, m_roomGrid, roomModel.WorldPosition);
+            Player player = m_playerInstaller.Install(m_playerPrefab, inputContext, m_aiContext.ActionDatabase, m_roomGrid);
+            player.gameObject.SetActive(false);
 
             m_spawnerInstaller = new SpawnerInstaller();
             MagmaHeartSpawner spawner = m_spawnerInstaller.Install(m_enemyPrefabs, player, m_projectilePrefab, m_aiContext, m_roomGrid, m_minDistanceFromPlayer);
 
             m_battle = new Battle(player, spawner);
             m_battle.OnBattleStarted += m_aiContext.CombatAI.HandleOnBattleStarted;
-            
+
+            m_camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
+            m_camera.Initialize(player.transform, inputContext.UserInput, m_battle);
+
             m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, m_battle, m_graphicRaycaster, player.CombatController);
+            m_hoverModeController.UseRaycastHover();
 
             ArtifactDatabase database = new ArtifactDatabase();
             m_battleReward = new BattleReward(database);
@@ -108,24 +109,11 @@ namespace MagmaHeart.Core.SceneLoading
 
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
 
-            m_camera = Instantiate(m_cameraPrefab, new Vector3(roomModel.WorldPosition.x, roomModel.WorldPosition.y, -10), Quaternion.identity);
-            m_camera.Initialize(player.transform, inputContext.UserInput, m_battle);
+            EntityMovementService entityMovementService = new EntityMovementService();
 
-            InitializeStateMachine(player);
-
-            await m_battle.Start(room);
-        }
-
-        private void InitializeStateMachine(Player player)
-        {
-            ActionState actionState = new ActionState(player.Controller, m_hoverModeController);
-            CombatState combatState = new CombatState(m_camera, m_roomGrid, m_hoverModeController, m_battle, player);
-            RewardState rewardState = new RewardState(m_battleReward, player);
-
-            m_stateMachine = new GameStateMachine(actionState, combatState, rewardState);
-            m_battle.OnBattleStarted += m_stateMachine.HandleOnBattleStarted;
-            m_battle.OnBattleEnded += m_stateMachine.HandleOnBattleEnded;
-            m_gameUI.RewardUI.OnRewardPicked += m_stateMachine.HandleOnRewardPicked;
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, player, m_hoverModeController, entityMovementService, m_camera, m_battle, m_battleReward, m_gameUI);
+            MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
+            await stateMachine.Start();
         }
 
         public void OnDisable()
@@ -136,9 +124,6 @@ namespace MagmaHeart.Core.SceneLoading
             m_playerInstaller.Dispose();
 
             m_battle.OnBattleStarted -= m_aiContext.CombatAI.HandleOnBattleStarted;
-            m_battle.OnBattleStarted -= m_stateMachine.HandleOnBattleStarted;
-            m_battle.OnBattleEnded -= m_stateMachine.HandleOnBattleEnded;
-            m_gameUI.RewardUI.OnRewardPicked -= m_stateMachine.HandleOnRewardPicked;
 
             m_hoverModeController.Disable();
             m_inventory.Disable();

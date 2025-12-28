@@ -9,14 +9,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerInstaller : IInstaller
     {
-        public Player Install(Player playerPrefab, InputContext inputContext, ActionDatabase database, RoomGrid roomGrid, Vector2 position)
+        public Player Install(Player playerPrefab, InputContext inputContext, ActionDatabase database, RoomGrid roomGrid)
         {
             ActionSelector actionSelectorChain = new AttackActionSelector(database.Get<AttackAction>());
             actionSelectorChain.Next = new MovementActionSelector(database.Get<MovementAction>());
             ActionPreviewService previewService = new ActionPreviewService(actionSelectorChain);
 
-            Player spawnedPlayer = GameObject.Instantiate(playerPrefab, position, Quaternion.identity);
-            spawnedPlayer.Initialize(inputContext.UserInput, inputContext.mouseListener, roomGrid, previewService);
+            Player spawnedPlayer = GameObject.Instantiate(playerPrefab);
+            spawnedPlayer.Initialize(inputContext.mouseListener, roomGrid, previewService);
 
             return spawnedPlayer;
         }
