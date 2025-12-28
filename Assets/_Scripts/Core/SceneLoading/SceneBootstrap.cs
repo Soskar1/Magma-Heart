@@ -87,7 +87,8 @@ namespace MagmaHeart.Core.SceneLoading
             m_spawnerInstaller = new SpawnerInstaller();
             MagmaHeartSpawner spawner = m_spawnerInstaller.Install(m_enemyPrefabs, m_projectilePrefab, m_aiContext, grid, m_minDistanceFromPlayer);
 
-            m_battle = new Battle(spawner);
+            EntityMovementService entityMovementService = new EntityMovementService();
+            m_battle = new Battle(spawner, entityMovementService);
             m_battle.OnBattleStarted += m_aiContext.CombatAI.HandleOnBattleStarted;
 
             m_actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
@@ -107,10 +108,7 @@ namespace MagmaHeart.Core.SceneLoading
             BattleReward battleReward = new BattleReward(database);
 
             m_gameUI.Initialize(player, m_battle, inputContext.MouseHoverEngine, battleReward, previewProvider);
-
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
-
-            EntityMovementService entityMovementService = new EntityMovementService();
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, player, m_hoverModeController, entityMovementService, camera, m_battle, battleReward, m_gameUI);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
@@ -123,6 +121,8 @@ namespace MagmaHeart.Core.SceneLoading
             m_dungeonInstaller.Dispose();
             m_aiInstaller.Dispose();
             m_playerInstaller.Dispose();
+            m_spawnerInstaller.Dispose();
+            m_actionPreviewInstaller.Dispose();
 
             m_battle.OnBattleStarted -= m_aiContext.CombatAI.HandleOnBattleStarted;
 

@@ -26,7 +26,6 @@ namespace MagmaHeart.Core.StateMachines
             Room room = m_context.DungeonController.CurrentRoom;
 
             m_context.HoverModeController.UseRaycastHover();
-
             player.transform.position = new Vector2(room.RoomModel.LeftBorder, room.RoomModel.WorldPosition.y);
 
             RoomTile start = room.GetRoomTile(player.transform.position);

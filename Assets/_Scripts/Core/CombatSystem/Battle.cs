@@ -17,6 +17,7 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly MagmaHeartSpawner m_spawner;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
+        private readonly EntityMovementService m_movementService;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
@@ -29,9 +30,10 @@ namespace MagmaHeart.Core.CombatSystem
 
         private bool m_battleEnded = false;
 
-        public Battle(MagmaHeartSpawner spawner)
+        public Battle(MagmaHeartSpawner spawner, EntityMovementService movementService)
         {
             m_spawner = spawner;
+            m_movementService = movementService;
         }
 
         public async Task Start(Room room, Player player)
@@ -57,7 +59,7 @@ namespace MagmaHeart.Core.CombatSystem
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
-            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner);
+            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner, m_movementService);
 
             foreach (Entity entity in sortedEntities)
                 entity.TurnContext.StartBattle(combatBoardState);
