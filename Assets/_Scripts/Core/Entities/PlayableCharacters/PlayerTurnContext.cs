@@ -1,8 +1,5 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.BoardStateSystem.Actions;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,17 +29,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         }
 
         public PlayerTurnContext(EntityModel model) : base(model) {}
-
-        public override async void StartBattle(CombatBoardState combatBoardState)
-        {
-            base.StartBattle(combatBoardState);
-
-            // Note: probabaly will be removed sooner or later. For now it is ok
-            // Move player at the center of the current standing tile
-            RoomTile roomTile = CurrentRoom.GetRoomTile(TypedModel.GetCurrentTilePosition());
-            CurrentRoom.TryGetEntity(TypedModel, out Entity entity);
-            await combatBoardState.MovementService.MoveEntityAsync(entity, new List<RoomTile>() { roomTile });
-        }
 
         public override void EndBattle()
         {
