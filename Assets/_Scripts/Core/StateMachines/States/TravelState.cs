@@ -23,7 +23,7 @@ namespace MagmaHeart.Core.StateMachines
             Debug.Log("Enter Travel state");
 
             Player player = m_context.Player;
-            Room room = m_context.DungeonController.Room;
+            Room room = m_context.DungeonController.CurrentRoom;
 
             m_context.HoverModeController.UseRaycastHover();
 

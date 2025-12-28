@@ -99,7 +99,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
             m_camera.Initialize(player.transform, inputContext.UserInput, m_battle);
 
-            m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, m_battle, m_graphicRaycaster, player.CombatController);
+            m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, dungeonController, m_graphicRaycaster, player.CombatController);
             m_hoverModeController.UseRaycastHover();
 
             ArtifactDatabase database = new ArtifactDatabase();

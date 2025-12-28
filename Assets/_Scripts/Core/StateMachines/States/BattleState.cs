@@ -1,6 +1,5 @@
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
@@ -34,18 +33,15 @@ namespace MagmaHeart.Core.StateMachines
         {
             Debug.Log("Enter Battle state");
 
-            m_camera.SwitchToTurnBasedCamera();
-
-            m_hoverModeController.UseTileHover();
-
             m_battle.OnBattleEnded += HandleOnBattleEnded;
             m_battle.OnTurnSwitched += HandleTurnSwitched;
             m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
             m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
-
+            
+            m_camera.SwitchToTurnBasedCamera();
             m_player.CombatController.Enable();
 
-            await m_battle.Start(m_context.DungeonController.Room);
+            await m_battle.Start(m_context.DungeonController.CurrentRoom);
         }
 
         public Task ExitAsync()
@@ -65,12 +61,12 @@ namespace MagmaHeart.Core.StateMachines
             return Task.CompletedTask;
         }
 
-        private void HandleOnBattleEnded(object obj, OnBattleEndedEventArgs e)
+        private async void HandleOnBattleEnded(object obj, OnBattleEndedEventArgs e)
         {
             if (e.IsPlayerVictory)
-                Task.Run(() => m_stateMachine.FireTrigger(StateMachineTriggers.BattleWon));
+                await m_stateMachine.FireTrigger(StateMachineTriggers.BattleWon);
             else
-                Task.Run(() => m_stateMachine.FireTrigger(StateMachineTriggers.BattleLost));
+                await m_stateMachine.FireTrigger(StateMachineTriggers.BattleLost);
         }
 
         private void HandleOnCombatActionExecutionStarted() => m_hoverModeController.UseRaycastHover();

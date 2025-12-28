@@ -25,9 +25,9 @@ namespace MagmaHeart.Core.StateMachines.States
             Player player = m_context.Player;
             DungeonController dungeon = m_context.DungeonController;
 
-            await dungeon.GenerateRoom();
+            dungeon.GenerateRoom();
             player.gameObject.SetActive(true);
-            player.transform.position = new Vector2(dungeon.Room.RoomModel.LeftBorder, dungeon.Room.RoomModel.WorldPosition.y);
+            player.transform.position = new Vector2(dungeon.CurrentRoom.RoomModel.LeftBorder, dungeon.CurrentRoom.RoomModel.WorldPosition.y);
 
             await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete);
         }
