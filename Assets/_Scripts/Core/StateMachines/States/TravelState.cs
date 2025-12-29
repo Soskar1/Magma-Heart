@@ -30,7 +30,7 @@ namespace MagmaHeart.Core.StateMachines
             m_context.CameraController.MoveTo(room.RoomModel.WorldPosition);
 
             m_context.HoverModeController.UseRaycastHover();
-            player.transform.position = new Vector2(room.RoomModel.LeftBorder, room.RoomModel.WorldPosition.y);
+            player.transform.position = new Vector2(room.RoomModel.Boundaries.xMin, room.RoomModel.WorldPosition.y);
 
             RoomTile start = room.GetRoomTile(player.transform.position);
             RoomTile end = room.GetRoomTile(room.RoomModel.WorldPosition.ToVector3Int());
