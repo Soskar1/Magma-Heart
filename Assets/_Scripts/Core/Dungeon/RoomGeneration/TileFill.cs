@@ -24,8 +24,8 @@ namespace MagmaHeart.Core.Dungeon.RoomGeneration
         {
             HashSet<Vector2Int> emptyTiles = new HashSet<Vector2Int>();
 
-            for (int x = roomModel.LeftBorder; x <= roomModel.RightBorder; ++x)
-                for (int y = roomModel.BottomBorder; y <= roomModel.TopBorder; ++y)
+            for (int x = roomModel.Boundaries.xMin; x <= roomModel.Boundaries.xMax; ++x)
+                for (int y = roomModel.Boundaries.yMin; y <= roomModel.Boundaries.yMax; ++y)
                     emptyTiles.Add(new Vector2Int(x, y));
 
             emptyTiles.ExceptWith(roomModel.GetTilePositions());
@@ -48,8 +48,8 @@ namespace MagmaHeart.Core.Dungeon.RoomGeneration
                     {
                         Vector2Int neighbourTile = tile + direction;
 
-                        if (neighbourTile.x >= roomModel.LeftBorder && neighbourTile.x <= roomModel.RightBorder &&
-                            neighbourTile.y >= roomModel.BottomBorder && neighbourTile.y <= roomModel.TopBorder)
+                        if (neighbourTile.x >= roomModel.Boundaries.xMin && neighbourTile.x <= roomModel.Boundaries.xMax &&
+                            neighbourTile.y >= roomModel.Boundaries.yMin && neighbourTile.y <= roomModel.Boundaries.yMax)
                         {
                             if (!roomModel.ContainsTileAtPosition(neighbourTile) && !filledSpace.Contains(neighbourTile) && !tilesToVisit.Contains(neighbourTile))
                                 tilesToVisit.Enqueue(neighbourTile);

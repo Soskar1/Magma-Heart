@@ -9,29 +9,21 @@ namespace MagmaHeart.DungeonGeneration
     {
         private Dictionary<Vector2Int, DungeonTile> m_tiles;
         public int TileCount => m_tiles.Count;
-
-        private readonly BoundsInt m_roomSpace;
+        public BoundsInt OccupiedSpace => new BoundsInt(LeftMostTile.x, BottomMostTile.y, 0, RightMostTile.x, RightMostTile.y, 0);
         public Vector2Int WorldPosition { get; init; }
-        public int LeftBorder { get; init; }
-        public int RightBorder { get; init; }
-        public int TopBorder { get; init; }
-        public int BottomBorder { get; init; }
+        public BoundsInt Boundaries { get; init; }
         public Vector2Int LeftMostTile { get; private set; }
         public Vector2Int RightMostTile { get; private set; }
         public Vector2Int TopMostTile { get; private set; }
         public Vector2Int BottomMostTile { get; private set; }
 
-        public RoomModel(in BoundsInt roomSpace)
+        public RoomModel(in BoundsInt roomBoundaries)
         {
             m_tiles = new Dictionary<Vector2Int, DungeonTile>();
-            m_roomSpace = roomSpace;
 
-            WorldPosition = new Vector2Int((int)roomSpace.center.x, (int)roomSpace.center.y);
+            WorldPosition = new Vector2Int((int)roomBoundaries.center.x, (int)roomBoundaries.center.y);
             
-            RightBorder = m_roomSpace.xMax - 1;
-            TopBorder = m_roomSpace.yMax - 1;
-            LeftBorder = m_roomSpace.xMin;
-            BottomBorder = m_roomSpace.yMin;
+            Boundaries = roomBoundaries;
 
             LeftMostTile = new Vector2Int(0, 0);
             RightMostTile = new Vector2Int(0, 0);
@@ -43,17 +35,17 @@ namespace MagmaHeart.DungeonGeneration
 
         public Vector2Int ToRoomSpace(Vector2Int position)
         {
-            if (position.x > RightBorder)
-                position.x = RightBorder;
+            if (position.x > Boundaries.xMax)
+                position.x = Boundaries.xMax;
 
-            if (position.x < LeftBorder)
-                position.x = LeftBorder;
+            if (position.x < Boundaries.xMin)
+                position.x = Boundaries.xMin;
 
-            if (position.y > TopBorder)
-                position.y = TopBorder;
+            if (position.y > Boundaries.yMax)
+                position.y = Boundaries.yMax;
 
-            if (position.y < BottomBorder)
-                position.y = BottomBorder;
+            if (position.y < Boundaries.yMin)
+                position.y = Boundaries.yMin;
             
             return position;
         }

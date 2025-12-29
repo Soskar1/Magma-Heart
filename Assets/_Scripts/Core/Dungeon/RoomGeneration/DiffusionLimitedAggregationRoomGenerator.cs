@@ -38,10 +38,10 @@ namespace MagmaHeart.Core.Dungeon.RoomGeneration
             int localBottomBorder = roomModel.BottomMostTile.y - START_POINT_OFFSET;
             int localTopBorder = roomModel.TopMostTile.y + START_POINT_OFFSET;
 
-            localLeftBorder = Mathf.Max(localLeftBorder, roomModel.LeftBorder);
-            localRightBorder = Mathf.Min(localRightBorder, roomModel.RightBorder);
-            localBottomBorder = Mathf.Max(localBottomBorder, roomModel.BottomBorder);
-            localTopBorder = Mathf.Min(localTopBorder, roomModel.TopBorder);
+            localLeftBorder = Mathf.Max(localLeftBorder, roomModel.Boundaries.xMin);
+            localRightBorder = Mathf.Min(localRightBorder, roomModel.Boundaries.xMax);
+            localBottomBorder = Mathf.Max(localBottomBorder, roomModel.Boundaries.yMin);
+            localTopBorder = Mathf.Min(localTopBorder, roomModel.Boundaries.yMax);
 
             while (tilesToPlace > 0)
             {
@@ -86,14 +86,14 @@ namespace MagmaHeart.Core.Dungeon.RoomGeneration
                 --tilesToPlace;
 
                 if (currentPosition.x - START_POINT_OFFSET < localLeftBorder)
-                    localLeftBorder = Mathf.Max(currentPosition.x - START_POINT_OFFSET, roomModel.LeftBorder);
+                    localLeftBorder = Mathf.Max(currentPosition.x - START_POINT_OFFSET, roomModel.Boundaries.xMin);
                 else if (currentPosition.x + START_POINT_OFFSET > localRightBorder)
-                    localRightBorder = Mathf.Min(currentPosition.x + START_POINT_OFFSET, roomModel.RightBorder);
+                    localRightBorder = Mathf.Min(currentPosition.x + START_POINT_OFFSET, roomModel.Boundaries.xMax);
                 
                 if (currentPosition.y - START_POINT_OFFSET < localBottomBorder)
-                    localBottomBorder = Mathf.Max(currentPosition.y - START_POINT_OFFSET, roomModel.BottomBorder);
+                    localBottomBorder = Mathf.Max(currentPosition.y - START_POINT_OFFSET, roomModel.Boundaries.yMin);
                 else if (currentPosition.y + START_POINT_OFFSET > localTopBorder)
-                    localTopBorder = Mathf.Min(currentPosition.y + START_POINT_OFFSET, roomModel.TopBorder);
+                    localTopBorder = Mathf.Min(currentPosition.y + START_POINT_OFFSET, roomModel.Boundaries.yMax);
             }
         }
     }

@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.StateMachines
             m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
             m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
             
-            m_camera.EnableManualMovement();
+            m_camera.EnableManualMovement(m_context.DungeonController.CurrentRoom.RoomModel.OccupiedSpace);
             m_player.CombatController.Enable();
 
             await m_battle.Start(m_context.DungeonController.CurrentRoom, m_player);
