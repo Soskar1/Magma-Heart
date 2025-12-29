@@ -27,6 +27,8 @@ namespace MagmaHeart.Core.StateMachines
             Player player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
+            m_context.CameraController.MoveTo(room.RoomModel.WorldPosition);
+
             m_context.HoverModeController.UseRaycastHover();
             player.transform.position = new Vector2(room.RoomModel.LeftBorder, room.RoomModel.WorldPosition.y);
 
