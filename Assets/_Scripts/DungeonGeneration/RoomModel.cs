@@ -9,8 +9,7 @@ namespace MagmaHeart.DungeonGeneration
     {
         private Dictionary<Vector2Int, DungeonTile> m_tiles;
         public int TileCount => m_tiles.Count;
-
-        private readonly BoundsInt m_roomSpace;
+        public BoundsInt RoomSpace { get; init; }
         public Vector2Int WorldPosition { get; init; }
         public int LeftBorder { get; init; }
         public int RightBorder { get; init; }
@@ -24,14 +23,14 @@ namespace MagmaHeart.DungeonGeneration
         public RoomModel(in BoundsInt roomSpace)
         {
             m_tiles = new Dictionary<Vector2Int, DungeonTile>();
-            m_roomSpace = roomSpace;
+            RoomSpace = roomSpace;
 
             WorldPosition = new Vector2Int((int)roomSpace.center.x, (int)roomSpace.center.y);
             
-            RightBorder = m_roomSpace.xMax - 1;
-            TopBorder = m_roomSpace.yMax - 1;
-            LeftBorder = m_roomSpace.xMin;
-            BottomBorder = m_roomSpace.yMin;
+            RightBorder = RoomSpace.xMax - 1;
+            TopBorder = RoomSpace.yMax - 1;
+            LeftBorder = RoomSpace.xMin;
+            BottomBorder = RoomSpace.yMin;
 
             LeftMostTile = new Vector2Int(0, 0);
             RightMostTile = new Vector2Int(0, 0);
