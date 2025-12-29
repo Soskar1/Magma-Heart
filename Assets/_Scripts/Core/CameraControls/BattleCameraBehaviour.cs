@@ -55,9 +55,6 @@ namespace MagmaHeart.Core.CameraControls
             else
                 newCameraPosition = new Vector3(m_transform.position.x, m_transform.position.y) + (Vector3)m_currentMovement * Time.deltaTime * m_movementSpeed;
 
-            if (m_currentMovement.magnitude > 0)
-                m_stickCameraWithTarget = false;
-
             if (newCameraPosition.x < m_currentMovementBounds.xMin)
                 newCameraPosition.x = m_currentMovementBounds.xMin;
 
@@ -71,6 +68,9 @@ namespace MagmaHeart.Core.CameraControls
                 newCameraPosition.y = m_currentMovementBounds.yMax;
 
             m_transform.position = new Vector3(newCameraPosition.x, newCameraPosition.y, m_transform.position.z);
+            
+            if (m_currentMovement.magnitude > 0)
+                m_stickCameraWithTarget = false;
         }
 
         private void HandleOnMovementKeyPressed(object obj, OnMovementKeyPressedEventArgs args) => m_currentMovement = args.Movement;
