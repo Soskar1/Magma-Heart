@@ -3,7 +3,6 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
@@ -28,9 +27,9 @@ namespace MagmaHeart.Core.StateMachines
             Room room = m_context.DungeonController.CurrentRoom;
 
             m_context.CameraController.MoveTo(room.RoomModel.WorldPosition);
-
             m_context.HoverModeController.UseRaycastHover();
-            player.transform.position = new Vector2(room.RoomModel.Boundaries.xMin, room.RoomModel.WorldPosition.y);
+
+            player.transform.position = room.RoomModel.EntranceDoor.Position.ToVector3();
 
             RoomTile start = room.GetRoomTile(player.transform.position);
             RoomTile end = room.GetRoomTile(room.RoomModel.WorldPosition.ToVector3Int());
