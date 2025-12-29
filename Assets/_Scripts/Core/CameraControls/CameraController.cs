@@ -16,9 +16,7 @@ namespace MagmaHeart.Core.CameraControls
         [SerializeField][Range(0, 1.0f)]
         private float m_smoothTime;
 
-        private ICameraBehaviour m_currentBehaviour;
-        private ActionCameraBehaviour m_actionCameraBehaviour;
-        private CombatCameraBehaviour m_turnBasedCameraBehaviour;
+        private CombatCameraBehaviour m_combatCameraBehaviour;
 
         private CameraZoom m_cameraZoom;
         private float m_currentMouseScroll;
@@ -31,25 +29,18 @@ namespace MagmaHeart.Core.CameraControls
             userInput.OnMouseScroll += HandleOnMouseScroll;
 
             CameraTargetTracker tracker = new CameraTargetTracker(transform);
-            m_actionCameraBehaviour = new ActionCameraBehaviour(tracker, objectToTrack);
-            m_turnBasedCameraBehaviour = new CombatCameraBehaviour(transform, tracker, userInput, m_movementSpeed, battle);
-            SwitchToActionCamera();
+            m_combatCameraBehaviour = new CombatCameraBehaviour(transform, tracker, userInput, m_movementSpeed, battle);
         }
 
         private void Update()
         {
-            m_currentBehaviour?.Update();
+            m_combatCameraBehaviour.Update();
             m_cameraZoom.Zoom(m_currentMouseScroll);
         }
 
-        public void SwitchToActionCamera() => SwitchState(m_actionCameraBehaviour);
-        public void SwitchToTurnBasedCamera() => SwitchState(m_turnBasedCameraBehaviour);
-        private void SwitchState(ICameraBehaviour behaviour)
-        {
-            m_currentBehaviour?.Disable();
-            m_currentBehaviour = behaviour;
-            m_currentBehaviour.Enable();
-        }
+        public void MoveTo(Vector2 position) => transform.position = new Vector3(position.x, position.y, transform.position.z);
+        public void EnableManualMovement() => m_combatCameraBehaviour.Enable();
+        public void DisableManualMovement() => m_combatCameraBehaviour.Disable();
 
         private void HandleOnMouseScroll(object obj, OnMouseScrollEventArgs args) => m_currentMouseScroll = args.MouseScroll;
     }

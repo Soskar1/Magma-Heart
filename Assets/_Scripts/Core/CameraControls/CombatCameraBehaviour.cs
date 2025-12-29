@@ -13,6 +13,7 @@ namespace MagmaHeart.Core.CameraControls
         private readonly Transform m_transform;
 
         private bool m_stickCameraWithTarget = true;
+        private bool m_enabled = false;
 
         private Vector2 m_currentMovement;
 
@@ -27,6 +28,9 @@ namespace MagmaHeart.Core.CameraControls
 
         public void Update()
         {
+            if (!m_enabled)
+                return;
+
             if (m_stickCameraWithTarget)
                 m_tracker.StickWithTarget();
             else
@@ -38,12 +42,14 @@ namespace MagmaHeart.Core.CameraControls
 
         public void Enable()
         {
+            m_enabled = true;
             m_userInput.OnMovementKeyPressed += HandleOnMovementKeyPressed;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
         }
 
         public void Disable()
         {
+            m_enabled = false;
             m_userInput.OnMovementKeyPressed -= HandleOnMovementKeyPressed;
             m_battle.OnTurnSwitched -= HandleOnTurnSwitched;
         }

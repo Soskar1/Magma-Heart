@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.StateMachines
             m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
             m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
             
-            m_camera.SwitchToTurnBasedCamera();
+            m_camera.EnableManualMovement();
             m_player.CombatController.Enable();
 
             await m_battle.Start(m_context.DungeonController.CurrentRoom, m_player);
@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.StateMachines
 
         public Task ExitAsync()
         {
-            m_camera.SwitchToActionCamera();
+            m_camera.DisableManualMovement();
             m_hoverModeController.UseRaycastHover();
 
             m_battle.OnBattleEnded -= HandleOnBattleEnded;
