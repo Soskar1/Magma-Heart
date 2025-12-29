@@ -11,6 +11,7 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private int m_tilesPerFrame = 256;
         [SerializeField] private TileBase m_floor;
         [SerializeField] private TileBase m_wall;
+        [SerializeField] private TileBase m_door;
 
         private DungeonController m_controller;
 
@@ -25,6 +26,7 @@ namespace MagmaHeart.Core.Dungeon
         public void HandleOnRoomGenerated(object obj, OnRoomGeneratedEventArgs args)
         {
             Clear();
+
             StartCoroutine(DrawTiles(args.Room.RoomModel));
         }
 
@@ -35,7 +37,9 @@ namespace MagmaHeart.Core.Dungeon
             {
                 Vector3Int tilePosition = m_tilemap.WorldToCell((Vector3Int)tile.Position);
 
-                if (tile.Type == TileType.Floor)
+                if (tile == roomModel.EntranceDoor || tile == roomModel.ExitDoor)
+                    m_tilemap.SetTile(tilePosition, m_door);
+                else if (tile.Type == TileType.Floor)
                     m_tilemap.SetTile(tilePosition, m_floor);
                 else
                     m_tilemap.SetTile(tilePosition, m_wall);

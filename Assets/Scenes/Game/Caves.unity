@@ -3558,6 +3558,7 @@ MonoBehaviour:
   m_tilesPerFrame: 256
   m_floor: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wall: {fileID: 11400000, guid: 4ca55881ba0901544934d33a5252ef98, type: 2}
+  m_door: {fileID: 11400000, guid: 2c71307b5dffaa44c8aaeb92e2f013cf, type: 2}
 --- !u!114 &8458581491792506061
 MonoBehaviour:
   m_ObjectHideFlags: 0

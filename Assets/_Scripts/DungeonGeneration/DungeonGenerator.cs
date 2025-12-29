@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.DungeonGeneration
@@ -19,17 +21,41 @@ namespace MagmaHeart.DungeonGeneration
             foreach (IRoomGenerator generator in m_data.Generators)
                 generator.GenerateRoom(roomModel);
 
-            AddWalls(roomModel);
+            HashSet<DungeonTile> outline = TileOutline.GetOutline(roomModel.GetTiles());
+            AddWalls(outline);
+            AddDoors(roomModel, outline);
 
             return roomModel;
         }
 
-        private void AddWalls(RoomModel roomModel)
+        private void AddWalls(HashSet<DungeonTile> outline)
         {
-            HashSet<DungeonTile> outline = TileOutline.GetOutline(roomModel.GetTiles());
-
             foreach (DungeonTile tile in outline)
                 tile.Type = TileType.Wall;
+        }
+
+        private void AddDoors(RoomModel roomModel, HashSet<DungeonTile> outline)
+        {
+            IEnumerable<DungeonTile> leftSideTiles = outline
+                .Where(tile => tile.Position.x < roomModel.WorldPosition.x)
+                .OrderBy(tile => Mathf.Abs(tile.Position.y - roomModel.WorldPosition.y));
+
+            IEnumerable<DungeonTile> rightSideTiles = outline
+                .Where(tile => tile.Position.x > roomModel.WorldPosition.x)
+                .OrderBy(tile => Mathf.Abs(tile.Position.y - roomModel.WorldPosition.y));
+
+            roomModel.EntranceDoor = GetDoorTile(roomModel, leftSideTiles);
+            roomModel.ExitDoor = GetDoorTile(roomModel, rightSideTiles);
+        }
+
+        private DungeonTile GetDoorTile(RoomModel roomModel, IEnumerable<DungeonTile> tiles)
+        {
+            foreach (DungeonTile tile in tiles)
+                foreach (DungeonTile adjacentTile in roomModel.GetAdjacentTiles(tile))
+                    if (adjacentTile.Type == TileType.Floor)
+                        return tile;
+
+            throw new InvalidOperationException("Room has no valid door position");
         }
     }
 }
