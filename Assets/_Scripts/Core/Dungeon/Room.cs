@@ -13,7 +13,6 @@ namespace MagmaHeart.Core.Dungeon
     public class Room : Board
     {
         private readonly Dictionary<EntityModel, Entity> m_entities;
-        private readonly CombatTilemapRenderer m_renderer;
         
         public RoomModel RoomModel { get; init; }
         public RoomGrid Grid { get; init; }

@@ -16,6 +16,8 @@ namespace MagmaHeart.DungeonGeneration
         public Vector2Int RightMostTile { get; private set; }
         public Vector2Int TopMostTile { get; private set; }
         public Vector2Int BottomMostTile { get; private set; }
+        public DungeonTile EntranceDoor { get; internal set; }
+        public DungeonTile ExitDoor { get; internal set; }
 
         public RoomModel(in BoundsInt roomBoundaries)
         {
@@ -25,10 +27,10 @@ namespace MagmaHeart.DungeonGeneration
             
             Boundaries = roomBoundaries;
 
-            LeftMostTile = new Vector2Int(0, 0);
-            RightMostTile = new Vector2Int(0, 0);
-            TopMostTile = new Vector2Int(0, 0);
-            BottomMostTile = new Vector2Int(0, 0);
+            LeftMostTile = WorldPosition;
+            RightMostTile = WorldPosition;
+            TopMostTile = WorldPosition;
+            BottomMostTile = WorldPosition;
 
             AddTile(WorldPosition, TileType.Floor);
         }
