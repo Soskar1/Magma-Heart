@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,13 +22,13 @@ namespace MagmaHeart.DungeonGeneration
                 generator.GenerateRoom(roomModel);
 
             HashSet<DungeonTile> outline = TileOutline.GetOutline(roomModel.GetTiles());
-            AddWalls(roomModel, outline);
+            AddWalls(outline);
             AddDoors(roomModel, outline);
 
             return roomModel;
         }
 
-        private void AddWalls(RoomModel roomModel, HashSet<DungeonTile> outline)
+        private void AddWalls(HashSet<DungeonTile> outline)
         {
             foreach (DungeonTile tile in outline)
                 tile.Type = TileType.Wall;
@@ -49,14 +50,12 @@ namespace MagmaHeart.DungeonGeneration
 
         private DungeonTile GetDoorTile(RoomModel roomModel, IEnumerable<DungeonTile> tiles)
         {
-            Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
-
             foreach (DungeonTile tile in tiles)
                 foreach (DungeonTile adjacentTile in roomModel.GetAdjacentTiles(tile))
                     if (adjacentTile.Type == TileType.Floor)
                         return tile;
 
-            return null;
+            throw new InvalidOperationException("Room has no valid door position");
         }
     }
 }
