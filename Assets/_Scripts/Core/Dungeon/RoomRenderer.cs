@@ -1,5 +1,6 @@
 using MagmaHeart.DungeonGeneration;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -15,6 +16,9 @@ namespace MagmaHeart.Core.Dungeon
 
         private DungeonController m_controller;
 
+        private TaskCompletionSource<bool> m_renderedRoom;
+        public Task<bool> OnRoomRendered => m_renderedRoom.Task;
+
         public void Initialize(DungeonController dungeonController)
         {
             m_controller = dungeonController;
@@ -27,6 +31,7 @@ namespace MagmaHeart.Core.Dungeon
         {
             Clear();
 
+            m_renderedRoom = new TaskCompletionSource<bool>();
             StartCoroutine(DrawTiles(args.Room.RoomModel));
         }
 
@@ -49,6 +54,8 @@ namespace MagmaHeart.Core.Dungeon
                 if (renderedTiles % m_tilesPerFrame == 0)
                     yield return new WaitForEndOfFrame();
             }
+
+            m_renderedRoom.SetResult(true);
         }
 
         public void Clear() => m_tilemap.ClearAllTiles();

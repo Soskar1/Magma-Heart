@@ -4,7 +4,7 @@ namespace MagmaHeart.Core.StateMachines.States
 {
     public class GameOverState : IState
     {
-        public Task EnterAsync()
+        public Task EnterAsync(StatePayload payload)
         {
             return Task.CompletedTask;
         }

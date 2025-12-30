@@ -5,22 +5,19 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public sealed class StateMachine<TState, TTrigger>
-        where TState : Enum
+    public sealed class StateMachine<TTrigger>
         where TTrigger : Enum
     {
-        private readonly Dictionary<TState, StateConfig<TState, TTrigger>> m_configs = new();
-        private TState m_currentState;
+        private readonly Dictionary<IState, StateConfig<TTrigger>> m_configs = new();
+        private IState m_currentState;
 
-        public TState CurrentState => m_currentState;
+        public StateMachine(IState initialState) => m_currentState = initialState;
 
-        public StateMachine(TState initialState) => m_currentState = initialState;
-
-        public StateConfig<TState, TTrigger> Configure(TState state)
+        public StateConfig<TTrigger> Configure(IState state)
         {
-            if (!m_configs.TryGetValue(state, out StateConfig<TState, TTrigger> config))
+            if (!m_configs.TryGetValue(state, out StateConfig<TTrigger> config))
             {
-                config = new StateConfig<TState, TTrigger>();
+                config = new StateConfig<TTrigger>();
                 m_configs[state] = config;
             }
 
@@ -37,7 +34,7 @@ namespace MagmaHeart.Core.StateMachines
                 return;
             }
 
-            if (!EqualityComparer<TState>.Default.Equals(m_currentState, transition))
+            if (!ReferenceEquals(m_currentState, transition))
             {
                 await config.ExitAsync();
                 m_currentState = transition;

@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.StateMachines
             m_turnContext = (PlayerTurnContext)m_player.TurnContext;
         }
 
-        public async Task EnterAsync()
+        public async Task EnterAsync(StatePayload payload)
         {
             m_battle.OnBattleEnded += HandleOnBattleEnded;
             m_battle.OnTurnSwitched += HandleTurnSwitched;

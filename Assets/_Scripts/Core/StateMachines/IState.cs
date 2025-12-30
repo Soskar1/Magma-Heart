@@ -4,7 +4,7 @@ namespace MagmaHeart.Core.StateMachines
 {
     public interface IState
     {
-        public Task EnterAsync();
+        public Task EnterAsync(StatePayload payload);
         public Task ExitAsync();
     }
 }
