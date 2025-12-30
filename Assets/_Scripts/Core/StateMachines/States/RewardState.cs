@@ -16,18 +16,13 @@ namespace MagmaHeart.Core.StateMachines
             m_context = context;
         }
 
-        public Task EnterAsync()
+        public Task EnterAsync(StatePayload payload)
         {
             m_context.BattleReward.Calculate();
             m_context.Player.Animation.PlayIdleAnimation();
 
             m_context.UI.RewardUI.OnRewardPicked += HandleOnRewardPicked;
 
-            return Task.CompletedTask;
-        }
-
-        public Task PayloadEnterAsync(StatePayload payload)
-        {
             return Task.CompletedTask;
         }
 

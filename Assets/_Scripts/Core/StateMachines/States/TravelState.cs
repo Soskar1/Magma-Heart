@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public class TravelState : IState<TravelStatePayload>
+    public class TravelState : IState
     {
         private readonly MagmaHeartStateMachine m_stateMachine;
         private readonly MagmaHeartContext m_context;
@@ -21,17 +21,14 @@ namespace MagmaHeart.Core.StateMachines
             m_travelSpeed = travelSpeed;
         }
 
-        public Task EnterAsync()
+        public async Task EnterAsync(StatePayload payload)
         {
-            return Task.CompletedTask;
-        }
+            TravelStatePayload travelPayload = payload as TravelStatePayload;
 
-        public async Task PayloadEnterAsync(TravelStatePayload payload)
-        {
             Player player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
-            bool isEnteringRoom = payload.Reason == TravelReason.EnterRoom;
+            bool isEnteringRoom = travelPayload.Reason == TravelReason.EnterRoom;
 
             Vector3 startPosition = isEnteringRoom ? room.RoomModel.EntranceDoor.Position.ToVector3() : player.transform.position;
             Vector3 endPosition = isEnteringRoom ? room.RoomModel.WorldPosition.ToVector3() : room.RoomModel.ExitDoor.Position.ToVector3();
@@ -54,7 +51,10 @@ namespace MagmaHeart.Core.StateMachines
             await m_stateMachine.FireTrigger(trigger);
         }
 
-        public Task PayloadEnterAsync(StatePayload payload) => PayloadEnterAsync((TravelStatePayload)payload);
+        public Task EnterAsync()
+        {
+            throw new System.NotImplementedException();
+        }
 
         public Task ExitAsync()
         {

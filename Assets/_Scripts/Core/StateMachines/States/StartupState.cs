@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.StateMachines.States
             m_stateMachine = stateMachine;
         }
 
-        public async Task EnterAsync()
+        public async Task EnterAsync(StatePayload payload = null)
         {
             Player player = m_context.Player;
             DungeonController dungeon = m_context.DungeonController;
@@ -25,11 +25,6 @@ namespace MagmaHeart.Core.StateMachines.States
             m_context.HoverModeController.UseRaycastHover();
 
             await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete);
-        }
-
-        public Task PayloadEnterAsync(StatePayload payload)
-        {
-            return Task.CompletedTask;
         }
 
         public Task ExitAsync()

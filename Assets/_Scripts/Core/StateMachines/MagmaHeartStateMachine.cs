@@ -4,16 +4,6 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public enum StateMachineStates
-    {
-        Startup,
-        PrepareRoom,
-        Travel,
-        Battle,
-        Reward,
-        GameOver
-    }
-
     public enum StateMachineTriggers
     {
         StartupComplete,
@@ -27,7 +17,7 @@ namespace MagmaHeart.Core.StateMachines
 
     public class MagmaHeartStateMachine
     {
-        private readonly StateMachine<StateMachineStates, StateMachineTriggers> m_stateMachine;
+        private readonly StateMachine<StateMachineTriggers> m_stateMachine;
 
         private readonly StartupState m_startupState;
         private readonly PrepareRoomState m_prepareRoomState;
@@ -45,35 +35,35 @@ namespace MagmaHeart.Core.StateMachines
             m_rewardState = new RewardState(this, context);
             m_gameOverState = new GameOverState();
 
-            m_stateMachine = new StateMachine<StateMachineStates, StateMachineTriggers>(StateMachineStates.Startup);
-            m_stateMachine.Configure(StateMachineStates.Startup)
-                .Permit(StateMachineTriggers.StartupComplete, StateMachineStates.PrepareRoom)
+            m_stateMachine = new StateMachine<StateMachineTriggers>(m_startupState);
+            m_stateMachine.Configure(m_startupState)
+                .Permit(StateMachineTriggers.StartupComplete, m_prepareRoomState)
                 .OnEntryAsync(m_startupState.EnterAsync)
                 .OnExitAsync(m_startupState.ExitAsync);
 
-            m_stateMachine.Configure(StateMachineStates.PrepareRoom)
-                .Permit(StateMachineTriggers.RoomPrepared, StateMachineStates.Travel)
+            m_stateMachine.Configure(m_prepareRoomState)
+                .Permit(StateMachineTriggers.RoomPrepared, m_travelState)
                 .OnEntryAsync(m_prepareRoomState.EnterAsync)
                 .OnExitAsync(m_prepareRoomState.ExitAsync);
 
-            m_stateMachine.Configure(StateMachineStates.Travel)
-                .Permit(StateMachineTriggers.TravelCompleted_Enter, StateMachineStates.Battle)
-                .Permit(StateMachineTriggers.TravelCompleted_Exit, StateMachineStates.PrepareRoom)
-                .OnEntryAsync(m_travelState.PayloadEnterAsync)
+            m_stateMachine.Configure(m_travelState)
+                .Permit(StateMachineTriggers.TravelCompleted_Enter, m_battleState)
+                .Permit(StateMachineTriggers.TravelCompleted_Exit, m_prepareRoomState)
+                .OnEntryAsync(m_travelState.EnterAsync)
                 .OnExitAsync(m_travelState.ExitAsync);
 
-            m_stateMachine.Configure(StateMachineStates.Battle)
-                .Permit(StateMachineTriggers.BattleWon, StateMachineStates.Reward)
-                .Permit(StateMachineTriggers.BattleLost, StateMachineStates.GameOver)
+            m_stateMachine.Configure(m_battleState)
+                .Permit(StateMachineTriggers.BattleWon, m_rewardState)
+                .Permit(StateMachineTriggers.BattleLost, m_gameOverState)
                 .OnEntryAsync(m_battleState.EnterAsync)
                 .OnExitAsync(m_battleState.ExitAsync);
 
-            m_stateMachine.Configure(StateMachineStates.Reward)
-                .Permit(StateMachineTriggers.RewardPicked, StateMachineStates.Travel)
+            m_stateMachine.Configure(m_rewardState)
+                .Permit(StateMachineTriggers.RewardPicked, m_travelState)
                 .OnEntryAsync(m_rewardState.EnterAsync)
                 .OnExitAsync(m_rewardState.ExitAsync);
 
-            m_stateMachine.Configure(StateMachineStates.GameOver)
+            m_stateMachine.Configure(m_gameOverState)
                 .OnEntryAsync(m_gameOverState.EnterAsync)
                 .OnExitAsync(m_gameOverState.ExitAsync);
         }

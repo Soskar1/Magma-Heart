@@ -4,41 +4,33 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public sealed class StateConfig<TState, TTrigger>
-        where TState : Enum
+    public sealed class StateConfig<TTrigger>
         where TTrigger : Enum
     {
-        private readonly Dictionary<TTrigger, TState> m_transitions = new();
+        private readonly Dictionary<TTrigger, IState> m_transitions = new();
 
         private Func<StatePayload, Task> m_onEnter;
         private Func<Task> m_onExit;
 
-        public StateConfig<TState, TTrigger> Permit(TTrigger trigger, TState target)
+        public StateConfig<TTrigger> Permit(TTrigger trigger, IState target)
         {
             m_transitions[trigger] = target;
             return this;
         }
 
-        public StateConfig<TState, TTrigger> OnEntryAsync(Func<Task> handler)
-        {
-            m_onEnter = _ => handler();
-            return this;
-        }
-
-        public StateConfig<TState, TTrigger> OnEntryAsync(Func<StatePayload, Task> handler)
+        public StateConfig<TTrigger> OnEntryAsync(Func<StatePayload, Task> handler)
         {
             m_onEnter = handler;
             return this;
         }
 
-        public StateConfig<TState, TTrigger> OnExitAsync(Func<Task> handler)
+        public StateConfig<TTrigger> OnExitAsync(Func<Task> handler)
         {
             m_onExit = handler;
             return this;
         }
 
-        internal bool TryGetTransition(TTrigger trigger, out TState target)
-            => m_transitions.TryGetValue(trigger, out target);
+        internal bool TryGetTransition(TTrigger trigger, out IState target) => m_transitions.TryGetValue(trigger, out target);
 
         internal Task EnterAsync(StatePayload payload) => m_onEnter?.Invoke(payload) ?? Task.CompletedTask;
 
