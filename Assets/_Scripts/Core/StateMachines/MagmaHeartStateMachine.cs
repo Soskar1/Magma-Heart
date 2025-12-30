@@ -7,6 +7,7 @@ namespace MagmaHeart.Core.StateMachines
     public enum StateMachineStates
     {
         Startup,
+        PrepareRoom,
         Travel,
         Battle,
         Reward,
@@ -16,6 +17,7 @@ namespace MagmaHeart.Core.StateMachines
     public enum StateMachineTriggers
     {
         StartupComplete,
+        RoomPrepared,
         BattleStarted,
         BattleLost,
         BattleWon,
@@ -27,6 +29,7 @@ namespace MagmaHeart.Core.StateMachines
         private readonly StateMachine<StateMachineStates, StateMachineTriggers> m_stateMachine;
 
         private readonly StartupState m_startupState;
+        private readonly PrepareRoomState m_prepareRoomState;
         private readonly TravelState m_travelState;
         private readonly BattleState m_battleState;
         private readonly RewardState m_rewardState;
@@ -35,6 +38,7 @@ namespace MagmaHeart.Core.StateMachines
         public MagmaHeartStateMachine(MagmaHeartContext context, int travelSpeed)
         {
             m_startupState = new StartupState(this, context);
+            m_prepareRoomState = new PrepareRoomState(this, context);
             m_travelState = new TravelState(this, context, travelSpeed);
             m_battleState = new BattleState(this, context);
             m_rewardState = new RewardState(this, context);
@@ -42,9 +46,14 @@ namespace MagmaHeart.Core.StateMachines
 
             m_stateMachine = new StateMachine<StateMachineStates, StateMachineTriggers>(StateMachineStates.Startup);
             m_stateMachine.Configure(StateMachineStates.Startup)
-                .Permit(StateMachineTriggers.StartupComplete, StateMachineStates.Travel)
+                .Permit(StateMachineTriggers.StartupComplete, StateMachineStates.PrepareRoom)
                 .OnEntryAsync(m_startupState.EnterAsync)
                 .OnExitAsync(m_startupState.ExitAsync);
+
+            m_stateMachine.Configure(StateMachineStates.PrepareRoom)
+                .Permit(StateMachineTriggers.RoomPrepared, StateMachineStates.Travel)
+                .OnEntryAsync(m_prepareRoomState.EnterAsync)
+                .OnExitAsync(m_prepareRoomState.ExitAsync);
 
             m_stateMachine.Configure(StateMachineStates.Travel)
                 .Permit(StateMachineTriggers.BattleStarted, StateMachineStates.Battle)
@@ -58,7 +67,7 @@ namespace MagmaHeart.Core.StateMachines
                 .OnExitAsync(m_battleState.ExitAsync);
 
             m_stateMachine.Configure(StateMachineStates.Reward)
-                .Permit(StateMachineTriggers.RewardPicked, StateMachineStates.Travel)
+                .Permit(StateMachineTriggers.RewardPicked, StateMachineStates.PrepareRoom)
                 .OnEntryAsync(m_rewardState.EnterAsync)
                 .OnExitAsync(m_rewardState.ExitAsync);
 

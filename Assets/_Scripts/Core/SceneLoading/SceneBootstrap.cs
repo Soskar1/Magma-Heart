@@ -118,7 +118,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.Initialize(player, m_battle, inputContext.MouseHoverEngine, battleReward, previewProvider);
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, player, m_hoverModeController, entityMovementService, camera, m_battle, battleReward, m_gameUI);
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, entityMovementService, camera, m_battle, battleReward, m_gameUI);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext, m_travelSpeed);
             await stateMachine.Start();
         }

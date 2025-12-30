@@ -10,6 +10,7 @@ namespace MagmaHeart.Core.SceneLoading
 {
     public record MagmaHeartContext(
         DungeonController DungeonController,
+        RoomRenderer RoomRenderer,
         Player Player,
         HoverModeController HoverModeController,
         EntityMovementService EntityMovementService,

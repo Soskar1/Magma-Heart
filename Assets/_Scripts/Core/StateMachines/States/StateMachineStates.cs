@@ -1,4 +1,0 @@
-namespace MagmaHeart.Core.StateMachines
-{
-    
-}

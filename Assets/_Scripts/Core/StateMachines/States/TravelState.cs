@@ -21,8 +21,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public async Task EnterAsync()
         {
-            m_context.DungeonController.GenerateRoom();
-
             Player player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
