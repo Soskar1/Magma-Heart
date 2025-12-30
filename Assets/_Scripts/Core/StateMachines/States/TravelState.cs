@@ -1,12 +1,14 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.Core.StateMachines.States;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public class TravelState : IState
+    public class TravelState : IState<TravelStatePayload>
     {
         private readonly MagmaHeartStateMachine m_stateMachine;
         private readonly MagmaHeartContext m_context;
@@ -19,24 +21,40 @@ namespace MagmaHeart.Core.StateMachines
             m_travelSpeed = travelSpeed;
         }
 
-        public async Task EnterAsync()
+        public Task EnterAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task PayloadEnterAsync(TravelStatePayload payload)
         {
             Player player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
-            m_context.CameraController.MoveTo(room.RoomModel.WorldPosition);
-            m_context.HoverModeController.UseRaycastHover();
+            bool isEnteringRoom = payload.Reason == TravelReason.EnterRoom;
 
-            player.transform.position = room.RoomModel.EntranceDoor.Position.ToVector3();
+            Vector3 startPosition = isEnteringRoom ? room.RoomModel.EntranceDoor.Position.ToVector3() : player.transform.position;
+            Vector3 endPosition = isEnteringRoom ? room.RoomModel.WorldPosition.ToVector3() : room.RoomModel.ExitDoor.Position.ToVector3();
 
-            RoomTile start = room.GetRoomTile(player.transform.position);
-            RoomTile end = room.GetRoomTile(room.RoomModel.WorldPosition.ToVector3Int());
+            if (isEnteringRoom)
+                m_context.CameraController.MoveTo(endPosition);
+
+            player.transform.position = startPosition;
+
+            RoomTile start = room.GetRoomTile(startPosition);
+            RoomTile end = room.GetRoomTile(endPosition);
             List<RoomTile> path = new List<RoomTile>() { start, end };
-            
+
             await m_context.EntityMovementService.MoveEntityAsync(player, path, m_travelSpeed);
 
-            await m_stateMachine.FireTrigger(StateMachineTriggers.BattleStarted);
+            StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
+            if (!isEnteringRoom)
+                trigger = StateMachineTriggers.TravelCompleted_Exit;
+
+            await m_stateMachine.FireTrigger(trigger);
         }
+
+        public Task PayloadEnterAsync(StatePayload payload) => PayloadEnterAsync((TravelStatePayload)payload);
 
         public Task ExitAsync()
         {

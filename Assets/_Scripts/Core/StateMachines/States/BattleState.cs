@@ -75,5 +75,10 @@ namespace MagmaHeart.Core.StateMachines
             else
                 m_hoverModeController.UseRaycastHover();
         }
+
+        public Task PayloadEnterAsync(StatePayload payload)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

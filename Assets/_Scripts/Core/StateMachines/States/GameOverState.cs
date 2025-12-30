@@ -9,6 +9,11 @@ namespace MagmaHeart.Core.StateMachines.States
             return Task.CompletedTask;
         }
 
+        public Task PayloadEnterAsync(StatePayload payload)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task ExitAsync()
         {
             return Task.CompletedTask;

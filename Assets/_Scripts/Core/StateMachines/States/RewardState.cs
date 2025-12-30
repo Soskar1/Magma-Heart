@@ -1,5 +1,6 @@
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.Core.StateMachines.States;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.StateMachines
@@ -25,6 +26,11 @@ namespace MagmaHeart.Core.StateMachines
             return Task.CompletedTask;
         }
 
+        public Task PayloadEnterAsync(StatePayload payload)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task ExitAsync()
         {
             m_context.UI.RewardUI.OnRewardPicked -= HandleOnRewardPicked;
@@ -33,7 +39,8 @@ namespace MagmaHeart.Core.StateMachines
 
         private async void HandleOnRewardPicked(object sender, OnRewardPickedArgs e)
         {
-            await m_stateMachine.FireTrigger(StateMachineTriggers.RewardPicked);
+            TravelStatePayload payload = new TravelStatePayload(TravelReason.ExitRoom);
+            await m_stateMachine.FireTrigger(StateMachineTriggers.RewardPicked, payload);
         }
     }
 }

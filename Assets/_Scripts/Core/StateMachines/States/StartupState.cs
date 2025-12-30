@@ -22,8 +22,14 @@ namespace MagmaHeart.Core.StateMachines.States
             DungeonController dungeon = m_context.DungeonController;
 
             player.gameObject.SetActive(true);
+            m_context.HoverModeController.UseRaycastHover();
 
             await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete);
+        }
+
+        public Task PayloadEnterAsync(StatePayload payload)
+        {
+            return Task.CompletedTask;
         }
 
         public Task ExitAsync()

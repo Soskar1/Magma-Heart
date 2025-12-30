@@ -18,7 +18,8 @@ namespace MagmaHeart.Core.StateMachines
     {
         StartupComplete,
         RoomPrepared,
-        BattleStarted,
+        TravelCompleted_Enter,
+        TravelCompleted_Exit,
         BattleLost,
         BattleWon,
         RewardPicked
@@ -56,8 +57,9 @@ namespace MagmaHeart.Core.StateMachines
                 .OnExitAsync(m_prepareRoomState.ExitAsync);
 
             m_stateMachine.Configure(StateMachineStates.Travel)
-                .Permit(StateMachineTriggers.BattleStarted, StateMachineStates.Battle)
-                .OnEntryAsync(m_travelState.EnterAsync)
+                .Permit(StateMachineTriggers.TravelCompleted_Enter, StateMachineStates.Battle)
+                .Permit(StateMachineTriggers.TravelCompleted_Exit, StateMachineStates.PrepareRoom)
+                .OnEntryAsync(m_travelState.PayloadEnterAsync)
                 .OnExitAsync(m_travelState.ExitAsync);
 
             m_stateMachine.Configure(StateMachineStates.Battle)
@@ -67,7 +69,7 @@ namespace MagmaHeart.Core.StateMachines
                 .OnExitAsync(m_battleState.ExitAsync);
 
             m_stateMachine.Configure(StateMachineStates.Reward)
-                .Permit(StateMachineTriggers.RewardPicked, StateMachineStates.PrepareRoom)
+                .Permit(StateMachineTriggers.RewardPicked, StateMachineStates.Travel)
                 .OnEntryAsync(m_rewardState.EnterAsync)
                 .OnExitAsync(m_rewardState.ExitAsync);
 
@@ -78,6 +80,6 @@ namespace MagmaHeart.Core.StateMachines
 
         public async Task Start() => await m_startupState.EnterAsync();
 
-        public async Task FireTrigger(StateMachineTriggers trigger) => await m_stateMachine.FireAsync(trigger);
+        public async Task FireTrigger(StateMachineTriggers trigger, StatePayload payload = null) => await m_stateMachine.FireAsync(trigger, payload);
     }
 }

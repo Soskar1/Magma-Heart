@@ -1,6 +1,5 @@
 ﻿using MagmaHeart.Core.SceneLoading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines.States
 {
@@ -20,7 +19,14 @@ namespace MagmaHeart.Core.StateMachines.States
             m_context.DungeonController.GenerateRoom();
 
             await m_context.RoomRenderer.OnRoomRendered;
-            await m_stateMachine.FireTrigger(StateMachineTriggers.RoomPrepared);
+
+            TravelStatePayload payload = new TravelStatePayload(TravelReason.EnterRoom);
+            await m_stateMachine.FireTrigger(StateMachineTriggers.RoomPrepared, payload);
+        }
+
+        public Task PayloadEnterAsync(StatePayload payload)
+        {
+            return Task.CompletedTask;
         }
 
         public Task ExitAsync()
