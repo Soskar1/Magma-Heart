@@ -4,6 +4,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Input.Mouse
 {
@@ -24,17 +25,17 @@ namespace MagmaHeart.Core.Input.Mouse
 
         public void Visit(CombatHoverResult result)
         {
-            if (m_currentTile == result.RoomTile)
-                return;
-
             if (m_currentEntity != null && result.Entity != m_currentEntity)
                 m_currentEntity.Outline.RemoveOutline();
 
+            if (result.RoomTile == null)
+                return;
+
+            if (m_currentTile != null && m_currentTile.Position == result.RoomTile.Position)
+                return;
+
             m_currentEntity = result.Entity;
             m_currentTile = result.RoomTile;
-
-            if (m_currentTile == null)
-                return;
 
             if (m_currentEntity != null)
             {

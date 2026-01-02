@@ -44,9 +44,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
         {
             ActionPreview newPreview = m_actionPreviewService.Preview(m_state, m_executor, tile);
 
-            if (Equals(m_currentPreview, newPreview))
-                return m_currentPreview;
-
             m_currentPreview = newPreview;
 
             OnActionPreviewChangedEventArgs args = new OnActionPreviewChangedEventArgs(newPreview);

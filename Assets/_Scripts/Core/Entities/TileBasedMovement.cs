@@ -8,7 +8,7 @@ namespace MagmaHeart.Core.Entities
     public class TileBasedMovement : MonoBehaviour
     {
         [SerializeField] private float m_changePointAtDistance = 0.001f;
-        public static int DEFAULT_SPEED = 5;
+        public const int DEFAULT_SPEED = 5;
         private int m_speed = 5;
         private int m_targetIndex;
         private bool m_canMove = false;
