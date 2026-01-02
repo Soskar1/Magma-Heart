@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions.Data;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
@@ -14,8 +15,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
             {
                 AttackActionData attackActionData = executor.PossibleActionDatas.Get<AttackActionData>();
-
-                // TODO: use argument creator here
                 AttackActionArgs args = new AttackActionArgs(executor, target, attackActionData);
 
                 if (!target.IsPlayer && m_attack.CanExecute(args, combatBoardState))

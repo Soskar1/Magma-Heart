@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
             }
 
             actualBoard.Room.TryGetEntity(EntityModel, out Entity entity);
-            await actualBoard.MovementService.MoveEntityAsync(entity, roomTiles);
+            await actualBoard.MovementService.MoveEntityAsync(entity, roomTiles, TileBasedMovement.DEFAULT_SPEED);
             UpdateBoard(actualBoard);
         }
 

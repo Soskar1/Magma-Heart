@@ -1,4 +1,4 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.Input.Mouse

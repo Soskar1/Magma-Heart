@@ -8,7 +8,6 @@ namespace MagmaHeart.Core.Entities
 {
     public abstract class EntityTurnContext : TurnContext<EntityModel>
     {
-        public Room CurrentRoom => CurrentCombatBoardState.Room;
         public CombatBoardState CurrentCombatBoardState { get; private set; }
 
         public EntityTurnContext(EntityModel model) : base(model) { }

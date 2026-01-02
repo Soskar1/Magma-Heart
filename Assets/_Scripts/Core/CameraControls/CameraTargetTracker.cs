@@ -4,22 +4,19 @@ namespace MagmaHeart.Core.CameraControls
 {
     public class CameraTargetTracker
     {
-        private Transform m_transform;
         private Transform m_objectToTrack;
-
-        public CameraTargetTracker(Transform transform) => m_transform = transform;
 
         public void Track(Transform objectToTrack) => m_objectToTrack = objectToTrack;
 
-        public void StickWithTarget()
+        public Vector3 GetTrackedObjectPosition()
         {
             if (m_objectToTrack == null)
             {
                 Debug.LogWarning("Tracking object is null!");
-                return;
+                return Vector3.zero;
             }
 
-            m_transform.position = new Vector3(m_objectToTrack.position.x, m_objectToTrack.position.y, m_transform.position.z);
+            return new Vector3(m_objectToTrack.position.x, m_objectToTrack.position.y, 0);
         }
     }
 }

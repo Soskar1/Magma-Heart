@@ -1,0 +1,16 @@
+{
+    "name": "MagmaHeart.DungeonGeneration",
+    "rootNamespace": "",
+    "references": [
+        "GUID:80a5bf9362ac37640a3609e7abc0650d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

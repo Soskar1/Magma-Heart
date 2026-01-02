@@ -1,24 +1,43 @@
+using MagmaHeart.Core.BoardStateSystem.Actions.Preview;
+using MagmaHeart.Core.Dungeon;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
     [RequireComponent(typeof(Grid))]
-    public class CombatTilemapRenderer : MonoBehaviour
+    public class CombatTilemapRenderer : MonoBehaviour, ICombatTileHighlighter
     {
         [SerializeField] private Tilemap m_combatTilemap;
         [SerializeField] private TileBase m_combatTile;
+        private RoomGrid m_roomGrid;
+        private RoomTile m_currentTile;
 
-        public Tilemap CombatTilemap => m_combatTilemap;
+        public void Initialize(RoomGrid roomGrid) => m_roomGrid = roomGrid;
 
-        public void DisplayCombatTile(CombatTile combatTile)
+        private Vector3Int GetCombatTilePosition(RoomTile roomTile)
         {
-            m_combatTilemap.SetTile(combatTile.Position, m_combatTile);
+            Vector2 worldPosition = m_roomGrid.TilePositionToWorld(roomTile.Position);
+            return m_combatTilemap.WorldToCell(worldPosition);
         }
 
-        public void HideCombatTileAt(CombatTile combatTile)
+        public void Show(RoomTile tile)
         {
-            m_combatTilemap.SetTile(combatTile.Position, null);
+            m_currentTile = tile;
+            Vector3Int combatTilePosition = GetCombatTilePosition(tile);
+            m_combatTilemap.SetTile(combatTilePosition, m_combatTile);
+        }
+
+        public void Hide(RoomTile tile)
+        {
+            Vector3Int combatTilePosition = GetCombatTilePosition(tile);
+            m_combatTilemap.SetTile(combatTilePosition, null);
+        }
+
+        public void Clear()
+        {
+            if (m_currentTile != null)
+                Hide(m_currentTile);
         }
     }
 }

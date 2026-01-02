@@ -1,62 +1,49 @@
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.BoardStateSystem.Actions.Preview;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Input.Mouse
 {
     public class CombatHoverHandler : IHoverHandler
     {
-        private readonly Battle m_battle;
+        private readonly DungeonController m_dungeonController;
+        private readonly ICombatTileHighlighter m_tileHighlighter;
         private readonly IActionPreviewProvider m_actionPreviewProvider;
         private RoomTile m_currentTile;
         private Entity m_currentEntity;
 
-        public CombatHoverHandler(Battle battle, IActionPreviewProvider actionPreviewProvider)
+        public CombatHoverHandler(DungeonController dungeonController, IActionPreviewProvider actionPreviewProvider, ICombatTileHighlighter tileHighlighter)
         {
-            m_battle = battle;
+            m_dungeonController = dungeonController;
             m_actionPreviewProvider = actionPreviewProvider;
+            m_tileHighlighter = tileHighlighter;
         }
 
         public void Visit(CombatHoverResult result)
         {
-            if (m_currentTile == result.RoomTile)
-                return;
-
             if (m_currentEntity != null && result.Entity != m_currentEntity)
                 m_currentEntity.Outline.RemoveOutline();
 
-            if (m_currentTile != null && result.RoomTile != m_currentTile)
-                m_battle.CurrentRoom?.HideCombatTileAt(m_currentTile);
+            if (result.RoomTile == null)
+                return;
+
+            if (m_currentTile != null && m_currentTile.Position == result.RoomTile.Position)
+                return;
 
             m_currentEntity = result.Entity;
             m_currentTile = result.RoomTile;
 
-            if (m_currentTile == null)
-                return;
+            if (m_currentEntity != null)
+            {
+                m_currentEntity.Outline.ApplyOutline(m_currentEntity.Model.IsPlayer
+                    ? OutlineSettings.ALLY_OUTLINE : OutlineSettings.ENEMY_OUTLINE);
+            }
 
-            ActionPreview actionPreview = m_actionPreviewProvider.Preview(m_currentTile);
-
-            if (actionPreview == null)
-            {
-                if (m_currentEntity != null)
-                {
-                    if (m_currentEntity.Model.IsPlayer)
-                        m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
-                    else
-                        m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
-                }
-            }
-            else if (actionPreview.Action is MovementAction)
-            {
-                m_battle.CurrentRoom.TryDisplayCombatTile(m_currentTile);
-            }
-            else if (actionPreview.Action is AttackAction && m_currentEntity != null)
-            {
-                m_currentEntity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
-            }
+            m_actionPreviewProvider.Preview(m_currentTile);
         }
 
         public void Visit(UIHoverResult result)
@@ -72,20 +59,14 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
 
-            if (m_currentTile != null)
-                m_battle.CurrentRoom?.HideCombatTileAt(m_currentTile);
-
             m_currentTile = null;
 
-            if (!m_battle.CurrentRoom.TryGetEntity(presenter.Model, out Entity entity))
+            if (!m_dungeonController.CurrentRoom.TryGetEntity(presenter.Model, out Entity entity))
                 return;
 
             m_currentEntity = entity;
-
-            if (m_currentEntity.Model.IsPlayer)
-                m_currentEntity.Outline.ApplyOutline(OutlineSettings.ALLY_OUTLINE);
-            else
-                m_currentEntity.Outline.ApplyOutline(OutlineSettings.ENEMY_OUTLINE);
+            m_currentEntity.Outline.ApplyOutline(m_currentEntity.Model.IsPlayer
+                    ? OutlineSettings.ALLY_OUTLINE : OutlineSettings.ENEMY_OUTLINE);
         }
 
         public void Visit(RaycastHoverResult result) { }
@@ -95,7 +76,7 @@ namespace MagmaHeart.Core.Input.Mouse
             m_currentEntity?.Outline.RemoveOutline();
 
             if (m_currentTile != null)
-                m_battle.CurrentRoom?.HideCombatTileAt(m_currentTile);
+                m_tileHighlighter.Hide(m_currentTile);
 
             m_currentEntity = null;
             m_currentTile = null;

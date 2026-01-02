@@ -1,3 +1,4 @@
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Presentation.UI;
@@ -17,11 +18,13 @@ namespace MagmaHeart.Core.Entities.Presenters
 
         private List<Image> m_crystalVisuals;
         private EnergyModel m_playerEnergy;
+        private IActionPreviewProvider m_previewProvider;
 
-        public void Initialize(Player player)
-        {
+        public void Initialize(Player player, IActionPreviewProvider previewProvider)
+        { 
             m_crystalVisuals = new List<Image>();
             m_playerEnergy = player.Energy;
+            m_previewProvider = previewProvider;
 
             for (int i = 0; i < m_playerEnergy.MaxEnergy; ++i)
             {
@@ -30,31 +33,43 @@ namespace MagmaHeart.Core.Entities.Presenters
                 m_crystalVisuals.Add(energyCrystalInstance.GetComponent<Image>());
             }
 
-            m_playerEnergy.OnEnergyChanged += DisplayEnergy;
-            m_playerEnergy.OnPreviewEnergyChanged += DisplayEnergyPrice;
+            m_playerEnergy.OnEnergyChanged += HandleOnEnergyChanged;
+            previewProvider.OnActionPreviewChanged += HandleOnActionPreviewChanged;
         }
 
         public void OnDisable()
         {
-            m_playerEnergy.OnEnergyChanged -= DisplayEnergy;
-            m_playerEnergy.OnPreviewEnergyChanged -= DisplayEnergyPrice;
+            m_playerEnergy.OnEnergyChanged -= HandleOnEnergyChanged;
+            m_previewProvider.OnActionPreviewChanged -= HandleOnActionPreviewChanged;
         }
 
-        private void DisplayEnergy(object obj, OnEnergyChangedEventArgs args)
+        private void HandleOnEnergyChanged(object obj, OnEnergyChangedEventArgs args) => DisplayEnergy(args.CurrentEnergy);
+
+        private void DisplayEnergy(int currentEnergy)
         {
-            for (int i = 0; i < args.CurrentEnergy; ++i)
+            for (int i = 0; i < currentEnergy; ++i)
                 m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
 
-            for (int i = args.CurrentEnergy; i < m_crystalVisuals.Count; ++i)
+            for (int i = currentEnergy; i < m_crystalVisuals.Count; ++i)
                 m_crystalVisuals[i].sprite = m_emptyEnergyCrystalGFX;
         }
 
-        private void DisplayEnergyPrice(object obj, OnPreviewEnergyChangedEventArgs args)
+        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args)
         {
-            for (int i = args.CurrentEnergy; i > args.CurrentEnergy - args.PreviewCost; --i)
+            int currentEnergy = m_playerEnergy.CurrentEnergy;
+
+            if (args.ActionPreview == null)
+            {
+                DisplayEnergy(currentEnergy);
+                return;
+            }
+
+            int cost = args.ActionPreview.EnergyCost;
+
+            for (int i = currentEnergy; i > currentEnergy - cost; --i)
                 m_crystalVisuals[i - 1].sprite = m_priceEnergyCrystalGFX;
 
-            for (int i = args.CurrentEnergy - args.PreviewCost - 1; i >= 0; --i)
+            for (int i = currentEnergy - cost - 1; i >= 0; --i)
                 m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
         }
 

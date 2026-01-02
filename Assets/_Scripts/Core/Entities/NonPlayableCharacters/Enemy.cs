@@ -4,7 +4,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
     public class Enemy : Entity
     {
-        public void Initialize(DungeonGrid grid, CombatAI ai)
+        public void Initialize(RoomGrid grid, CombatAI ai)
         {
             base.Initialize(grid, false);
 

@@ -6,32 +6,29 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    [RequireComponent(typeof(TurnBasedMovement))]
+    [RequireComponent(typeof(TileBasedMovement))]
     [RequireComponent(typeof(Facing))]
     [RequireComponent(typeof(EntityAnimation))]
     [RequireComponent(typeof(Outline))]
     public class Entity : MonoBehaviour
     {
         [SerializeField] private EntityData m_data;
-        private DungeonGrid m_grid;
 
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
         public EntityTurnContext TurnContext { get; protected set; }
-        public TurnBasedMovement TurnBasedMovement { get; private set; }
+        public TileBasedMovement TileBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
 
-        public virtual void Initialize(DungeonGrid grid, bool isPlayer)
+        public virtual void Initialize(RoomGrid grid, bool isPlayer)
         {
-            m_grid = grid;
-
-            Func<Vector3Int> getCurrentTilePosition = () => m_grid.WorldToTilePosition(transform.position);
+            Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
             Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
 
-            TurnBasedMovement = GetComponent<TurnBasedMovement>();
+            TileBasedMovement = GetComponent<TileBasedMovement>();
             Facing = GetComponent<Facing>();
             Animation = GetComponent<EntityAnimation>();
             Outline = GetComponent<Outline>();
