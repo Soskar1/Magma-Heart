@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public sealed class StateMachine<TTrigger>
-        where TTrigger : Enum
+    public sealed class StateMachine<TTrigger> where TTrigger : Enum
     {
         private readonly Dictionary<IState, StateConfig<TTrigger>> m_configs = new();
         private IState m_currentState;
@@ -18,6 +17,8 @@ namespace MagmaHeart.Core.StateMachines
             if (!m_configs.TryGetValue(state, out StateConfig<TTrigger> config))
             {
                 config = new StateConfig<TTrigger>();
+                config.OnEntryAsync(state.EnterAsync);
+                config.OnExitAsync(state.ExitAsync);
                 m_configs[state] = config;
             }
 

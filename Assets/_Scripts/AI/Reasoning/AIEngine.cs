@@ -10,7 +10,6 @@ namespace MagmaHeart.AI.Reasoning
     public class AIEngine
     {
         private readonly int m_depth;
-        private readonly ActionDatabase m_actionDatabase;
         private readonly Planner m_planner;
         private Strategy m_strategy;
 
@@ -18,9 +17,8 @@ namespace MagmaHeart.AI.Reasoning
         {
             m_strategy = strategy;
             m_depth = lookAhead;
-            m_actionDatabase = database;
 
-            m_planner = new Planner(strategy, m_actionDatabase);
+            m_planner = new Planner(strategy, database);
         }
 
         public BestPlan ChooseBestMove(ChainNode<TurnContext> unitTurns, ActualBoardState gameState)

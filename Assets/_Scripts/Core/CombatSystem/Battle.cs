@@ -22,7 +22,6 @@ namespace MagmaHeart.Core.CombatSystem
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
 
-        public Room CurrentRoom => m_currentRoom;
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
         public event EventHandler<OnTurnSwitchedEventArgs> OnTurnSwitched;

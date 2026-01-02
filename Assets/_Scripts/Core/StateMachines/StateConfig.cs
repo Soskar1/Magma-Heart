@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.StateMachines
 {
-    public sealed class StateConfig<TTrigger>
-        where TTrigger : Enum
+    public sealed class StateConfig<TTrigger> where TTrigger : Enum
     {
         private readonly Dictionary<TTrigger, IState> m_transitions = new();
 
