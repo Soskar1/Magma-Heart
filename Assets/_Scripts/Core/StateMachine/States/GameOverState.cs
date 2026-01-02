@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using MagmaHeart.StateMachine;
+using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.StateMachines.States
+namespace MagmaHeart.Core.StateMachine.States
 {
     public class GameOverState : IState
     {

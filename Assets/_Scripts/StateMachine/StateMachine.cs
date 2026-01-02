@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MagmaHeart.Core.StateMachines
+namespace MagmaHeart.StateMachine
 {
     public sealed class StateMachine<TTrigger> where TTrigger : Enum
     {

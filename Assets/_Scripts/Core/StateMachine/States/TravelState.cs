@@ -2,12 +2,13 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
-using MagmaHeart.Core.StateMachines.States;
+using MagmaHeart.Core.StateMachine.States;
+using MagmaHeart.StateMachine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MagmaHeart.Core.StateMachines
+namespace MagmaHeart.Core.StateMachine
 {
     public class TravelState : IState
     {

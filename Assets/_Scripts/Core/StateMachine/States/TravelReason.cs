@@ -1,4 +1,4 @@
-﻿namespace MagmaHeart.Core.StateMachines.States
+﻿namespace MagmaHeart.Core.StateMachine.States
 {
     public enum TravelReason
     {

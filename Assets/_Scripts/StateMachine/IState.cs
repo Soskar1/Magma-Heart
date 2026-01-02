@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.StateMachines
+namespace MagmaHeart.StateMachine
 {
     public interface IState
     {

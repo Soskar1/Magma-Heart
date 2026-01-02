@@ -11,7 +11,7 @@ using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.Spawning;
-using MagmaHeart.Core.StateMachines;
+using MagmaHeart.Core.StateMachine;
 using MagmaHeart.DungeonGeneration;
 using System;
 using System.Collections.Generic;

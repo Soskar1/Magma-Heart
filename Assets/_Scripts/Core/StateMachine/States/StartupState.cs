@@ -1,9 +1,10 @@
 ﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.StateMachine;
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.StateMachines.States
+namespace MagmaHeart.Core.StateMachine.States
 {
     public class StartupState : IState
     {

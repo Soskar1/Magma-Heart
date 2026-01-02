@@ -1,9 +1,10 @@
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.SceneLoading;
-using MagmaHeart.Core.StateMachines.States;
+using MagmaHeart.Core.StateMachine.States;
+using MagmaHeart.StateMachine;
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.StateMachines
+namespace MagmaHeart.Core.StateMachine
 {
     public class RewardState : IState
     {

@@ -3,9 +3,10 @@ using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.StateMachine;
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.StateMachines
+namespace MagmaHeart.Core.StateMachine
 {
     public class BattleState : IState
     {

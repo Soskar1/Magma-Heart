@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MagmaHeart.Core.StateMachines
+namespace MagmaHeart.StateMachine
 {
     public sealed class StateConfig<TTrigger> where TTrigger : Enum
     {
