@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.Input.Mouse
 
         protected override HoverResult TryHover(Vector2 worldPosition)
         {
-            Vector3Int tilePosition = m_dungeonController.CurrentRoom.Grid.WorldToTilePosition(worldPosition);
+            Vector3Int tilePosition = m_dungeonController.Grid.WorldToTilePosition(worldPosition);
             RoomTile hoveredTile = m_dungeonController.CurrentRoom.GetRoomTile(tilePosition);
             m_dungeonController.CurrentRoom.TryGetEntity(hoveredTile, out Entity entity);
 

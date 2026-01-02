@@ -13,9 +13,9 @@ namespace MagmaHeart.Core.Dungeon
     public class Room : Board
     {
         private readonly Dictionary<EntityModel, Entity> m_entities;
+        private readonly RoomGrid m_grid;
         
         public RoomModel RoomModel { get; init; }
-        public RoomGrid Grid { get; init; }
 
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;
@@ -23,7 +23,7 @@ namespace MagmaHeart.Core.Dungeon
         public Room(RoomModel model, RoomGrid grid) : base(BoardGraphBuilder.GenerateBoardGraph(model))
         {
             RoomModel = model;
-            Grid = grid;
+            m_grid = grid;
             m_entities = new Dictionary<EntityModel, Entity>();
         }
 
@@ -49,8 +49,8 @@ namespace MagmaHeart.Core.Dungeon
 
         public RoomTile GetRoomTile(Vector3 worldPosition)
         {
-            Vector3Int position = Grid.WorldToTilePosition(worldPosition);
-            return new RoomTile(position, Grid);
+            Vector3Int position = m_grid.WorldToTilePosition(worldPosition);
+            return new RoomTile(position, m_grid);
         }
 
         public bool TileIsAccessable(RoomTile roomTile)
