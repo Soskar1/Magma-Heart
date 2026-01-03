@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
-    [CreateAssetMenu(fileName = "EntityData", menuName = "MagmaHeartData/EntityData")]
+    [CreateAssetMenu(fileName = "EntityData", menuName = "Magma Heart Data/Entity Data")]
     public class EntityData : ScriptableObject
     {
         [SerializeField] private string m_name;

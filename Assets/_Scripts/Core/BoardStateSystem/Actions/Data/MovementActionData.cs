@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.Data
 {
-    [CreateAssetMenu(fileName = "MovementActionData", menuName = "MagmaHeart/Actions/Movement Action")]
+    [CreateAssetMenu(fileName = "MovementActionData", menuName = "Magma Heart Data/Actions/Movement Action")]
     public class MovementActionData : ActionData
     {
         [SerializeField] private int m_movementDistanceInTilesForOneEnergy = 2;
