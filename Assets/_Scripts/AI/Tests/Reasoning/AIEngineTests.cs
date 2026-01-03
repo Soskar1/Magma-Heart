@@ -11,14 +11,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class AIEngineTests : ReasoningTests
     {
-        private EmptyTurnController m_player;
+        private EmptyTurnContext m_turnContext;
         private DummyActualGameState m_state;
+        private Entity m_player;
 
-        internal class EmptyTurnController : TurnContext
+        internal class EmptyTurnContext : TurnContext
         {
-            public EmptyTurnController(AIUnitModel owner) : base(owner) { }
-
-            public override IEnumerable<StateChange> ProduceStartTurnChanges() => new List<StateChange>();
+            public override IEnumerable<StateChange> ProduceStartTurnChanges(AIUnitModel model) => new List<StateChange>();
         }
 
         internal class DummyActualGameState : ActualBoardState
@@ -27,10 +26,16 @@ namespace MagmaHeart.AI.Reasoning.Tests
             public override T GetProperty<T>(AIUnitModel unit) => throw new NotImplementedException();
         }
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            m_turnContext = new EmptyTurnContext();
+        }
+
         [SetUp]
         public void Initialize()
         {
-            m_player = new EmptyTurnController(CreateEntity(10, new Vector2(5, 5), true));
+            m_player = CreateEntity(10, new Vector2(5, 5), true);
             m_state = new DummyActualGameState(Board);
         }
 
@@ -38,9 +43,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
             BasicStrategy strategy = new BasicStrategy();
-            AIEngine engine = new AIEngine(strategy, Database, 1);
-            EmptyTurnController enemy = new EmptyTurnController(CreateEntity(10, Vector2.zero, false));
-            CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
+            AIEngine engine = new AIEngine(strategy, Database, 1, m_turnContext);
+            Entity enemy = CreateEntity(10, Vector2.zero, false);
+            CircularList<AIUnitModel> turnOrder = new CircularList<AIUnitModel>() { enemy, m_player };
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
@@ -54,9 +59,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
         {
             BasicStrategy strategy = new BasicStrategy();
-            AIEngine engine = new AIEngine(strategy, Database, depth);
-            EmptyTurnController enemy = new EmptyTurnController(CreateEntity(10, new Vector2(5, 3), false));
-            CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
+            AIEngine engine = new AIEngine(strategy, Database, depth, m_turnContext);
+            Entity enemy = CreateEntity(10, new Vector2(5, 3), false);
+            CircularList<AIUnitModel> turnOrder = new CircularList<AIUnitModel>() { enemy, m_player };
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
@@ -68,9 +73,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
             BasicStrategy strategy = new BasicStrategy();
-            AIEngine engine = new AIEngine(strategy, Database, 2);
-            EmptyTurnController enemy = new EmptyTurnController(CreateEntity(1, new Vector2(4, 5), false));
-            CircularList<TurnContext> turnOrder = new CircularList<TurnContext>() { enemy, m_player };
+            AIEngine engine = new AIEngine(strategy, Database, 2, m_turnContext);
+            Entity enemy = CreateEntity(1, new Vector2(4, 5), false);
+            CircularList<AIUnitModel> turnOrder = new CircularList<AIUnitModel>() { enemy, m_player };
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 

@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.Spawning
             configs.Add(projectilePrefab, projectileConfig);
 
             SpawnService spawnService = new SpawnService(configs, new UnityInstantiator());
-            EnemySpawnContextFactory factory = new EnemySpawnContextFactory(roomGrid, aiContext.CombatAI);
+            EnemySpawnContextFactory factory = new EnemySpawnContextFactory(roomGrid, aiContext.aiEngine);
 
             EnemySpawner enemySpawner = new EnemySpawner(spawnService, minDistanceFromPlayer, enemyPrefabs.ToList(), factory);
             ProjectileSpawner projectileSpawner = new ProjectileSpawner(spawnService, projectilePrefab);

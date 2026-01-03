@@ -6,6 +6,7 @@ using MagmaHeart.Core.BoardStateSystem.Actions.Preview;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
@@ -25,7 +26,7 @@ namespace MagmaHeart.Core.SceneLoading
     public class SceneBootstrap : MonoBehaviour
     {
         [Header("Player")]
-        [SerializeField] private Player m_playerPrefab;
+        [SerializeField] private Entity m_playerPrefab;
         [SerializeField] private CameraController m_cameraPrefab;
 
         [Header("Input")]
@@ -97,13 +98,12 @@ namespace MagmaHeart.Core.SceneLoading
 
             EntityMovementService entityMovementService = new EntityMovementService();
             m_battle = new Battle(spawner, entityMovementService);
-            m_battle.OnBattleStarted += m_aiContext.CombatAI.HandleOnBattleStarted;
 
             m_actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
             IActionPreviewProvider previewProvider = m_actionPreviewInstaller.Install(m_aiContext.ActionDatabase, m_battle, dungeonController);
 
             m_playerInstaller = new PlayerInstaller();
-            Player player = m_playerInstaller.Install(m_playerPrefab, inputContext, grid, previewProvider);
+            Entity player = m_playerInstaller.Install(m_playerPrefab, inputContext, grid, previewProvider);
             player.gameObject.SetActive(false);
 
             CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
@@ -131,8 +131,6 @@ namespace MagmaHeart.Core.SceneLoading
             m_playerInstaller.Dispose();
             m_spawnerInstaller.Dispose();
             m_actionPreviewInstaller.Dispose();
-
-            m_battle.OnBattleStarted -= m_aiContext.CombatAI.HandleOnBattleStarted;
 
             m_hoverModeController.Disable();
             m_inventory.Disable();

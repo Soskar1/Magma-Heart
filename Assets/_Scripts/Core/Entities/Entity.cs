@@ -17,21 +17,24 @@ namespace MagmaHeart.Core.Entities
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
-        public EntityTurnContext TurnContext { get; protected set; }
+        public ITurnController TurnController { get; private set; }
         public TileBasedMovement TileBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
 
-        public virtual void Initialize(RoomGrid grid, bool isPlayer)
+        public virtual void Initialize(RoomGrid grid, bool isPlayer, ITurnController turnController)
         {
             Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
             Model = new EntityModel(m_data, getCurrentTilePosition, isPlayer);
+            TurnController = turnController;
 
             TileBasedMovement = GetComponent<TileBasedMovement>();
             Facing = GetComponent<Facing>();
             Animation = GetComponent<EntityAnimation>();
             Outline = GetComponent<Outline>();
         }
+
+        private void Update() => Animation.PlayAnimations();
     }
 }

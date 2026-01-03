@@ -6,31 +6,20 @@ namespace MagmaHeart.AI.States
 {
     public abstract class TurnContext
     {
-        public AIUnitModel Model { get; init; }
+        public abstract IEnumerable<StateChange> ProduceStartTurnChanges(AIUnitModel model);
 
-        public TurnContext(AIUnitModel model) => Model = model;
-
-        public abstract IEnumerable<StateChange> ProduceStartTurnChanges();
-
-        internal void StartTurn(SimulatedBoardState simulatedBoardState)
+        internal void StartTurn(SimulatedBoardState simulatedBoardState, AIUnitModel model)
         {
-            IEnumerable<StateChange> changes = ProduceStartTurnChanges();
+            IEnumerable<StateChange> changes = ProduceStartTurnChanges(model);
             simulatedBoardState.ApplyStateChanges(changes);
         }
 
-        public async Task StartTurnAsync(ActualBoardState actualBoardState, CancellationToken cancellationToken)
+        public async Task StartTurnAsync(ActualBoardState actualBoardState, AIUnitModel model, CancellationToken cancellationToken)
         {
-            IEnumerable<StateChange> changes = ProduceStartTurnChanges();
+            IEnumerable<StateChange> changes = ProduceStartTurnChanges(model);
             await actualBoardState.ApplyStateChangesAsync(changes, cancellationToken);
         }
 
         internal void UndoTurn(SimulatedBoardState simulatedBoardState) => simulatedBoardState.Undo();
-    }
-
-    public abstract class TurnContext<T> : TurnContext where T : AIUnitModel
-    {
-        public T TypedModel { get; init; }
-
-        protected TurnContext(T model) : base(model) => TypedModel = model;
     }
 }

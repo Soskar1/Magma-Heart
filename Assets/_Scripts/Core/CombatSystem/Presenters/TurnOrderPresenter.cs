@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.States;
-using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,12 +29,12 @@ namespace MagmaHeart.Core.CombatSystem.Presenters
 
         private void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args)
         {
-            foreach (TurnContext<EntityModel> turnContext in args.TurnOrder)
+            foreach (Entity entity in args.TurnOrder)
             {
                 EntityPresenter presenterInstance = Instantiate(m_entityPresenterPrefab, transform);
-                presenterInstance.Initialize(turnContext.TypedModel, m_battle);
+                presenterInstance.Initialize(entity.Model, m_battle);
 
-                m_currentPresenters.Add(turnContext.TypedModel, presenterInstance);
+                m_currentPresenters.Add(entity.Model, presenterInstance);
             }
         }
 

@@ -1,6 +1,5 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.StateMachine.States;
 using MagmaHeart.StateMachine;
@@ -26,7 +25,7 @@ namespace MagmaHeart.Core.StateMachine
         {
             TravelStatePayload travelPayload = payload as TravelStatePayload;
 
-            Player player = m_context.Player;
+            Entity player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
             bool isEnteringRoom = travelPayload.Reason == TravelReason.EnterRoom;

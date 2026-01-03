@@ -1,4 +1,5 @@
 using System;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Spawning;
 using UnityEngine;
@@ -15,8 +16,9 @@ namespace MagmaHeart.Core.Spawning
             if (enemySpawnContext == null)
                 throw new ArgumentException("Invalid context type for EnemySpawnContext");
 
-            Enemy enemy = instance.GetComponent<Enemy>();
-            enemy.Initialize(enemySpawnContext.Grid, enemySpawnContext.CombatAI);
+            Entity enemy = instance.GetComponent<Entity>();
+            EnemyTurnController turnController = new EnemyTurnController(enemySpawnContext.AiEngine);
+            enemy.Initialize(enemySpawnContext.Grid, false, turnController);
         }
     }
 }

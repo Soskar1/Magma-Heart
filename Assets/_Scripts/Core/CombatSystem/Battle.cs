@@ -2,12 +2,11 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Spawning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,9 +17,11 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly MagmaHeartSpawner m_spawner;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
         private readonly EntityMovementService m_movementService;
+        private readonly MagmaHeartTurnContext m_turnContext;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
+        private CombatBoardState m_currentBoardState;
 
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
@@ -29,13 +30,15 @@ namespace MagmaHeart.Core.CombatSystem
 
         private bool m_battleEnded = false;
 
+        private CancellationTokenSource m_cancellationTokenSource;
+
         public Battle(MagmaHeartSpawner spawner, EntityMovementService movementService)
         {
             m_spawner = spawner;
             m_movementService = movementService;
         }
 
-        public async Task Start(Room room, Player player)
+        public async Task Start(Room room, Entity player)
         {
             m_battleEnded = false;
             m_currentRoom = room;
@@ -43,7 +46,7 @@ namespace MagmaHeart.Core.CombatSystem
             m_currentRoom.AddEntityToInspect(player);
             for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
-                Enemy spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomModel, player.transform.position);
+                Entity spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomModel, player.transform.position);
                 m_currentRoom.AddEntityToInspect(spawnedEntity);
 
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
@@ -57,13 +60,10 @@ namespace MagmaHeart.Core.CombatSystem
 
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
-            m_currentTurnOrder = new TurnOrder(sortedEntities.Select(e => e.TurnContext));
-            CombatBoardState combatBoardState = new CombatBoardState(m_currentRoom, m_spawner, m_movementService);
+            m_currentTurnOrder = new TurnOrder(sortedEntities);
+            m_currentBoardState = new CombatBoardState(m_currentRoom, m_spawner, m_movementService);
 
-            foreach (Entity entity in sortedEntities)
-                entity.TurnContext.StartBattle(combatBoardState);
-
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, combatBoardState);
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, m_currentBoardState);
             OnBattleStarted?.Invoke(this, args);
 
             await ProcessBattle();
@@ -73,13 +73,14 @@ namespace MagmaHeart.Core.CombatSystem
         {
             while (!m_battleEnded)
             {
-                EntityTurnContext turnContext = (EntityTurnContext)m_currentTurnOrder.Current;
-
-                m_currentRoom.TryGetEntity(turnContext.TypedModel, out Entity entity);
+                Entity entity = m_currentTurnOrder.Current;
 
                 OnTurnSwitchedEventArgs args = new OnTurnSwitchedEventArgs(entity);
                 OnTurnSwitched?.Invoke(this, args);
-                await turnContext.StartTurnTask();
+
+                m_cancellationTokenSource = new CancellationTokenSource();
+                await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
+                await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
 
                 m_currentTurnOrder.Next();
             }
@@ -106,7 +107,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
             else
             {
-                m_currentTurnOrder.Remove(entity.TurnContext);
+                m_currentTurnOrder.Remove(entity);
                 m_currentRoom.RemoveEntityFromRoom(entity);
 
                 OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
@@ -138,7 +139,7 @@ namespace MagmaHeart.Core.CombatSystem
             foreach (Entity entity in leftEntities)
             {
                 m_currentRoom.RemoveEntityFromRoom(entity);
-                entity.TurnContext.EndBattle();
+                entity.TurnController.EndBattle();
             }
 
             m_currentTurnOrder.Clear();

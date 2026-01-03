@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Spawning;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Spawning
             return SpawnService.Spawn(prefabToSpawn, context);
         }
 
-        public Enemy SpawnInRoomTile(RoomModel roomTileData, Vector2 playerPosition)
+        public Entity SpawnInRoomTile(RoomModel roomTileData, Vector2 playerPosition)
         {
             DungeonTile dungeonTile = null;
             do
@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.Spawning
             } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(playerPosition, dungeonTile.Position) < m_minDistanceFromPlayer);
 
             EnemySpawnContext context = (EnemySpawnContext)m_enemySpawnContextFactory.CreateSpawnContext(dungeonTile.Position);
-            return Spawn(context).GetComponent<Enemy>();
+            return Spawn(context).GetComponent<Entity>();
         }
     }
 }
