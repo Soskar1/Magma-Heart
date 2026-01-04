@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MagmaHeart.Core.BoardStateSystem
+namespace MagmaHeart.Core.Services
 {
     public class EntityMovementService
     {

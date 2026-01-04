@@ -1,4 +1,3 @@
-using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.DungeonGeneration;
@@ -23,7 +22,7 @@ namespace MagmaHeart.Core.Tests
         {
             RoomModel roomModel = RoomPresets.CreateEmptyRoom(m_boardDimensions);
             Room room = new Room(roomModel, null);
-            State = new CombatBoardState(room, null, null);
+            State = new CombatBoardState(room, null);
         }
     }
 }

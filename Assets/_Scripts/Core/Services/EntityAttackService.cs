@@ -1,27 +1,22 @@
 ﻿using MagmaHeart.AI.States;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Spawning;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MagmaHeart.Core.BoardStateSystem.Services
+namespace MagmaHeart.Core.Services
 {
     public class EntityAttackService
     {
-        private readonly CombatBoardState m_boardState;
-        private readonly MagmaHeartSpawner m_spawner;
+        private readonly SpawnService m_spawner;
 
-        public EntityAttackService(CombatBoardState boardState, MagmaHeartSpawner spawner)
-        {
-            m_boardState = boardState;
-            m_spawner = spawner;
-        }
+        public EntityAttackService(SpawnService spawner) => m_spawner = spawner;
 
-        public async Task AttackEntityAsync(Entity attacker, Entity target, float damage, AttackType attackType, CancellationToken cancellationToken)
+        public async Task AttackEntityAsync(CombatBoardState boardState, Entity attacker, Entity target, float damage, AttackType attackType, CancellationToken cancellationToken)
         {
             int targetX = target.Model.GetCurrentTilePosition().x;
             int attackerX = attacker.Model.GetCurrentTilePosition().x;
@@ -35,7 +30,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
                 targetToHit = await WaitForProjectileHit(attacker, target);
 
             if (targetToHit != null)
-                await ApplyDamage(attacker, target, damage, cancellationToken);
+                await ApplyDamage(boardState, attacker, target, damage, cancellationToken);
         }
 
         private async Task<EntityModel> WaitForProjectileHit(Entity attacker, Entity target)
@@ -50,10 +45,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
             return await projectile.OnHit();
         }
 
-        private async Task ApplyDamage(Entity attacker, Entity target, float damage, CancellationToken cancellationToken)
+        private async Task ApplyDamage(CombatBoardState boardState, Entity attacker, Entity target, float damage, CancellationToken cancellationToken)
         {
             ApplyDamageStateChange damageStateChange = new ApplyDamageStateChange(attacker.Model, target.Model, damage);
-            await m_boardState.ApplyStateChangesAsync(new List<StateChange>() { damageStateChange }, cancellationToken);
+            await boardState.ApplyStateChangesAsync(new List<StateChange>() { damageStateChange }, cancellationToken);
         }
     }
 }

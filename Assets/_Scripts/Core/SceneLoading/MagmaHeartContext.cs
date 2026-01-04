@@ -1,10 +1,10 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.CameraControls;
+﻿using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
+using MagmaHeart.Core.Services;
 
 namespace MagmaHeart.Core.SceneLoading
 {
@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.SceneLoading
         RoomRenderer RoomRenderer,
         Entity Player,
         HoverModeController HoverModeController,
-        EntityMovementService EntityMovementService,
+        MagmaHeartServices Services,
         CameraController CameraController,
         BattleContext BattleContext,
         GameUI UI

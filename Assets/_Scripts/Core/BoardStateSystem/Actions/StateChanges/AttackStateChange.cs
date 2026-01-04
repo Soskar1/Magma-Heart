@@ -12,7 +12,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
             actualBoard.Room.TryGetEntity(Attacker, out Entity attackerEntity);
             actualBoard.Room.TryGetEntity(Target, out Entity targetEntity);
 
-            return actualBoard.AttackService.AttackEntityAsync(attackerEntity, targetEntity, Damage, AttackType, cancellationToken);
+            return actualBoard.Services.AttackService.AttackEntityAsync(actualBoard, attackerEntity, targetEntity, Damage, AttackType, cancellationToken);
         }
 
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)

@@ -1,11 +1,13 @@
-namespace MagmaHeart.Core.Spawning
+using MagmaHeart.Core.Spawning;
+
+namespace MagmaHeart.Core.Services
 {
-    public class MagmaHeartSpawner
+    public class SpawnService
     {
         public EntitySpawner EntitySpawner { get; init; }
         public ProjectileSpawner ProjectileSpawner { get; init; }
 
-        public MagmaHeartSpawner(EntitySpawner entitySpawner, ProjectileSpawner projectileSpawner)
+        public SpawnService(EntitySpawner entitySpawner, ProjectileSpawner projectileSpawner)
         {
             EntitySpawner = entitySpawner;
             ProjectileSpawner = projectileSpawner;

@@ -1,18 +1,18 @@
-﻿using MagmaHeart.Core.AI;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.Core.Spawning;
 
-namespace MagmaHeart.Core.Spawning
+namespace MagmaHeart.Core.Services
 {
-    public class SpawnerInstaller : IInstaller
+    public class SpawnServiceInstaller : IInstaller
     {
-        public MagmaHeartSpawner Install(Entity entityPrefab, Projectile projectilePrefab, RoomGrid roomGrid)
+        public SpawnService Install(Entity entityPrefab, Projectile projectilePrefab, RoomGrid roomGrid)
         {
             EntitySpawner enemySpawner = new EntitySpawner(entityPrefab, roomGrid);
             ProjectileSpawner projectileSpawner = new ProjectileSpawner(projectilePrefab);
             
-            return new MagmaHeartSpawner(enemySpawner, projectileSpawner);
+            return new SpawnService(enemySpawner, projectileSpawner);
         }
 
         public void Dispose() { }

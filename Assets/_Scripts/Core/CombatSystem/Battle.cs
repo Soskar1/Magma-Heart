@@ -2,7 +2,7 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Spawning;
+using MagmaHeart.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +14,9 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly MagmaHeartSpawner m_spawner;
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
-        private readonly EntityMovementService m_movementService;
         private readonly MagmaHeartTurnContext m_turnContext;
+        private readonly MagmaHeartServices m_services;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
@@ -32,10 +31,9 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(MagmaHeartSpawner spawner, EntityMovementService movementService)
+        public Battle(MagmaHeartServices services)
         {
-            m_spawner = spawner;
-            m_movementService = movementService;
+            m_services = services;
             m_turnContext = new MagmaHeartTurnContext();
         }
 
@@ -63,7 +61,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             m_currentTurnOrder = new TurnOrder(sortedEntities);
-            m_currentBoardState = new CombatBoardState(m_currentRoom, m_spawner, m_movementService);
+            m_currentBoardState = new CombatBoardState(m_currentRoom, m_services);
 
             OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, m_currentBoardState);
             OnBattleStarted?.Invoke(this, args);
