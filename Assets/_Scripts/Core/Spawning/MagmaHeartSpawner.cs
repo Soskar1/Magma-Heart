@@ -2,12 +2,12 @@ namespace MagmaHeart.Core.Spawning
 {
     public class MagmaHeartSpawner
     {
-        public EnemySpawner EnemySpawner { get; init; }
+        public EntitySpawner EntitySpawner { get; init; }
         public ProjectileSpawner ProjectileSpawner { get; init; }
 
-        public MagmaHeartSpawner(EnemySpawner enemySpawner, ProjectileSpawner projectileSpawner)
+        public MagmaHeartSpawner(EntitySpawner entitySpawner, ProjectileSpawner projectileSpawner)
         {
-            EnemySpawner = enemySpawner;
+            EntitySpawner = entitySpawner;
             ProjectileSpawner = projectileSpawner;
         }
     }
