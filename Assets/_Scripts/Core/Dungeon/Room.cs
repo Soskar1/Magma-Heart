@@ -7,6 +7,7 @@ using MagmaHeart.AI;
 using System.Collections.Generic;
 using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.Dungeon.Data;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -16,6 +17,7 @@ namespace MagmaHeart.Core.Dungeon
         private readonly RoomGrid m_grid;
         
         public RoomModel RoomModel { get; init; }
+        public RoomData RoomData { get; init; }
 
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;

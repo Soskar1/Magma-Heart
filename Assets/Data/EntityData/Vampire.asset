@@ -21,3 +21,4 @@ MonoBehaviour:
   m_actions:
   - {fileID: 11400000, guid: 8ad5dbaf386d51f4ea46622e42277a6a, type: 2}
   - {fileID: 11400000, guid: 4fd8e72a5b434e54c832596064888f7e, type: 2}
+  m_animatorController: {fileID: 9100000, guid: 75d93d2f03f30b143b54ef2baeb96ec5, type: 2}

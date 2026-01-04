@@ -1,7 +1,10 @@
-﻿using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.Dungeon.Data;
 using MagmaHeart.DungeonGeneration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Random = System.Random;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -9,28 +12,39 @@ namespace MagmaHeart.Core.Dungeon
     {
         public Room CurrentRoom { get; private set; }
         public RoomGrid Grid { get; init; }
-
-        // TODO: We will need to move this parameter to the room data class
-        public List<EntityData> EnemyPool { get; init; }
-
-        private DungeonGenerator m_generator;
+        
+        private readonly List<LocationData> m_locations;
+        private readonly Random m_random;
+        private LocationData m_currentLocation;
+        private DungeonGenerator m_currentGenerator;
 
         public EventHandler<OnRoomGeneratedEventArgs> OnRoomGenerated;
         
-        public DungeonController(DungeonGenerator generator, RoomGrid roomGrid, List<EntityData> enemyPool)
+        public DungeonController(RoomGrid roomGrid, List<LocationData> locations, Random random)
         {
-            m_generator = generator;
             Grid = roomGrid;
-            EnemyPool = enemyPool;
+            m_locations = locations;
+            m_random = random;
+
+            SwitchLocation(m_locations.First());
         }
 
-        public void GenerateRoom()
+        public void GetNextRoom()
         {
-            RoomModel roomModel = m_generator.GenerateRoom();
+            RoomModel roomModel = m_currentGenerator.GenerateRoom();
             CurrentRoom = new Room(roomModel, Grid);
 
             OnRoomGeneratedEventArgs args = new OnRoomGeneratedEventArgs(CurrentRoom);
             OnRoomGenerated?.Invoke(this, args);
+        }
+
+        private void SwitchLocation(LocationData location)
+        {
+            m_currentLocation = location;
+
+            TextAsset configFile = ExternalResources.LoadTextAsset(m_currentLocation.RoomGenerationConfigFileName);
+            DungeonGeneratorData data = DungeonGeneratorDataDeserializer.Deserialize(configFile, m_random);
+            m_currentGenerator = new DungeonGenerator(data);
         }
     }
 }

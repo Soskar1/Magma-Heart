@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.StateMachine.States
 
         public async Task EnterAsync(StatePayload payload)
         {
-            m_context.DungeonController.GenerateRoom();
+            m_context.DungeonController.GetNextRoom();
 
             await m_context.RoomRenderer.OnRoomRendered;
 
