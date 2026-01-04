@@ -1,19 +1,19 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.SceneLoading;
-using UnityEngine;
+using MagmaHeart.Core.Spawning;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerInstaller : IInstaller
     {
-        public Player Install(Player playerPrefab, InputContext inputContext, RoomGrid roomGrid, IActionPreviewProvider actionPreviewProvider)
+        public Entity Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, IActionPreviewProvider actionPreviewProvider)
         {
-            Player spawnedPlayer = GameObject.Instantiate(playerPrefab);
-            spawnedPlayer.Initialize(inputContext.mouseListener, roomGrid, actionPreviewProvider);
+            PlayerTurnController turnController = new PlayerTurnController(inputContext.MouseListener, actionPreviewProvider);
+            Entity player = spawner.Spawn(playerData, true, turnController);
+            player.gameObject.SetActive(false);
 
-            return spawnedPlayer;
+            return player;
         }
 
         public void Dispose() { }

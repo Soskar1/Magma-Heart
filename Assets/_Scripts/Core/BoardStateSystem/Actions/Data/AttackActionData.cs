@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.Data
 {
-    [CreateAssetMenu(fileName = "AttackActionData", menuName = "MagmaHeart/Actions/Attack Action")]
+    [CreateAssetMenu(fileName = "AttackActionData", menuName = "Magma Heart Data/Actions/Attack Action")]
     public class AttackActionData : ActionData
     {
         [SerializeField] private int m_energyCost;

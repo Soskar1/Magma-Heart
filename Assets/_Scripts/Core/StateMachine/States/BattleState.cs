@@ -1,9 +1,12 @@
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.StateMachine;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.StateMachine
@@ -15,31 +18,33 @@ namespace MagmaHeart.Core.StateMachine
         private readonly CameraController m_camera;
         private readonly HoverModeController m_hoverModeController;
         private readonly Battle m_battle;
-        private readonly Player m_player;
-        private readonly PlayerTurnContext m_turnContext;
+        private readonly Entity m_player;
+        private readonly PlayerTurnController m_turnController;
 
         public BattleState(MagmaHeartStateMachine stateMachine, MagmaHeartContext context)
         {
             m_stateMachine = stateMachine;
             m_context = context;
-            m_battle = context.Battle;
+            m_battle = context.BattleContext.Battle;
             m_camera = context.CameraController;
             m_hoverModeController = context.HoverModeController;
             m_player = context.Player;
-            m_turnContext = (PlayerTurnContext)m_player.TurnContext;
+            m_turnController = (PlayerTurnController)m_player.TurnController;
         }
 
         public async Task EnterAsync(StatePayload payload)
         {
             m_battle.OnBattleEnded += HandleOnBattleEnded;
             m_battle.OnTurnSwitched += HandleTurnSwitched;
-            m_turnContext.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
-            m_turnContext.OnCombatActionExecuted += HandleOnCombatActionExecuted;
-            
-            m_camera.EnableManualMovement(m_context.DungeonController.CurrentRoom.RoomModel.OccupiedSpace);
-            m_player.CombatController.Enable();
+            m_turnController.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
+            m_turnController.OnCombatActionExecuted += HandleOnCombatActionExecuted;
 
-            await m_battle.Start(m_context.DungeonController.CurrentRoom, m_player);
+            Room room = m_context.DungeonController.CurrentRoom;
+            m_camera.EnableManualMovement(room.RoomModel.OccupiedSpace);
+            m_turnController.Enable();
+
+            IEnumerable<Entity> entities = m_context.BattleContext.Initializer.InitializeBattle(room, m_player);
+            await m_battle.Start(room, entities);
         }
 
         public Task ExitAsync()
@@ -49,10 +54,10 @@ namespace MagmaHeart.Core.StateMachine
 
             m_battle.OnBattleEnded -= HandleOnBattleEnded;
             m_battle.OnTurnSwitched -= HandleTurnSwitched;
-            m_turnContext.OnCombatActionExecutionStarted -= HandleOnCombatActionExecutionStarted;
-            m_turnContext.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
+            m_turnController.OnCombatActionExecutionStarted -= HandleOnCombatActionExecutionStarted;
+            m_turnController.OnCombatActionExecuted -= HandleOnCombatActionExecuted;
 
-            m_player.CombatController.Disable();
+            m_turnController.Disable();
 
             return Task.CompletedTask;
         }

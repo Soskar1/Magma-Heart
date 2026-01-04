@@ -1,5 +1,5 @@
 ﻿using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.StateMachine;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.StateMachine.States
 
         public async Task EnterAsync(StatePayload payload = null)
         {
-            Player player = m_context.Player;
+            Entity player = m_context.Player;
             DungeonController dungeon = m_context.DungeonController;
 
             player.gameObject.SetActive(true);

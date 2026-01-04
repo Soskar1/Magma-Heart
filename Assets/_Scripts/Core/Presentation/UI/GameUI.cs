@@ -1,7 +1,7 @@
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
-using MagmaHeart.Core.Entities.PlayableCharacters;
+using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input.Mouse;
 using UnityEngine;
@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private Battle m_battle;
 
-        public void Initialize(Player player, Battle battle, MouseHoverEngine mouseHoverEngine, BattleReward battleReward, IActionPreviewProvider previewProvider)
+        public void Initialize(Entity player, Battle battle, MouseHoverEngine mouseHoverEngine, BattleReward battleReward, IActionPreviewProvider previewProvider)
         {
             m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(player);

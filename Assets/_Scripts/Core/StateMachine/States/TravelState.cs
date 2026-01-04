@@ -1,6 +1,5 @@
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.StateMachine.States;
 using MagmaHeart.StateMachine;
@@ -26,7 +25,7 @@ namespace MagmaHeart.Core.StateMachine
         {
             TravelStatePayload travelPayload = payload as TravelStatePayload;
 
-            Player player = m_context.Player;
+            Entity player = m_context.Player;
             Room room = m_context.DungeonController.CurrentRoom;
 
             bool isEnteringRoom = travelPayload.Reason == TravelReason.EnterRoom;
@@ -43,7 +42,7 @@ namespace MagmaHeart.Core.StateMachine
             RoomTile end = room.GetRoomTile(endPosition);
             List<RoomTile> path = new List<RoomTile>() { start, end };
 
-            await m_context.EntityMovementService.MoveEntityAsync(player, path, m_travelSpeed);
+            await m_context.Services.MovementService.MoveEntityAsync(player, path, m_travelSpeed);
 
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)

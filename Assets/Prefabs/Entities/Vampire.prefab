@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 4048786791962460929}
   - component: {fileID: 8953363312132465647}
   - component: {fileID: 7877858315077463942}
-  - component: {fileID: 7230040011099025579}
   - component: {fileID: 2231722279970035536}
   - component: {fileID: 3524328875439062702}
   - component: {fileID: 6903404313580885979}
   - component: {fileID: 5516827876258706824}
+  - component: {fileID: 8028786616920570912}
   m_Layer: 0
   m_Name: Vampire
   m_TagString: Untagged
@@ -135,19 +135,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &7230040011099025579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5032676117287817146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f5fcfe251793904299c3fc7eb64a65b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_data: {fileID: 11400000, guid: 6acd40721a119ee469077e934b71f895, type: 2}
 --- !u!114 &2231722279970035536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,7 +160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91be4aa6fe6b4604db122b58d12c71a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 5
   m_changePointAtDistance: 0.001
 --- !u!114 &6903404313580885979
 MonoBehaviour:
@@ -201,6 +187,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_renderer: {fileID: 5052229711503148962}
   m_outline: {fileID: 2100000, guid: ca82768ce9f68f342ae4b5b871807fad, type: 2}
+--- !u!114 &8028786616920570912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5032676117287817146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eb9072e4e6a39b479f03da268b33b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_data: {fileID: 11400000, guid: 6acd40721a119ee469077e934b71f895, type: 2}
 --- !u!1 &7687301238384363710
 GameObject:
   m_ObjectHideFlags: 0

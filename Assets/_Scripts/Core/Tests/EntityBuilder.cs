@@ -1,7 +1,6 @@
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
@@ -50,10 +49,7 @@ namespace MagmaHeart.Core.Tests
             EntityModel model = new EntityModel(data, () => position.ToVector3Int(), m_isPlayer);
             m_scenario.Board.AddUnit(position, model);
             m_scenario.Board.ChangeNodeType(position, BoardNodeType.Obstacle);
-
-            EnemyCombatController combatController = new EnemyCombatController(model, null);
-
-            m_scenario.RegisterEntity(combatController);
+            m_scenario.RegisterEntity(model);
 
             return m_scenario;
         }

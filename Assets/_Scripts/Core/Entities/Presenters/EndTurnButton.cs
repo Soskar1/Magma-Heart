@@ -8,17 +8,17 @@ namespace MagmaHeart.Core.Entities.Presenters
     public class EndTurnButton : MonoBehaviour, IDisplayable
     {
         [SerializeField] private Button m_nextTurnButton;
-        private PlayerTurnContext m_turnContext;
+        private PlayerTurnController m_turnController;
 
-        public void Initialize(Player player)
+        public void Initialize(Entity player)
         {
-            m_turnContext = (PlayerTurnContext)player.TurnContext;
-            m_nextTurnButton.onClick.AddListener(player.TurnContext.EndTurn);
+            m_turnController = (PlayerTurnController)player.TurnController;
+            m_nextTurnButton.onClick.AddListener(player.TurnController.EndTurn);
 
-            m_turnContext.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
+            m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
         }
 
-        private void OnDisable() => m_turnContext.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
+        private void OnDisable() => m_turnController.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
 
         private void HandleOnCanExecuteActionsChanged(object obj, OnCanExecuteActionsChangedEventArgs args) => m_nextTurnButton.enabled = args.CanExecute;
 

@@ -20,7 +20,7 @@ namespace MagmaHeart.Core.Entities.Presenters
         private EnergyModel m_playerEnergy;
         private IActionPreviewProvider m_previewProvider;
 
-        public void Initialize(Player player, IActionPreviewProvider previewProvider)
+        public void Initialize(Entity player, IActionPreviewProvider previewProvider)
         { 
             m_crystalVisuals = new List<Image>();
             m_playerEnergy = player.Energy;

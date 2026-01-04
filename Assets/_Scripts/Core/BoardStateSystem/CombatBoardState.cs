@@ -1,21 +1,18 @@
 ﻿using MagmaHeart.AI.States;
-using MagmaHeart.Core.BoardStateSystem.Services;
 using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Spawning;
+using MagmaHeart.Core.Services;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
     public class CombatBoardState : ActualBoardState
     {
         public Room Room { get; init; }
-        public EntityMovementService MovementService { get; init; }
-        public EntityAttackService AttackService { get; init; }
+        public MagmaHeartServices Services { get; init; }
 
-        public CombatBoardState(Room room, MagmaHeartSpawner spawner, EntityMovementService movementService) : base(room)
+        public CombatBoardState(Room room, MagmaHeartServices services) : base(room)
         {
             Room = room;
-            MovementService = movementService;
-            AttackService = new EntityAttackService(this, spawner);
+            Services = services;
         }
     }
 }
