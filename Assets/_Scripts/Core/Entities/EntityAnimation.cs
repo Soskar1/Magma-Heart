@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -11,6 +10,8 @@ namespace MagmaHeart.Core.Entities
         private readonly int m_attackAnimationID = Animator.StringToHash("Attack");
 
         private TaskCompletionSource<bool> m_animationTrigger;
+
+        public void Initialize(RuntimeAnimatorController controller) => Animator.runtimeAnimatorController = controller;
 
         public int GetIdleAnimation() => m_idleAnimationID;
         public void PlayIdleAnimation() => CurrentAnimationState = m_idleAnimationID;

@@ -14,15 +14,17 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly EntitySpawner m_entitySpawner;
         private readonly AIEngine m_aiEngine;
+        private readonly RoomGrid m_grid;
         private readonly Random m_random;
         private readonly float m_minDistanceFromPlayer;
 
-        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, float minDistanceFromPlayer)
+        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer)
         {
             m_entitySpawner = entitySpawner;
             m_aiEngine = aiEngine;
             m_random = random;
             m_minDistanceFromPlayer = minDistanceFromPlayer;
+            m_grid = grid;
         }
 
         public IEnumerable<Entity> InitializeBattle(Room room, Entity player, List<EntityData> enemyPool)
@@ -41,7 +43,7 @@ namespace MagmaHeart.Core.CombatSystem
                     dungeonTile = room.RoomModel.GetTileAtIndex(m_random.Next(room.RoomModel.TileCount));
                 } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
 
-                entity.transform.position = dungeonTile.Position.ToVector3();
+                entity.transform.position = m_grid.ToTileCenter(dungeonTile.Position);
             }
 
             return entities;

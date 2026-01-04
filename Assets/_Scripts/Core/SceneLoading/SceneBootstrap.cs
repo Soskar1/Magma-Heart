@@ -15,6 +15,7 @@ using MagmaHeart.Core.Spawning;
 using MagmaHeart.Core.StateMachine;
 using MagmaHeart.DungeonGeneration;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -32,6 +33,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
         [Header("Dungeon")]
+        [SerializeField] private List<EntityData> m_enemyPool;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRenderer;
         [SerializeField] private Tilemap m_dungeonTilemap;
         [SerializeField] private Grid m_dungeonGrid;
@@ -41,7 +43,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private TileBase m_wallTile;
 
-        [Header("SpawnService Settings")]
+        [Header("Spawner Settings")]
         [SerializeField] private Entity m_entityPrefab;
         [SerializeField] private Projectile m_projectilePrefab;
         [SerializeField] private float m_minDistanceFromPlayer;
@@ -83,7 +85,7 @@ namespace MagmaHeart.Core.SceneLoading
             DungeonGenerator dungeonGenerator = m_dungeonInstaller.Install(random, m_configFileName);
 
             RoomGrid grid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
-            DungeonController dungeonController = new DungeonController(dungeonGenerator, grid);
+            DungeonController dungeonController = new DungeonController(dungeonGenerator, grid, m_enemyPool);
             m_roomRenderer.Initialize(dungeonController);
 
             m_aiInstaller = new AIInstaller();
@@ -95,7 +97,7 @@ namespace MagmaHeart.Core.SceneLoading
             EntityMovementService entityMovementService = new EntityMovementService();
 
             m_battleInstaller = new BattleInstaller();
-            BattleContext battleContext = m_battleInstaller.Install(spawner, entityMovementService, aiContext.AiEngine, random, m_minDistanceFromPlayer);
+            BattleContext battleContext = m_battleInstaller.Install(spawner, entityMovementService, aiContext.AiEngine, random, grid, m_minDistanceFromPlayer);
 
             m_actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
             IActionPreviewProvider previewProvider = m_actionPreviewInstaller.Install(aiContext.ActionDatabase, battleContext.Battle, dungeonController);
@@ -112,7 +114,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_gameUI.Initialize(player, battleContext.Battle, inputContext.MouseHoverEngine, battleContext.BattleReward, previewProvider);
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, entityMovementService, camera, m_battle, battleReward, m_gameUI);
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, entityMovementService, camera, battleContext, m_gameUI);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
             await stateMachine.Start();
         }

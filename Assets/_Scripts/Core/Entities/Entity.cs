@@ -29,8 +29,10 @@ namespace MagmaHeart.Core.Entities
 
             TileBasedMovement = GetComponent<TileBasedMovement>();
             Facing = GetComponent<Facing>();
-            Animation = GetComponent<EntityAnimation>();
             Outline = GetComponent<Outline>();
+
+            Animation = GetComponent<EntityAnimation>();
+            Animation.Initialize(data.AnimatorController);
         }
 
         private void Update() => Animation.PlayAnimations();

@@ -6,7 +6,6 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.StateMachine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -44,7 +43,7 @@ namespace MagmaHeart.Core.StateMachine
             m_camera.EnableManualMovement(room.RoomModel.OccupiedSpace);
             m_turnController.Enable();
 
-            IEnumerable<Entity> entities = m_context.BattleContext.Initializer.InitializeBattle(room, m_player, );
+            IEnumerable<Entity> entities = m_context.BattleContext.Initializer.InitializeBattle(room, m_player, m_context.DungeonController.EnemyPool);
             await m_battle.Start(room, entities);
         }
 

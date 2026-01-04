@@ -48,6 +48,11 @@ namespace MagmaHeart.Core.CombatSystem
             foreach (Entity entity in sortedEntities)
             {
                 m_currentRoom.AddEntityToInspect(entity);
+
+                // TODO: handle player properly
+                if (entity.Model.IsPlayer)
+                    continue;
+
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
                 {
                     HandleEntityOnHealthChanged(entity.Model, args);

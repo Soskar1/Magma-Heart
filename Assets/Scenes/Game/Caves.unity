@@ -3330,9 +3330,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1b2f813e6936a489bf89fc4883584a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerPrefab: {fileID: 7422606736354459837, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_playerData: {fileID: 11400000, guid: 9606ac1051baff841954357032ef2ef7, type: 2}
   m_cameraPrefab: {fileID: 3860478200218055625, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
   m_mouseListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
+  m_enemyPool:
+  - {fileID: 11400000, guid: f0a0ab01c3131e3498969e2f6c87a9cb, type: 2}
+  - {fileID: 11400000, guid: 6acd40721a119ee469077e934b71f895, type: 2}
   m_combatTilemapRenderer: {fileID: 8388963511706051692}
   m_dungeonTilemap: {fileID: 540808438}
   m_dungeonGrid: {fileID: 1863885643486044408}
@@ -3341,10 +3344,8 @@ MonoBehaviour:
   m_configFileName: Caves.LocationGenerator
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 4ca55881ba0901544934d33a5252ef98, type: 2}
-  m_projectilePrefab: {fileID: 4946381930735749946, guid: ad117eca505b1a649806b6003fcd065c, type: 3}
-  m_enemyPrefabs:
-  - {fileID: 249401084055553320, guid: 742862497be07974a8a888e2f832ee26, type: 3}
-  - {fileID: 5032676117287817146, guid: ff74eacc29d495a41a9947d7fafe5e76, type: 3}
+  m_entityPrefab: {fileID: 7422606736354459837, guid: 4207caed466d91c4c94cd751e08cbce4, type: 3}
+  m_projectilePrefab: {fileID: 5171675335557925640, guid: ad117eca505b1a649806b6003fcd065c, type: 3}
   m_minDistanceFromPlayer: 2
   m_gameUI: {fileID: 1222064955}
   m_graphicRaycaster: {fileID: 1666368229}
