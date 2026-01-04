@@ -36,6 +36,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             m_spawner = spawner;
             m_movementService = movementService;
+            m_turnContext = new MagmaHeartTurnContext();
         }
 
         public async Task Start(Room room, Entity player)

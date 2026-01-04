@@ -536,6 +536,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2077,6 +2078,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2581,6 +2583,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3327,7 +3330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1b2f813e6936a489bf89fc4883584a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playerPrefab: {fileID: 1904451890846969, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
+  m_playerPrefab: {fileID: 7422606736354459837, guid: b118db530cccfa249b6c899eaabda4e9, type: 3}
   m_cameraPrefab: {fileID: 3860478200218055625, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
   m_mouseListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
   m_combatTilemapRenderer: {fileID: 8388963511706051692}
@@ -3404,6 +3407,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
