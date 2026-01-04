@@ -16,9 +16,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Interaction",
+                    "name": "DebugWindow",
                     "type": "Button",
-                    "id": "8d44fbe8-fddf-4c0a-81e3-51d906d0b6ab",
+                    "id": "2f852bef-2306-4b39-9086-a8a6ae775348",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
@@ -83,12 +83,12 @@
                 },
                 {
                     "name": "",
-                    "id": "b43d7d4a-d6be-46c1-86a9-2cb0d2387d9c",
-                    "path": "<Keyboard>/e",
+                    "id": "9732e0db-ad68-45f4-9972-594def0cf5e4",
+                    "path": "<Keyboard>/f11",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Interaction",
+                    "action": "DebugWindow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
