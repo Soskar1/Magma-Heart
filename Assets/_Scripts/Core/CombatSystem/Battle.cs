@@ -39,27 +39,23 @@ namespace MagmaHeart.Core.CombatSystem
             m_turnContext = new MagmaHeartTurnContext();
         }
 
-        public async Task Start(Room room, Entity player)
+        public async Task Start(Room room, IEnumerable<Entity> entities)
         {
             m_battleEnded = false;
             m_currentRoom = room;
 
-            m_currentRoom.AddEntityToInspect(player);
-            for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entities);
+            foreach (Entity entity in sortedEntities)
             {
-                Entity spawnedEntity = m_spawner.EnemySpawner.SpawnInRoomTile(room.RoomModel, player.transform.position);
-                m_currentRoom.AddEntityToInspect(spawnedEntity);
-
+                m_currentRoom.AddEntityToInspect(entity);
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
                 {
-                    HandleEntityOnHealthChanged(spawnedEntity.Model, args);
+                    HandleEntityOnHealthChanged(entity.Model, args);
                 });
 
-                m_healthHandlers[spawnedEntity.Model] = handler;
-                spawnedEntity.Health.OnHealthChanged += handler;
+                m_healthHandlers[entity.Model] = handler;
+                entity.Health.OnHealthChanged += handler;
             }
-
-            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(m_currentRoom.Entities);
 
             m_currentTurnOrder = new TurnOrder(sortedEntities);
             m_currentBoardState = new CombatBoardState(m_currentRoom, m_spawner, m_movementService);
