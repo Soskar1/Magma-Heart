@@ -40,7 +40,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Services
 
         private async Task<EntityModel> WaitForProjectileHit(Entity attacker, Entity target)
         {
-            Projectile projectile = m_spawner.ProjectileSpawner.Spawn(attacker.transform.position, attacker.Model);
+            Projectile projectile = m_spawner.ProjectileSpawner.Spawn(attacker.Model);
+            projectile.transform.position = attacker.transform.position;
 
             Vector2 direction = target.transform.position - attacker.transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

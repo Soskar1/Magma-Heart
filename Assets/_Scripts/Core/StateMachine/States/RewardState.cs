@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.StateMachine
 
         public Task EnterAsync(StatePayload payload)
         {
-            m_context.BattleReward.Calculate();
+            m_context.BattleContext.BattleReward.Calculate();
             m_context.Player.Animation.PlayIdleAnimation();
 
             m_context.UI.RewardUI.OnRewardPicked += HandleOnRewardPicked;

@@ -4,5 +4,5 @@ using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.AI
 {
-    public record AIContext(ActionDatabase ActionDatabase, AIEngine aiEngine, MagmaHeartTurnContext TurnContext);
+    public record AIContext(ActionDatabase ActionDatabase, AIEngine AiEngine, MagmaHeartTurnContext TurnContext);
 }

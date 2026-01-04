@@ -15,8 +15,7 @@ namespace MagmaHeart.Core.SceneLoading
         HoverModeController HoverModeController,
         EntityMovementService EntityMovementService,
         CameraController CameraController,
-        Battle Battle,
-        BattleReward BattleReward,
+        BattleContext BattleContext,
         GameUI UI
         );
 }

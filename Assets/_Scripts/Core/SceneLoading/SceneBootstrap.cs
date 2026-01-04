@@ -15,7 +15,6 @@ using MagmaHeart.Core.Spawning;
 using MagmaHeart.Core.StateMachine;
 using MagmaHeart.DungeonGeneration;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -26,7 +25,7 @@ namespace MagmaHeart.Core.SceneLoading
     public class SceneBootstrap : MonoBehaviour
     {
         [Header("Player")]
-        [SerializeField] private Entity m_playerPrefab;
+        [SerializeField] private EntityData m_playerData;
         [SerializeField] private CameraController m_cameraPrefab;
 
         [Header("Input")]
@@ -43,8 +42,8 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private TileBase m_wallTile;
 
         [Header("SpawnService Settings")]
-        [SerializeField] private GameObject m_projectilePrefab;
-        [SerializeField] private List<GameObject> m_enemyPrefabs;
+        [SerializeField] private Entity m_entityPrefab;
+        [SerializeField] private Projectile m_projectilePrefab;
         [SerializeField] private float m_minDistanceFromPlayer;
 
         [Header("UI")]
@@ -53,8 +52,6 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("Travel")]
         [SerializeField] private int m_travelSpeed;
-
-        private Battle m_battle;
 
         private Inventory m_inventory;
         private HoverModeController m_hoverModeController;
@@ -65,8 +62,7 @@ namespace MagmaHeart.Core.SceneLoading
         private PlayerInstaller m_playerInstaller;
         private SpawnerInstaller m_spawnerInstaller;
         private ActionPreviewInstaller m_actionPreviewInstaller;
-
-        private AIContext m_aiContext;
+        private BattleInstaller m_battleInstaller;
 
         public async void Awake()
         {
@@ -91,31 +87,29 @@ namespace MagmaHeart.Core.SceneLoading
             m_roomRenderer.Initialize(dungeonController);
 
             m_aiInstaller = new AIInstaller();
-            m_aiContext = m_aiInstaller.Install();
+            AIContext aiContext = m_aiInstaller.Install();
 
             m_spawnerInstaller = new SpawnerInstaller();
-            MagmaHeartSpawner spawner = m_spawnerInstaller.Install(m_enemyPrefabs, m_projectilePrefab, m_aiContext, grid, m_minDistanceFromPlayer);
-
+            MagmaHeartSpawner spawner = m_spawnerInstaller.Install(m_entityPrefab, m_projectilePrefab, grid);
+            
             EntityMovementService entityMovementService = new EntityMovementService();
-            m_battle = new Battle(spawner, entityMovementService);
+
+            m_battleInstaller = new BattleInstaller();
+            BattleContext battleContext = m_battleInstaller.Install(spawner, entityMovementService, aiContext.AiEngine, random, m_minDistanceFromPlayer);
 
             m_actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
-            IActionPreviewProvider previewProvider = m_actionPreviewInstaller.Install(m_aiContext.ActionDatabase, m_battle, dungeonController);
+            IActionPreviewProvider previewProvider = m_actionPreviewInstaller.Install(aiContext.ActionDatabase, battleContext.Battle, dungeonController);
 
             m_playerInstaller = new PlayerInstaller();
-            Entity player = m_playerInstaller.Install(m_playerPrefab, inputContext, grid, previewProvider);
-            player.gameObject.SetActive(false);
+            Entity player = m_playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, previewProvider);
 
             CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
-            camera.Initialize(player.transform, inputContext.UserInput, m_battle);
+            camera.Initialize(player.transform, inputContext.UserInput, battleContext.Battle);
 
             m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, dungeonController, m_graphicRaycaster, previewProvider, m_combatTilemapRenderer);
             m_hoverModeController.UseRaycastHover();
 
-            ArtifactDatabase database = new ArtifactDatabase();
-            BattleReward battleReward = new BattleReward(database);
-
-            m_gameUI.Initialize(player, m_battle, inputContext.MouseHoverEngine, battleReward, previewProvider);
+            m_gameUI.Initialize(player, battleContext.Battle, inputContext.MouseHoverEngine, battleContext.BattleReward, previewProvider);
             m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, entityMovementService, camera, m_battle, battleReward, m_gameUI);

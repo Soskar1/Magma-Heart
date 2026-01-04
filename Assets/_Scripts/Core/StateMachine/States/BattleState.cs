@@ -1,10 +1,13 @@
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.StateMachine;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.StateMachine
@@ -23,7 +26,7 @@ namespace MagmaHeart.Core.StateMachine
         {
             m_stateMachine = stateMachine;
             m_context = context;
-            m_battle = context.Battle;
+            m_battle = context.BattleContext.Battle;
             m_camera = context.CameraController;
             m_hoverModeController = context.HoverModeController;
             m_player = context.Player;
@@ -36,11 +39,13 @@ namespace MagmaHeart.Core.StateMachine
             m_battle.OnTurnSwitched += HandleTurnSwitched;
             m_turnController.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
             m_turnController.OnCombatActionExecuted += HandleOnCombatActionExecuted;
-            
-            m_camera.EnableManualMovement(m_context.DungeonController.CurrentRoom.RoomModel.OccupiedSpace);
+
+            Room room = m_context.DungeonController.CurrentRoom;
+            m_camera.EnableManualMovement(room.RoomModel.OccupiedSpace);
             m_turnController.Enable();
 
-            await m_battle.Start(m_context.DungeonController.CurrentRoom, m_player);
+            IEnumerable<Entity> entities = m_context.BattleContext.Initializer.InitializeBattle(room, m_player, );
+            await m_battle.Start(room, entities);
         }
 
         public Task ExitAsync()
