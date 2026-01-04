@@ -18,11 +18,12 @@ namespace MagmaHeart.AI.Reasoning
         {
             m_strategy = strategy;
             m_depth = lookAhead;
+            m_turnContext = turnContext;
 
             m_planner = new Planner(strategy, database);
         }
 
-        public BestPlan ChooseBestMove(CircularList<AIUnitModel> unitTurns, ActualBoardState gameState)
+        public BestPlan ChooseBestMove(ChainNode<AIUnitModel> unitTurns, ActualBoardState gameState)
         {  
             SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
 
@@ -31,16 +32,15 @@ namespace MagmaHeart.AI.Reasoning
             float bestValue = float.MinValue;
 
             BestPlan bestPlan = null;
-            List<Plan> plans = m_planner.GetPlans(unitTurns.Head);
+            List<Plan> plans = m_planner.GetPlans(unitTurns.Value);
 
             foreach (Plan plan in plans)
             {
-                bool isExecuted = plan.TryExecute(simulation, unitTurns.Head);
+                bool isExecuted = plan.TryExecute(simulation, unitTurns.Value);
                 if (!isExecuted)
                     continue;
 
-                unitTurns.Next();
-                float evaluation = Minimax(simulation, unitTurns, m_depth - 1, alpha, beta);
+                float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
 
                 plan.Undo(simulation);
 
@@ -56,9 +56,9 @@ namespace MagmaHeart.AI.Reasoning
             return bestPlan;
         }
 
-        private float Minimax(SimulatedBoardState simulation, CircularList<AIUnitModel> turns, int currentDepth, float alpha, float beta)
+        private float Minimax(SimulatedBoardState simulation, ChainNode<AIUnitModel> turns, int currentDepth, float alpha, float beta)
         {
-            AIUnitModel currentUnit = turns.Head;
+            AIUnitModel currentUnit = turns.Value;
             IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(currentUnit);
 
             if (currentDepth <= 0 || !isAlive)
@@ -77,8 +77,7 @@ namespace MagmaHeart.AI.Reasoning
                     if (!isExecuted)
                         continue;
 
-                    turns.Next();
-                    float evaluation = Minimax(simulation, turns, currentDepth - 1, alpha, beta);
+                    float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
                     plan.Undo(simulation);
 
@@ -102,8 +101,7 @@ namespace MagmaHeart.AI.Reasoning
                     if (!isExecuted)
                         continue;
 
-                    turns.Next();
-                    float evaluation = Minimax(simulation, turns, currentDepth - 1, alpha, beta);
+                    float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
                     plan.Undo(simulation);
 
