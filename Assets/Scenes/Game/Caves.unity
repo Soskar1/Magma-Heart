@@ -3333,15 +3333,13 @@ MonoBehaviour:
   m_playerData: {fileID: 11400000, guid: 9606ac1051baff841954357032ef2ef7, type: 2}
   m_cameraPrefab: {fileID: 3860478200218055625, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
   m_mouseListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
-  m_enemyPool:
-  - {fileID: 11400000, guid: f0a0ab01c3131e3498969e2f6c87a9cb, type: 2}
-  - {fileID: 11400000, guid: 6acd40721a119ee469077e934b71f895, type: 2}
+  m_locations:
+  - {fileID: 11400000, guid: c633427e0bdd30f4d898d126ec05d286, type: 2}
   m_combatTilemapRenderer: {fileID: 8388963511706051692}
   m_dungeonTilemap: {fileID: 540808438}
   m_dungeonGrid: {fileID: 1863885643486044408}
   m_roomRenderer: {fileID: 8388963511706051693}
   m_seed: -1
-  m_configFileName: Caves.LocationGenerator
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 4ca55881ba0901544934d33a5252ef98, type: 2}
   m_entityPrefab: {fileID: 7422606736354459837, guid: 4207caed466d91c4c94cd751e08cbce4, type: 3}

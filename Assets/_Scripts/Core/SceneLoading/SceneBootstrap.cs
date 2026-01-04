@@ -6,6 +6,7 @@ using MagmaHeart.Core.BoardStateSystem.Actions.Preview;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Dungeon.Data;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
@@ -33,13 +34,12 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
         [Header("Dungeon")]
-        [SerializeField] private List<EntityData> m_enemyPool;
+        [SerializeField] private List<LocationData> m_locations;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRenderer;
         [SerializeField] private Tilemap m_dungeonTilemap;
         [SerializeField] private Grid m_dungeonGrid;
         [SerializeField] private RoomRenderer m_roomRenderer;
         [SerializeField] private int m_seed;
-        [SerializeField] private string m_configFileName;
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private TileBase m_wallTile;
 
@@ -59,7 +59,6 @@ namespace MagmaHeart.Core.SceneLoading
         private HoverModeController m_hoverModeController;
 
         private InputInstaller m_inputInstaller;
-        private DungeonInstaller m_dungeonInstaller;
         private AIInstaller m_aiInstaller;
         private PlayerInstaller m_playerInstaller;
         private ActionPreviewInstaller m_actionPreviewInstaller;
@@ -82,11 +81,8 @@ namespace MagmaHeart.Core.SceneLoading
 
             System.Random random = new System.Random(m_seed);
 
-            m_dungeonInstaller = new DungeonInstaller();
-            DungeonGenerator dungeonGenerator = m_dungeonInstaller.Install(random, m_configFileName);
-
             RoomGrid grid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
-            DungeonController dungeonController = new DungeonController(dungeonGenerator, grid, m_enemyPool);
+            DungeonController dungeonController = new DungeonController(grid, m_locations, random);
             m_roomRenderer.Initialize(dungeonController);
 
             m_aiInstaller = new AIInstaller();
@@ -124,7 +120,6 @@ namespace MagmaHeart.Core.SceneLoading
         public void OnDisable()
         {
             m_inputInstaller.Dispose();
-            m_dungeonInstaller.Dispose();
             m_aiInstaller.Dispose();
             m_playerInstaller.Dispose();
             m_spawnServiceInstaller.Dispose();

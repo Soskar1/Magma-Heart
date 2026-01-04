@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon.Data
 {
@@ -7,9 +6,13 @@ namespace MagmaHeart.Core.Dungeon.Data
     public class LocationData : ScriptableObject
     {
         [SerializeField] private string m_roomGenerationConfigFileName;
-        [SerializeField] private List<RoomData> m_rooms;
+        [SerializeField] private int m_roomsInLocation = 8;
+        [SerializeField] private RoomData m_monsterRoom;
+        [SerializeField] private RoomData m_bossRoom;
 
         public string RoomGenerationConfigFileName => m_roomGenerationConfigFileName;
-        public List<RoomData> Rooms => m_rooms;
+        public int RoomsInLocation => m_roomsInLocation;
+        public RoomData BossRoom => m_bossRoom;
+        public RoomData MonsterRoom => m_monsterRoom;
     }
 }

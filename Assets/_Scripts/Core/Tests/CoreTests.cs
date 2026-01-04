@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Tests
         public void SetUp()
         {
             RoomModel roomModel = RoomPresets.CreateEmptyRoom(m_boardDimensions);
-            Room room = new Room(roomModel, null);
+            Room room = new Room(roomModel, null, null);
             State = new CombatBoardState(room, null);
         }
     }

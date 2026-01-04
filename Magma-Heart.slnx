@@ -6,8 +6,6 @@
   <Project Path="MagmaHeart.Extensions.csproj" />
   <Project Path="MagmaHeart.DungeonGeneration.csproj" />
   <Project Path="MagmaHeart.Core.Tests.csproj" />
-  <Project Path="MagmaHeart.Spawning.Tests.csproj" />
-  <Project Path="MagmaHeart.Spawning.csproj" />
   <Project Path="MagmaHeart.Collections.Tests.csproj" />
   <Project Path="MagmaHeart.BreadthFirstSearch.Tests.csproj" />
   <Project Path="MagmaHeart.Bresenham.csproj" />

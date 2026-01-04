@@ -22,9 +22,10 @@ namespace MagmaHeart.Core.Dungeon
         public IEnumerable<EntityModel> Models => m_entities.Keys;
         public IEnumerable<Entity> Entities => m_entities.Values;
 
-        public Room(RoomModel model, RoomGrid grid) : base(BoardGraphBuilder.GenerateBoardGraph(model))
+        public Room(RoomModel model, RoomData roomData, RoomGrid grid) : base(BoardGraphBuilder.GenerateBoardGraph(model))
         {
             RoomModel = model;
+            RoomData = roomData;
             m_grid = grid;
             m_entities = new Dictionary<EntityModel, Entity>();
         }

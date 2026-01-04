@@ -27,8 +27,9 @@ namespace MagmaHeart.Core.CombatSystem
             m_grid = grid;
         }
 
-        public IEnumerable<Entity> InitializeBattle(Room room, Entity player, List<EntityData> enemyPool)
+        public IEnumerable<Entity> InitializeBattle(Room room, Entity player)
         {
+            List<EntityData> enemyPool = room.RoomData.EnemyPool;
             List<Entity> entities = new List<Entity>() { player };
             for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
             {
