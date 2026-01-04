@@ -1,3 +1,4 @@
+using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
@@ -15,7 +16,7 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
-        private readonly MagmaHeartTurnContext m_turnContext;
+        private readonly TurnContext m_turnContext;
         private readonly MagmaHeartServices m_services;
 
         private Room m_currentRoom;
@@ -31,10 +32,10 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(MagmaHeartServices services)
+        public Battle(MagmaHeartServices services, TurnContext turnContext)
         {
             m_services = services;
-            m_turnContext = new MagmaHeartTurnContext();
+            m_turnContext = turnContext;
         }
 
         public async Task Start(Room room, IEnumerable<Entity> entities)

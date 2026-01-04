@@ -99,7 +99,7 @@ namespace MagmaHeart.Core.SceneLoading
             MagmaHeartServices services = m_serviceInstaller.Install(spawner);
 
             m_battleInstaller = new BattleInstaller();
-            BattleContext battleContext = m_battleInstaller.Install(services, aiContext.AiEngine, random, grid, m_minDistanceFromPlayer);
+            BattleContext battleContext = m_battleInstaller.Install(services, aiContext, random, grid, m_minDistanceFromPlayer);
 
             m_actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
             IActionPreviewProvider previewProvider = m_actionPreviewInstaller.Install(aiContext.ActionDatabase, battleContext.Battle, dungeonController);
