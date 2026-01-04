@@ -102,9 +102,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Interaction"",
+                    ""name"": ""DebugWindow"",
                     ""type"": ""Button"",
-                    ""id"": ""8d44fbe8-fddf-4c0a-81e3-51d906d0b6ab"",
+                    ""id"": ""2f852bef-2306-4b39-9086-a8a6ae775348"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press"",
@@ -169,12 +169,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b43d7d4a-d6be-46c1-86a9-2cb0d2387d9c"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""id"": ""9732e0db-ad68-45f4-9972-594def0cf5e4"",
+                    ""path"": ""<Keyboard>/f11"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Interaction"",
+                    ""action"": ""DebugWindow"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -853,7 +853,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_Interaction = m_Player.FindAction("Interaction", throwIfNotFound: true);
+        m_Player_DebugWindow = m_Player.FindAction("DebugWindow", throwIfNotFound: true);
         // Mouse
         m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
         m_Mouse_MouseScroll = m_Mouse.FindAction("MouseScroll", throwIfNotFound: true);
@@ -954,7 +954,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Interaction;
+    private readonly InputAction m_Player_DebugWindow;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -971,9 +971,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Move => m_Wrapper.m_Player_Move;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Interaction".
+        /// Provides access to the underlying input action "Player/DebugWindow".
         /// </summary>
-        public InputAction @Interaction => m_Wrapper.m_Player_Interaction;
+        public InputAction @DebugWindow => m_Wrapper.m_Player_DebugWindow;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1003,9 +1003,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Interaction.started += instance.OnInteraction;
-            @Interaction.performed += instance.OnInteraction;
-            @Interaction.canceled += instance.OnInteraction;
+            @DebugWindow.started += instance.OnDebugWindow;
+            @DebugWindow.performed += instance.OnDebugWindow;
+            @DebugWindow.canceled += instance.OnDebugWindow;
         }
 
         /// <summary>
@@ -1020,9 +1020,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Interaction.started -= instance.OnInteraction;
-            @Interaction.performed -= instance.OnInteraction;
-            @Interaction.canceled -= instance.OnInteraction;
+            @DebugWindow.started -= instance.OnDebugWindow;
+            @DebugWindow.performed -= instance.OnDebugWindow;
+            @DebugWindow.canceled -= instance.OnDebugWindow;
         }
 
         /// <summary>
@@ -1449,12 +1449,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Interaction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "DebugWindow" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnInteraction(InputAction.CallbackContext context);
+        void OnDebugWindow(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Mouse" which allows adding and removing callbacks.

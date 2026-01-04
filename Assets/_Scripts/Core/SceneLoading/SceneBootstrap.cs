@@ -80,7 +80,7 @@ namespace MagmaHeart.Core.SceneLoading
                 m_seed = Environment.TickCount;
 
             System.Random random = new System.Random(m_seed);
-            m_debugUI.Initialize(m_seed);
+            m_debugUI.Initialize(inputContext.UserInput, m_seed);
 
             RoomGrid grid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
             DungeonController dungeonController = new DungeonController(grid, m_locations, random);
@@ -130,6 +130,8 @@ namespace MagmaHeart.Core.SceneLoading
 
             m_hoverModeController.Disable();
             m_inventory.Disable();
+
+            m_debugUI.Disable();
         }
     }
 }

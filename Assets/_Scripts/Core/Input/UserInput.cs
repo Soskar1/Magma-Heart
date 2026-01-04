@@ -11,10 +11,10 @@ namespace MagmaHeart.Core.Input
         private Controls.MouseActions Mouse => Controls.Mouse;
 
         public event EventHandler<OnMovementKeyPressedEventArgs> OnMovementKeyPressed;
-        public event EventHandler OnInteractionKeyPressed;
         public event EventHandler<OnMouseScrollEventArgs> OnMouseScroll;
         public event EventHandler<OnMousePositionChangedEventArgs> OnMousePositionChanged;
         public event EventHandler OnLeftMouseButtonClick;
+        public event EventHandler OnDebugButtonClick;
 
         public UserInput()
         {
@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.Input
         {
             Player.Move.performed += HandleMovement;
             Player.Move.canceled += HandleMovement;
-            Player.Interaction.performed += HandleInteraction;
+            Player.DebugWindow.performed += HandleOnDebugButtonClick;
 
             Mouse.MouseScroll.performed += HandleMouseScroll;
             Mouse.MouseScroll.canceled += HandleMouseScroll;
@@ -44,7 +44,7 @@ namespace MagmaHeart.Core.Input
         {
             Player.Move.performed -= HandleMovement;
             Player.Move.canceled -= HandleMovement;
-            Player.Interaction.performed -= HandleInteraction;
+            Player.DebugWindow.performed -= HandleOnDebugButtonClick;
 
             Mouse.MouseScroll.performed -= HandleMouseScroll;
             Mouse.MouseScroll.canceled -= HandleMouseScroll;
@@ -77,8 +77,6 @@ namespace MagmaHeart.Core.Input
             OnMouseScroll?.Invoke(this, args);
         }
 
-        private void HandleInteraction(InputAction.CallbackContext context) => OnInteractionKeyPressed?.Invoke(this, EventArgs.Empty);
-
         private void HandleMousePosition(InputAction.CallbackContext context)
         {
             Vector2 position = Mouse.MousePosition.ReadValue<Vector2>();
@@ -88,5 +86,7 @@ namespace MagmaHeart.Core.Input
         }
 
         private void HandleLeftMouseButtonClick(InputAction.CallbackContext context) => OnLeftMouseButtonClick?.Invoke(this, EventArgs.Empty);
+
+        private void HandleOnDebugButtonClick(InputAction.CallbackContext context) => OnDebugButtonClick?.Invoke(this, EventArgs.Empty);
     }
 }
