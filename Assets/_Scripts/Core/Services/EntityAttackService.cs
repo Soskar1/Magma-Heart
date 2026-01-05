@@ -18,6 +18,9 @@ namespace MagmaHeart.Core.Services
 
         public async Task AttackEntityAsync(CombatBoardState boardState, Entity attacker, Entity target, float damage, AttackType attackType, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return;
+
             int targetX = target.Model.GetCurrentTilePosition().x;
             int attackerX = attacker.Model.GetCurrentTilePosition().x;
             attacker.Facing.TryUpdateFacing(targetX - attackerX);

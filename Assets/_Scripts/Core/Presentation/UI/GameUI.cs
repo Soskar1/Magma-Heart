@@ -16,6 +16,7 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private RewardUI m_rewardUI;
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_battleTurnOrder;
+        [SerializeField] private GameOverUI m_gaveOverUI;
 
         public RewardUI RewardUI => m_rewardUI;
 
@@ -29,6 +30,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_entityInfoUI.Initialize(mouseHoverEngine, battle);
             m_battleTurnOrder.Initialize(battle);
             m_rewardUI.Initialize(battleReward);
+            m_gaveOverUI.Initialize(battle);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;

@@ -48,10 +48,6 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 m_currentRoom.AddEntityToInspect(entity);
 
-                // TODO: handle player properly
-                if (entity.Model.IsPlayer)
-                    continue;
-
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
                 {
                     HandleEntityOnHealthChanged(entity.Model, args);
@@ -83,7 +79,8 @@ namespace MagmaHeart.Core.CombatSystem
                 await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
                 await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
 
-                m_currentTurnOrder.Next();
+                if (!m_battleEnded)
+                    m_currentTurnOrder.Next();
             }
         }
 
@@ -127,15 +124,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void End(bool isPlayerVictory)
         {
-            if (isPlayerVictory)
-            {
-
-            }
-            else
-            {
-                // TODO: Handle player defeat
-            }
-
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
             foreach (Entity entity in leftEntities)
             {
