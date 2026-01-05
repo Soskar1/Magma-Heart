@@ -1,4 +1,4 @@
-﻿using Assets._Scripts.Core.Artifacts.StatModifiers;
+﻿using MagmaHeart.Core.Artifacts.StatModifiers;
 using System.Collections.Generic;
 using UnityEngine;
 
