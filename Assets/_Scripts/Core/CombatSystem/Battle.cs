@@ -48,10 +48,6 @@ namespace MagmaHeart.Core.CombatSystem
             {
                 m_currentRoom.AddEntityToInspect(entity);
 
-                // TODO: handle player properly
-                if (entity.Model.IsPlayer)
-                    continue;
-
                 EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
                 {
                     HandleEntityOnHealthChanged(entity.Model, args);
@@ -127,15 +123,6 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void End(bool isPlayerVictory)
         {
-            if (isPlayerVictory)
-            {
-
-            }
-            else
-            {
-                // TODO: Handle player defeat
-            }
-
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
             foreach (Entity entity in leftEntities)
             {
