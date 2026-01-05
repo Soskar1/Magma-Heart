@@ -1,6 +1,6 @@
 namespace MagmaHeart.AI.Actions
 {
-    public record ActionArgs(AIUnitModel Executor, ActionData Data);
-    public record ActionArgs<TUnit>(TUnit TypedExecutor, ActionData Data) : ActionArgs(TypedExecutor, Data)
+    public record ActionArgs(AIUnitModel Executor);
+    public record ActionArgs<TUnit>(TUnit TypedExecutor) : ActionArgs(TypedExecutor)
         where TUnit : AIUnitModel;
 }

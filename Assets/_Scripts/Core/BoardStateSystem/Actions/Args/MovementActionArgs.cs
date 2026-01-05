@@ -5,5 +5,5 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public record MovementActionArgs(EntityModel TypedExecutor, Vector2 SourceTile, Vector2 TargetTile, MovementActionData MovementActionData) : ActionArgs<EntityModel>(TypedExecutor, MovementActionData);
+    public record MovementActionArgs(EntityModel TypedExecutor, Vector2 SourceTile, Vector2 TargetTile, MovementActionData MovementActionData) : ActionArgs<EntityModel>(TypedExecutor);
 }

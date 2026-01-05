@@ -130,7 +130,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             EngageActionArgs args = new EngageActionArgs(m_entity, player, new EngageActionData(1, 1));
             EmptyAction emptyAction = new EmptyAction();
             action.Execute(args, m_state);
-            emptyAction.Execute(new ActionArgs(player, null), m_state);
+            emptyAction.Execute(new ActionArgs(player), m_state);
 
             m_state.Undo();
 
