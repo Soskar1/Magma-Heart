@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.Entities;
+﻿using Assets._Scripts.Core.Artifacts.StatModifiers;
+using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.Artifacts
 {

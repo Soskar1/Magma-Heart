@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets._Scripts.Core.Artifacts.StatModifiers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;

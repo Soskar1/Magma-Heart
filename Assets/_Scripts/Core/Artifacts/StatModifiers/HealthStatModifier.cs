@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.Core.Entities;
 
-namespace MagmaHeart.Core.Artifacts
+namespace Assets._Scripts.Core.Artifacts.StatModifiers
 {
     public class HealthStatModifier : IStatModifier
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets._Scripts.Core.Artifacts.StatModifiers;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Artifacts
