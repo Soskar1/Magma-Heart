@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         {
             if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
             {
-                AttackActionData attackActionData = executor.PossibleActionDatas.Get<AttackActionData>();
+                AttackActionData attackActionData = executor.PossibleActions.Get<AttackActionData>();
                 AttackActionArgs args = new AttackActionArgs(executor, target, attackActionData);
 
                 if (!target.IsPlayer && m_attack.CanExecute(args, combatBoardState))

@@ -27,10 +27,7 @@ namespace MagmaHeart.Core.Entities
             Energy = new EnergyModel(Stats.MaxEnergy);
 
             foreach (ActionData actionData in data.Actions)
-            {
-                PossibleActions.Add(actionData.GetDefinition());
-                PossibleActionDatas.Add(actionData.GetType(), actionData);
-            }
+                PossibleActions.Add(actionData.GetType(), actionData);
         }
 
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()

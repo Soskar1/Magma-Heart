@@ -40,7 +40,10 @@ namespace MagmaHeart.AI.Reasoning.Plans
             foreach (PlanTaskDefinition taskDefinition in planDefinition.TaskDefinitions)
             {
                 Type actionType = taskDefinition.ActionType;
-                ActionDefinition actionDefinition = executor.PossibleActions.Where(action => action.ActionType == actionType).FirstOrDefault();
+                ActionDefinition actionDefinition = executor.PossibleActions
+                    .Select(action => action.GetDefinition())
+                    .Where(action => action.ActionType == actionType)
+                    .FirstOrDefault();
 
                 if (actionDefinition is null)
                     return null;
