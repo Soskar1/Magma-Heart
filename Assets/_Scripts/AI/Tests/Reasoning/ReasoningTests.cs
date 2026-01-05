@@ -39,10 +39,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             EngageActionData engageData = new EngageActionData(4, 1);
             RunAwayActionData runAwayData = new RunAwayActionData(3);
 
-            entity.PossibleActions.Add(attackData.GetDefinition());
-            entity.PossibleActions.Add(moveData.GetDefinition());
-            entity.PossibleActions.Add(engageData.GetDefinition());
-            entity.PossibleActions.Add(runAwayData.GetDefinition());
+            entity.PossibleActions.Add(attackData);
+            entity.PossibleActions.Add(moveData);
+            entity.PossibleActions.Add(engageData);
+            entity.PossibleActions.Add(runAwayData);
             Board.AddUnit(position, entity);
 
             return entity;

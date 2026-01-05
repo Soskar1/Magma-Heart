@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MagmaHeart.Core.Artifacts.StatModifiers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -50,6 +51,9 @@ namespace MagmaHeart.Core.Artifacts
                 case "HealthModifier":
                     int additionalHealth = Int32.Parse(statModifierNode.Attributes["AdditionalHealth"].Value);
                     return new HealthStatModifier(additionalHealth);
+                case "StrengthModifier":
+                    int additionalStrength = Int32.Parse(statModifierNode.Attributes["AdditionalStrength"].Value);
+                    return new StrengthStatModifier(additionalStrength);
                 default:
                     throw new XmlException($"Unknown StatModifier type: {statModifierNode.Name}");
             }

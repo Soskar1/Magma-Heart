@@ -14,7 +14,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
         {
-            MovementActionData data = executor.PossibleActionDatas.Get<MovementActionData>();
+            MovementActionData data = executor.PossibleActions.Get<MovementActionData>();
 
             Vector2 sourceTile = executor.GetCurrentTilePosition().ToVector2();
             MovementActionArgs args = new MovementActionArgs(executor, sourceTile, selectedTile.Position.ToVector2(), data);

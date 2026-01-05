@@ -1,12 +1,11 @@
 ﻿using MagmaHeart.Core.Entities;
 
-namespace MagmaHeart.Core.Artifacts
+namespace MagmaHeart.Core.Artifacts.StatModifiers
 {
     public class HealthStatModifier : IStatModifier
     {
-        public float AdditionalHealth { get; set; }
+        public float AdditionalHealth { get; init; }
 
-        public HealthStatModifier() => AdditionalHealth = 0;
         public HealthStatModifier(float additionalHealth) => AdditionalHealth = additionalHealth;
 
         public void Apply(EntityModel entity)

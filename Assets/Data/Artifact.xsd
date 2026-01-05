@@ -12,6 +12,11 @@
 									<xs:attribute name="AdditionalHealth" type="xs:float" use="required"/>
 								</xs:complexType>
 							</xs:element>
+							<xs:element name="StrengthModifier" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="AdditionalStrength" type="xs:int" use="required"/>
+								</xs:complexType>
+							</xs:element>
 						</xs:choice>
 					</xs:complexType>
 				</xs:element>

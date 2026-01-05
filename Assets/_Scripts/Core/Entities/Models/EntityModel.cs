@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.Entities
         public Func<Vector3Int> GetCurrentTilePosition { get; init; }
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
+        public StrengthModel Strength { get; init; }
         public EntityStats Stats { get; init; }
         public EntityData Data { get; init; }
 
@@ -25,12 +26,10 @@ namespace MagmaHeart.Core.Entities
             GetCurrentTilePosition = getCurrentTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
             Energy = new EnergyModel(Stats.MaxEnergy);
+            Strength = new StrengthModel(Stats.Strength);
 
             foreach (ActionData actionData in data.Actions)
-            {
-                PossibleActions.Add(actionData.GetDefinition());
-                PossibleActionDatas.Add(actionData.GetType(), actionData);
-            }
+                PossibleActions.Add(actionData.GetType(), actionData);
         }
 
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()
@@ -39,6 +38,7 @@ namespace MagmaHeart.Core.Entities
 
             properties.Add(new HealthPropertySnapshot(Health.CurrentHealth, Health.MaxHealth));
             properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy, Energy.MaxEnergy));
+            properties.Add(new StrengthPropertySnapshot(Strength.CurrentStrength));
             properties.Add(new PositionPropertySnapshot(GetCurrentTilePosition()));
 
             return properties;
