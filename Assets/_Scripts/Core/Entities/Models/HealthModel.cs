@@ -31,6 +31,9 @@ namespace MagmaHeart.Core.Entities.Models
             {
                 m_maxHealth = value;
 
+                if (m_currentHealth > m_maxHealth)
+                    m_currentHealth = m_maxHealth;
+
                 OnHealthChangedEventArgs args = new OnHealthChangedEventArgs(CurrentHealth, MaxHealth);
                 OnHealthChanged?.Invoke(this, args);
             }
