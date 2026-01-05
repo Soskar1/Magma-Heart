@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88acffe8d0856fa47ae3f10ed7a13b2f, type: 3}
-  m_Name: PlayerWarrior
+  m_Name: Warrior
   m_EditorClassIdentifier: 
   m_name: Warrior
   m_portraitImage: {fileID: 21300000, guid: debfd526cb48a88449c718d2e6a25ca6, type: 3}
