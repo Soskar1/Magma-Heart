@@ -79,7 +79,8 @@ namespace MagmaHeart.Core.CombatSystem
                 await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
                 await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
 
-                m_currentTurnOrder.Next();
+                if (!m_battleEnded)
+                    m_currentTurnOrder.Next();
             }
         }
 

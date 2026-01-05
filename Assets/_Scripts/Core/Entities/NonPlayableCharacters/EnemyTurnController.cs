@@ -29,8 +29,15 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_cancellationTokenSource = new CancellationTokenSource();
 
             if (bestPlan != null)
+            {
                 foreach (ExecutedTask task in bestPlan.ExecutedTasks)
+                {
+                    if (m_cancellationTokenSource.Token.IsCancellationRequested)
+                        break;
+
                     await task.Action.ExecuteAsync(task.Args, boardState, m_cancellationTokenSource.Token);
+                }
+            }
 
             EndTurn();
         }
