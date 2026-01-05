@@ -47,7 +47,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 if (!wallBetweenEntities)
                 {
-                    resolvedArgs = new AttackActionArgs((EntityModel)executor, (EntityModel)potentialTarget, data);
+                    StrengthPropertySnapshot strength = state.GetProperty<StrengthPropertySnapshot>(executor);
+                    int attackDamage = data.AttackDamage + strength.Strength;
+
+                    resolvedArgs = new AttackActionArgs((EntityModel)executor, (EntityModel)potentialTarget, data.EnergyCost, data.AttackDistance, attackDamage, data.AttackType);
                     return true;
                 }
             }
