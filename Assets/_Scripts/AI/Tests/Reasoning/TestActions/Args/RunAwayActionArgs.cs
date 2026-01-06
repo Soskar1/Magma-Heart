@@ -2,5 +2,5 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record RunAwayActionArgs(AIUnitModel Executor, AIUnitModel RunAwayFrom, RunAwayActionData RunAwayActionData) : ActionArgs(Executor);
+    internal record RunAwayActionArgs(TargetEntityActionInput TypedInput, RunAwayActionData RunAwayActionData) : ActionArgs(TypedInput);
 }

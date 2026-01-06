@@ -1,8 +1,8 @@
 ﻿<Solution>
+  <Project Path="MagmaHeart.AI.csproj" />
   <Project Path="MagmaHeart.Core.csproj" />
   <Project Path="MagmaHeart.Collections.csproj" />
   <Project Path="MagmaHeart.AI.Tests.csproj" />
-  <Project Path="MagmaHeart.AI.csproj" />
   <Project Path="MagmaHeart.Extensions.csproj" />
   <Project Path="MagmaHeart.DungeonGeneration.csproj" />
   <Project Path="MagmaHeart.Core.Tests.csproj" />

@@ -9,7 +9,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override ActionDefinition GetDefinition()
         {
-            return new ActionDefinition(typeof(AttackAction), this, new AttackActionResolver());
+            return new ActionDefinition(typeof(AttackAction), this);
         }
     }
 }

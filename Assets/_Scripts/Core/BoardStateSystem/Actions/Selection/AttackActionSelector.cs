@@ -1,5 +1,5 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.Core.BoardStateSystem.Actions.Data;
+﻿using MagmaHeart.Core.BoardStateSystem.Actions.Data;
+using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 
@@ -8,24 +8,19 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
     public class AttackActionSelector : ActionSelector
     {
         private readonly AttackAction m_attack;
-        private readonly AttackActionResolver m_resolver;
 
-        public AttackActionSelector(AttackAction action)
-        {
-            m_attack = action;
-            m_resolver = new AttackActionResolver();
-        }
+        public AttackActionSelector(AttackAction action) => m_attack = action;
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
         {
             if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
             {
                 AttackActionData attackActionData = executor.PossibleActions.Get<AttackActionData>();
-                bool argsExist = m_resolver.TryResolve(attackActionData.GetDefinition(), executor, combatBoardState, out ActionArgs args);
+                TargetEntityActionInput input = new TargetEntityActionInput(executor, target);
 
-                if (argsExist && !target.IsPlayer && m_attack.CanExecute(args, combatBoardState))
+                if (m_attack.TryCreateArgs(input, attackActionData, combatBoardState, out AttackActionArgs args))
                 {
-                    int energyCost = m_attack.GetEnergyCost((AttackActionArgs)args, combatBoardState);
+                    int energyCost = m_attack.GetEnergyCost(args, combatBoardState);
                     return new ActionSelectionResult(m_attack, args, energyCost);
                 }
             }

@@ -1,9 +1,9 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.Core.BoardStateSystem.Actions.Args;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
-using MagmaHeart.Core.Entities;
-using UnityEngine;
+using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
-    public record MovementActionArgs(EntityModel TypedExecutor, Vector2 SourceTile, Vector2 TargetTile, MovementActionData MovementActionData) : ActionArgs<EntityModel>(TypedExecutor);
+    public record MovementActionArgs(TargetPositionActionInput TargetPositionInput, MovementActionData MovementActionData) : MagmaHeartActionArgs(TargetPositionInput);
 }

@@ -20,10 +20,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
         {
             executedTask = null;
 
-            if (!ActionDefinition.TryResolve(executor, simulation, out ActionArgs args))
-                return false;
-
-            if (!Action.CanExecute(args, simulation))
+            if (!Action.TryGenerateArgs(executor, ActionDefinition.Data, simulation, out ActionArgs args))
                 return false;
 
             Action.Execute(args, simulation);
