@@ -28,6 +28,7 @@ namespace MagmaHeart.Core.Entities
             Health = new HealthModel(Stats.MaxHealth);
             Energy = new EnergyModel(Stats.MaxEnergy);
             Strength = new StrengthModel(Stats.Strength);
+            Speed = new SpeedModel(Stats.Speed);
 
             foreach (ActionData actionData in data.Actions)
                 PossibleActions.Add(actionData.GetType(), actionData);
