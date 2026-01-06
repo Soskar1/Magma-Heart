@@ -54,6 +54,9 @@ namespace MagmaHeart.Core.Artifacts
                 case "StrengthModifier":
                     int additionalStrength = Int32.Parse(statModifierNode.Attributes["AdditionalStrength"].Value);
                     return new StrengthStatModifier(additionalStrength);
+                case "SpeedModifier":
+                    int additionalSpeed = Int32.Parse(statModifierNode.Attributes["AdditionalSpeed"].Value);
+                    return new SpeedStatModifier(additionalSpeed);
                 default:
                     throw new XmlException($"Unknown StatModifier type: {statModifierNode.Name}");
             }
