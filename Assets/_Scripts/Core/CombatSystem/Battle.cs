@@ -132,6 +132,9 @@ namespace MagmaHeart.Core.CombatSystem
 
                 m_currentRoom.RemoveEntityFromRoom(entity);
                 entity.TurnController.EndBattle();
+
+                // Maybe not the best place to put it, but it works...
+                entity.Energy.Reset();
             }
 
             m_currentTurnOrder.Clear();

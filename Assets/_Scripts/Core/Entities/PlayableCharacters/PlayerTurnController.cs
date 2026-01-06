@@ -72,12 +72,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public async Task StartTurn(CombatBoardState state, TurnOrder turnOrder)
         {
-            //m_cancellationTokenSource = new CancellationTokenSource();
-            //await StartTurnAsync(CurrentCombatBoardState, m_cancellationTokenSource.Token);
-
-            //if (m_cancellationTokenSource.IsCancellationRequested)
-            //    return;
-
             m_currentBoardState = state;
 
             CanExecuteActions = true;
