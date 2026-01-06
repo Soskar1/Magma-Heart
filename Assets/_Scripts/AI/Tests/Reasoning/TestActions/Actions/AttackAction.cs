@@ -38,7 +38,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, BoardState boardState, out AttackActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, BoardState boardState, out ActionArgs args)
         {
             foreach (AIUnitModel unit in boardState.Board.GetUnits())
             {

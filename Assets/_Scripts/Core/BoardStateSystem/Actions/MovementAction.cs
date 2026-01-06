@@ -1,4 +1,5 @@
 using MagmaHeart.AI;
+using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.States;
@@ -64,7 +65,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, MovementActionData data, BoardState boardState, out MovementActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, MovementActionData data, BoardState boardState, out ActionArgs args)
         {
             Vector2 source = boardState.GetProperty<PositionPropertySnapshot>(executor).Position.ToVector2();
             EnergyPropertySnapshot energy = boardState.GetProperty<EnergyPropertySnapshot>(executor);

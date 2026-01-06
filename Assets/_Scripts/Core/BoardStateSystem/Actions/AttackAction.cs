@@ -1,4 +1,5 @@
 using MagmaHeart.AI;
+using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Bresenham;
@@ -85,7 +86,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, BoardState boardState, out AttackActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, BoardState boardState, out ActionArgs args)
         {
             foreach (AIUnitModel unit in boardState.Board.GetUnits())
             {

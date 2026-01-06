@@ -65,15 +65,12 @@ namespace MagmaHeart.AI.Actions
         {
             args = null;
 
-            if (args is not TArgs typedArgs)
-                return false;
-
             if (data is not TData typedData)
                 return false; 
 
-            return TryGenerateArgs(executor, typedData, boardState, out typedArgs);
+            return TryGenerateArgs(executor, typedData, boardState, out args);
         }
 
-        public abstract bool TryGenerateArgs(AIUnitModel executor, TData data, BoardState boardState, out TArgs args);
+        public abstract bool TryGenerateArgs(AIUnitModel executor, TData data, BoardState boardState, out ActionArgs args);
     }
 }
