@@ -127,6 +127,9 @@ namespace MagmaHeart.Core.CombatSystem
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
             foreach (Entity entity in leftEntities)
             {
+                if (m_healthHandlers.TryGetValue(entity.Model, out var handler))
+                    entity.Model.Health.OnHealthChanged -= handler;
+
                 m_currentRoom.RemoveEntityFromRoom(entity);
                 entity.TurnController.EndBattle();
             }
