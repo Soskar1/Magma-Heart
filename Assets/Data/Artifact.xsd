@@ -17,6 +17,11 @@
 									<xs:attribute name="AdditionalStrength" type="xs:int" use="required"/>
 								</xs:complexType>
 							</xs:element>
+							<xs:element name="SpeedModifier" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="AdditionalSpeed" type="xs:int" use="required"/>
+								</xs:complexType>
+							</xs:element>
 						</xs:choice>
 					</xs:complexType>
 				</xs:element>

@@ -11,6 +11,7 @@ using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using UnityEngine;
 
@@ -25,25 +26,11 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             m_aStar = new AStar(AStar.ManhattanDistance);
         }
 
-        public override int GetEnergyCost(MovementActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState boardState)
         {
-            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Input.Executor);
-            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, position.Position.ToVector2Int(), args.TargetPositionInput.Target);
+            IEnumerable<StateChange> changes = base.ProduceChanges(args, boardState);
 
-            if (path == null || !path.Any())
-                return int.MaxValue;
-
-            int distance = path.Count - 1;
-
-            return Mathf.CeilToInt(distance / (float)args.MovementActionData.MovementDistanceInTilesForOneEnergy);
-        }
-
-        public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState gameState)
-        {
-            IEnumerable<StateChange> changes = base.ProduceChanges(args, gameState);
-
-            PositionPropertySnapshot position = gameState.GetProperty<PositionPropertySnapshot>(args.Input.Executor);
-            List<Vector2> path = m_aStar.FindPath(gameState.Board.Graph, position.Position.ToVector2Int(), args.TargetPositionInput.Target);
+            List<Vector2> path = CreatePath(args, boardState);
 
             return changes.Concat(new List<StateChange>()
             {
@@ -51,9 +38,45 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             });
         }
 
+        public override int GetEnergyCost(MovementActionArgs args, BoardState boardState)
+        {
+            EnergyPropertySnapshot energyProperty = boardState.GetProperty<EnergyPropertySnapshot>(args.Input.Executor);
+            List<Vector2> path = CreatePath(args, boardState);
+
+            if (path == null || !path.Any())
+                return int.MaxValue;
+
+            int distance = path.Count - 1;
+
+            return Mathf.CeilToInt(distance / (float)args.Speed);
+        }
+
+        private List<Vector2> CreatePath(MovementActionArgs args, BoardState boardState)
+        {
+            PositionPropertySnapshot position = boardState.GetProperty<PositionPropertySnapshot>(args.Input.Executor);
+            EnergyPropertySnapshot energyProperty = boardState.GetProperty<EnergyPropertySnapshot>(args.Input.Executor);
+
+            List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, position.Position.ToVector2Int(), args.TargetPositionInput.Target);
+
+            if (path == null || !path.Any())
+                return null;
+
+            return path.Take(energyProperty.CurrentEnergy * args.Speed)
+                .ToList();
+        }
+
+        public override bool CanExecute(MovementActionArgs args, BoardState boardState)
+        {
+            if (boardState.Board.GetNodeType(args.TargetPositionInput.Target) == BoardNodeType.Obstacle)
+                return false;
+
+            return base.CanExecute(args, boardState);
+        }
+
         public override bool TryCreateArgs(TargetPositionActionInput input, MovementActionData data, BoardState boardState, out MovementActionArgs args)
         {
-            MovementActionArgs candidate = new MovementActionArgs(input, data);
+            SpeedPropertySnapshot speedProperty = boardState.GetProperty<SpeedPropertySnapshot>(input.Executor);
+            MovementActionArgs candidate = new MovementActionArgs(input, data.MovementDistanceInTilesForOneEnergy + speedProperty.Speed);
 
             if (!CanExecute(candidate, boardState))
             {
@@ -98,12 +121,12 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 foreach (Vector2 tile in roomTiles)
                 {
-                    List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, source, tile);
-                    if (path == null || !path.Any())
-                        continue;
+                    //List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, source, tile);
+                    //if (path == null || !path.Any())
+                    //    continue;
 
-                    Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * data.MovementDistanceInTilesForOneEnergy).Last();
-                    TargetPositionActionInput input = new TargetPositionActionInput((EntityModel)executor, targetTile);
+                    //Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * data.MovementDistanceInTilesForOneEnergy).Last();
+                    TargetPositionActionInput input = new TargetPositionActionInput((EntityModel)executor, tile);
 
                     if (TryCreateArgs(input, data, boardState, out args))
                         return true;
