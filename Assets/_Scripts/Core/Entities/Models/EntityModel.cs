@@ -15,6 +15,7 @@ namespace MagmaHeart.Core.Entities
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
         public StrengthModel Strength { get; init; }
+        public SpeedModel Speed { get; init; }
         public EntityStats Stats { get; init; }
         public EntityData Data { get; init; }
 
@@ -40,6 +41,7 @@ namespace MagmaHeart.Core.Entities
             properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy, Energy.MaxEnergy));
             properties.Add(new StrengthPropertySnapshot(Strength.CurrentStrength));
             properties.Add(new PositionPropertySnapshot(GetCurrentTilePosition()));
+            properties.Add(new SpeedPropertySnapshot(Speed.CurrentSpeed));
 
             return properties;
         }
