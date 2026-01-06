@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Core.BoardStateSystem.Actions.Data;
+using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
@@ -17,9 +18,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             MovementActionData data = executor.PossibleActions.Get<MovementActionData>();
 
             Vector2 sourceTile = executor.GetCurrentTilePosition().ToVector2();
-            MovementActionArgs args = new MovementActionArgs(executor, sourceTile, selectedTile.Position.ToVector2(), data);
+            TargetPositionActionInput input = new TargetPositionActionInput(executor, selectedTile.Position.ToVector2());
 
-            if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.CanExecute(args, combatBoardState))
+            if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.TryCreateArgs(input, data, combatBoardState, out MovementActionArgs args))
             {
                 int energyCost = m_movementAction.GetEnergyCost(args, combatBoardState);
                 return new ActionSelectionResult(m_movementAction, args, energyCost);

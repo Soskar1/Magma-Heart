@@ -2,5 +2,5 @@ using MagmaHeart.AI.Actions;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record AttackActionArgs(AIUnitModel Executor, AIUnitModel Target, AttackActionData AttackActionData) : ActionArgs(Executor);
+    internal record AttackActionArgs(TargetEntityActionInput TypedInput, AttackActionData AttackActionData) : ActionArgs(TypedInput);
 }

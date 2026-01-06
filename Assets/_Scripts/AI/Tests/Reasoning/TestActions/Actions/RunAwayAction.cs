@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal class RunAwayAction : UnitAction<RunAwayActionArgs>
+    internal class RunAwayAction : UnitAction<RunAwayActionArgs, TargetEntityActionInput, RunAwayActionData>
     {
         public override IEnumerable<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState gameState)
         {
-            Position targetPosition = gameState.GetProperty<Position>(args.RunAwayFrom);
-            Position possessorPosition = gameState.GetProperty<Position>(args.Executor);
+            Position targetPosition = gameState.GetProperty<Position>(args.TypedInput.Target);
+            Position possessorPosition = gameState.GetProperty<Position>(args.Input.Executor);
 
             Vector2 tmpPosition = possessorPosition.CurrentPosition;
 
@@ -30,10 +30,40 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return new List<StateChange>()
             {
-                new MovementStateChange(args.Executor, possessorPosition.CurrentPosition, tmpPosition)
+                new MovementStateChange(args.Input.Executor, possessorPosition.CurrentPosition, tmpPosition)
             };
         }
 
         public override bool CanExecute(RunAwayActionArgs args, BoardState gameState) => true;
+
+        public override bool TryCreateArgs(TargetEntityActionInput input, RunAwayActionData data, BoardState boardState, out RunAwayActionArgs args)
+        {
+            RunAwayActionArgs candidate = new RunAwayActionArgs(input, data);
+
+            if (!CanExecute(candidate, boardState))
+            {
+                args = null;
+                return false;
+            }
+
+            args = candidate;
+            return true;
+        }
+
+        public override bool TryGenerateArgs(AIUnitModel executor, RunAwayActionData data, BoardState boardState, out ActionArgs args)
+        {
+            foreach (AIUnitModel unit in boardState.Board.GetUnits())
+            {
+                if (unit == executor)
+                    continue;
+
+                TargetEntityActionInput input = new TargetEntityActionInput(executor, unit);
+                if (TryCreateArgs(input, data, boardState, out args))
+                    return true;
+            }
+
+            args = null;
+            return false;
+        }
     }
 }

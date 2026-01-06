@@ -34,16 +34,15 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
 
             if (preview.Action is MovementAction)
             {
-
                 MovementActionArgs args = (MovementActionArgs)preview.Args;
-                RoomTile tile = m_dungeonController.CurrentRoom.GetRoomTile(args.TargetTile);
+                RoomTile tile = m_dungeonController.CurrentRoom.GetRoomTile(args.TargetPositionInput.Target);
 
                 m_tileHighlighter.Show(tile);
             }
             else if (preview.Action is AttackAction)
             {
                 AttackActionArgs args = (AttackActionArgs)preview.Args;
-                m_dungeonController.CurrentRoom.TryGetEntity(args.Target, out Entity entity);
+                m_dungeonController.CurrentRoom.TryGetEntity(args.TargetEntityInput.Target, out Entity entity);
                 entity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
             }
         }
