@@ -16,6 +16,7 @@ namespace MagmaHeart.Core.SceneLoading
         MagmaHeartServices Services,
         CameraController CameraController,
         BattleContext BattleContext,
-        GameUI UI
+        GameUI UI,
+        RewardService RewardService
         );
 }

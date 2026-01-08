@@ -1,5 +1,4 @@
 using MagmaHeart.Core.Artifacts;
-using MagmaHeart.Core.CombatSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,32 +10,26 @@ namespace MagmaHeart.Core.Presentation.UI
     {
         [SerializeField] private GameObject m_visual;
         [SerializeField] private Button m_getRewardButton;
-        [SerializeField] private List<RewardCard> m_rewardCards;
+        [SerializeField] private RewardCard m_rewardCardPrefab;
+        [SerializeField] private Transform m_rewardCardParent;
+        private List<RewardCard> m_currentRewardCards = new List<RewardCard>();
         private ArtifactData m_currentlyPickedArtifact;
-        private BattleReward m_battleReward;
 
         public event EventHandler<OnRewardPickedArgs> OnRewardPicked;
 
-        public void Initialize(BattleReward battleReward)
-        {
-            m_battleReward = battleReward;
-
-            foreach (RewardCard card in m_rewardCards)
-                card.OnArtifactDataPicked += HandleOnArtifactPicked;
-
-            m_battleReward.OnBattleRewardCalculated += HandleOnBattleRewardCalculated;
-        }
-
-        public void OnDisable()
-        {
-            foreach (RewardCard card in m_rewardCards)
-                card.OnArtifactDataPicked -= HandleOnArtifactPicked;
-
-            m_battleReward.OnBattleRewardCalculated -= HandleOnBattleRewardCalculated;
-        }
-
         public void Show() => m_visual.SetActive(true);
-        public void Hide() => m_visual.SetActive(false);
+        public void Hide()
+        {
+            foreach (RewardCard card in m_currentRewardCards)
+            {
+                card.OnArtifactDataPicked -= HandleOnArtifactPicked;
+                GameObject.Destroy(card.gameObject); // TODO: change to object pool
+            }
+
+            m_visual.SetActive(false);
+
+            m_currentRewardCards.Clear();
+        }
 
         public void GetReward()
         {
@@ -46,10 +39,16 @@ namespace MagmaHeart.Core.Presentation.UI
             OnRewardPicked?.Invoke(this, args);
         }
 
-        public void HandleOnBattleRewardCalculated(object obj, OnBattleRewardCalculatedArgs args)
+        public void DisplayRewards(IEnumerable<ArtifactData> rewards)
         {
-            for (int i = 0; i < args.Rewards.Count; ++i)
-                m_rewardCards[i].Display(args.Rewards[i]);
+            foreach (ArtifactData reward in rewards)
+            {
+                RewardCard card = Instantiate(m_rewardCardPrefab, m_rewardCardParent);
+                card.OnArtifactDataPicked += HandleOnArtifactPicked;
+                m_currentRewardCards.Add(card);
+
+                card.Display(reward);
+            }
 
             Show();
         }

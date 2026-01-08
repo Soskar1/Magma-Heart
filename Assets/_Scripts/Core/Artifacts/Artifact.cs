@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Core.Artifacts.StatModifiers;
 using MagmaHeart.Core.Entities;
+using System;
 
 namespace MagmaHeart.Core.Artifacts
 {
@@ -10,6 +11,8 @@ namespace MagmaHeart.Core.Artifacts
         public ArtifactData Data { get; init; }
         public int CurrentLevel => m_currentLevel;
         public bool IsMaxLevel => m_currentLevel >= Data.MaxLevel;
+
+        public event EventHandler<OnArtifactLeveledUpEventArgs> OnArtifactLeveledUp;
 
         public Artifact(ArtifactData data)
         {
@@ -35,6 +38,9 @@ namespace MagmaHeart.Core.Artifacts
                 return;
 
             ++m_currentLevel;
+
+            OnArtifactLeveledUpEventArgs args = new OnArtifactLeveledUpEventArgs(this);
+            OnArtifactLeveledUp?.Invoke(this, args);
         }
     }
 }

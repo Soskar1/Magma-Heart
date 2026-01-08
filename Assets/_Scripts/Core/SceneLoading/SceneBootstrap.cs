@@ -55,7 +55,6 @@ namespace MagmaHeart.Core.SceneLoading
         [Header("Travel")]
         [SerializeField] private int m_travelSpeed;
 
-        private Inventory m_inventory;
         private HoverModeController m_hoverModeController;
 
         private InputInstaller m_inputInstaller;
@@ -65,6 +64,7 @@ namespace MagmaHeart.Core.SceneLoading
         private BattleInstaller m_battleInstaller;
         private SpawnServiceInstaller m_spawnServiceInstaller;
         private ServiceInstaller m_serviceInstaller;
+        private ArtifactInstaller m_artifactInstaller;
 
         public async void Awake()
         {
@@ -110,10 +110,11 @@ namespace MagmaHeart.Core.SceneLoading
             m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, dungeonController, m_graphicRaycaster, previewProvider, m_combatTilemapRenderer);
             m_hoverModeController.UseRaycastHover();
 
-            m_gameUI.Initialize(player, battleContext.Battle, inputContext.MouseHoverEngine, battleContext.BattleReward, previewProvider);
-            m_inventory = new Inventory(player.Model, m_gameUI.RewardUI);
+            m_gameUI.Initialize(player, battleContext.Battle, inputContext.MouseHoverEngine, previewProvider);
+            m_artifactInstaller = new ArtifactInstaller();
+            RewardService rewardService = m_artifactInstaller.Install(player.Model, m_gameUI.RewardUI);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI);
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
             await stateMachine.Start();
         }
@@ -127,9 +128,9 @@ namespace MagmaHeart.Core.SceneLoading
             m_actionPreviewInstaller.Dispose();
             m_battleInstaller.Dispose();
             m_serviceInstaller.Dispose();
+            m_artifactInstaller.Dispose();
 
             m_hoverModeController.Disable();
-            m_inventory.Disable();
 
             m_debugUI.Disable();
         }

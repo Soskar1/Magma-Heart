@@ -23,25 +23,30 @@ namespace MagmaHeart.Core.Artifacts
 
         private void Pick(ArtifactData data)
         {
-            if (m_artifacts.ContainsKey(data))
+            if (!m_artifacts.TryGetValue(data, out Artifact artifact))
             {
-                Artifact artifact = m_artifacts[data];
-
-                if (artifact.IsMaxLevel)
-                    return;
-
-                artifact.Revert(m_owner);
-                m_artifacts[data].LevelUp();
-                artifact.Apply(m_owner);
-            }
-            else
-            {
-                Artifact artifact = new Artifact(data);
+                artifact = new Artifact(data);
                 m_artifacts[data] = artifact;
                 artifact.Apply(m_owner);
+                return;
             }
+
+            if (artifact.IsMaxLevel)
+                return;
+
+            artifact.Revert(m_owner);
+            artifact.LevelUp();
+            artifact.Apply(m_owner);
         }
 
         private void HandleOnRewardPicked(object obj, OnRewardPickedArgs args) => Pick(args.ArtifactData);
+
+        public bool IsArtifactMaxed(ArtifactData data)
+        {
+            if (!m_artifacts.TryGetValue(data, out Artifact artifact))
+                return false;
+
+            return artifact.IsMaxLevel;
+        }
     }
 }
