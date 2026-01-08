@@ -15,13 +15,14 @@ namespace MagmaHeart.Core.CombatSystem
             m_inventory = inventory;
         }
 
-        public IEnumerable<ArtifactData> GenerateRewards()
+        public List<ArtifactData> GenerateRewards()
         {
             // TODO: Randomly select rarity
 
             return m_artifactDatabase
                 .GetArtifactsByRarity(Rarity.Common)
-                .Where(artifact => !m_inventory.IsArtifactMaxed(artifact));
+                .Where(artifact => !m_inventory.IsArtifactMaxed(artifact))
+                .ToList();
         }
     }
 }
