@@ -61,7 +61,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             if (path == null || !path.Any())
                 return null;
 
-            return path.Take(energyProperty.CurrentEnergy * args.Speed)
+            return path.Take(energyProperty.CurrentEnergy * args.Speed + 1)
                 .ToList();
         }
 

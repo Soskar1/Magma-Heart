@@ -17,6 +17,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
         // TODO: handel cancellationToken.Cancel
         public override async Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken cancellationToken)
         {
+            if (AStarPath.Count == 1)
+                return;
+
             List<RoomTile> roomTiles = new List<RoomTile>();
 
             foreach (Vector2 tile in AStarPath) {
