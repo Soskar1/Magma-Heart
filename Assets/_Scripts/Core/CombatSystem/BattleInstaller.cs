@@ -1,6 +1,5 @@
 using System;
 using MagmaHeart.Core.AI;
-using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.Services;
@@ -14,10 +13,7 @@ namespace MagmaHeart.Core.CombatSystem
             Battle battle = new Battle(services, aiContext.TurnContext);
             BattleInitializer initializer = new BattleInitializer(services.SpawnService.EntitySpawner, aiContext.AiEngine, random, grid, minDistanceFromPlayer);
 
-            ArtifactDatabase database = new ArtifactDatabase();
-            BattleReward battleReward = new BattleReward(database);
-
-            return new BattleContext(battle, initializer, battleReward);
+            return new BattleContext(battle, initializer);
         }
 
         public void Dispose() { }

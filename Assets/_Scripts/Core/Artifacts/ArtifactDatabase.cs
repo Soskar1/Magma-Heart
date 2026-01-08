@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using Random=UnityEngine.Random;
 
 namespace MagmaHeart.Core.Artifacts
 {
@@ -27,12 +25,6 @@ namespace MagmaHeart.Core.Artifacts
             }
         }
 
-        public List<ArtifactData> GetRandomArtifacts(Rarity rarity, int count)
-        {
-            return m_artifacts[rarity]
-                .OrderBy(x => Random.value)
-                .Take(count)
-                .ToList();
-        }
+        public IEnumerable<ArtifactData> GetArtifactsByRarity(Rarity rarity) => m_artifacts[rarity];
     }
 }
