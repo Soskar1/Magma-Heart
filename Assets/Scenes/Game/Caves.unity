@@ -2033,7 +2033,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_visual: {fileID: 560382748}
   m_getRewardButton: {fileID: 3844644590514491324}
-  m_rewardCardPrefab: {fileID: 9205674142745973876, guid: 1f3d432051bff5c4bad5c0634ec9d36e, type: 3}
+  m_rewardCardPrefab: {fileID: 4662182132373557921, guid: 1f3d432051bff5c4bad5c0634ec9d36e, type: 3}
   m_rewardCardParent: {fileID: 1359913441}
 --- !u!1 &1666368228
 GameObject:
@@ -3795,8 +3795,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Choose your reward
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 378a1bde5f187464e8d2e0ca236c7945, type: 2}
+  m_sharedMaterial: {fileID: -381707249877910879, guid: 378a1bde5f187464e8d2e0ca236c7945, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
