@@ -39,8 +39,10 @@ namespace MagmaHeart.Core.Presentation.UI
             }
 
             m_visual.SetActive(false);
-
             m_currentRewardCards.Clear();
+
+            m_getRewardButton.interactable = false;
+            m_getRewardButton.GetComponent<ButtonUI>().enabled = false;
         }
 
         public void GetReward()
@@ -72,6 +74,7 @@ namespace MagmaHeart.Core.Presentation.UI
         public void HandleOnArtifactPicked(object obj, OnCardClickedArgs args)
         {
             m_getRewardButton.interactable = true;
+            m_getRewardButton.GetComponent<ButtonUI>().enabled = true;
             m_currentlyPickedArtifact = args.RewardCard.ArtifactData;
 
             foreach (RewardCard rewardCard in m_currentRewardCards.Values)
