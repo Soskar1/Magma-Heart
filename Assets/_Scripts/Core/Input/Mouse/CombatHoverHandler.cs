@@ -4,7 +4,6 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
-using UnityEngine;
 
 namespace MagmaHeart.Core.Input.Mouse
 {

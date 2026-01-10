@@ -705,6 +705,7 @@ GameObject:
   - component: {fileID: 680038723}
   - component: {fileID: 680038722}
   - component: {fileID: 680038725}
+  - component: {fileID: 680038726}
   m_Layer: 5
   m_Name: Exit game
   m_TagString: Untagged
@@ -840,6 +841,18 @@ MonoBehaviour:
   m_defaultSprite: {fileID: -8811806715494619191, guid: ec01fb0ad2d70884e990c482b2cd9b6b, type: 3}
   m_mouseHoverSprite: {fileID: 1128905586249742808, guid: ec01fb0ad2d70884e990c482b2cd9b6b, type: 3}
   m_pressedSprite: {fileID: 5583992102446212004, guid: ec01fb0ad2d70884e990c482b2cd9b6b, type: 3}
+--- !u!114 &680038726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680038720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b385f00ae043194683ac77ea63c9ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &755473045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,6 +1503,7 @@ GameObject:
   - component: {fileID: 1489267290}
   - component: {fileID: 1489267289}
   - component: {fileID: 1489267292}
+  - component: {fileID: 1489267293}
   m_Layer: 5
   m_Name: Restart
   m_TagString: Untagged
@@ -1625,6 +1639,18 @@ MonoBehaviour:
   m_defaultSprite: {fileID: 8572043569924737516, guid: 1278b40f62af59e4d8c3fcec8168f77e, type: 3}
   m_mouseHoverSprite: {fileID: 4018740496019847988, guid: 1278b40f62af59e4d8c3fcec8168f77e, type: 3}
   m_pressedSprite: {fileID: -110535895927940508, guid: 1278b40f62af59e4d8c3fcec8168f77e, type: 3}
+--- !u!114 &1489267293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489267287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b385f00ae043194683ac77ea63c9ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1504053165
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1791,6 +1817,9 @@ MonoBehaviour:
   m_getRewardButton: {fileID: 3844644590514491324}
   m_rewardCardPrefab: {fileID: 4662182132373557921, guid: 1f3d432051bff5c4bad5c0634ec9d36e, type: 3}
   m_rewardCardParent: {fileID: 1359913441}
+  m_defaultRewardCard: {fileID: 4239555261086976953, guid: 7d5446c64bf855b4083fdf048cf7ab23, type: 3}
+  m_mouseHoverRewardCard: {fileID: -9033663393909045500, guid: 7d5446c64bf855b4083fdf048cf7ab23, type: 3}
+  m_selectedRewardCard: {fileID: 5231588708383760110, guid: 7d5446c64bf855b4083fdf048cf7ab23, type: 3}
 --- !u!1 &1666368228
 GameObject:
   m_ObjectHideFlags: 0
@@ -2714,6 +2743,7 @@ GameObject:
   - component: {fileID: 7343314125385830444}
   - component: {fileID: 2233027685590273123}
   - component: {fileID: 7343314125385830445}
+  - component: {fileID: 7343314125385830446}
   m_Layer: 5
   m_Name: EndTurnButton
   m_TagString: Untagged
@@ -3448,6 +3478,18 @@ MonoBehaviour:
   m_defaultSprite: {fileID: 6255666757506584309, guid: 18920c62f557af74bbadda1b667d87e0, type: 3}
   m_mouseHoverSprite: {fileID: 3246012009786857863, guid: 18920c62f557af74bbadda1b667d87e0, type: 3}
   m_pressedSprite: {fileID: -2948682967960137241, guid: 18920c62f557af74bbadda1b667d87e0, type: 3}
+--- !u!114 &7343314125385830446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335779659746816341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b385f00ae043194683ac77ea63c9ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7394366216933564062
 MonoBehaviour:
   m_ObjectHideFlags: 0

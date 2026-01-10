@@ -5,8 +5,8 @@ namespace MagmaHeart.Core.Presentation.UI
 {
     public class OnCardClickedArgs : EventArgs
     {
-        public ArtifactData ClickedArtifactData { get; init; }
+        public RewardCard RewardCard { get; init; }
 
-        public OnCardClickedArgs(ArtifactData clickedArtifactData) => ClickedArtifactData = clickedArtifactData;
+        public OnCardClickedArgs(RewardCard rewardCard) => RewardCard = rewardCard;
     }
 }
