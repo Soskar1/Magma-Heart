@@ -1,4 +1,5 @@
 using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.Input.Mouse;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,23 +13,36 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private Button m_getRewardButton;
         [SerializeField] private RewardCard m_rewardCardPrefab;
         [SerializeField] private Transform m_rewardCardParent;
-        private List<RewardCard> m_currentRewardCards = new List<RewardCard>();
         private ArtifactData m_currentlyPickedArtifact;
 
         public event EventHandler<OnRewardPickedArgs> OnRewardPicked;
+        
+        [SerializeField] private Sprite m_defaultRewardCard;
+        [SerializeField] private Sprite m_mouseHoverRewardCard;
+        [SerializeField] private Sprite m_selectedRewardCard;
+
+        private Dictionary<UIMouseInteraction, RewardCard> m_currentRewardCards = new Dictionary<UIMouseInteraction, RewardCard>();
 
         public void Show() => m_visual.SetActive(true);
         public void Hide()
         {
-            foreach (RewardCard card in m_currentRewardCards)
+            foreach (var keyValuePair in m_currentRewardCards)
             {
+                UIMouseInteraction uiMouseInteraction = keyValuePair.Key;
+                RewardCard card = keyValuePair.Value;
+
                 card.OnArtifactDataPicked -= HandleOnArtifactPicked;
-                GameObject.Destroy(card.gameObject); // TODO: change to object pool
+                uiMouseInteraction.OnPointerEnterEvent -= OnPointerEnterCard;
+                uiMouseInteraction.OnPointerExitEvent -= OnPointerExitCard;
+
+                GameObject.Destroy(card.gameObject); // TODO: chanzge to object pool
             }
 
             m_visual.SetActive(false);
-
             m_currentRewardCards.Clear();
+
+            m_getRewardButton.interactable = false;
+            m_getRewardButton.GetComponent<ButtonUI>().enabled = false;
         }
 
         public void GetReward()
@@ -45,8 +59,12 @@ namespace MagmaHeart.Core.Presentation.UI
             {
                 RewardCard card = Instantiate(m_rewardCardPrefab, m_rewardCardParent);
                 card.OnArtifactDataPicked += HandleOnArtifactPicked;
-                m_currentRewardCards.Add(card);
 
+                UIMouseInteraction uiMouseInteraction = card.GetComponent<UIMouseInteraction>();
+                uiMouseInteraction.OnPointerEnterEvent += OnPointerEnterCard;
+                uiMouseInteraction.OnPointerExitEvent += OnPointerExitCard;
+
+                m_currentRewardCards.Add(uiMouseInteraction, card);
                 card.Display(reward);
             }
 
@@ -56,7 +74,34 @@ namespace MagmaHeart.Core.Presentation.UI
         public void HandleOnArtifactPicked(object obj, OnCardClickedArgs args)
         {
             m_getRewardButton.interactable = true;
-            m_currentlyPickedArtifact = args.ClickedArtifactData;
+            m_getRewardButton.GetComponent<ButtonUI>().enabled = true;
+            m_currentlyPickedArtifact = args.RewardCard.ArtifactData;
+
+            foreach (RewardCard rewardCard in m_currentRewardCards.Values)
+                if (rewardCard != args.RewardCard && rewardCard.IsSelected)
+                    rewardCard.Unselect();
+        }
+
+        private void OnPointerEnterCard(object obj, EventArgs _)
+        {
+            UIMouseInteraction mouseInteraction = (UIMouseInteraction)obj;
+            RewardCard hoveredRewardCard = m_currentRewardCards[mouseInteraction];
+
+            if (hoveredRewardCard.IsSelected)
+                return;
+
+            hoveredRewardCard.UseMouseHoverBackground();
+        }
+
+        private void OnPointerExitCard(object obj, EventArgs _)
+        {
+            UIMouseInteraction mouseInteraction = (UIMouseInteraction)obj;
+            RewardCard rewardCard = m_currentRewardCards[mouseInteraction];
+
+            if (rewardCard.IsSelected)
+                return;
+
+            rewardCard.UseDefaultBackground();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Input.Mouse
 
             foreach (RaycastResult r in results)
             {
-                UIMouseHoverDetection detection = r.gameObject.GetComponentInParent<UIMouseHoverDetection>();
+                UIMouseInteraction detection = r.gameObject.GetComponentInParent<UIMouseInteraction>();
                 if (detection != null)
                     return new UIHoverResult(detection.gameObject);
             }
