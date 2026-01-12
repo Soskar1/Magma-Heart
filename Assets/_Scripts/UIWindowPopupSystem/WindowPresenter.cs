@@ -8,7 +8,7 @@ namespace MagmaHeart.UIWindowPopupSystem
         [SerializeField] private TextMeshProUGUI m_header;
         [SerializeField] private TextMeshProUGUI m_content;
 
-        public void Initialize(WindowData windowData)
+        public virtual void Initialize(WindowData windowData)
         {
             m_header.text = windowData.Header;
             m_content.text = windowData.Content;

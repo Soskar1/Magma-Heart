@@ -17,13 +17,17 @@ namespace MagmaHeart.UIWindowPopupSystem
             m_parent = parentUI;
         }
 
-        public void Display(WindowTriggerDefinition trigger)
+        public WindowPresenter Display(WindowTriggerDefinition trigger)
         {
             if (m_database.TryGetValue(trigger, out WindowData data))
             {
                 WindowPresenter presenterInstance = GameObject.Instantiate(m_windowPrefab, m_parent);
                 presenterInstance.Initialize(data);
+
+                return presenterInstance;
             }
+
+            return null;
         }
     }
 }

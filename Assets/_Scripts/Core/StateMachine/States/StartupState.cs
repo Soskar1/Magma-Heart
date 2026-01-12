@@ -13,11 +13,14 @@ namespace MagmaHeart.Core.StateMachine.States
     {
         private readonly MagmaHeartStateMachine m_stateMachine;
         private readonly MagmaHeartContext m_context;
+        private readonly TutorialContext m_tutorial;
 
         public StartupState(MagmaHeartStateMachine stateMachine, MagmaHeartContext context)
         {
             m_context = context;
             m_stateMachine = stateMachine;
+
+            m_tutorial = m_context.Tutorial;
         }
 
         public async Task EnterAsync(StatePayload payload = null)
@@ -28,10 +31,11 @@ namespace MagmaHeart.Core.StateMachine.States
             RoomModel roomModel = dungeon.GenerateRoom();
             await m_context.RoomRenderer.OnRoomRendered;
 
-            if (!m_context.Tutorial.IsSet(TutorialFlags.OpenedWelcomeScreen))
+            
+            if (!m_tutorial.Model.IsSet(TutorialFlags.OpenedWelcomeScreen))
             {
                 m_context.UI.WelcomeScreen.Open();
-                m_context.Tutorial.SetFlag(TutorialFlags.OpenedWelcomeScreen);
+                m_tutorial.Model.SetFlag(TutorialFlags.OpenedWelcomeScreen);
             }
 
             Vector2 center = dungeon.Grid.ToTileCenter(roomModel.WorldPosition);
