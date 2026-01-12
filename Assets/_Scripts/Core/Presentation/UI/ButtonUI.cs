@@ -1,7 +1,6 @@
 using System;
 using MagmaHeart.Core.Input.Mouse;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Presentation.UI

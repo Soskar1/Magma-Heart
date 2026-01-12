@@ -12,8 +12,11 @@ using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
+using MagmaHeart.Core.Presentation.UI.WindowPopupSystem;
 using MagmaHeart.Core.Services;
 using MagmaHeart.Core.StateMachine;
+using MagmaHeart.UIWindowPopupSystem;
+using MagmaHeart.UIWindowPopupSystem.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -48,6 +51,8 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private float m_minDistanceFromPlayer;
 
         [Header("UI")]
+        [SerializeField] private WindowPresenter m_tutorialWindowPrefab;
+        [SerializeField] private MagmaHeartWindowDatabaseDefinition m_windowDatabase;
         [SerializeField] private GameUI m_gameUI;
         [SerializeField] private DebugUI m_debugUI;
         [SerializeField] private GraphicRaycaster m_graphicRaycaster;
@@ -116,6 +121,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
+            
             await stateMachine.Start();
         }
 

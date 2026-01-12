@@ -3458,6 +3458,9 @@ MonoBehaviour:
   m_entityPrefab: {fileID: 7422606736354459837, guid: 4207caed466d91c4c94cd751e08cbce4, type: 3}
   m_projectilePrefab: {fileID: 5171675335557925640, guid: ad117eca505b1a649806b6003fcd065c, type: 3}
   m_minDistanceFromPlayer: 2
+  m_tutorialWindowPrefab: {fileID: 8509017766408116453, guid: 8c2abed14a2f2af40873adb8e8903fe3, type: 3}
+  m_windowDatabase: {fileID: 11400000, guid: f72c9c4f9ed40c14b848ad5042af3e88, type: 2}
+  m_testTrigger: {fileID: 11400000, guid: 705918b20341a2f43a0132badd9f5c92, type: 2}
   m_gameUI: {fileID: 1222064955}
   m_debugUI: {fileID: 382051349}
   m_graphicRaycaster: {fileID: 1666368229}
