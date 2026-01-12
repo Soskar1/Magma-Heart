@@ -1,5 +1,20 @@
+using UnityEngine;
+
 namespace MagmaHeart.UIWindowPopupSystem
 {
     [System.Serializable]
-    public record WindowData(string Header, string Content);
+    public struct WindowData
+    {
+        [SerializeField] private string m_header;
+        [SerializeField] private string m_content;
+
+        public string Header => m_header;
+        public string Content => m_content;
+
+        public WindowData(string header, string content)
+        {
+            m_header = header;
+            m_content = content;
+        }
+    }
 }

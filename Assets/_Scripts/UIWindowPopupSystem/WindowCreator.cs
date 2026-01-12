@@ -1,27 +1,29 @@
-using System;
+using System.Collections.Generic;
+using MagmaHeart.UIWindowPopupSystem.Definitions;
 using UnityEngine;
 
 namespace MagmaHeart.UIWindowPopupSystem
 {
     public class WindowCreator
     {
-        private readonly WindowDatabase m_database;
+        private readonly IDictionary<WindowTriggerDefinition, WindowData> m_database;
         private readonly WindowPresenter m_windowPrefab;
+        private readonly Transform m_parent;
 
-        public WindowCreator(WindowDatabase database, WindowPresenter windowPrefab)
+        public WindowCreator(WindowDatabaseDefinition databaseDefinition, WindowPresenter windowPrefab, Transform parentUI)
         {
             m_windowPrefab = windowPrefab;
-            m_database = database;
+            m_database = databaseDefinition.CreateDatabase();
+            m_parent = parentUI;
         }
 
-        public void Register(EventHandler<OnWindowTriggerEventArgs> trigger) => trigger += HandleOnWindowTrigger;
-        public void Unregister(EventHandler<OnWindowTriggerEventArgs> trigger) => trigger -= HandleOnWindowTrigger;
-
-        private void HandleOnWindowTrigger(object _, OnWindowTriggerEventArgs args)
+        public void Display(WindowTriggerDefinition trigger)
         {
-            WindowData data = m_database.GetData(args.Trigger);
-            WindowPresenter presenterInstance = GameObject.Instantiate(m_windowPrefab);
-            presenterInstance.Initialize(data);
+            if (m_database.TryGetValue(trigger, out WindowData data))
+            {
+                WindowPresenter presenterInstance = GameObject.Instantiate(m_windowPrefab, m_parent);
+                presenterInstance.Initialize(data);
+            }
         }
     }
 }
