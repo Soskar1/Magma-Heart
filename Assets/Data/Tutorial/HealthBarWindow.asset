@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ef439b30c84394486723ef15bb22ae, type: 3}
-  m_Name: TestWindow
+  m_Name: HealthBarWindow
   m_EditorClassIdentifier: 
   m_data:
-    m_header: Test
-    m_content: TestTest
+    m_header: Health
+    m_content: The health bar is displayed at the bottom of your screen. If your
+      health reaches zero, you will lose!
   m_trigger: {fileID: 11400000, guid: 705918b20341a2f43a0132badd9f5c92, type: 2}

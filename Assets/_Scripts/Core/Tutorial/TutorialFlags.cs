@@ -6,6 +6,7 @@ namespace MagmaHeart.Core.TutorialSystem
     public enum TutorialFlags
     {
         None = 0,
-        OpenedWelcomeScreen = 1
+        OpenedWelcomeScreen = 1,
+        HealthBarExplained = 2
     }
 }

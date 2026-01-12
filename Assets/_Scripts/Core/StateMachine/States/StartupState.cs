@@ -30,7 +30,6 @@ namespace MagmaHeart.Core.StateMachine.States
 
             RoomModel roomModel = dungeon.GenerateRoom();
             await m_context.RoomRenderer.OnRoomRendered;
-
             
             if (!m_tutorial.Model.IsSet(TutorialFlags.OpenedWelcomeScreen))
             {
@@ -47,6 +46,11 @@ namespace MagmaHeart.Core.StateMachine.States
             m_context.HoverModeController.UseRaycastHover();
 
             await m_context.UI.WelcomeScreen.GetTask();
+
+            if (!m_tutorial.Model.IsSet(TutorialFlags.HealthBarExplained))
+                m_tutorial.Model.SetFlag(TutorialFlags.HealthBarExplained);
+
+            await m_tutorial.Presenter.GetUntilWindowCloseTask(TutorialFlags.HealthBarExplained);
 
             TravelStatePayload travelPayload = new TravelStatePayload(TravelReason.ExitRoom);
             await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete, travelPayload);

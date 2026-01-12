@@ -5243,7 +5243,8 @@ MonoBehaviour:
   m_debugUI: {fileID: 382051349}
   m_graphicRaycaster: {fileID: 1666368229}
   m_tutorialWindowPrefab: {fileID: 5845973985767916425, guid: 8c2abed14a2f2af40873adb8e8903fe3, type: 3}
-  m_tutorialTriggers: []
+  m_tutorialTriggers:
+  - {fileID: 11400000, guid: 705918b20341a2f43a0132badd9f5c92, type: 2}
   m_travelSpeed: 12
 --- !u!114 &8144084751900217157
 MonoBehaviour:
