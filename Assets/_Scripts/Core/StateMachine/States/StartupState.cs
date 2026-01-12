@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.Core.TutorialSystem;
 using MagmaHeart.DungeonGeneration;
 using MagmaHeart.StateMachine;
 using System.Threading.Tasks;
@@ -27,7 +28,11 @@ namespace MagmaHeart.Core.StateMachine.States
             RoomModel roomModel = dungeon.GenerateRoom();
             await m_context.RoomRenderer.OnRoomRendered;
 
-            m_context.UI.WelcomeScreen.Open();
+            if (!m_context.Tutorial.IsSet(TutorialFlags.OpenedWelcomeScreen))
+            {
+                m_context.UI.WelcomeScreen.Open();
+                m_context.Tutorial.SetFlag(TutorialFlags.OpenedWelcomeScreen);
+            }
 
             Vector2 center = dungeon.Grid.ToTileCenter(roomModel.WorldPosition);
             m_context.CameraController.MoveTo(center);

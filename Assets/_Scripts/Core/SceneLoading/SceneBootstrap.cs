@@ -1,3 +1,4 @@
+using Magmaheart.Core.Tutorial;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.BoardStateSystem;
@@ -16,7 +17,6 @@ using MagmaHeart.Core.Presentation.UI.WindowPopupSystem;
 using MagmaHeart.Core.Services;
 using MagmaHeart.Core.StateMachine;
 using MagmaHeart.UIWindowPopupSystem;
-using MagmaHeart.UIWindowPopupSystem.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -119,7 +119,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_artifactInstaller = new ArtifactInstaller();
             RewardService rewardService = m_artifactInstaller.Install(player.Model, m_gameUI.RewardUI);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService);
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService, new Tutorial());
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
             
             await stateMachine.Start();
@@ -139,6 +139,13 @@ namespace MagmaHeart.Core.SceneLoading
             m_hoverModeController.Disable();
 
             m_debugUI.Disable();
+        }
+
+        // This is only need for the tutorial
+        // TODO: remove this after save system implementation
+        private void OnApplicationQuit()
+        {
+            PlayerPrefs.DeleteAll();
         }
     }
 }
