@@ -38,7 +38,7 @@ namespace MagmaHeart.Core.StateMachine
 
             m_stateMachine = new StateMachine<StateMachineTriggers>(m_startupState);
             m_stateMachine.Configure(m_startupState)
-                .Permit(StateMachineTriggers.StartupComplete, m_prepareRoomState);
+                .Permit(StateMachineTriggers.StartupComplete, m_travelState);
 
             m_stateMachine.Configure(m_prepareRoomState)
                 .Permit(StateMachineTriggers.RoomPrepared, m_travelState);

@@ -1,8 +1,10 @@
 ﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.DungeonGeneration;
 using MagmaHeart.StateMachine;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.StateMachine.States
 {
@@ -22,10 +24,23 @@ namespace MagmaHeart.Core.StateMachine.States
             Entity player = m_context.Player;
             DungeonController dungeon = m_context.DungeonController;
 
+            RoomModel roomModel = dungeon.GenerateRoom();
+            await m_context.RoomRenderer.OnRoomRendered;
+
+            m_context.UI.WelcomeScreen.Open();
+
+            Vector2 center = dungeon.Grid.ToTileCenter(roomModel.WorldPosition);
+            m_context.CameraController.MoveTo(center);
+            player.transform.position = center;
+           
             player.gameObject.SetActive(true);
+
             m_context.HoverModeController.UseRaycastHover();
 
-            await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete);
+            await m_context.UI.WelcomeScreen.GetTask();
+
+            TravelStatePayload travelPayload = new TravelStatePayload(TravelReason.ExitRoom);
+            await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete, travelPayload);
         }
 
         public Task ExitAsync()
