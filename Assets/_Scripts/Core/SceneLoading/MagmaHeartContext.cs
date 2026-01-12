@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.CameraControls;
+﻿using Magmaheart.Core.Tutorial;
+using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
@@ -17,6 +18,6 @@ namespace MagmaHeart.Core.SceneLoading
         CameraController CameraController,
         BattleContext BattleContext,
         GameUI UI,
-        RewardService RewardService
-        );
+        RewardService RewardService,
+        Tutorial Tutorial);
 }

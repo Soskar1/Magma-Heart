@@ -14,7 +14,13 @@ namespace MagmaHeart.Core.Presentation.UI
             m_welcomeScreenClosed = new TaskCompletionSource<bool>();
         }
 
-        public Task GetTask() => m_welcomeScreenClosed.Task;
+        public Task GetTask()
+        {
+            if (m_welcomeScreenClosed != null)
+                return m_welcomeScreenClosed.Task;
+
+            return Task.CompletedTask;
+        }
 
         public void Close()
         {
