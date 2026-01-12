@@ -1,5 +1,4 @@
-﻿using MagmaHeart.Core.AI;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.DungeonGeneration;
@@ -28,7 +27,7 @@ namespace MagmaHeart.Core.StateMachine.States
             RoomModel roomModel = dungeon.GenerateRoom();
             await m_context.RoomRenderer.OnRoomRendered;
 
-            // Show welcome screen for the first time
+            m_context.UI.WelcomeScreen.Open();
 
             Vector2 center = dungeon.Grid.ToTileCenter(roomModel.WorldPosition);
             m_context.CameraController.MoveTo(center);
@@ -38,9 +37,7 @@ namespace MagmaHeart.Core.StateMachine.States
 
             m_context.HoverModeController.UseRaycastHover();
 
-            // Wait for player to close the welcome screen
-
-            await Task.Delay(5000);
+            await m_context.UI.WelcomeScreen.GetTask();
 
             TravelStatePayload travelPayload = new TravelStatePayload(TravelReason.ExitRoom);
             await m_stateMachine.FireTrigger(StateMachineTriggers.StartupComplete, travelPayload);
