@@ -31,18 +31,25 @@ namespace MagmaHeart.Core.Dungeon
             SwitchLocation(m_locations.First());
         }
 
-        public void GetNextRoom()
+        public RoomModel GenerateRoom()
+        {
+            RoomModel roomModel = m_currentGenerator.GenerateRoom();
+            CurrentRoom = new Room(roomModel, GetRoomData(), Grid);
+
+            OnRoomGeneratedEventArgs args = new OnRoomGeneratedEventArgs(CurrentRoom);
+            OnRoomGenerated?.Invoke(this, args);
+
+            return roomModel;
+        }
+
+        public void GenerateNextRoom()
         {
             if (m_currentRoomIndex >= m_currentLocation.RoomsInLocation)
                 SwitchLocation(m_currentLocation); // TODO: add more locations
 
             ++m_currentRoomIndex;
 
-            RoomModel roomModel = m_currentGenerator.GenerateRoom();
-            CurrentRoom = new Room(roomModel, GetRoomData(), Grid);
-
-            OnRoomGeneratedEventArgs args = new OnRoomGeneratedEventArgs(CurrentRoom);
-            OnRoomGenerated?.Invoke(this, args);
+            GenerateRoom();
         }
 
         private void SwitchLocation(LocationData location)
