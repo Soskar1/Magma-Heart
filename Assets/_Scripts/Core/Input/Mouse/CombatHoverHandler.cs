@@ -50,6 +50,12 @@ namespace MagmaHeart.Core.Input.Mouse
             if (result.UIElement == null)
                 return;
 
+            if (m_currentTile != null)
+                m_tileHighlighter.Hide(m_currentTile);
+
+            m_currentTile = null;
+            m_actionPreviewProvider.Preview(m_currentTile);
+
             EntityPresenter presenter = result.UIElement.GetComponent<EntityPresenter>();
 
             if (presenter == null)
@@ -57,11 +63,6 @@ namespace MagmaHeart.Core.Input.Mouse
 
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
-
-            if (m_currentTile != null)
-                m_tileHighlighter.Hide(m_currentTile);
-
-            m_currentTile = null;
 
             if (!m_dungeonController.CurrentRoom.TryGetEntity(presenter.Model, out Entity entity))
                 return;

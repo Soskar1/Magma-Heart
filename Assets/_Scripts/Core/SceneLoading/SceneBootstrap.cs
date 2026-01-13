@@ -1,4 +1,3 @@
-using Magmaheart.Core.Tutorial;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.BoardStateSystem;
@@ -16,7 +15,7 @@ using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.Presentation.UI.WindowPopupSystem;
 using MagmaHeart.Core.Services;
 using MagmaHeart.Core.StateMachine;
-using MagmaHeart.UIWindowPopupSystem;
+using MagmaHeart.Core.TutorialSystem;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -51,11 +50,13 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private float m_minDistanceFromPlayer;
 
         [Header("UI")]
-        [SerializeField] private WindowPresenter m_tutorialWindowPrefab;
         [SerializeField] private MagmaHeartWindowDatabaseDefinition m_windowDatabase;
         [SerializeField] private GameUI m_gameUI;
         [SerializeField] private DebugUI m_debugUI;
         [SerializeField] private GraphicRaycaster m_graphicRaycaster;
+
+        [Header("Tutorial")]
+        [SerializeField] private TutorialWindowPresenter m_tutorialWindowPrefab;
 
         [Header("Travel")]
         [SerializeField] private int m_travelSpeed;
@@ -70,6 +71,7 @@ namespace MagmaHeart.Core.SceneLoading
         private SpawnServiceInstaller m_spawnServiceInstaller;
         private ServiceInstaller m_serviceInstaller;
         private ArtifactInstaller m_artifactInstaller;
+        private TutorialInstaller m_tutorialInstaller;
 
         public async void Awake()
         {
@@ -119,7 +121,10 @@ namespace MagmaHeart.Core.SceneLoading
             m_artifactInstaller = new ArtifactInstaller();
             RewardService rewardService = m_artifactInstaller.Install(player.Model, m_gameUI.RewardUI);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService, new Tutorial());
+            m_tutorialInstaller = new TutorialInstaller();
+            TutorialContext tutorialContext = m_tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
+
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
             
             await stateMachine.Start();
@@ -135,6 +140,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_battleInstaller.Dispose();
             m_serviceInstaller.Dispose();
             m_artifactInstaller.Dispose();
+            m_tutorialInstaller.Dispose();
 
             m_hoverModeController.Disable();
 

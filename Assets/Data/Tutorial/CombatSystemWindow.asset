@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ef439b30c84394486723ef15bb22ae, type: 3}
+  m_Name: CombatSystemWindow
+  m_EditorClassIdentifier: 
+  m_data:
+    m_header: Combat system
+    m_content: 'To fight, you need to use energy. Your energy is displayed as crystals
+      above the health bar:
+
+      <color=#808080>Gray crystal</color>: used energy
+
+      <color=#1ebc73>Green
+      crystal</color>: current amount of energy
+
+      <color="red">Red crystal</color>:
+      action cost
+
+
+      To move, press the left mouse button (LMB) on any empty
+      tile.
+
+      To fight, you need to stand close (one tile) to an enemy and press
+      the LMB on them.
+
+      You win when all enemies are defeated.'
+  m_trigger: {fileID: 11400000, guid: 4b6c807ea77a3e84ca25aca520bc50e1, type: 2}

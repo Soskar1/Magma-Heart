@@ -42,7 +42,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
 
         public ActionPreview Preview(RoomTile tile)
         {
-            ActionPreview newPreview = m_actionPreviewService.Preview(m_state, m_executor, tile);
+            ActionPreview newPreview = null;
+
+            if (tile != null)
+                newPreview = m_actionPreviewService.Preview(m_state, m_executor, tile);
 
             m_currentPreview = newPreview;
 

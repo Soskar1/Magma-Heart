@@ -5,6 +5,7 @@ using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
+using MagmaHeart.Core.TutorialSystem;
 using MagmaHeart.StateMachine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -77,9 +78,16 @@ namespace MagmaHeart.Core.StateMachine
         private void HandleTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
             if (args.CurrentEntity.Model.IsPlayer)
+            {
                 m_hoverModeController.UseTileHover();
+
+                m_context.Tutorial.Model.TrySetFlag(TutorialFlags.CameraMovementExplained);
+                m_context.Tutorial.Model.TrySetFlag(TutorialFlags.CombatSystemExplained);
+            }
             else
+            {
                 m_hoverModeController.UseRaycastHover();
+            }
         }
     }
 }

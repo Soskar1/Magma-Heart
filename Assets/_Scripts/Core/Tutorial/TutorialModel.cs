@@ -1,22 +1,30 @@
-using MagmaHeart.Core.TutorialSystem;
+using System;
 using UnityEngine;
 
-namespace Magmaheart.Core.Tutorial
+namespace MagmaHeart.Core.TutorialSystem
 {
-    public class Tutorial
+    public class TutorialModel
     {
         private const string m_saveKey = "TutorialFlags";
         private TutorialFlags m_currentFlags;
 
-        public Tutorial()
+        public event EventHandler<OnTutorialFlagSetEventArgs> OnTutorialFlagSet;
+
+        public TutorialModel()
         {
             // TODO: Change this after save system implementation
             m_currentFlags = (TutorialFlags)PlayerPrefs.GetInt(m_saveKey, (int)TutorialFlags.None);
         }
 
-        public void SetFlag(TutorialFlags flags)
+        public void TrySetFlag(TutorialFlags flags)
         {
+            if (IsSet(flags))
+                return;
+
             m_currentFlags |= flags;
+
+            OnTutorialFlagSetEventArgs args = new OnTutorialFlagSetEventArgs(flags);
+            OnTutorialFlagSet?.Invoke(this, args);
 
             // TODO: Change this after save system implementation
             PlayerPrefs.SetInt(m_saveKey, (int)m_currentFlags);

@@ -2,6 +2,7 @@ using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.StateMachine.States;
+using MagmaHeart.Core.TutorialSystem;
 using MagmaHeart.StateMachine;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace MagmaHeart.Core.StateMachine
 
         public Task EnterAsync(StatePayload payload)
         {
+            m_context.Tutorial.Model.TrySetFlag(TutorialFlags.ArtifactsExplained);
             m_context.Player.Animation.PlayIdleAnimation();
             
             List<ArtifactData> rewards = m_context.RewardService.GenerateRewards();
