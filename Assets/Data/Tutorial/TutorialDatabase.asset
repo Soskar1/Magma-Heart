@@ -15,3 +15,4 @@ MonoBehaviour:
   m_windows:
   - {fileID: 11400000, guid: 305fd5146c657c0409395a5e4bfd5730, type: 2}
   - {fileID: 11400000, guid: e2d2523b33473b24898811b5fc357652, type: 2}
+  - {fileID: 11400000, guid: 5797820f27b35bd4ca3d98349b81fc34, type: 2}

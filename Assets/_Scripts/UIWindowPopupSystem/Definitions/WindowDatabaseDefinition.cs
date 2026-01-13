@@ -21,7 +21,7 @@ namespace MagmaHeart.UIWindowPopupSystem.Definitions
 
                 if (database.ContainsKey(window.Trigger))
                 {
-                    Debug.LogWarning($"Duplicate trigger {window.Trigger.name} found in WindowDatabaseDefinition");
+                    Debug.LogWarning($"Duplicate trigger {window.Trigger.name} found in database while trying to register {window.name} window");
                     continue;
                 }
 

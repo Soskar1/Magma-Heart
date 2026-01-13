@@ -17,7 +17,7 @@ MonoBehaviour:
     m_content: 'To fight, you need to use energy. Your energy is displayed as crystals
       above the health bar:
 
-      <color="gray">Gray crystal</color>: max amount
+      <color=#808080>Gray crystal</color>: max amount
       of energy
 
       <color="green">Green crystal</color>: current amount of energy
