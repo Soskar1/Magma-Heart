@@ -93,6 +93,7 @@ namespace MagmaHeart.Core.CombatSystem
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
             m_currentRoom.TryGetEntity(entityModel, out Entity entity);
+            m_currentRoom.RemoveEntityFromRoom(entity);
 
             EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
             entityModel.Health.OnHealthChanged -= handler;
@@ -106,7 +107,6 @@ namespace MagmaHeart.Core.CombatSystem
             else
             {
                 m_currentTurnOrder.Remove(entity);
-                m_currentRoom.RemoveEntityFromRoom(entity);
 
                 OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
                 OnEntityDied?.Invoke(this, args);
