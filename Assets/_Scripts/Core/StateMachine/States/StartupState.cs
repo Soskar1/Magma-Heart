@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.StateMachine.States
             if (!m_tutorial.Model.IsSet(TutorialFlags.OpenedWelcomeScreen))
             {
                 m_context.UI.WelcomeScreen.Open();
-                m_tutorial.Model.SetFlag(TutorialFlags.OpenedWelcomeScreen);
+                m_tutorial.Model.TrySetFlag(TutorialFlags.OpenedWelcomeScreen);
             }
 
             Vector2 center = dungeon.Grid.ToTileCenter(roomModel.WorldPosition);
@@ -47,8 +47,7 @@ namespace MagmaHeart.Core.StateMachine.States
 
             await m_context.UI.WelcomeScreen.GetTask();
 
-            if (!m_tutorial.Model.IsSet(TutorialFlags.HealthBarExplained))
-                m_tutorial.Model.SetFlag(TutorialFlags.HealthBarExplained);
+            m_tutorial.Model.TrySetFlag(TutorialFlags.HealthBarExplained);
 
             await m_tutorial.Presenter.GetUntilWindowCloseTask(TutorialFlags.HealthBarExplained);
 

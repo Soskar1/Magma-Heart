@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.TutorialSystem
             m_currentFlags = (TutorialFlags)PlayerPrefs.GetInt(m_saveKey, (int)TutorialFlags.None);
         }
 
-        public void SetFlag(TutorialFlags flags)
+        public void TrySetFlag(TutorialFlags flags)
         {
             if (IsSet(flags))
                 return;

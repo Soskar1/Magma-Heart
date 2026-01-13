@@ -7,6 +7,7 @@ namespace MagmaHeart.Core.TutorialSystem
     {
         None = 0,
         OpenedWelcomeScreen = 1,
-        HealthBarExplained = 2
+        HealthBarExplained = 2,
+        CombatSystemExplained = 4
     }
 }

@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 411da885e7b785549a6fb5724f63ceb3, type: 3}
-  m_Name: TutorialDatabase
+  m_Script: {fileID: 11500000, guid: 5a1af1bde4e5f18409264cd778c71349, type: 3}
+  m_Name: CombatSystemTutorialTrigger
   m_EditorClassIdentifier: 
-  m_windows:
-  - {fileID: 11400000, guid: 305fd5146c657c0409395a5e4bfd5730, type: 2}
-  - {fileID: 11400000, guid: e2d2523b33473b24898811b5fc357652, type: 2}
+  m_flag: 4
