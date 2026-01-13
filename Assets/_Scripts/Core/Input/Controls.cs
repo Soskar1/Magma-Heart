@@ -109,6 +109,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EscapeScreen"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d3b6712-c5b1-442d-a6aa-e8018ab5bf94"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -175,6 +184,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DebugWindow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ca386e46-cf36-434c-ae79-4cf23e57b5dd"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""EscapeScreen"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -854,6 +874,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_DebugWindow = m_Player.FindAction("DebugWindow", throwIfNotFound: true);
+        m_Player_EscapeScreen = m_Player.FindAction("EscapeScreen", throwIfNotFound: true);
         // Mouse
         m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
         m_Mouse_MouseScroll = m_Mouse.FindAction("MouseScroll", throwIfNotFound: true);
@@ -955,6 +976,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_DebugWindow;
+    private readonly InputAction m_Player_EscapeScreen;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -974,6 +996,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/DebugWindow".
         /// </summary>
         public InputAction @DebugWindow => m_Wrapper.m_Player_DebugWindow;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/EscapeScreen".
+        /// </summary>
+        public InputAction @EscapeScreen => m_Wrapper.m_Player_EscapeScreen;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1006,6 +1032,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @DebugWindow.started += instance.OnDebugWindow;
             @DebugWindow.performed += instance.OnDebugWindow;
             @DebugWindow.canceled += instance.OnDebugWindow;
+            @EscapeScreen.started += instance.OnEscapeScreen;
+            @EscapeScreen.performed += instance.OnEscapeScreen;
+            @EscapeScreen.canceled += instance.OnEscapeScreen;
         }
 
         /// <summary>
@@ -1023,6 +1052,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @DebugWindow.started -= instance.OnDebugWindow;
             @DebugWindow.performed -= instance.OnDebugWindow;
             @DebugWindow.canceled -= instance.OnDebugWindow;
+            @EscapeScreen.started -= instance.OnEscapeScreen;
+            @EscapeScreen.performed -= instance.OnEscapeScreen;
+            @EscapeScreen.canceled -= instance.OnEscapeScreen;
         }
 
         /// <summary>
@@ -1455,6 +1487,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDebugWindow(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "EscapeScreen" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEscapeScreen(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Mouse" which allows adding and removing callbacks.

@@ -53,6 +53,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private MagmaHeartWindowDatabaseDefinition m_windowDatabase;
         [SerializeField] private GameUI m_gameUI;
         [SerializeField] private DebugUI m_debugUI;
+        [SerializeField] private EscapeScreen m_escapeScreen;
         [SerializeField] private GraphicRaycaster m_graphicRaycaster;
 
         [Header("Tutorial")]
@@ -88,6 +89,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             System.Random random = new System.Random(m_seed);
             m_debugUI.Initialize(inputContext.UserInput, m_seed);
+            m_escapeScreen.Initialize(inputContext.UserInput);
 
             RoomGrid grid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
             DungeonController dungeonController = new DungeonController(grid, m_locations, random);
