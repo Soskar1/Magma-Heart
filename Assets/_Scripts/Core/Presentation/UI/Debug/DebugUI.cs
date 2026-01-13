@@ -14,14 +14,11 @@ namespace MagmaHeart.Core.Presentation.UI
             m_userInput = userInput;
             m_seedDisplay.Initialize(seed);
 
-            m_userInput.OnDebugButtonClick += ToggleDisplay;
+            m_userInput.OnDebugButtonPress += ToggleDisplay;
         }
 
-        public void Disable() => m_userInput.OnDebugButtonClick -= ToggleDisplay;
+        public void Disable() => m_userInput.OnDebugButtonPress -= ToggleDisplay;
 
-        private void ToggleDisplay(object obj, EventArgs args)
-        {
-            gameObject.SetActive(!gameObject.activeSelf);
-        }
+        private void ToggleDisplay(object obj, EventArgs args) => gameObject.SetActive(!gameObject.activeSelf);
     }
 }
