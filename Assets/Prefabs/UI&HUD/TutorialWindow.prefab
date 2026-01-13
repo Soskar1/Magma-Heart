@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 485994540553858932}
   - component: {fileID: 5845973985767916425}
+  - component: {fileID: 4698899641543512703}
   m_Layer: 5
   m_Name: TutorialWindow
   m_TagString: Untagged
@@ -54,6 +55,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_header: {fileID: 5594210592278851548}
   m_content: {fileID: 4804452801441414932}
+--- !u!114 &4698899641543512703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385197021934524620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b385f00ae043194683ac77ea63c9ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1745446011320425434
 GameObject:
   m_ObjectHideFlags: 0
