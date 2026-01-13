@@ -3,7 +3,6 @@ using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
-using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Statistics;
 using UnityEngine;
@@ -34,7 +33,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_energyHUD.Initialize(player, previewProvider);
             m_entityInfoUI.Initialize(mouseHoverEngine, battle);
             m_battleTurnOrder.Initialize(battle);
-            m_gaveOverUI.Initialize(battle);
+            m_gaveOverUI.Initialize(battle, roomCounter);
             m_roomCounterPresenter.Initialize(roomCounter);
 
             m_battle = battle;

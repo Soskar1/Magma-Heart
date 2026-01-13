@@ -145,7 +145,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_debugUI.Disable();
         }
 
-        // This is only need for the tutorial
+        // This is only need for the tutorial and statistics
         // TODO: remove this after save system implementation
         private void OnApplicationQuit()
         {
