@@ -1,6 +1,5 @@
 using MagmaHeart.Core.CombatSystem;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace MagmaHeart.Core.Presentation.UI
 {
@@ -23,7 +22,7 @@ namespace MagmaHeart.Core.Presentation.UI
             }
         }
 
-        public void Restart() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        public void ExitGame() => Application.Quit();
+        public void Restart() => MagmaHeart.Restart();
+        public void ExitGame() => MagmaHeart.ExitGame();
     }
 }
