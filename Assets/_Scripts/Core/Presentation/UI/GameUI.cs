@@ -5,6 +5,7 @@ using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
+using MagmaHeart.Core.Statistics;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Presentation.UI
@@ -19,13 +20,14 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private TurnOrderPresenter m_battleTurnOrder;
         [SerializeField] private GameOverUI m_gaveOverUI;
         [SerializeField] private WelcomeScreen m_welcomeScreen;
+        [SerializeField] private CompletedRoomsCounterPresenter m_roomCounterPresenter;
 
         public RewardUI RewardUI => m_rewardUI;
         public WelcomeScreen WelcomeScreen => m_welcomeScreen;
 
         private Battle m_battle;
 
-        public void Initialize(Entity player, Battle battle, MouseHoverEngine mouseHoverEngine, IActionPreviewProvider previewProvider)
+        public void Initialize(Entity player, Battle battle, MouseHoverEngine mouseHoverEngine, IActionPreviewProvider previewProvider, CompletedRoomsCounter roomCounter)
         {
             m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(player);
@@ -33,6 +35,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_entityInfoUI.Initialize(mouseHoverEngine, battle);
             m_battleTurnOrder.Initialize(battle);
             m_gaveOverUI.Initialize(battle);
+            m_roomCounterPresenter.Initialize(roomCounter);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;

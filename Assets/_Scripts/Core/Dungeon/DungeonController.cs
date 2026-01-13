@@ -20,7 +20,8 @@ namespace MagmaHeart.Core.Dungeon
         private DungeonGenerator m_currentGenerator;
         private int m_currentRoomIndex;
 
-        public EventHandler<OnRoomGeneratedEventArgs> OnRoomGenerated;
+        public event EventHandler<OnRoomGeneratedEventArgs> OnRoomGenerated;
+        public event EventHandler OnRoomChanged;
         
         public DungeonController(RoomGrid roomGrid, List<LocationData> locations, Random random)
         {
@@ -50,6 +51,8 @@ namespace MagmaHeart.Core.Dungeon
             ++m_currentRoomIndex;
 
             GenerateRoom();
+
+            OnRoomChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void SwitchLocation(LocationData location)
