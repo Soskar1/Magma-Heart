@@ -81,6 +81,7 @@ namespace MagmaHeart.Core.StateMachine
             {
                 m_hoverModeController.UseTileHover();
 
+                m_context.Tutorial.Model.TrySetFlag(TutorialFlags.CameraMovementExplained);
                 m_context.Tutorial.Model.TrySetFlag(TutorialFlags.CombatSystemExplained);
             }
             else

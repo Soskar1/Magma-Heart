@@ -17,20 +17,20 @@ MonoBehaviour:
     m_content: 'To fight, you need to use energy. Your energy is displayed as crystals
       above the health bar:
 
-      <color=#808080>Gray crystal</color>: max amount
-      of energy
+      <color=#808080>Gray crystal</color>: used energy
 
-      <color=#1ebc73>Green crystal</color>: current amount of energy
+      <color=#1ebc73>Green
+      crystal</color>: current amount of energy
 
-      <color="red">Red
-      crystal</color>: action cost
+      <color="red">Red crystal</color>:
+      action cost
 
 
-      To move, press the left mouse button (LMB)
-      on any empty tile.
+      To move, press the left mouse button (LMB) on any empty
+      tile.
 
-      To fight, you need to stand close (one tile) to an
-      enemy and press the LMB on them.
+      To fight, you need to stand close (one tile) to an enemy and press
+      the LMB on them.
 
       You win when all enemies are defeated.'
   m_trigger: {fileID: 11400000, guid: 4b6c807ea77a3e84ca25aca520bc50e1, type: 2}

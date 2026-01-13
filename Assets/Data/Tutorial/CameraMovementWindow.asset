@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ef439b30c84394486723ef15bb22ae, type: 3}
+  m_Name: CameraMovementWindow
+  m_EditorClassIdentifier: 
+  m_data:
+    m_header: Camera controls
+    m_content: 'WASD to move the camera during battle
+
+      Mouse scroll to zoom
+      in/out'
+  m_trigger: {fileID: 11400000, guid: 478119f330450764191849944c4f056a, type: 2}

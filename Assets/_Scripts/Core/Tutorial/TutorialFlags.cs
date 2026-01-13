@@ -9,6 +9,7 @@ namespace MagmaHeart.Core.TutorialSystem
         OpenedWelcomeScreen = 1,
         HealthBarExplained = 2,
         CombatSystemExplained = 4,
-        ArtifactsExplained = 8
+        ArtifactsExplained = 8,
+        CameraMovementExplained = 16
     }
 }
