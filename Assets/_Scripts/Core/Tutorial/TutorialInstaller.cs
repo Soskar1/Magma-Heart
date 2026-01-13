@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.UIWindowPopupSystem;
 using MagmaHeart.UIWindowPopupSystem.Definitions;
@@ -10,9 +11,15 @@ namespace MagmaHeart.Core.TutorialSystem
     {
         private TutorialPresenter m_presenter;
 
-        public TutorialContext Install(IEnumerable<TutorialTriggerDefinition> triggers, WindowDatabaseDefinition database, TutorialWindowPresenter windowPrefab, Transform parentUi)
+        public TutorialContext Install(WindowDatabaseDefinition databaseDefinition, TutorialWindowPresenter windowPrefab, Transform parentUi)
         {
+            IDictionary<WindowTriggerDefinition, WindowData> database = databaseDefinition.CreateDatabase();
             WindowCreator windowCreator = new WindowCreator(database, windowPrefab, parentUi);
+
+            IEnumerable<TutorialTriggerDefinition> triggers = database.Keys
+                .Where(trigger => trigger as TutorialTriggerDefinition != null)
+                .Cast<TutorialTriggerDefinition>()
+                .ToList();
 
             TutorialModel model = new TutorialModel();
             m_presenter = new TutorialPresenter(model, triggers, windowCreator);

@@ -6,7 +6,7 @@ namespace MagmaHeart.UIWindowPopupSystem
     public struct WindowData
     {
         [SerializeField] private string m_header;
-        [SerializeField] [TextArea(3, 5)] private string m_content;
+        [SerializeField] [TextArea(3, 10)] private string m_content;
 
         public string Header => m_header;
         public string Content => m_content;

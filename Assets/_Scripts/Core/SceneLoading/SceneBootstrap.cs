@@ -57,7 +57,6 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("Tutorial")]
         [SerializeField] private TutorialWindowPresenter m_tutorialWindowPrefab;
-        [SerializeField] private List<TutorialTriggerDefinition> m_tutorialTriggers;
 
         [Header("Travel")]
         [SerializeField] private int m_travelSpeed;
@@ -123,7 +122,7 @@ namespace MagmaHeart.Core.SceneLoading
             RewardService rewardService = m_artifactInstaller.Install(player.Model, m_gameUI.RewardUI);
 
             m_tutorialInstaller = new TutorialInstaller();
-            TutorialContext tutorialContext = m_tutorialInstaller.Install(m_tutorialTriggers, m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
+            TutorialContext tutorialContext = m_tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);

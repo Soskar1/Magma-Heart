@@ -10,10 +10,10 @@ namespace MagmaHeart.UIWindowPopupSystem
         private readonly WindowPresenter m_windowPrefab;
         private readonly Transform m_parent;
 
-        public WindowCreator(WindowDatabaseDefinition databaseDefinition, WindowPresenter windowPrefab, Transform parentUI)
+        public WindowCreator(IDictionary<WindowTriggerDefinition, WindowData> database, WindowPresenter windowPrefab, Transform parentUI)
         {
             m_windowPrefab = windowPrefab;
-            m_database = databaseDefinition.CreateDatabase();
+            m_database = database;
             m_parent = parentUI;
         }
 
