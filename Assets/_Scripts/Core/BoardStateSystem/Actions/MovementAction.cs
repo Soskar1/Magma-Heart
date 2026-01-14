@@ -51,7 +51,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return Mathf.CeilToInt(distance / (float)args.Speed);
         }
 
-        private List<Vector2> CreatePath(MovementActionArgs args, BoardState boardState)
+        public List<Vector2> CreatePath(MovementActionArgs args, BoardState boardState)
         {
             PositionPropertySnapshot position = boardState.GetProperty<PositionPropertySnapshot>(args.Input.Executor);
             EnergyPropertySnapshot energyProperty = boardState.GetProperty<EnergyPropertySnapshot>(args.Input.Executor);

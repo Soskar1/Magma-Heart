@@ -2,6 +2,9 @@
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Presentation;
+using MagmaHeart.Extensions;
+using System.Linq;
+using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
 {
@@ -25,19 +28,27 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             m_previewProvider.OnActionPreviewChanged -= HandleOnActionPreviewChanged;
         }
 
-        public void Present(ActionPreview preview)
+        public void Present(ActionPreview preview, RoomTile tile, CombatBoardState state)
         {
             m_tileHighlighter.Clear();
             
             if (preview == null)
                 return;
 
-            if (preview.Action is MovementAction)
+            if (preview.Action is MovementAction movementAction)
             {
                 MovementActionArgs args = (MovementActionArgs)preview.Args;
-                RoomTile tile = m_dungeonController.CurrentRoom.GetRoomTile(args.TargetPositionInput.Target);
 
-                m_tileHighlighter.Show(tile);
+                Vector2 lastPathPoint = movementAction.CreatePath(args, state).Skip(1).LastOrDefault();
+
+                bool isReachable = lastPathPoint.ToVector3Int() == tile.Position;
+                m_tileHighlighter.Show(tile, isReachable);
+
+                if (!isReachable)
+                {
+                    RoomTile possibleTile = m_dungeonController.CurrentRoom.GetRoomTile(lastPathPoint);
+                    m_tileHighlighter.Show(possibleTile, true);
+                }
             }
             else if (preview.Action is AttackAction)
             {
@@ -47,6 +58,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             }
         }
 
-        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args) => Present(args.ActionPreview);
+        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args) => Present(args.ActionPreview, args.Tile, args.State);
     }
 }
