@@ -3,6 +3,7 @@ using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Presentation;
 using MagmaHeart.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -39,15 +40,15 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             {
                 MovementActionArgs args = (MovementActionArgs)preview.Args;
 
-                Vector2 lastPathPoint = movementAction.CreatePath(args, state).Skip(1).LastOrDefault();
+                List<Vector2> path = movementAction.CreatePath(args, state).Skip(1).ToList();
 
-                bool isReachable = lastPathPoint.ToVector3Int() == tile.Position;
+                bool isReachable = path.LastOrDefault().ToVector3Int() == tile.Position;
                 m_tileHighlighter.Show(tile, isReachable);
 
-                if (!isReachable)
+                foreach (Vector2 point in path)
                 {
-                    RoomTile possibleTile = m_dungeonController.CurrentRoom.GetRoomTile(lastPathPoint);
-                    m_tileHighlighter.Show(possibleTile, true);
+                    RoomTile pathTile = m_dungeonController.CurrentRoom.GetRoomTile(point);
+                    m_tileHighlighter.Show(pathTile, true);
                 }
             }
             else if (preview.Action is AttackAction)
