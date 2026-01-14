@@ -6704,7 +6704,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_combatTilemap: {fileID: 1157183066}
-  m_combatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
+  m_validCombatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
+  m_invalidCombatTile: {fileID: 11400000, guid: ebc9bbd401c80b742a68d5244ca5dc5d, type: 2}
 --- !u!114 &8388963511706051693
 MonoBehaviour:
   m_ObjectHideFlags: 0

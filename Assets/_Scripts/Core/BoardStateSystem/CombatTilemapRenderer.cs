@@ -9,9 +9,9 @@ namespace MagmaHeart.Core.BoardStateSystem
     public class CombatTilemapRenderer : MonoBehaviour, ICombatTileHighlighter
     {
         [SerializeField] private Tilemap m_combatTilemap;
-        [SerializeField] private TileBase m_combatTile;
+        [SerializeField] private TileBase m_validCombatTile;
+        [SerializeField] private TileBase m_invalidCombatTile;
         private RoomGrid m_roomGrid;
-        private RoomTile m_currentTile;
 
         public void Initialize(RoomGrid roomGrid) => m_roomGrid = roomGrid;
 
@@ -21,23 +21,26 @@ namespace MagmaHeart.Core.BoardStateSystem
             return m_combatTilemap.WorldToCell(worldPosition);
         }
 
-        public void Show(RoomTile tile)
+        public void Show(RoomTile tile, bool isValid)
         {
-            m_currentTile = tile;
+            if (tile == null)
+                return;
+
             Vector3Int combatTilePosition = GetCombatTilePosition(tile);
-            m_combatTilemap.SetTile(combatTilePosition, m_combatTile);
+
+            TileBase tileToSet = isValid ? m_validCombatTile : m_invalidCombatTile;
+            m_combatTilemap.SetTile(combatTilePosition, tileToSet);
         }
 
         public void Hide(RoomTile tile)
         {
+            if (tile == null)
+                return;
+
             Vector3Int combatTilePosition = GetCombatTilePosition(tile);
             m_combatTilemap.SetTile(combatTilePosition, null);
         }
 
-        public void Clear()
-        {
-            if (m_currentTile != null)
-                Hide(m_currentTile);
-        }
+        public void Clear() => m_combatTilemap.ClearAllTiles();
     }
 }
