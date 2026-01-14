@@ -30,5 +30,6 @@ namespace MagmaHeart.Core.Presentation.UI
 
         public void OpenYoutubeChannel() => Application.OpenURL("https://www.youtube.com/@Soskar");
         public void OpenX() => Application.OpenURL("https://x.com/SoskarDev");
+        public void OpenDiscordServer() => Application.OpenURL("https://discord.gg/5XjyvhXbbn");
     }
 }
