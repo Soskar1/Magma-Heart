@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             List<EntityData> enemyPool = room.RoomData.EnemyPool;
             List<Entity> entities = new List<Entity>() { player };
-            for (int i = 0; i < 2; ++i) // TODO: Add difficulty to every room and determine how many enemies to spawn
+            for (int i = 0; i < room.RoomData.EnemyCount; ++i)
             {
                 EntityData data = enemyPool[m_random.Next(enemyPool.Count)];
                 EnemyTurnController turnController = new EnemyTurnController(m_aiEngine);

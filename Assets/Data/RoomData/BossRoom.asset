@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BossRoom
   m_EditorClassIdentifier: 
   m_enemyPool:
-  - {fileID: 11400000, guid: 9606ac1051baff841954357032ef2ef7, type: 2}
+  - {fileID: 11400000, guid: 285080db1c14e4b44bd6c02c870982c1, type: 2}
