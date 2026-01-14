@@ -78,9 +78,6 @@ namespace MagmaHeart.Core.Input.Mouse
         {
             m_currentEntity?.Outline.RemoveOutline();
 
-            if (m_currentTile != null)
-                m_tileHighlighter.Hide(m_currentTile);
-
             m_currentEntity = null;
             m_currentTile = null;
         }        
