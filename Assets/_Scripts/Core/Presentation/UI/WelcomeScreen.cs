@@ -28,6 +28,6 @@ namespace MagmaHeart.Core.Presentation.UI
             m_welcomeScreenClosed.SetResult(true);
         }
 
-        // TODO: implement redirect buttons
+        public void OpenYoutubeChannel() => Application.OpenURL("https://www.youtube.com/@Soskar");
     }
 }

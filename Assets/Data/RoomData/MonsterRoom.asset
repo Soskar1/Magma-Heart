@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b01bfe95aaa0fa045ae773efa6e74996, type: 3}
   m_Name: MonsterRoom
   m_EditorClassIdentifier: 
-  m_roomType: 0
   m_enemyPool:
   - {fileID: 11400000, guid: f0a0ab01c3131e3498969e2f6c87a9cb, type: 2}
   - {fileID: 11400000, guid: 6acd40721a119ee469077e934b71f895, type: 2}
+  m_enemyCount: 2

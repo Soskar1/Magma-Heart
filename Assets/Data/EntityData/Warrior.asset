@@ -15,7 +15,7 @@ MonoBehaviour:
   m_name: Warrior
   m_portraitImage: {fileID: 21300000, guid: debfd526cb48a88449c718d2e6a25ca6, type: 3}
   m_stats:
-    m_maxHealth: 5
+    m_maxHealth: 10
     m_maxEnergy: 7
     m_energyRegenerationPerTurn: 5
     m_strength: 0
