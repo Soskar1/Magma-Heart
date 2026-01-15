@@ -36,7 +36,7 @@ namespace MagmaHeart.Core.StateMachine
             if (isEnteringRoom)
                 m_context.CameraController.MoveTo(endPosition);
 
-            player.transform.position = startPosition;
+            player.transform.position = m_context.DungeonController.Grid.ToTileCenter(startPosition.ToVector2Int());
 
             RoomTile start = room.GetRoomTile(startPosition);
             RoomTile end = room.GetRoomTile(endPosition);
