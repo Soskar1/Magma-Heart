@@ -16,6 +16,7 @@ namespace MagmaHeart.Core.Entities
         public void PlayIdleAnimation() => CurrentAnimationState = m_idleAnimationID;
         public void PlayeIdleAsNextAnimation() => NextAnimationState = m_idleAnimationID;
         public void PlayRunAnimation() => CurrentAnimationState = m_runAnimationID;
+
         public void PlayAttackAnimation() => CurrentAnimationState = m_attackAnimationID;
         public Task PlayAttackAnimationAsync()
         {

@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.StateMachine
             List<RoomTile> path = new List<RoomTile>() { start, end };
 
             await m_context.Services.MovementService.MoveEntityAsync(player, path, m_travelSpeed);
-
+            
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)
                 trigger = StateMachineTriggers.TravelCompleted_Exit;
