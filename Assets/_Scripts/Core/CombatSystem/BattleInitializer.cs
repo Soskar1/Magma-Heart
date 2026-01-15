@@ -47,6 +47,8 @@ namespace MagmaHeart.Core.CombatSystem
         {
             List<EntityData> enemyPool = room.RoomData.EnemyPool;
             List<Entity> entities = new List<Entity>() { player };
+            List<Vector2Int> occupiedTiles = new List<Vector2Int>();
+
             for (int i = 0; i < room.RoomData.EnemyCount + m_additionalMonsters; ++i)
             {
                 EntityData data = enemyPool[m_random.Next(enemyPool.Count)];
@@ -67,9 +69,10 @@ namespace MagmaHeart.Core.CombatSystem
                 do
                 {
                     dungeonTile = room.RoomModel.GetTileAtIndex(m_random.Next(room.RoomModel.TileCount));
-                } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer);
+                } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer || occupiedTiles.Contains(dungeonTile.Position));
 
                 entity.transform.position = m_grid.ToTileCenter(dungeonTile.Position);
+                occupiedTiles.Add(dungeonTile.Position);
             }
 
             return entities;
