@@ -9,7 +9,7 @@ namespace MagmaHeart.DungeonGeneration
     {
         private Dictionary<Vector2Int, DungeonTile> m_tiles;
         public int TileCount => m_tiles.Count;
-        public BoundsInt OccupiedSpace => new BoundsInt(LeftMostTile.x, BottomMostTile.y, 0, RightMostTile.x, RightMostTile.y, 0);
+        public BoundsInt OccupiedSpace => new BoundsInt(LeftMostTile.x, BottomMostTile.y, 0, RightMostTile.x, TopMostTile.y, 0);
         public Vector2Int WorldPosition { get; init; }
         public BoundsInt Boundaries { get; init; }
         public Vector2Int LeftMostTile { get; private set; }
