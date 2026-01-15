@@ -38,6 +38,8 @@ namespace MagmaHeart.Core.Services
 
             if (targetToHit != null)
                 await ApplyDamage(boardState, attacker, target, damage, cancellationToken);
+
+            await attacker.Animation.WaitForAnimationEnd();
         }
 
         private async Task<EntityModel> WaitForProjectileHit(Entity attacker, Entity target)
