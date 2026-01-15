@@ -25,5 +25,10 @@ namespace MagmaHeart.Core.Entities
         public int EnergyRegenerationPerTurn => m_energyRegenerationPerTurn;
         public int Strength => m_strength;
         public int Speed => m_speed;
+
+        // Note: used for difficulty scaling. Possibly will need to remove this in the future
+        public void IncreaseHealth(int amount) => m_maxHealth += amount;
+        public void IncreaseStregth(int amount) => m_strength += amount;
+        public void IncreaseSpeed(int amount) => m_speed += amount;
     }
 }
