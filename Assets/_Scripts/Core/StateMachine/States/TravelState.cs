@@ -36,14 +36,14 @@ namespace MagmaHeart.Core.StateMachine
             if (isEnteringRoom)
                 m_context.CameraController.MoveTo(endPosition);
 
-            player.transform.position = startPosition;
+            player.transform.position = m_context.DungeonController.Grid.ToTileCenter(startPosition.ToVector2Int());
 
             RoomTile start = room.GetRoomTile(startPosition);
             RoomTile end = room.GetRoomTile(endPosition);
             List<RoomTile> path = new List<RoomTile>() { start, end };
 
             await m_context.Services.MovementService.MoveEntityAsync(player, path, m_travelSpeed);
-
+            
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)
                 trigger = StateMachineTriggers.TravelCompleted_Exit;

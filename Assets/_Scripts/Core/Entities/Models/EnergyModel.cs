@@ -6,10 +6,22 @@ namespace MagmaHeart.Core.Entities.Models
     public class EnergyModel
     {
         private int m_currentEnergy;
+        private int m_maxEnergy;
+        private int m_energyRegenerationPerTurn;
 
         public event EventHandler<OnEnergyChangedEventArgs> OnEnergyChanged;
 
-        public int MaxEnergy { get; init; }
+        public int MaxEnergy
+        { 
+            get => m_maxEnergy;
+            set
+            {
+                m_maxEnergy = value;
+
+                if (m_currentEnergy > m_maxEnergy)
+                    m_currentEnergy = m_maxEnergy;
+            }
+        }
 
         public int CurrentEnergy
         {
@@ -32,9 +44,22 @@ namespace MagmaHeart.Core.Entities.Models
             }
         }
 
-        public EnergyModel(int maxEnergy)
+        public int EnergyRegenerationPerTurn
+        {
+            get => m_energyRegenerationPerTurn;
+            set
+            {
+                if (value < 0)
+                    value = 0;
+
+                m_energyRegenerationPerTurn = value;
+            }
+        }
+
+        public EnergyModel(int maxEnergy, int energyRegenerationPerTurn)
         {
             MaxEnergy = maxEnergy;
+            EnergyRegenerationPerTurn = energyRegenerationPerTurn;
             m_currentEnergy = 0;
         }
 

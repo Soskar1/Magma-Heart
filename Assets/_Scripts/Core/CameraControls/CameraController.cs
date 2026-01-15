@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.CameraControls
         [SerializeField][Range(0, 1.0f)]
         private float m_smoothTime;
 
-        private BattleCameraBehaviour m_combatCameraBehaviour;
+        private BattleCameraBehaviour m_battleCamera;
 
         private CameraZoom m_cameraZoom;
         private float m_currentMouseScroll;
@@ -29,18 +29,18 @@ namespace MagmaHeart.Core.CameraControls
             userInput.OnMouseScroll += HandleOnMouseScroll;
 
             CameraTargetTracker tracker = new CameraTargetTracker();
-            m_combatCameraBehaviour = new BattleCameraBehaviour(transform, tracker, userInput, m_movementSpeed, battle);
+            m_battleCamera = new BattleCameraBehaviour(transform, tracker, userInput, m_movementSpeed, battle);
         }
 
         private void Update()
         {
-            m_combatCameraBehaviour.Update();
+            m_battleCamera.Update();
             m_cameraZoom.Zoom(m_currentMouseScroll);
         }
 
         public void MoveTo(Vector2 position) => transform.position = new Vector3(position.x, position.y, transform.position.z);
-        public void EnableManualMovement(BoundsInt movementBounds) => m_combatCameraBehaviour.Enable(movementBounds);
-        public void DisableManualMovement() => m_combatCameraBehaviour.Disable();
+        public void EnableManualMovement(BoundsInt movementBounds) => m_battleCamera.Enable(movementBounds);
+        public void DisableManualMovement() => m_battleCamera.Disable();
 
         private void HandleOnMouseScroll(object obj, OnMouseScrollEventArgs args) => m_currentMouseScroll = args.MouseScroll;
     }

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Location1
   m_EditorClassIdentifier: 
   m_roomGenerationConfigFileName: Caves.LocationGenerator
-  m_roomsInLocation: 4
+  m_roomsInLocation: 3
   m_monsterRoom: {fileID: 11400000, guid: 0288e283b0e98af4f932da701f2c3d2c, type: 2}
   m_bossRoom: {fileID: 11400000, guid: b459ab91082e4aa46ace30e232c507f2, type: 2}

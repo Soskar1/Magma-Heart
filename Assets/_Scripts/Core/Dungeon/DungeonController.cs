@@ -22,6 +22,7 @@ namespace MagmaHeart.Core.Dungeon
 
         public event EventHandler<OnRoomGeneratedEventArgs> OnRoomGenerated;
         public event EventHandler OnRoomChanged;
+        public event EventHandler OnLocationChanged;
         
         public DungeonController(RoomGrid roomGrid, List<LocationData> locations, Random random)
         {
@@ -63,6 +64,8 @@ namespace MagmaHeart.Core.Dungeon
             TextAsset configFile = ExternalResources.LoadTextAsset(m_currentLocation.RoomGenerationConfigFileName);
             DungeonGeneratorData data = DungeonGeneratorDataDeserializer.Deserialize(configFile, m_random);
             m_currentGenerator = new DungeonGenerator(data);
+
+            OnLocationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private RoomData GetRoomData()

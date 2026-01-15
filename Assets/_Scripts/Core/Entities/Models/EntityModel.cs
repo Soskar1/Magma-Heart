@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Entities
 
             GetCurrentTilePosition = getCurrentTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
-            Energy = new EnergyModel(Stats.MaxEnergy);
+            Energy = new EnergyModel(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
             Strength = new StrengthModel(Stats.Strength);
             Speed = new SpeedModel(Stats.Speed);
 

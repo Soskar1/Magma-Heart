@@ -26,7 +26,11 @@ namespace MagmaHeart.Core.Services
             attacker.Facing.TryUpdateFacing(targetX - attackerX);
 
             await attacker.Animation.PlayAttackAnimationAsync();
-            attacker.Animation.NextAnimationState = attacker.Animation.GetIdleAnimation();
+
+            // Play idle as next animation because ranged attacks have a delay while the projectile is in the air
+            // AnimationPlayer restarts the attack animation, but the animation trigger is not set -> crash
+            // I think, we need to fix this, because this solution is a bit of a hack
+            attacker.Animation.PlayeIdleAsNextAnimation();
 
             EntityModel targetToHit = target.Model;
             if (attackType == AttackType.Ranged)
@@ -34,6 +38,8 @@ namespace MagmaHeart.Core.Services
 
             if (targetToHit != null)
                 await ApplyDamage(boardState, attacker, target, damage, cancellationToken);
+
+            await attacker.Animation.WaitForAnimationEnd();
         }
 
         private async Task<EntityModel> WaitForProjectileHit(Entity attacker, Entity target)

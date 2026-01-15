@@ -18,7 +18,10 @@ namespace MagmaHeart.Core
             {
                 m_currentAnimationState = value;
                 NextAnimationState = -1;
-                Animator.CrossFade(CurrentAnimationState, 0);
+
+                // Note: Here I am using Play instead of CrossFade to ensure the animation starts from the beginning immediately.
+                // With CrossFade, there could be a slight blending delay.
+                Animator.Play(CurrentAnimationState, 0, 0);
             }
         }
 
@@ -42,7 +45,7 @@ namespace MagmaHeart.Core
                 if (NextAnimationState != -1)
                     CurrentAnimationState = NextAnimationState;
                 else
-                    Animator.CrossFade(CurrentAnimationState, 0, 0, 0);
+                    Animator.CrossFade(CurrentAnimationState, 0);
 
                 if (m_animationEnded != null)
                 { 
