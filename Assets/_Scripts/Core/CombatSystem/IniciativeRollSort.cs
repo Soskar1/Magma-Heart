@@ -9,15 +9,20 @@ namespace MagmaHeart.Core.CombatSystem
     {
         public static IEnumerable<Entity> SortByRollingIniciative(IEnumerable<Entity> entities)
         {
-            PriorityQueue<Entity, int> iniciativePriority = new PriorityQueue<Entity, int>();
+            Comparer<int> inverseComparer = Comparer<int>.Create((a, b) => 0 - a.CompareTo(b));
+            PriorityQueue<Entity, int> queue = new PriorityQueue<Entity, int>(inverseComparer);
 
             foreach (Entity entity in entities)
             {
                 int iniciative = IniciativeRoll();
-                iniciativePriority.Enqueue(entity, -iniciative);
+                queue.Enqueue(entity, iniciative);
             }
 
-            return iniciativePriority;
+            List<Entity> sortedEntities = new List<Entity>();
+            while (queue.Count > 0)
+                sortedEntities.Add(queue.Dequeue());
+
+            return sortedEntities;
         }
 
         private static int IniciativeRoll() => Random.Range(1, 21);

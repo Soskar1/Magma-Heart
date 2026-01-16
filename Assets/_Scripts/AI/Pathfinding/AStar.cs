@@ -21,15 +21,15 @@ namespace MagmaHeart.AI.Pathfinding
             m_heuristic = heuristic;
         }
 
-        private class ComputationalBoardNode
+        private class AStarNode
         {
             public BoardNode Node { get; init; }
-            public ComputationalBoardNode Parent { get; set; }
+            public AStarNode Parent { get; set; }
             public float PathCost { get; set; }
             public float HeuristicCost { get; set; }
             public float TotalCost => PathCost + HeuristicCost;
 
-            public ComputationalBoardNode(BoardNode node, float pathCost, float heuristicCost, ComputationalBoardNode parent = null)
+            public AStarNode(BoardNode node, float pathCost, float heuristicCost, AStarNode parent = null)
             {
                 Node = node;
                 PathCost = pathCost;
@@ -47,19 +47,22 @@ namespace MagmaHeart.AI.Pathfinding
             }
 
             BoardNode startNode = graph.GetNode(start);
-            ComputationalBoardNode startComputationalNode = new ComputationalBoardNode(startNode, 0, m_heuristic(start, target));
+            AStarNode startAStarNode = new AStarNode(startNode, 0, m_heuristic(start, target));
 
             HashSet<BoardNode> visitedNodes = new HashSet<BoardNode>();
             
-            Dictionary<BoardNode, ComputationalBoardNode> nodesInProcess = new Dictionary<BoardNode, ComputationalBoardNode>();
-            nodesInProcess.Add(startNode, startComputationalNode);
+            Dictionary<BoardNode, AStarNode> nodesInProcess = new Dictionary<BoardNode, AStarNode>();
+            nodesInProcess.Add(startNode, startAStarNode);
 
-            PriorityQueue<ComputationalBoardNode, float> nodeQueue = new PriorityQueue<ComputationalBoardNode, float>();
-            nodeQueue.Enqueue(startComputationalNode, startComputationalNode.TotalCost);
+            PriorityQueue<AStarNode, float> nodeQueue = new PriorityQueue<AStarNode, float>();
+            nodeQueue.Enqueue(startAStarNode, startAStarNode.TotalCost);
 
             while (nodeQueue.Count > 0)
             {
-                ComputationalBoardNode current = nodeQueue.Dequeue();
+                AStarNode current = nodeQueue.Dequeue();
+
+                if (visitedNodes.Contains(current.Node))
+                    continue;
 
                 if (current.Node.Position == target)
                     return ReconstructPath(current);
@@ -75,20 +78,24 @@ namespace MagmaHeart.AI.Pathfinding
 
                         if (!nodesInProcess.ContainsKey(adjacentNode))
                         {
-                            ComputationalBoardNode computationalAdjacentNode =
-                                new ComputationalBoardNode(adjacentNode, pathCost, m_heuristic(adjacentNode.Position, target), current);
+                            AStarNode aStarNode =
+                                new AStarNode(adjacentNode, pathCost, m_heuristic(adjacentNode.Position, target), current);
 
-                            nodeQueue.Enqueue(computationalAdjacentNode, computationalAdjacentNode.TotalCost);
-                            nodesInProcess.Add(adjacentNode, computationalAdjacentNode);
+                            nodeQueue.Enqueue(aStarNode, aStarNode.TotalCost);
+                            nodesInProcess.Add(adjacentNode, aStarNode);
                         }
                         else
                         {
-                            ComputationalBoardNode computationalAdjacentNode = nodesInProcess[adjacentNode];
-                            computationalAdjacentNode.Parent = current;
-                            computationalAdjacentNode.PathCost = pathCost;
-                            computationalAdjacentNode.HeuristicCost = m_heuristic(adjacentNode.Position, target);
+                            AStarNode existing = nodesInProcess[adjacentNode];
 
-                            nodeQueue.UpdatePriority(computationalAdjacentNode, computationalAdjacentNode.TotalCost);
+                            if (pathCost < existing.PathCost)
+                            {
+                                existing.Parent = current;
+                                existing.PathCost = pathCost;
+                                existing.HeuristicCost = m_heuristic(adjacentNode.Position, target);
+
+                                nodeQueue.Enqueue(existing, existing.TotalCost);
+                            }
                         }
                     }
                 }
@@ -98,7 +105,7 @@ namespace MagmaHeart.AI.Pathfinding
             return null;
         }
 
-        private List<Vector2> ReconstructPath(ComputationalBoardNode current)
+        private List<Vector2> ReconstructPath(AStarNode current)
         {
             List<Vector2> path = new List<Vector2>();
             while (current != null)
