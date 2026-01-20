@@ -1,0 +1,16 @@
+﻿<Solution>
+  <Project Path="MagmaHeart.AI.csproj" />
+  <Project Path="MagmaHeart.Core.csproj" />
+  <Project Path="MagmaHeart.Collections.csproj" />
+  <Project Path="MagmaHeart.AI.Tests.csproj" />
+  <Project Path="MagmaHeart.UIWindowPopupSystem.csproj" />
+  <Project Path="MagmaHeart.Extensions.csproj" />
+  <Project Path="MagmaHeart.DungeonGeneration.csproj" />
+  <Project Path="MagmaHeart.Core.Tests.csproj" />
+  <Project Path="MagmaHeart.Collections.Tests.csproj" />
+  <Project Path="MagmaHeart.BreadthFirstSearch.Tests.csproj" />
+  <Project Path="MagmaHeart.Bresenham.csproj" />
+  <Project Path="MagmaHeart.StateMachine.csproj" />
+  <Project Path="MagmaHeart.BreadthFirstSearch.csproj" />
+  <Project Path="MagmaHeart.Bresenham.Tests.csproj" />
+</Solution>

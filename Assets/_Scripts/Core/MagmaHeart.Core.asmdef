@@ -1,0 +1,25 @@
+{
+    "name": "MagmaHeart.Core",
+    "rootNamespace": "",
+    "references": [
+        "GUID:03e5f1b71d93bcb4a9026d3229926eeb",
+        "GUID:80a5bf9362ac37640a3609e7abc0650d",
+        "GUID:5e9795e688f316245979cd619d1e993b",
+        "GUID:bc51dacdb210cc24994d82c9a0a2e275",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:394ba8231398eb049a9b1fb2a346be25",
+        "GUID:1558749810495bd459fdab3e37f64b8c",
+        "GUID:d802f56aa7da80a42a5d7f0e937aee3a",
+        "GUID:b24fe21435dd08647bebb7ce751a9f6a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
