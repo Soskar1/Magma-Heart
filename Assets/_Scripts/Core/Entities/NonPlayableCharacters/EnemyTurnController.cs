@@ -44,7 +44,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public void EndBattle()
         {
-            m_cancellationTokenSource.Cancel();
+            if (m_cancellationTokenSource != null)
+                m_cancellationTokenSource.Cancel();
         }
 
         public void EndTurn()
