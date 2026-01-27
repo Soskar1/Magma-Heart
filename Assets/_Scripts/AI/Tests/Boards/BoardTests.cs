@@ -1,7 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI.Boards.Tests
@@ -30,8 +28,8 @@ namespace MagmaHeart.AI.Boards.Tests
 
             m_board.AddUnit(Vector2.zero, unit);
 
-            Assert.That(m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnitModel> unitsOnBoardNode), Is.True);
-            Assert.That(unitsOnBoardNode.First(), Is.EqualTo(unit));
+            Assert.That(m_board.TryGetUnit(Vector2.zero, out AIUnitModel unitOnBoard), Is.True);
+            Assert.That(unitOnBoard, Is.EqualTo(unit));
         }
 
         [Test]
@@ -51,8 +49,7 @@ namespace MagmaHeart.AI.Boards.Tests
 
             m_board.AddUnit(Vector2.zero, unit2);
 
-            Assert.That(m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnitModel> unitsOnBoardNode), Is.True);
-            Assert.That(unitsOnBoardNode.Count, Is.EqualTo(2));
+            Assert.That(m_board.TryGetUnit(Vector2.zero, out AIUnitModel unitOnBoard), Is.True);
         }
 
         [Test]
@@ -64,7 +61,7 @@ namespace MagmaHeart.AI.Boards.Tests
             bool result = m_board.RemoveUnit(Vector2.zero, unit);
 
             Assert.That(result, Is.True);
-            Assert.That(m_board.TryGetUnits(Vector2.zero, out _), Is.False);
+            Assert.That(m_board.TryGetUnit(Vector2.zero, out _), Is.False);
         }
 
         [Test]
@@ -83,16 +80,16 @@ namespace MagmaHeart.AI.Boards.Tests
             AIUnitModel unit = Unit;
             m_board.AddUnit(Vector2.zero, unit);
 
-            bool result = m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnitModel> unitOnBoard);
+            bool result = m_board.TryGetUnit(Vector2.zero, out AIUnitModel unitOnBoard);
 
             Assert.That(result, Is.True);
-            Assert.That(unitOnBoard.First(), Is.EqualTo(unit));
+            Assert.That(unitOnBoard, Is.EqualTo(unit));
         }
 
         [Test]
         public void TryGetUnit_NonExistingUnit_ReturnsFalseAndNullUnit()
         {
-            bool result = m_board.TryGetUnits(Vector2.zero, out HashSet<AIUnitModel> units);
+            bool result = m_board.TryGetUnit(Vector2.zero, out AIUnitModel units);
 
             Assert.That(result, Is.False);
             Assert.That(units, Is.Null);
@@ -109,8 +106,8 @@ namespace MagmaHeart.AI.Boards.Tests
             Board copy = m_board.DeepCopy();
 
             Assert.That(ReferenceEquals(m_board, copy), Is.False);
-            Assert.That(copy.TryGetUnits(Vector2.zero, out HashSet<AIUnitModel> unitCopy1), Is.True);
-            Assert.That(copy.TryGetUnits(Vector2.up, out HashSet<AIUnitModel> unitCopy2), Is.True);
+            Assert.That(copy.TryGetUnit(Vector2.zero, out AIUnitModel unitCopy1), Is.True);
+            Assert.That(copy.TryGetUnit(Vector2.up, out AIUnitModel unitCopy2), Is.True);
             Assert.That(ReferenceEquals(copy.Graph, m_board.Graph), Is.False);
         }
     }

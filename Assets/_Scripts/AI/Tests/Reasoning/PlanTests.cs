@@ -20,7 +20,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             m_attackData = new AttackActionData(4);
             MoveActionData moveData = new MoveActionData(1);
-            EngageActionData engageData = new EngageActionData(4, 1);
             RunAwayActionData runAwayData = new RunAwayActionData(3);
 
             ActionDefinition attackDefinition = m_attackData.GetDefinition();

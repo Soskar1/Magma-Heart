@@ -152,10 +152,9 @@ namespace MagmaHeart.Core.Tests
 
             PositionPropertySnapshot position = simulation.GetProperty<PositionPropertySnapshot>(entity);
             Assert.That(position.Position.ToVector2Int(), Is.EqualTo(endPosition));
-            Assert.That(simulation.Board.TryGetUnits(endPosition, out HashSet<AIUnitModel> units), Is.True);
-            Assert.That(units.Count, Is.EqualTo(1));
-            Assert.That(units.First(), Is.EqualTo(entity));
-            Assert.That(simulation.Board.TryGetUnits(initialPosition, out _), Is.False);
+            Assert.That(simulation.Board.TryGetUnit(endPosition, out AIUnitModel unit), Is.True);
+            Assert.That(unit, Is.EqualTo(entity));
+            Assert.That(simulation.Board.TryGetUnit(initialPosition, out _), Is.False);
             Assert.That(simulation.Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
             Assert.That(simulation.Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
         }

@@ -17,11 +17,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             List<Plan> plans = planner.GetPlans(enemy);
             
-            Assert.That(plans.Count, Is.EqualTo(4));
+            Assert.That(plans.Count, Is.EqualTo(3));
             Assert.That(plans.Any(a => a.Tasks.First().Action.GetType() == typeof(MoveAction)));
             Assert.That(plans.Any(a => a.Tasks.First().Action.GetType() == typeof(RunAwayAction)));
             Assert.That(plans.Any(a => a.Tasks.First().Action.GetType() == typeof(AttackAction)));
-            Assert.That(plans.Any(a => a.Tasks.First().Action.GetType() == typeof(EngageAction)));
         }
     }
 }

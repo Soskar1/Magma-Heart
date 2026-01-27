@@ -68,13 +68,13 @@ namespace MagmaHeart.Core.Dungeon
 
         public bool TryGetUnit(Vector2 position, out EntityModel entity)
         {
-            if (!TryGetUnits(position, out HashSet<AIUnitModel> units))
+            if (!TryGetUnit(position, out AIUnitModel unit))
             {
                 entity = null;
                 return false;
             }
 
-            entity = (EntityModel)units.First();
+            entity = (EntityModel)unit;
             return true;
         }
 

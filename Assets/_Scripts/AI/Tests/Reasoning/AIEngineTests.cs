@@ -54,22 +54,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         }
 
         [Test]
-        [TestCase(1)]
-        [TestCase(2)]
-        public void ChooseBestMove_From3PossibleActions_ChoosesEngageAction(int depth)
-        {
-            BasicStrategy strategy = new BasicStrategy();
-            AIEngine engine = new AIEngine(strategy, Database, depth, m_turnContext);
-            Entity enemy = CreateEntity(10, new Vector2(5, 3), false);
-            CircularList<AIUnitModel> turnOrder = new CircularList<AIUnitModel>() { enemy, m_player };
-
-            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
-
-            Assert.That(bestPlan.ExecutedTasks.Count(), Is.EqualTo(1));
-            Assert.That(bestPlan.ExecutedTasks.First().Action, Is.TypeOf<EngageAction>());
-        }
-
-        [Test]
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
             BasicStrategy strategy = new BasicStrategy();

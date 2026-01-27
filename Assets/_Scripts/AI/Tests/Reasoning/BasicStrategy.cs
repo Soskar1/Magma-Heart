@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Reasoning.Plans;
+﻿using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using System;
 using System.Collections.Generic;
@@ -18,10 +17,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
                 new PlanTaskDefinition(typeof(AttackAction))
-            }));
-
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(EngageAction))
             }));
 
             Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
