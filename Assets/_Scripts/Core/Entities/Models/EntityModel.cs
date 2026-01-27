@@ -46,5 +46,18 @@ namespace MagmaHeart.Core.Entities
 
             return properties;
         }
+
+        public override AIUnitModel DeepCopy()
+        {
+            EntityModel copy = new EntityModel(Data, GetCurrentTilePosition, IsPlayer, Id)
+            {
+                PossibleActions = PossibleActions.DeepCopy(),
+                Health = Health.DeepCopy(),
+                Energy = Energy.DeepCopy(),
+                Strength = Strength.DeepCopy(),
+                Speed = Speed.DeepCopy()
+            };
+            return copy;
+        }
     }
 }

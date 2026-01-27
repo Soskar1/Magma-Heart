@@ -11,5 +11,7 @@
         }
 
         public StrengthModel(int initialStrength) => m_currentStrength = initialStrength;
+
+        public StrengthModel DeepCopy() => new StrengthModel(m_currentStrength);
     }
 }

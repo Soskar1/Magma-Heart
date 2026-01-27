@@ -64,5 +64,14 @@ namespace MagmaHeart.Core.Entities.Models
         }
 
         public void Reset() => CurrentEnergy = 0;
+
+        public EnergyModel DeepCopy()
+        {
+            EnergyModel copy = new EnergyModel(MaxEnergy, EnergyRegenerationPerTurn)
+            {
+                CurrentEnergy = CurrentEnergy
+            };
+            return copy;
+        }
     }
 }

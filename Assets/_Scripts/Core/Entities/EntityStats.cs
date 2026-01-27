@@ -30,5 +30,7 @@ namespace MagmaHeart.Core.Entities
         public void IncreaseHealth(int amount) => m_maxHealth += amount;
         public void IncreaseStregth(int amount) => m_strength += amount;
         public void IncreaseSpeed(int amount) => m_speed += amount;
+
+        
     }
 }

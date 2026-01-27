@@ -11,5 +11,7 @@
         }
 
         public SpeedModel(int initialSpeed) => m_currentSpeed = initialSpeed;
+
+        public SpeedModel DeepCopy() => new SpeedModel(m_currentSpeed);
     }
 }

@@ -65,7 +65,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             EntityModel target = input.Target;
             args = null;
 
-            if (target == executor)
+            if (target.Id == executor.Id)
                 return false;
 
             if (executor.IsPlayer && target.IsPlayer)

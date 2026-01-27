@@ -47,5 +47,14 @@ namespace MagmaHeart.Core.Entities.Models
             m_maxHealth = maxHealth;
             m_currentHealth = maxHealth;
         }
+
+        public HealthModel DeepCopy()
+        {
+            HealthModel copy = new HealthModel(MaxHealth)
+            {
+                CurrentHealth = CurrentHealth
+            };
+            return copy;
+        }
     }
 }

@@ -95,7 +95,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             foreach (AIUnitModel potentialTarget in boardState.Board.GetUnits())
             {
-                if (potentialTarget == executor)
+                if (potentialTarget.Id == executor.Id)
                     continue;
 
                 if (executor.IsPlayer && potentialTarget.IsPlayer)

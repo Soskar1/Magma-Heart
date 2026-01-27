@@ -17,5 +17,13 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return properties;
         }
+
+        public override AIUnitModel DeepCopy()
+        {
+            return new Entity(Health, Position, IsPlayer, Id)
+            {
+                PossibleActions = PossibleActions.DeepCopy()
+            };
+        }
     }
 }

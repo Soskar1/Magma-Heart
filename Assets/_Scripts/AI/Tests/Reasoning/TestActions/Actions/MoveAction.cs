@@ -62,7 +62,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             foreach (AIUnitModel unit in boardState.Board.GetUnits())
             {
-                if (unit == executor)
+                if (unit.Id == executor.Id)
                     continue;
 
                 Vector2 position = boardState.GetProperty<Position>(unit).CurrentPosition;

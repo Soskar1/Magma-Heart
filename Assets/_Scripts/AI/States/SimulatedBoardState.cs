@@ -9,7 +9,7 @@ namespace MagmaHeart.AI.States
 {
     public sealed class SimulatedBoardState : BoardState
     {
-        private readonly Dictionary<AIUnitModel, TypeMap<PropertySnapshot>> m_stateProperties;
+        private readonly Dictionary<int, TypeMap<PropertySnapshot>> m_stateProperties;
         private readonly Stack<SimulationChange> m_history;
         private readonly List<SimulationOperation> m_currentSimulationOperations;
 
@@ -17,12 +17,12 @@ namespace MagmaHeart.AI.States
 
         public SimulatedBoardState(Board board) : base(board.DeepCopy())
         {
-            m_stateProperties = new Dictionary<AIUnitModel, TypeMap<PropertySnapshot>>();
+            m_stateProperties = new Dictionary<int, TypeMap<PropertySnapshot>>();
 
             foreach (AIUnitModel unit in Board.GetUnits())
             {
                 TypeMap<PropertySnapshot> unitProperties = unit.GetPropertySnapshots();
-                m_stateProperties[unit] = unitProperties;
+                m_stateProperties[unit.Id] = unitProperties;
             }
 
             m_history = new Stack<SimulationChange>();
@@ -58,11 +58,11 @@ namespace MagmaHeart.AI.States
         }
 
         public override T GetProperty<T>(AIUnitModel unit) => (T)GetProperty(unit, typeof(T));
-        private PropertySnapshot GetProperty(AIUnitModel unit, Type propertyType) => m_stateProperties[unit][propertyType];
+        private PropertySnapshot GetProperty(AIUnitModel unit, Type propertyType) => m_stateProperties[unit.Id][propertyType];
         private void WriteProperty(AIUnitModel unit, PropertySnapshot property)
         {
             Type propertyType = property.GetType();
-            m_stateProperties[unit][propertyType] = property;
+            m_stateProperties[unit.Id][propertyType] = property;
         }
 
         public void UpdateProperty(AIUnitModel unit, PropertySnapshot property)

@@ -43,7 +43,10 @@ namespace MagmaHeart.AI.Boards
             Board board = new Board(graph);
             
             foreach (var keyValuePair in m_units)
-                board.AddUnit(keyValuePair.Key, keyValuePair.Value);
+            {
+                AIUnitModel model = keyValuePair.Value.DeepCopy();
+                board.AddUnit(keyValuePair.Key, model);
+            }
 
             return board;
         }

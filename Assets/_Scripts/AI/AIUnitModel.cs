@@ -26,5 +26,13 @@ namespace MagmaHeart.AI
 
             return properties;
         }
+
+        public virtual AIUnitModel DeepCopy()
+        {
+            return new AIUnitModel(IsPlayer, Id)
+            {
+                PossibleActions = PossibleActions.DeepCopy()
+            };
+        }
     }
 }
