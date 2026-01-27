@@ -7,11 +7,13 @@ namespace MagmaHeart.AI
     public record AIUnitModel
     {
         public bool IsPlayer { get; init; }
+        public int Id { get; init; }
         public TypeMap<ActionData> PossibleActions { get; init; }
 
-        public AIUnitModel(bool isPlayer)
+        public AIUnitModel(bool isPlayer, int id)
         {
             IsPlayer = isPlayer;
+            Id = id;
             PossibleActions = new TypeMap<ActionData>();
         }
 

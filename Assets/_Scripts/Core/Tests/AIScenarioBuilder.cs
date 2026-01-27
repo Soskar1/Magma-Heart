@@ -1,6 +1,4 @@
-using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
 using MagmaHeart.AI.Boards;
@@ -18,10 +16,18 @@ namespace MagmaHeart.Core.Tests
         private readonly List<EntityModel> m_players = new();
         private readonly CircularList<AIUnitModel> m_turnOrder = new();
 
+        private int m_nextId = 0;
+
         private AIScenarioBuilder(CombatBoardState state) => m_state = state;
 
         public static AIScenarioBuilder Create(CombatBoardState state) => new AIScenarioBuilder(state);
-        public EntityBuilder AddEntity() => new EntityBuilder(this);
+        
+        public EntityBuilder AddEntity()
+        {
+            ++m_nextId;
+            return new EntityBuilder(this, m_nextId);
+        }
+
         public BoardBuilder ModifyBoard() => new BoardBuilder(this);
         internal void RegisterEntity(EntityModel entity)
         {

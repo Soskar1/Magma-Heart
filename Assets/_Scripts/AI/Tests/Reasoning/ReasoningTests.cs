@@ -11,6 +11,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public Board Board { get; private set; }
         public BasicStrategy Strategy { get; private set; }
         public ActionDatabase Database { get; private set; }
+        private int m_nextId = 0;
 
         [OneTimeSetUp]
         public void InitializeDatabase()
@@ -33,7 +34,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public Entity CreateEntity(int health, Vector2 position, bool isPlayer)
         {
-            Entity entity = new Entity(health, position, isPlayer);
+            Entity entity = new Entity(health, position, isPlayer, m_nextId);
+            ++m_nextId;
+            
             AttackActionData attackData = new AttackActionData(4);
             MoveActionData moveData = new MoveActionData(3);
             EngageActionData engageData = new EngageActionData(4, 1);

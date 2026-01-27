@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.Entities
         public EntityStats Stats { get; init; }
         public EntityData Data { get; init; }
 
-        public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
+        public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer, int id) : base(isPlayer, id)
         {
             Stats = data.Stats;
             Data = data;

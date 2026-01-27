@@ -10,12 +10,17 @@ namespace MagmaHeart.Core.Tests
     internal sealed class EntityBuilder
     {
         private readonly AIScenarioBuilder m_scenario;
+        private readonly int m_id;
         private List<ActionData> m_actions;
         private int m_health = 5;
         private int m_energy = 5;
         private bool m_isPlayer = false;
 
-        public EntityBuilder(AIScenarioBuilder scenario) => m_scenario = scenario;
+        public EntityBuilder(AIScenarioBuilder scenario, int id)
+        {
+            m_scenario = scenario;
+            m_id = id;
+        }
 
         public EntityBuilder WithActions(List<ActionData> actions)
         {
@@ -46,7 +51,7 @@ namespace MagmaHeart.Core.Tests
             Vector2 position = new Vector2(x, y);
             EntityStats stats = new EntityStats(m_health, m_energy, m_energy);
             EntityData data = new EntityData("", stats, m_actions == null ? new List<ActionData>() : m_actions);
-            EntityModel model = new EntityModel(data, () => position.ToVector3Int(), m_isPlayer);
+            EntityModel model = new EntityModel(data, () => position.ToVector3Int(), m_isPlayer, m_id);
             m_scenario.Board.AddUnit(position, model);
             m_scenario.Board.ChangeNodeType(position, BoardNodeType.Obstacle);
             m_scenario.RegisterEntity(model);

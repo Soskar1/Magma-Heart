@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record Entity(float Health, Vector2 Position, bool IsPlayer) : AIUnitModel(IsPlayer)
+    internal record Entity(float Health, Vector2 Position, bool IsPlayer, int id) : AIUnitModel(IsPlayer, id)
     {
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()
         {

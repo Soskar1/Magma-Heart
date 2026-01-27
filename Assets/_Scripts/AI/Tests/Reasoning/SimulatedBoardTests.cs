@@ -36,7 +36,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [SetUp]
         public void SetUp()
         {
-            m_entity = new Entity(10, Vector2.zero, false);
+            m_entity = new Entity(10, Vector2.zero, false, 0);
 
             BoardGraph graph = new BoardGraph();
             graph.AddNode(Vector2.zero, BoardNodeType.Walkable);
@@ -99,7 +99,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void ApplyStateChanges_ActionAppliesTwoStateChanges_AddsTwoStateChangesToHistoryStack()
         {
-            Entity player = new Entity(10, Vector2.up, true);
+            Entity player = new Entity(10, Vector2.up, true, 1);
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
             EngageAction action = new EngageAction();
@@ -120,7 +120,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void Undo_ActionAppliesTwoStateChanges_RemovesTwoStateChangesFromSimulation()
         {
-            Entity player = new Entity(10, Vector2.up, true);
+            Entity player = new Entity(10, Vector2.up, true, 1);
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
             EngageAction action = new EngageAction();
@@ -138,7 +138,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void Undo_AfterTwoStateChangesAndEmptyAction_DoesNotDeleteFirstActionStateChanges()
         {
-            Entity player = new Entity(10, Vector2.up, true);
+            Entity player = new Entity(10, Vector2.up, true, 1);
             m_board.AddUnit(player.Position, player);
             m_state = new SimulatedBoardState(m_board);
             EngageAction action = new EngageAction();

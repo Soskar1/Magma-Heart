@@ -9,6 +9,8 @@ namespace MagmaHeart.Core.Spawning
         private readonly Entity m_prefab;
         private readonly RoomGrid m_roomGrid;
 
+        private int m_nextId = 0;
+
         public EntitySpawner(Entity prefab, RoomGrid roomGrid)
         {
             m_prefab = prefab;
@@ -18,7 +20,8 @@ namespace MagmaHeart.Core.Spawning
         public Entity Spawn(EntityData data, bool isPlayer, ITurnController turnController)
         {
             Entity entity = GameObject.Instantiate(m_prefab);
-            entity.Initialize(data, m_roomGrid, isPlayer, turnController);
+            entity.Initialize(data, m_roomGrid, isPlayer, turnController, m_nextId);
+            ++m_nextId;
 
             return entity;
         }

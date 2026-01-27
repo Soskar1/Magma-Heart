@@ -21,10 +21,10 @@ namespace MagmaHeart.Core.Entities
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
 
-        public virtual void Initialize(EntityData data, RoomGrid grid, bool isPlayer, ITurnController turnController)
+        public virtual void Initialize(EntityData data, RoomGrid grid, bool isPlayer, ITurnController turnController, int id)
         {
             Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
-            Model = new EntityModel(data, getCurrentTilePosition, isPlayer);
+            Model = new EntityModel(data, getCurrentTilePosition, isPlayer, id);
             TurnController = turnController;
 
             TileBasedMovement = GetComponent<TileBasedMovement>();
