@@ -29,7 +29,7 @@ namespace MagmaHeart.AI.States
         }
 
         public virtual void AddUnit(Vector2 position, AIUnitModel unit) => Board.AddUnit(position, unit);
-        public virtual void RemoveUnit(Vector2 position, AIUnitModel unit) => Board.RemoveUnit(position, unit);
+        public virtual void RemoveUnit(Vector2 position, AIUnitModel unit) => Board.RemoveUnit(position);
         public virtual void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType) => Board.ChangeNodeType(position, newNodeType);
     }
 }

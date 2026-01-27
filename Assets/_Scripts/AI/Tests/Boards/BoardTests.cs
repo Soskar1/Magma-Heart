@@ -58,7 +58,7 @@ namespace MagmaHeart.AI.Boards.Tests
             AIUnitModel unit = Unit;
             m_board.AddUnit(Vector2.zero, unit);
 
-            bool result = m_board.RemoveUnit(Vector2.zero, unit);
+            bool result = m_board.RemoveUnit(Vector2.zero);
 
             Assert.That(result, Is.True);
             Assert.That(m_board.TryGetUnit(Vector2.zero, out _), Is.False);
@@ -69,7 +69,7 @@ namespace MagmaHeart.AI.Boards.Tests
         {
             AIUnitModel unit = Unit;
 
-            bool result = m_board.RemoveUnit(Vector2.zero, unit);
+            bool result = m_board.RemoveUnit(Vector2.zero);
 
             Assert.That(result, Is.False);
         }

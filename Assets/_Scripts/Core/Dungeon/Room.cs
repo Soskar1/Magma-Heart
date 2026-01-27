@@ -1,5 +1,4 @@
 using MagmaHeart.Extensions;
-using System.Linq;
 using UnityEngine;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.AI.Boards;
@@ -44,7 +43,7 @@ namespace MagmaHeart.Core.Dungeon
         {
             Vector2 position = entity.Model.GetCurrentTilePosition().ToVector2();
 
-            RemoveUnit(position, entity.Model);
+            RemoveUnit(position);
             m_entities.Remove(entity.Model);
 
             ChangeNodeType(position, BoardNodeType.Walkable);

@@ -27,7 +27,7 @@ namespace MagmaHeart.AI.Boards
             m_units[position] = unit;
         }
 
-        public bool RemoveUnit(Vector2 position, AIUnitModel unit)
+        public bool RemoveUnit(Vector2 position)
         {
             if (!m_units.ContainsKey(position))
                 return false;

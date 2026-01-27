@@ -47,11 +47,11 @@ namespace MagmaHeart.AI.States
                 SimulationOperation operation = operations[i];
 
                 if (operation is AddUnitBoardSimulationOperation addUnitOperation)
-                    Board.RemoveUnit(addUnitOperation.Position, addUnitOperation.AddedUnit);
+                    Board.RemoveUnit(addUnitOperation.Position);
                 else if (operation is RemoveUnitBoardSimulationOperation removeUnitOperation)
                     Board.AddUnit(removeUnitOperation.Position, removeUnitOperation.RemovedUnit);
                 else if (operation is UnitPropertyUpdateSimulationOperation unitPropertyUpdateOperation)
-                    WriteProperty(unitPropertyUpdateOperation.Unit, unitPropertyUpdateOperation.OldPropertyValue);
+                    WriteProperty(unitPropertyUpdateOperation.UnitId, unitPropertyUpdateOperation.OldPropertyValue);
                 else if (operation is NodeTypeUpdateBoardSimulationOperation nodeTypeUpdateOperation)
                     Board.Graph.ChangeNodeType(nodeTypeUpdateOperation.Position, nodeTypeUpdateOperation.OldNodeType);
             }
@@ -59,10 +59,10 @@ namespace MagmaHeart.AI.States
 
         public override T GetProperty<T>(AIUnitModel unit) => (T)GetProperty(unit, typeof(T));
         private PropertySnapshot GetProperty(AIUnitModel unit, Type propertyType) => m_stateProperties[unit.Id][propertyType];
-        private void WriteProperty(AIUnitModel unit, PropertySnapshot property)
+        private void WriteProperty(int unitId, PropertySnapshot property)
         {
             Type propertyType = property.GetType();
-            m_stateProperties[unit.Id][propertyType] = property;
+            m_stateProperties[unitId][propertyType] = property;
         }
 
         public void UpdateProperty(AIUnitModel unit, PropertySnapshot property)
@@ -70,9 +70,9 @@ namespace MagmaHeart.AI.States
             Type propertyType = property.GetType();
             PropertySnapshot oldValue = GetProperty(unit, propertyType);
 
-            WriteProperty(unit, property);
+            WriteProperty(unit.Id, property);
 
-            UnitPropertyUpdateSimulationOperation operation = new UnitPropertyUpdateSimulationOperation(unit, oldValue, property);
+            UnitPropertyUpdateSimulationOperation operation = new UnitPropertyUpdateSimulationOperation(unit.Id, oldValue, property);
             m_currentSimulationOperations.Add(operation);
         }
 
@@ -80,7 +80,7 @@ namespace MagmaHeart.AI.States
         {
             base.AddUnit(position, unit);
 
-            AddUnitBoardSimulationOperation operation = new AddUnitBoardSimulationOperation(position, unit);
+            AddUnitBoardSimulationOperation operation = new AddUnitBoardSimulationOperation(position);
             m_currentSimulationOperations.Add(operation);
         }
 
