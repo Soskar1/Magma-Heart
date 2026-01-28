@@ -66,8 +66,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.True);
-            Health health = simulation.GetProperty<Health>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(initialHealth - m_attackData.Damage * executionTimes));
+            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth - m_attackData.Damage * executionTimes));
         }
 
         [Test]

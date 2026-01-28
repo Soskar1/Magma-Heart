@@ -1,8 +1,8 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    public record MoveEntityStateChange(EntityModel EntityModel, List<Vector2> AStarPath) : MagmaHeartStateChange
+    public record MoveEntityStateChange(int ExecutorId, List<Vector2> AStarPath) : MagmaHeartStateChange
     {
         // TODO: handel cancellationToken.Cancel
         public override async Task ApplyChangeToActualState(CombatBoardState actualBoard, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
                 roomTiles.Add(roomTile);
             }
 
-            actualBoard.Room.TryGetEntity(EntityModel, out Entity entity);
+            actualBoard.Room.TryGetEntity(ExecutorId, out Entity entity);
             await actualBoard.Services.MovementService.MoveEntityAsync(entity, roomTiles, TileBasedMovement.DEFAULT_SPEED);
             UpdateBoard(actualBoard);
         }
@@ -36,16 +36,34 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
         {
             UpdateBoard(simulation);
 
-            PositionPropertySnapshot position = new PositionPropertySnapshot(AStarPath.Last().ToVector3Int());
-            simulation.UpdateProperty(EntityModel, position);
+            simulation.Board.TryGetUnit(ExecutorId, out EntityModel model);
+            model.CurrentTilePosition = AStarPath.Last().ToVector3Int();
+        }
+
+        public override void UndoChangeToSimulation(SimulatedBoardState simulation)
+        {
+            Vector2 from = AStarPath.First();
+            Vector2 to = AStarPath.Last();
+
+            simulation.Board.TryGetUnit(ExecutorId, out EntityModel unit);
+            simulation.Board.RemoveUnit(to);
+            simulation.Board.AddUnit(from, unit);
+
+            simulation.UpdateBoardNodeType(to, BoardNodeType.Walkable);
+            simulation.UpdateBoardNodeType(from, BoardNodeType.Obstacle);
+
+            unit.CurrentTilePosition = from.ToVector3Int();
         }
 
         private void UpdateBoard(BoardState boardState)
         {
             Vector2 from = AStarPath.First();
             Vector2 to = AStarPath.Last();
-            boardState.RemoveUnit(from, EntityModel);
-            boardState.AddUnit(to, EntityModel);
+
+            boardState.Board.TryGetUnit(from, out AIUnitModel unit);
+            boardState.Board.RemoveUnit(from);
+            boardState.Board.AddUnit(to, unit);
+
             boardState.UpdateBoardNodeType(from, BoardNodeType.Walkable);
             boardState.UpdateBoardNodeType(to, BoardNodeType.Obstacle);
         }

@@ -3,9 +3,10 @@ using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.Entities.Properties;
+using MagmaHeart.Core.Entities;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.Core.AI
 {
@@ -41,52 +42,47 @@ namespace MagmaHeart.Core.AI
             float playerIsNotAlivePoints = 0;
             int aiNotAliveCount = 0;
 
-            AIUnitModel player = null;
+            EntityModel player = null;
             foreach (AIUnitModel unitModel in state.Board.GetUnits())
             {
                 if (unitModel.IsPlayer)
                 {
-                    player = unitModel;
+                    player = (EntityModel)unitModel;
                     break;
                 }
             }
 
-            PositionPropertySnapshot playerPosition = state.GetProperty<PositionPropertySnapshot>(player);
-            bool playerIsAlive = state.GetProperty<IsAlivePropertySnapshot>(player);
-            HealthPropertySnapshot playerHealth = state.GetProperty<HealthPropertySnapshot>(player);
-            float playerHealthDifference = playerHealth.MaxHealth - playerHealth.CurrentHealth;
+            float playerHealthDifference = player.Health.MaxHealth - player.Health.CurrentHealth;
 
-            if (!playerIsAlive)
+            if (player.IsDisabled)
                 playerIsNotAlivePoints = 100;
 
-            Func<PositionPropertySnapshot, float> getDistancePoints = (ai) =>
+            Func<Vector3Int, float> getDistancePoints = (ai) =>
             {
-                float distance = ai.ManhattanDistance(playerPosition);
+                float distance = Vector3Int.Distance(ai, player.CurrentTilePosition);
                 if (distance == 0)
                     return 5;
 
                 return 5 / distance;
             };
 
-            foreach (var unit in state.Board.GetUnits())
+            foreach (AIUnitModel unit in state.Board.GetUnits())
             {
                 if (unit.IsPlayer)
                     continue;
 
-                HealthPropertySnapshot health = state.GetProperty<HealthPropertySnapshot>(unit);
-                PositionPropertySnapshot position = state.GetProperty<PositionPropertySnapshot>(unit);
-                IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
+                state.Board.TryGetUnit(unit.Id, out EntityModel aiEntity);
 
-                if (!isAlive)
+                if (aiEntity.IsDisabled)
                 {
                     ++aiNotAliveCount;
                 }
                 else
                 {
-                    aiHP += health.CurrentHealth;
+                    aiHP += aiEntity.Health.CurrentHealth;
 
-                    if (playerIsAlive)
-                        distancePoints += getDistancePoints(position);
+                    if (!player.IsDisabled)
+                        distancePoints += getDistancePoints(aiEntity.CurrentTilePosition);
                 }
             }
 

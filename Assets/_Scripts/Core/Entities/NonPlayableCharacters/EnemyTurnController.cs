@@ -21,9 +21,9 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public async Task StartTurn(CombatBoardState boardState, TurnOrder turnOrder)
         {
-            CircularList<AIUnitModel> modelTurns = new CircularList<AIUnitModel>();
+            CircularList<int> modelTurns = new CircularList<int>();
             foreach (Entity entity in turnOrder)
-                modelTurns.Add(entity.Model);
+                modelTurns.Add(entity.Model.Id);
             
             BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState);
             m_cancellationTokenSource = new CancellationTokenSource();

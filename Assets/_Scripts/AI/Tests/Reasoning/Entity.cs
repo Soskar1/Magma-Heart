@@ -4,12 +4,15 @@ using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record Entity(float Health, Vector2 Position, bool IsPlayer, int id) : AIUnitModel(IsPlayer, id)
+    internal record Entity(bool IsPlayer, int id) : AIUnitModel(IsPlayer, id)
     {
+        public int CurrentHealth { get; set; }
+        public Vector2 Position { get; set; }
+
         public override TypeMap<PropertySnapshot> GetPropertySnapshots()
         {
             TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
-            Health healthLeft = new Health(Health, Health);
+            Health healthLeft = new Health(CurrentHealth, CurrentHealth);
             Position position = new Position(Position);
 
             properties.Add(healthLeft);
@@ -20,9 +23,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public override AIUnitModel DeepCopy()
         {
-            return new Entity(Health, Position, IsPlayer, Id)
+            return new Entity(IsPlayer, Id)
             {
-                PossibleActions = PossibleActions.DeepCopy()
+                PossibleActions = PossibleActions.DeepCopy(),
+                CurrentHealth = CurrentHealth,
+                Position = Position
             };
         }
     }

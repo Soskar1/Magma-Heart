@@ -1,17 +1,21 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.States;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class AttackAction : UnitAction<AttackActionArgs, TargetEntityActionInput, AttackActionData>
     {
-        public override bool CanExecute(AttackActionArgs args, BoardState gameState)
+        public override bool CanExecute(AttackActionArgs args, BoardState boardState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(args.Input.Executor);
-            Position targetPosition = gameState.GetProperty<Position>(args.TypedInput.Target);
+            Position possessorPosition = boardState.GetProperty<Position>(args.Input.Executor);
+            Position targetPosition = boardState.GetProperty<Position>(args.TypedInput.Target);
 
-            if (possessorPosition.Distance(targetPosition) > 1)
+            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executor);
+            boardState.Board.TryGetUnit(args.TypedInput.Target.Id, out Entity target);
+
+            if (Vector2.Distance(executor.Position, target.Position) > 1)
                 return false;
 
             return true;
@@ -20,7 +24,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
         {
             return new List<StateChange> {
-                new ApplyDamageStateChange(args.AttackActionData.Damage, args.TypedInput.Target)
+                new ApplyDamageStateChange(args.AttackActionData.Damage, args.TypedInput.Target.Id)
             };
         }
 

@@ -7,11 +7,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class MoveAction : UnitAction<MoveActionArgs, TargetPositionActionInput, MoveActionData>
     {
-        public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState boardState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(args.Input.Executor);
+            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executorUnit);
 
-            Vector2 tmpPosition = possessorPosition.CurrentPosition;
+            Vector2 tmpPosition = executorUnit.Position;
 
             Vector2 direction = args.TypedInput.Target - tmpPosition;
             float xMovement = Mathf.Min(Mathf.Abs(direction.x), args.MoveActionData.Speed);
@@ -30,15 +30,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return new List<StateChange>
             {
-                new MovementStateChange(args.Input.Executor, possessorPosition.CurrentPosition, tmpPosition)
+                new MovementStateChange(args.Input.Executor.Id, executorUnit.Position, tmpPosition)
             };
         }
 
-        public override bool CanExecute(MoveActionArgs args, BoardState gameState)
+        public override bool CanExecute(MoveActionArgs args, BoardState boardState)
         {
-            Position possessorPosition = gameState.GetProperty<Position>(args.Input.Executor);
+            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executorUnit);
 
-            if (possessorPosition.Distance(args.TypedInput.Target) <= 1)
+            if (Vector2.Distance(executorUnit.Position, args.TypedInput.Target) <= 1)
                 return false;
 
             return true;
@@ -65,8 +65,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 if (unit.Id == executor.Id)
                     continue;
 
-                Vector2 position = boardState.GetProperty<Position>(unit).CurrentPosition;
-                TargetPositionActionInput input = new TargetPositionActionInput(executor, position);
+                boardState.Board.TryGetUnit(unit.Id, out Entity unitEntity);
+
+                TargetPositionActionInput input = new TargetPositionActionInput(executor, unitEntity.Position);
 
                 if (TryCreateArgs(input, data, boardState, out args))
                     return true;

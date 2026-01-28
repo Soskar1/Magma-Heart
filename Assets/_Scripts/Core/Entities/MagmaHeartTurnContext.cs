@@ -13,7 +13,7 @@ namespace MagmaHeart.Core.Entities
             int newEnergyValue = entityModel.Energy.CurrentEnergy + entityModel.Energy.EnergyRegenerationPerTurn;
             return new List<StateChange>()
             {
-                new UpdateEnergyStateChange(entityModel, newEnergyValue)
+                new UpdateEnergyStateChange(entityModel.Id, entityModel.Energy.CurrentEnergy, newEnergyValue)
             };
         }
     }

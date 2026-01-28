@@ -1,7 +1,6 @@
-﻿using MagmaHeart.AI.States.SimulationOperations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MagmaHeart.AI.States
 {
-    internal record SimulationChange(List<SimulationOperation> Operations);
+    internal record SimulationChange(List<StateChange> StateChanges);
 }

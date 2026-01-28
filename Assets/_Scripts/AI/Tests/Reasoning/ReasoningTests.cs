@@ -34,7 +34,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         public Entity CreateEntity(int health, Vector2 position, bool isPlayer)
         {
-            Entity entity = new Entity(health, position, isPlayer, m_nextId);
+            Entity entity = new Entity(isPlayer, m_nextId);
+            entity.CurrentHealth = health;
+            entity.Position = position;
             ++m_nextId;
             
             AttackActionData attackData = new AttackActionData(4);

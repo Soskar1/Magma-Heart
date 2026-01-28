@@ -7,14 +7,14 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class RunAwayAction : UnitAction<RunAwayActionArgs, TargetEntityActionInput, RunAwayActionData>
     {
-        public override IEnumerable<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState gameState)
+        public override IEnumerable<StateChange> ProduceChanges(RunAwayActionArgs args, BoardState boardState)
         {
-            Position targetPosition = gameState.GetProperty<Position>(args.TypedInput.Target);
-            Position possessorPosition = gameState.GetProperty<Position>(args.Input.Executor);
+            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executor);
+            boardState.Board.TryGetUnit(args.TypedInput.Target.Id, out Entity target);
 
-            Vector2 tmpPosition = possessorPosition.CurrentPosition;
+            Vector2 tmpPosition = executor.Position;
 
-            Vector2 direction = -(targetPosition.CurrentPosition - tmpPosition);
+            Vector2 direction = -(target.Position - tmpPosition);
             float xMovement = args.RunAwayActionData.Speed;
             float yMovement = args.RunAwayActionData.Speed;
 
@@ -30,7 +30,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             return new List<StateChange>()
             {
-                new MovementStateChange(args.Input.Executor, possessorPosition.CurrentPosition, tmpPosition)
+                new MovementStateChange(args.Input.Executor.Id, executor.Position, tmpPosition)
             };
         }
 

@@ -23,6 +23,7 @@ namespace MagmaHeart.AI.States
         }
 
         public abstract void ApplyChangeToSimulation(SimulatedBoardState simulation);
+        public abstract void UndoChangeToSimulation(SimulatedBoardState simulation);
         public virtual Task ApplyChangeToActualStateAsync(ActualBoardState actualBoard, CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }

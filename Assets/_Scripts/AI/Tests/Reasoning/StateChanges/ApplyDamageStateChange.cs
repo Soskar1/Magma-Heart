@@ -2,17 +2,28 @@
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record ApplyDamageStateChange(float Damage, AIUnitModel Target) : StateChange
+    internal record ApplyDamageStateChange(int Damage, int TargetId) : StateChange
     {
         public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
         {
-            Health targetHealth = simulation.GetProperty<Health>(Target);
+            if (simulation.Board.TryGetUnit(TargetId, out Entity targetUnit))
+            {
+                targetUnit.CurrentHealth -= Damage;
 
-            if (targetHealth.CurrentHealth < Damage)
-                simulation.UpdateProperty(Target, new IsAlivePropertySnapshot(false));
+                if (targetUnit.CurrentHealth <= 0)
+                    targetUnit.IsDisabled = true;
+            }
+        }
 
-            targetHealth = new Health(targetHealth.CurrentHealth - Damage, targetHealth.MaxHealth);
-            simulation.UpdateProperty(Target, targetHealth);
+        public override void UndoChangeToSimulation(SimulatedBoardState simulation)
+        {
+            if (simulation.Board.TryGetUnit(TargetId, out Entity targetUnit))
+            {
+                targetUnit.CurrentHealth += Damage;
+
+                if (targetUnit.CurrentHealth > 0)
+                    targetUnit.IsDisabled = false;
+            }
         }
     }
 }

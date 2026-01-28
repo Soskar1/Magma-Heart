@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>()
             {
-                new MoveEntityStateChange(args.TypedInput.TypedExecutor, path)
+                new MoveEntityStateChange(args.TypedInput.TypedExecutor.Id, path)
             });
         }
 

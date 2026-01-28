@@ -2,6 +2,7 @@
 using MagmaHeart.AI.States;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
@@ -37,10 +38,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
             float playerIsNotAlivePoints = 0;
             float aiIsNotAlivePoints = -50;
             int aiNotAliveCount = 0;
-            Position playerPosition = null;
+            Vector2 playerPosition = Vector2.zero;
             
-            Func<Position, float> getDistancePoints = (ai) => {
-                float distance = ai.Distance(playerPosition);
+            Func<Vector2, float> getDistancePoints = (pos) => {
+                float distance = Vector2.Distance(pos, playerPosition);
                 if (distance == 0)
                     return 5;
 
@@ -50,18 +51,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
             IEnumerable<AIUnitModel> aiUnits = state.Board.GetUnits();
             foreach (AIUnitModel unit in aiUnits)
             {
-                Health health = state.GetProperty<Health>(unit);
-                Position position = state.GetProperty<Position>(unit);
-                IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
+                Entity entity = (Entity)unit;
 
                 if (unit.IsPlayer)
                 {
-                    playerIsAlive = isAlive;
-
-                    if (isAlive)
+                    if (!entity.IsDisabled)
                     {
-                        playerHP = health.CurrentHealth;
-                        playerPosition = position;
+                        playerIsAlive = true;
+                        playerHP = entity.CurrentHealth;
+                        playerPosition = entity.Position;
                     }
                     else
                     {
@@ -70,10 +68,14 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 }
                 else
                 {
-                    if (!isAlive)
+                    if (entity.CurrentHealth <= 0)
+                    {
                         ++aiNotAliveCount;
+                    }
                     else
-                        aiHP += health.CurrentHealth;
+                    {
+                        aiHP += entity.CurrentHealth;
+                    }
                 }
             }
 
@@ -84,12 +86,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
                     if (unit.IsPlayer)
                         continue;
 
-                    IsAlivePropertySnapshot isAlive = state.GetProperty<IsAlivePropertySnapshot>(unit);
-                    if (!isAlive)
+                    Entity entity = (Entity)unit;
+                    if (entity.IsDisabled)
                         continue;
 
-                    Position position = state.GetProperty<Position>(unit);
-                    distancePoints += getDistancePoints(position);
+                    distancePoints += getDistancePoints(entity.Position);
                 }
             }
 

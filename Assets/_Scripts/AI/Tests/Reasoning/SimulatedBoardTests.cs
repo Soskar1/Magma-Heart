@@ -1,7 +1,6 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
-using MagmaHeart.AI.States.SimulationOperations;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +35,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [SetUp]
         public void SetUp()
         {
-            m_entity = new Entity(10, Vector2.zero, false, 0);
+            m_entity = new Entity(false, 0);
+            m_entity.CurrentHealth = 10;
+            m_entity.Position = Vector2.zero;
 
             BoardGraph graph = new BoardGraph();
             graph.AddNode(Vector2.zero, BoardNodeType.Walkable);
@@ -52,43 +53,14 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void SimulatedBoardState_CreatesSimulatedBoardWithUnitProperties()
         {
             Assert.That(ReferenceEquals(m_board, m_state.Board), Is.EqualTo(false));
-            Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(m_entity.Health));
+            Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(m_entity.CurrentHealth));
             Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(m_entity.Position));
-        }
-
-        [Test]
-        public void GetWriteProperty_UpdatesPropertiesInSimulation()
-        {
-            m_state.UpdateProperty(m_entity, new Position(Vector2.up));
-            m_state.UpdateProperty(m_entity, new Health(4, 10));
-
-            Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(4));
-            Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(Vector2.up));
-            Assert.That(m_entity.Position, Is.EqualTo(Vector2.zero));
-            Assert.That(m_entity.Health, Is.EqualTo(10));
-        }
-
-        [Test]
-        public void ApplyStateChanges_AddsStateChangeToHistoryStack()
-        {
-            MoveAction moveAction = new MoveAction();
-            TargetPositionActionInput input = new TargetPositionActionInput(m_entity, Vector2.up);
-            MoveActionArgs args = new MoveActionArgs(input, new MoveActionData(1));
-
-            moveAction.Execute(args, m_state);
-
-            Assert.That(m_state.History.Count, Is.EqualTo(1));
-            List<SimulationOperation> operations = m_state.History.Peek().Operations;
-            Assert.That(operations.Count, Is.EqualTo(3));
-            Assert.That(operations[2] is UnitPropertyUpdateSimulationOperation, Is.EqualTo(true));
-            Assert.That(operations[1] is AddUnitBoardSimulationOperation, Is.EqualTo(true));
-            Assert.That(operations[0] is RemoveUnitBoardSimulationOperation, Is.EqualTo(true));
         }
 
         [Test]
         public void Undo_RemovesLastStateChangeFromHistoryStack()
         {
-            MovementStateChange movementStateChange = new MovementStateChange(m_entity, Vector2.zero, Vector2.up);
+            MovementStateChange movementStateChange = new MovementStateChange(m_entity.Id, Vector2.zero, Vector2.up);
             m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange });
 
             m_state.Undo();

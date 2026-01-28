@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<StateChange>
             {
-                new AttackStateChange(args.TargetEntityInput.TypedExecutor, args.TargetEntityInput.Target, args.AttackDamage, args.AttackType),
+                new AttackStateChange(args.TargetEntityInput.TypedExecutor.Id, args.TargetEntityInput.Target.Id, args.AttackDamage, args.AttackType),
             });
         }
 

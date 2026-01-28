@@ -1,9 +1,8 @@
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States.SimulationOperations;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 namespace MagmaHeart.AI.States
 {
@@ -11,7 +10,6 @@ namespace MagmaHeart.AI.States
     {
         private readonly Dictionary<int, TypeMap<PropertySnapshot>> m_stateProperties;
         private readonly Stack<SimulationChange> m_history;
-        private readonly List<SimulationOperation> m_currentSimulationOperations;
 
         internal Stack<SimulationChange> History => m_history;
 
@@ -26,81 +24,31 @@ namespace MagmaHeart.AI.States
             }
 
             m_history = new Stack<SimulationChange>();
-            m_currentSimulationOperations = new List<SimulationOperation>();
         }
 
         internal override void ApplyStateChanges(IEnumerable<StateChange> stateChanges)
         {
             base.ApplyStateChanges(stateChanges);
 
-            SimulationChange change = new SimulationChange(new List<SimulationOperation>(m_currentSimulationOperations));
+            SimulationChange change = new SimulationChange(new List<StateChange>(stateChanges.ToList()));
             m_history.Push(change);
-
-            m_currentSimulationOperations.Clear();
         }
 
         public void Undo()
         {
-            List<SimulationOperation> operations = m_history.Pop().Operations;
-            for (int i = operations.Count - 1; i >= 0; --i)
-            {
-                SimulationOperation operation = operations[i];
+            List<StateChange> stateChanges = m_history.Pop().StateChanges;
 
-                if (operation is AddUnitBoardSimulationOperation addUnitOperation)
-                    Board.RemoveUnit(addUnitOperation.Position);
-                else if (operation is RemoveUnitBoardSimulationOperation removeUnitOperation)
-                    Board.AddUnit(removeUnitOperation.Position, removeUnitOperation.RemovedUnit);
-                else if (operation is UnitPropertyUpdateSimulationOperation unitPropertyUpdateOperation)
-                    WriteProperty(unitPropertyUpdateOperation.UnitId, unitPropertyUpdateOperation.OldPropertyValue);
-                else if (operation is NodeTypeUpdateBoardSimulationOperation nodeTypeUpdateOperation)
-                    Board.Graph.ChangeNodeType(nodeTypeUpdateOperation.Position, nodeTypeUpdateOperation.OldNodeType);
+            for (int i = stateChanges.Count - 1; i >= 0; --i)
+            {
+                StateChange stateChange = stateChanges[i];
+                stateChange.UndoChangeToSimulation(this);
             }
         }
 
         public override T GetProperty<T>(AIUnitModel unit) => (T)GetProperty(unit, typeof(T));
         private PropertySnapshot GetProperty(AIUnitModel unit, Type propertyType) => m_stateProperties[unit.Id][propertyType];
-        private void WriteProperty(int unitId, PropertySnapshot property)
-        {
-            Type propertyType = property.GetType();
-            m_stateProperties[unitId][propertyType] = property;
-        }
-
-        public void UpdateProperty(AIUnitModel unit, PropertySnapshot property)
-        {
-            Type propertyType = property.GetType();
-            PropertySnapshot oldValue = GetProperty(unit, propertyType);
-
-            WriteProperty(unit.Id, property);
-
-            UnitPropertyUpdateSimulationOperation operation = new UnitPropertyUpdateSimulationOperation(unit.Id, oldValue, property);
-            m_currentSimulationOperations.Add(operation);
-        }
-
-        public override void AddUnit(Vector2 position, AIUnitModel unit)
-        {
-            base.AddUnit(position, unit);
-
-            AddUnitBoardSimulationOperation operation = new AddUnitBoardSimulationOperation(position);
-            m_currentSimulationOperations.Add(operation);
-        }
-
-        public override void RemoveUnit(Vector2 position, AIUnitModel unit)
-        {
-            base.RemoveUnit(position, unit);
-
-            RemoveUnitBoardSimulationOperation operation = new RemoveUnitBoardSimulationOperation(position, unit);
-            m_currentSimulationOperations.Add(operation);
-        }
-
-        public override void UpdateBoardNodeType(Vector2 position, BoardNodeType newNodeType)
-        {
-            BoardNodeType oldNodeType = Board.Graph.GetNode(position).Type;
-            base.UpdateBoardNodeType(position, newNodeType);
-
-            NodeTypeUpdateBoardSimulationOperation operation = new NodeTypeUpdateBoardSimulationOperation(position, oldNodeType, newNodeType);
-            m_currentSimulationOperations.Add(operation);
-        }
 
         public void ProduceStateChange(StateChange stateChange) => stateChange.ApplyChangeToSimulation(this);
+        public void UndoStateChange(StateChange stateChange) => stateChange.UndoChangeToSimulation(this);
     }
 }

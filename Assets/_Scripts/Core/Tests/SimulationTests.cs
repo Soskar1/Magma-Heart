@@ -8,7 +8,6 @@ using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Tests
@@ -46,12 +45,12 @@ namespace MagmaHeart.Core.Tests
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 1);
+            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(player.Id, 1);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(4));
+            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(4));
         }
 
         [Test]
@@ -59,13 +58,13 @@ namespace MagmaHeart.Core.Tests
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 2);
+            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(player.Id, 2);
 
             stateChange.ApplyChangeToSimulation(simulation);
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(1));
+            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(1));
         }
 
         [Test]
@@ -73,14 +72,13 @@ namespace MagmaHeart.Core.Tests
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(enemy, player, 6);
+            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(player.Id, 6);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(-1));
-            Assert.That(isAlive.IsAlive, Is.False);
+            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(0));
+            Assert.That(simulatedPlayer.IsDisabled, Is.True);
         }
 
         [Test]
@@ -88,12 +86,12 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, 3);
+            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, 0, 3);
 
             energyChange.ApplyChangeToSimulation(simulation);
 
-            EnergyPropertySnapshot energy = simulation.GetProperty<EnergyPropertySnapshot>(entity);
-            Assert.That(energy.CurrentEnergy, Is.EqualTo(3));
+            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(3));
         }
 
         [Test]
@@ -101,14 +99,14 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, 3);
-            UpdateEnergyStateChange energyChange2 = new UpdateEnergyStateChange(entity, 4);
+            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, 0, 3);
+            UpdateEnergyStateChange energyChange2 = new UpdateEnergyStateChange(entity.Id, 3, 4);
 
             energyChange.ApplyChangeToSimulation(simulation);
             energyChange2.ApplyChangeToSimulation(simulation);
 
-            EnergyPropertySnapshot energy = simulation.GetProperty<EnergyPropertySnapshot>(entity);
-            Assert.That(energy.CurrentEnergy, Is.EqualTo(4));
+            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(4));
         }
 
         [Test]
@@ -117,12 +115,12 @@ namespace MagmaHeart.Core.Tests
             EntityModel entity = BoardWithOneEntity();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             int energyToSet = entity.Energy.MaxEnergy + 1;
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, energyToSet);
+            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, entity.Energy.CurrentEnergy, energyToSet);
 
             energyChange.ApplyChangeToSimulation(simulation);
 
-            EnergyPropertySnapshot energy = simulation.GetProperty<EnergyPropertySnapshot>(entity);
-            Assert.That(energy.CurrentEnergy, Is.EqualTo(entity.Energy.MaxEnergy));
+            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(entity.Energy.MaxEnergy));
         }
 
         [Test]
@@ -130,7 +128,7 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity, -1);
+            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, entity.Energy.CurrentEnergy, -1);
 
             energyChange.ApplyChangeToSimulation(simulation);
 
@@ -146,14 +144,12 @@ namespace MagmaHeart.Core.Tests
 
             Vector2Int initialPosition = entity.GetCurrentTilePosition().ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
-            MoveEntityStateChange moveChange = new MoveEntityStateChange(entity, new List<Vector2>() { initialPosition, endPosition });
+            MoveEntityStateChange moveChange = new MoveEntityStateChange(entity.Id, new List<Vector2>() { initialPosition, endPosition });
 
             moveChange.ApplyChangeToSimulation(simulation);
 
-            PositionPropertySnapshot position = simulation.GetProperty<PositionPropertySnapshot>(entity);
-            Assert.That(position.Position.ToVector2Int(), Is.EqualTo(endPosition));
-            Assert.That(simulation.Board.TryGetUnit(endPosition, out AIUnitModel unit), Is.True);
-            Assert.That(unit, Is.EqualTo(entity));
+            Assert.That(simulation.Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.True);
+            Assert.That(simulatedEntity.CurrentTilePosition.ToVector2Int(), Is.EqualTo(endPosition));
             Assert.That(simulation.Board.TryGetUnit(initialPosition, out _), Is.False);
             Assert.That(simulation.Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
             Assert.That(simulation.Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
@@ -164,13 +160,12 @@ namespace MagmaHeart.Core.Tests
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Melee);
+            AttackStateChange stateChange = new AttackStateChange(enemy.Id, player.Id, 2, AttackType.Melee);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(3));
+            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(3));
         }
 
         [Test]
@@ -178,13 +173,12 @@ namespace MagmaHeart.Core.Tests
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            AttackStateChange stateChange = new AttackStateChange(enemy, player, 2, AttackType.Ranged);
+            AttackStateChange stateChange = new AttackStateChange(enemy.Id, player.Id, 2, AttackType.Ranged);
 
             stateChange.ApplyChangeToSimulation(simulation);
 
-            HealthPropertySnapshot health = simulation.GetProperty<HealthPropertySnapshot>(player);
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(3));
+            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(3));
         }
     }
 }

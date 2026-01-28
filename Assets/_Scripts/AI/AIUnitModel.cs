@@ -6,8 +6,9 @@ namespace MagmaHeart.AI
 {
     public record AIUnitModel
     {
-        public bool IsPlayer { get; init; }
         public int Id { get; init; }
+        public bool IsPlayer { get; init; }
+        public bool IsDisabled { get; set; } = false;
         public TypeMap<ActionData> PossibleActions { get; init; }
 
         public AIUnitModel(bool isPlayer, int id)

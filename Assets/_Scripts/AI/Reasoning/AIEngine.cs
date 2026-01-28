@@ -23,7 +23,7 @@ namespace MagmaHeart.AI.Reasoning
             m_planner = new Planner(strategy, database);
         }
 
-        public BestPlan ChooseBestMove(ChainNode<AIUnitModel> unitTurns, ActualBoardState gameState)
+        public BestPlan ChooseBestMove(ChainNode<int> unitTurnIds, ActualBoardState gameState)
         {  
             SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
 
@@ -31,16 +31,18 @@ namespace MagmaHeart.AI.Reasoning
             float beta = float.MaxValue;
             float bestValue = float.MinValue;
 
+            simulation.Board.TryGetUnit(unitTurnIds.Value, out AIUnitModel currentUnit);
+            
             BestPlan bestPlan = null;
-            List<Plan> plans = m_planner.GetPlans(unitTurns.Value);
+            List<Plan> plans = m_planner.GetPlans(currentUnit);
 
             foreach (Plan plan in plans)
             {
-                bool isExecuted = plan.TryExecute(simulation, unitTurns.Value);
+                bool isExecuted = plan.TryExecute(simulation, currentUnit);
                 if (!isExecuted)
                     continue;
 
-                float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
+                float evaluation = Minimax(simulation, unitTurnIds.Next, m_depth - 1, alpha, beta);
 
                 plan.Undo(simulation);
 
@@ -56,12 +58,11 @@ namespace MagmaHeart.AI.Reasoning
             return bestPlan;
         }
 
-        private float Minimax(SimulatedBoardState simulation, ChainNode<AIUnitModel> turns, int currentDepth, float alpha, float beta)
+        private float Minimax(SimulatedBoardState simulation, ChainNode<int> turns, int currentDepth, float alpha, float beta)
         {
-            AIUnitModel currentUnit = turns.Value;
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(currentUnit);
+            simulation.Board.TryGetUnit(turns.Value, out AIUnitModel currentUnit);
 
-            if (currentDepth <= 0 || !isAlive)
+            if (currentDepth <= 0 || currentUnit.IsDisabled)
                 return m_strategy.EvaluateState(simulation);
 
             m_turnContext.StartTurn(simulation, currentUnit);

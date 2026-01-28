@@ -45,7 +45,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             BasicStrategy strategy = new BasicStrategy();
             AIEngine engine = new AIEngine(strategy, Database, 1, m_turnContext);
             Entity enemy = CreateEntity(10, Vector2.zero, false);
-            CircularList<AIUnitModel> turnOrder = new CircularList<AIUnitModel>() { enemy, m_player };
+            CircularList<int> turnOrder = new CircularList<int>() { enemy.Id, m_player.Id };
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 
@@ -59,7 +59,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             BasicStrategy strategy = new BasicStrategy();
             AIEngine engine = new AIEngine(strategy, Database, 2, m_turnContext);
             Entity enemy = CreateEntity(1, new Vector2(4, 5), false);
-            CircularList<AIUnitModel> turnOrder = new CircularList<AIUnitModel>() { enemy, m_player };
+            CircularList<int> turnOrder = new CircularList<int>() { enemy.Id, m_player.Id };
 
             BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
 

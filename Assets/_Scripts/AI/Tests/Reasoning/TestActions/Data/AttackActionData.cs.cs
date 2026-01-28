@@ -4,8 +4,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class AttackActionData : ActionData
     {
-        public float Damage { get; init; }
-        public AttackActionData(float damage) => Damage = damage;
+        public int Damage { get; init; }
+        public AttackActionData(int damage) => Damage = damage;
 
         public override ActionDefinition GetDefinition()
         {

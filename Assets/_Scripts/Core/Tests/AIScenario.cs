@@ -21,7 +21,11 @@ namespace MagmaHeart.Core.Tests
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             await turnContext.StartTurnAsync(State, TurnOrder.Head, cancellationTokenSource.Token);
 
-            return ai.ChooseBestMove(TurnOrder, State);
+            CircularList<int> modelTurns = new CircularList<int>();
+            foreach (AIUnitModel entity in TurnOrder)
+                modelTurns.Add(entity.Id);
+
+            return ai.ChooseBestMove(modelTurns, State);
         }
     }
 }

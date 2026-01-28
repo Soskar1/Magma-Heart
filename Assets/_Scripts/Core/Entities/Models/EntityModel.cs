@@ -12,6 +12,7 @@ namespace MagmaHeart.Core.Entities
     public record EntityModel : AIUnitModel
     {
         public Func<Vector3Int> GetCurrentTilePosition { get; init; }
+        public Vector3Int CurrentTilePosition { get; set; }
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
         public StrengthModel Strength { get; init; }

@@ -77,9 +77,20 @@ namespace MagmaHeart.Core.Dungeon
             return true;
         }
 
-        public bool EntityIsOnTile(RoomTile roomTile, out EntityModel unit) => TryGetUnit(roomTile.Position.ToVector2(), out unit);
+        public bool EntityIsOnTile(RoomTile roomTile, out EntityModel entity) => TryGetUnit(roomTile.Position.ToVector2(), out entity);
 
-        public bool TryGetEntity(EntityModel model, out Entity presenter) => m_entities.TryGetValue(model, out presenter);
+        public bool TryGetEntity(EntityModel model, out Entity entity) => m_entities.TryGetValue(model, out entity);
+        public bool TryGetEntity(int entityId, out Entity entity)
+        {
+            TryGetUnit(entityId, out EntityModel model);
+            if (model == null)
+            {
+                entity = null;
+                return false;
+            }
+
+            return TryGetEntity(model, out entity);
+        }
 
         public bool TryGetEntity(RoomTile roomTile, out Entity entity)
         {

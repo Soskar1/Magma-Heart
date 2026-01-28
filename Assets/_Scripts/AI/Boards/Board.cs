@@ -15,6 +15,7 @@ namespace MagmaHeart.AI.Boards
         {
             Graph = graph;
             m_units = new Dictionary<Vector2, AIUnitModel>();
+            m_unitsById = new Dictionary<int, AIUnitModel>();
         }
 
         public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType) => Graph.ChangeNodeType(position, newNodeType);
@@ -41,7 +42,36 @@ namespace MagmaHeart.AI.Boards
         }
 
         public bool TryGetUnit(Vector2 position, out AIUnitModel unit) => m_units.TryGetValue(position, out unit);
+        public bool TryGetUnit<T>(Vector2 position, out T unit) where T : AIUnitModel
+        {
+            if (TryGetUnit(position, out AIUnitModel aiUnitModel))
+            {
+                if (aiUnitModel is T typedUnit)
+                {
+                    unit = typedUnit;
+                    return true;
+                }
+            }
+
+            unit = null;
+            return false;
+        }
+
         public bool TryGetUnit(int id, out AIUnitModel unit) => m_unitsById.TryGetValue(id, out unit);
+        public bool TryGetUnit<T>(int id, out T unit) where T : AIUnitModel
+        {
+            if (TryGetUnit(id, out AIUnitModel aiUnitModel))
+            {
+                if (aiUnitModel is T typedUnit)
+                {
+                    unit = typedUnit;
+                    return true;
+                }
+            }
+
+            unit = null;
+            return false;
+        }
 
         public Board DeepCopy()
         {
