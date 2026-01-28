@@ -9,6 +9,7 @@ namespace MagmaHeart.AI.Boards
         public BoardGraph Graph { get; init; }
 
         private Dictionary<Vector2, AIUnitModel> m_units;
+        private Dictionary<int, AIUnitModel> m_unitsById;
 
         public Board(BoardGraph graph)
         {
@@ -25,6 +26,7 @@ namespace MagmaHeart.AI.Boards
                 throw new ArgumentException($"Node at {position} does not exist in the board graph!");
 
             m_units[position] = unit;
+            m_unitsById[unit.Id] = unit;
         }
 
         public bool RemoveUnit(Vector2 position)
@@ -32,10 +34,14 @@ namespace MagmaHeart.AI.Boards
             if (!m_units.ContainsKey(position))
                 return false;
 
+            AIUnitModel model = m_units[position];
+            m_unitsById.Remove(model.Id);
+
             return m_units.Remove(position);
         }
 
-        public bool TryGetUnit(Vector2 position, out AIUnitModel units) => m_units.TryGetValue(position, out units);
+        public bool TryGetUnit(Vector2 position, out AIUnitModel unit) => m_units.TryGetValue(position, out unit);
+        public bool TryGetUnit(int id, out AIUnitModel unit) => m_unitsById.TryGetValue(id, out unit);
 
         public Board DeepCopy()
         {
