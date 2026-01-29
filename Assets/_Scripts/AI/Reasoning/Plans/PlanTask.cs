@@ -1,5 +1,7 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
+using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Plans
 {
@@ -16,14 +18,16 @@ namespace MagmaHeart.AI.Reasoning.Plans
             ExecuteUntilFail = executeUntilFail;
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor, out ExecutedTask executedTask)
+        public bool TryExecute(Board simulation, AIUnitModel executor, CommandRunner runner, out ExecutedTask executedTask)
         {
             executedTask = null;
 
             if (!Action.TryGenerateArgs(executor, ActionDefinition.Data, simulation, out ActionArgs args))
                 return false;
 
-            Action.Execute(args, simulation);
+            IEnumerable<IBoardCommand> commands = Action.Execute(args, simulation);
+            runner.Apply(simulation, commands);
+
             executedTask = new ExecutedTask(Action, args);
             return true;
         }

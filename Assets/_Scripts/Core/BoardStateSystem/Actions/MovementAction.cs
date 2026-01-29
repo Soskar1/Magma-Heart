@@ -25,21 +25,21 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             m_aStar = new AStar(AStar.ManhattanDistance);
         }
 
-        public override IEnumerable<StateChange> ProduceChanges(MovementActionArgs args, BoardState boardState)
+        public override IEnumerable<IBoardCommand> Execute(MovementActionArgs args, Board board)
         {
-            IEnumerable<StateChange> changes = base.ProduceChanges(args, boardState);
+            IEnumerable<IBoardCommand> changes = base.Execute(args, board);
 
-            List<Vector2> path = CreatePath(args, boardState);
+            List<Vector2> path = CreatePath(args, board);
 
-            return changes.Concat(new List<StateChange>()
+            return changes.Concat(new List<IBoardCommand>()
             {
-                new MoveEntityStateChange(args.TypedInput.TypedExecutor.Id, path)
+                new MoveCommand(args.TypedInput.TypedExecutor.Id, path.First().ToVector2Int(), path.Last().ToVector2Int())
             });
         }
 
-        public override int GetEnergyCost(MovementActionArgs args, BoardState boardState)
+        public override int GetEnergyCost(MovementActionArgs args, Board board)
         {
-            List<Vector2> path = CreatePath(args, boardState);
+            List<Vector2> path = CreatePath(args, board);
 
             if (path == null || !path.Any())
                 return int.MaxValue;
@@ -49,11 +49,11 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return Mathf.CeilToInt(distance / (float)args.Speed);
         }
 
-        public List<Vector2> CreatePath(MovementActionArgs args, BoardState boardState)
+        public List<Vector2> CreatePath(MovementActionArgs args, Board board)
         {
-            boardState.Board.TryGetUnit(args.Input.Executor.Id, out EntityModel entity);
+            board.TryGetUnit(args.Input.Executor.Id, out EntityModel entity);
 
-            List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, entity.TilePosition.ToVector2Int(), args.TargetPositionInput.Target);
+            List<Vector2> path = m_aStar.FindPath(board.Graph, entity.TilePosition.ToVector2Int(), args.TargetPositionInput.Target);
 
             if (path == null || !path.Any())
                 return null;
@@ -62,20 +62,20 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 .ToList();
         }
 
-        public override bool CanExecute(MovementActionArgs args, BoardState boardState)
+        public override bool CanExecute(MovementActionArgs args, Board board)
         {
-            if (boardState.Board.GetNodeType(args.TargetPositionInput.Target) == BoardNodeType.Obstacle)
+            if (board.GetNodeType(args.TargetPositionInput.Target) == BoardNodeType.Obstacle)
                 return false;
 
-            return base.CanExecute(args, boardState);
+            return base.CanExecute(args, board);
         }
 
-        public override bool TryCreateArgs(TargetPositionActionInput input, MovementActionData data, BoardState boardState, out MovementActionArgs args)
+        public override bool TryCreateArgs(TargetPositionActionInput input, MovementActionData data, Board board, out MovementActionArgs args)
         {
-            boardState.Board.TryGetUnit(input.Executor.Id, out EntityModel entity);
+            board.TryGetUnit(input.Executor.Id, out EntityModel entity);
             MovementActionArgs candidate = new MovementActionArgs(input, data.MovementDistanceInTilesForOneEnergy + entity.Speed.CurrentSpeed);
 
-            if (!CanExecute(candidate, boardState))
+            if (!CanExecute(candidate, board))
             {
                 args = null;
                 return false;
@@ -85,11 +85,11 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, MovementActionData data, BoardState boardState, out ActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, MovementActionData data, Board board, out ActionArgs args)
         {
-            boardState.Board.TryGetUnit(executor.Id, out EntityModel entity);
+            board.TryGetUnit(executor.Id, out EntityModel entity);
 
-            foreach (AIUnitModel potentialTarget in boardState.Board.GetUnits())
+            foreach (AIUnitModel potentialTarget in board.GetUnits())
             {
                 if (potentialTarget.Id == executor.Id)
                     continue;
@@ -100,7 +100,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 if (!executor.IsPlayer && !potentialTarget.IsPlayer)
                     continue;
 
-                boardState.Board.TryGetUnit(potentialTarget.Id, out EntityModel targetUnit);
+                board.TryGetUnit(potentialTarget.Id, out EntityModel targetUnit);
                 Vector2 targetPosition = targetUnit.TilePosition.ToVector2();
 
                 Vector2[] adjacentTiles =
@@ -112,20 +112,20 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 };
 
                 List<Vector2> roomTiles =
-                    adjacentTiles.Where(v => boardState.Board.Graph.ContainsNode(v) && boardState.Board.GetNodeType(v) == BoardNodeType.Walkable)
+                    adjacentTiles.Where(v => board.Graph.ContainsNode(v) && board.GetNodeType(v) == BoardNodeType.Walkable)
                     .OrderBy(t => RoomGrid.ManhattanDistance(entity.TilePosition, t.ToVector3Int()))
                     .ToList();
 
                 foreach (Vector2 tile in roomTiles)
                 {
-                    //List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, source, tile);
+                    //List<Vector2> path = m_aStar.FindPath(board.Board.Graph, source, tile);
                     //if (path == null || !path.Any())
                     //    continue;
 
                     //Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * data.MovementDistanceInTilesForOneEnergy).Last();
                     TargetPositionActionInput input = new TargetPositionActionInput(entity, tile);
 
-                    if (TryCreateArgs(input, data, boardState, out args))
+                    if (TryCreateArgs(input, data, board, out args))
                         return true;
                 }
             }

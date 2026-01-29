@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             foreach (Entity entity in turnOrder)
                 modelTurns.Add(entity.Model.Id);
             
-            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState);
+            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState.Board);
             m_cancellationTokenSource = new CancellationTokenSource();
 
             if (bestPlan != null)
@@ -35,7 +35,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
                     if (m_cancellationTokenSource.Token.IsCancellationRequested)
                         break;
 
-                    await task.Action.ExecuteAsync(task.Args, boardState, m_cancellationTokenSource.Token);
+                    //await task.Action.ExecuteAsync(task.Args, boardState.Bo, m_cancellationTokenSource.Token);
+                    throw new System.Exception("USE RUNNER");
                 }
             }
 

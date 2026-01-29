@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.AI;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities;
 using System;
@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.AI
             }));
         }
 
-        public override float EvaluateState(SimulatedBoardState state)
+        public override float EvaluateState(Board board)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.AI
             int aiNotAliveCount = 0;
 
             EntityModel player = null;
-            foreach (AIUnitModel unitModel in state.Board.GetUnits())
+            foreach (AIUnitModel unitModel in board.GetUnits())
             {
                 if (unitModel.IsPlayer)
                 {
@@ -66,12 +66,12 @@ namespace MagmaHeart.Core.AI
                 return 5 / distance;
             };
 
-            foreach (AIUnitModel unit in state.Board.GetUnits())
+            foreach (AIUnitModel unit in board.GetUnits())
             {
                 if (unit.IsPlayer)
                     continue;
 
-                state.Board.TryGetUnit(unit.Id, out EntityModel aiEntity);
+                board.TryGetUnit(unit.Id, out EntityModel aiEntity);
 
                 if (aiEntity.IsDisabled)
                 {

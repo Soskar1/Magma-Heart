@@ -76,7 +76,8 @@ namespace MagmaHeart.Core.CombatSystem
                 OnTurnSwitched?.Invoke(this, args);
 
                 m_cancellationTokenSource = new CancellationTokenSource();
-                await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
+                throw new Exception("Review await StartTurnAsync");
+                //await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
                 await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
 
                 if (!m_battleEnded)

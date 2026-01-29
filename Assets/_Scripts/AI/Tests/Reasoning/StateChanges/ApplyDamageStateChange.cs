@@ -1,29 +1,26 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record ApplyDamageStateChange(int Damage, int TargetId) : StateChange
+    internal record ApplyDamageStateChange(int Damage, int TargetId) : IBoardCommand
     {
-        public override void ApplyChangeToSimulation(SimulatedBoardState simulation)
+        public void Execute(Board board)
         {
-            if (simulation.Board.TryGetUnit(TargetId, out Entity targetUnit))
-            {
-                targetUnit.CurrentHealth -= Damage;
+            board.TryGetUnit(TargetId, out Entity targetUnit);
+            targetUnit.CurrentHealth -= Damage;
 
-                if (targetUnit.CurrentHealth <= 0)
-                    targetUnit.IsDisabled = true;
-            }
+            if (targetUnit.CurrentHealth <= 0)
+                targetUnit.IsDisabled = true;
         }
 
-        public override void UndoChangeToSimulation(SimulatedBoardState simulation)
+        public void Undo(Board board)
         {
-            if (simulation.Board.TryGetUnit(TargetId, out Entity targetUnit))
-            {
-                targetUnit.CurrentHealth += Damage;
+            board.TryGetUnit(TargetId, out Entity targetUnit);
+            targetUnit.CurrentHealth += Damage;
 
-                if (targetUnit.CurrentHealth > 0)
-                    targetUnit.IsDisabled = false;
-            }
+            if (targetUnit.CurrentHealth > 0)
+                targetUnit.IsDisabled = false;
         }
     }
 }

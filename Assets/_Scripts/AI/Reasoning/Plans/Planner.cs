@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.States;
 
 namespace MagmaHeart.AI.Reasoning.Plans
 {
@@ -9,11 +10,13 @@ namespace MagmaHeart.AI.Reasoning.Plans
     {
         private readonly ActionDatabase m_database;
         private readonly Strategy m_strategy;
+        private readonly CommandRunner m_commandRunner;
 
-        public Planner(Strategy strategy, ActionDatabase database)
+        public Planner(Strategy strategy, ActionDatabase database, CommandRunner commandRunner)
         {
             m_database = database;
             m_strategy = strategy;
+            m_commandRunner = commandRunner;
         }
 
         public List<Plan> GetPlans(AIUnitModel executor)
@@ -53,7 +56,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 planTasks.Add(planTask);
             }
 
-            return new Plan(planTasks);
+            return new Plan(planTasks, m_commandRunner);
         }
     }
 }

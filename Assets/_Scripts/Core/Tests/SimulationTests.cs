@@ -1,6 +1,5 @@
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
-using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
@@ -16,13 +15,13 @@ namespace MagmaHeart.Core.Tests
         {
             Vector2Int playerPosition = new Vector2Int(2, 3);
             Vector2Int enemyPosition = new Vector2Int(3, 3);
-            AIScenario scenario = AIScenarioBuilder.Create(State)
+            AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(true).At(playerPosition.x, playerPosition.y)
                 .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
                 .Build();
 
-            State.Room.TryGetUnit(playerPosition, out EntityModel player);
-            State.Room.TryGetUnit(enemyPosition, out EntityModel enemy);
+            Board.TryGetUnit(playerPosition, out EntityModel player);
+            Board.TryGetUnit(enemyPosition, out EntityModel enemy);
 
             return (player, enemy);
         }
@@ -30,183 +29,149 @@ namespace MagmaHeart.Core.Tests
         internal EntityModel BoardWithOneEntity()
         {
             Vector2Int entityPosition = new Vector2Int(3, 3);
-            AIScenario scenario = AIScenarioBuilder.Create(State)
+            AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().At(entityPosition.x, entityPosition.y)
                 .Build();
 
-            State.Room.TryGetUnit(entityPosition, out EntityModel entity);
+            Board.TryGetUnit(entityPosition, out EntityModel entity);
             return entity;
         }
 
         [Test]
-        public void ApplyDamageStateChange_OneExecution_AppliesDamageToTargetInSimulation()
+        public void ApplyDamageCommand_OneExecution_AppliesDamageToTargetInSimulation()
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(player.Id, 1);
+            ApplyDamageCommand command = new ApplyDamageCommand(player.Id, 1);
 
-            stateChange.ApplyChangeToSimulation(simulation);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
             Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(4));
         }
 
         [Test]
-        public void ApplyDamageStateChange_TwoExecutions_AppliesDamageToTargetInSimulation()
+        public void ApplyDamageCommand_DamageIsGreaterThanTargetsCurrentHealth_DisablesTarget()
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(player.Id, 2);
+            ApplyDamageCommand command = new ApplyDamageCommand(player.Id, 6);
 
-            stateChange.ApplyChangeToSimulation(simulation);
-            stateChange.ApplyChangeToSimulation(simulation);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
-            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(1));
-        }
-
-        [Test]
-        [Ignore("FIX HealthModel")]
-        public void ApplyDamageStateChange_DamageIsGreaterThanTargetsCurrentHealth_SetsTargetIsAliveToFalse()
-        {
-            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(player.Id, 6);
-
-            stateChange.ApplyChangeToSimulation(simulation);
-
-            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
+            Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
             Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(0));
             Assert.That(simulatedPlayer.IsDisabled, Is.True);
         }
 
         [Test]
-        public void UndoDamageStateChange_OneExecution_RevertsDamageToTargetInSimulation()
+        public void ApplyDamageCommand_Undo_RevertsDamageToTargetInSimulation()
         {
             EntityModel entity = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(entity.Id, 2);
-            stateChange.ApplyChangeToSimulation(simulation);
+            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, 2);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            simulation.UndoStateChange(stateChange);
+            Runner.Undo(Board);
 
-            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedPlayer);
+            Board.TryGetUnit(entity.Id, out EntityModel simulatedPlayer);
             Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(5));
         }
 
         [Test]
-        public void UndoDamageStateChange_LowHealth_RevertsDamageToTargetInSimulation()
+        public void ApplyDamageCommand_UndoAndLowHealth_RevertsDamageToTargetInSimulation()
         {
             EntityModel entity = BoardWithOneEntity();
             entity.Health.CurrentHealth = 1;
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            ApplyDamageStateChange stateChange = new ApplyDamageStateChange(entity.Id, 3);
-            stateChange.ApplyChangeToSimulation(simulation);
+            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, 3);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            simulation.UndoStateChange(stateChange);
+            Runner.Undo(Board);
 
-            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedPlayer);
+            Board.TryGetUnit(entity.Id, out EntityModel simulatedPlayer);
             Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(1));
         }
 
         [Test]
-        public void UpdateEnergyStateChange_OneExecution_UpdatesEnergyForTargetInSimulation()
+        public void UpdateEnergyCommand_OneExecution_UpdatesEnergyForTargetInSimulation()
         {
             EntityModel entity = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, 0, 3);
+            UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, 3);
 
-            energyChange.ApplyChangeToSimulation(simulation);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
             Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(3));
         }
 
         [Test]
-        public void UpdateEnergyStateChange_TwoExecutions_LastExecutionIsAppliedToSimulation()
+        public void UpdateEnergyCommand_NewEnergyValueIsAboveMaxEnergy_SetsEnergyValueToMaxEnergy()
         {
             EntityModel entity = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, 0, 3);
-            UpdateEnergyStateChange energyChange2 = new UpdateEnergyStateChange(entity.Id, 3, 4);
-
-            energyChange.ApplyChangeToSimulation(simulation);
-            energyChange2.ApplyChangeToSimulation(simulation);
-
-            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
-            Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(4));
-        }
-
-        [Test]
-        public void UpdateEnergyStateChange_NewEnergyValueIsAboveMaxEnergy_SetsEnergyValueToMaxEnergy()
-        {
-            EntityModel entity = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
             int energyToSet = entity.Energy.MaxEnergy + 1;
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, entity.Energy.CurrentEnergy, energyToSet);
+            UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, energyToSet);
 
-            energyChange.ApplyChangeToSimulation(simulation);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
             Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(entity.Energy.MaxEnergy));
         }
 
         [Test]
-        public void UpdateEnergyStateChange_NewEnergyValueIsNegative_SetsEnergyValueToZero()
+        public void UpdateEnergyCommand_NewEnergyValueIsNegative_SetsEnergyValueToZero()
         {
             EntityModel entity = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            UpdateEnergyStateChange energyChange = new UpdateEnergyStateChange(entity.Id, entity.Energy.CurrentEnergy, -1);
+            UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, -1);
 
-            energyChange.ApplyChangeToSimulation(simulation);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
             
-            simulation.Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
             Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(0));
         }
 
         [Test]
-        public void MoveEntityStateChange_UpdatesBoardNodeTypesAndMovesEntity()
+        public void UpdateEnergyCommand_Undo_SetsInitialValue()
         {
             EntityModel entity = BoardWithOneEntity();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
+            UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, 4);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
+            Runner.Undo(Board);
+
+            Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
+            Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void MoveEntityCommand_UpdatesBoardNodeTypesAndMovesEntity()
+        {
+            EntityModel entity = BoardWithOneEntity();
             Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
-            MoveEntityStateChange moveChange = new MoveEntityStateChange(entity.Id, new List<Vector2>() { initialPosition, endPosition });
+            MoveCommand command = new MoveCommand(entity.Id, initialPosition, endPosition);
 
-            moveChange.ApplyChangeToSimulation(simulation);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            Assert.That(simulation.Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.True);
+            Assert.That(Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.True);
             Assert.That(simulatedEntity.TilePosition.ToVector2Int(), Is.EqualTo(endPosition));
-            Assert.That(simulation.Board.TryGetUnit(initialPosition, out _), Is.False);
-            Assert.That(simulation.Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
-            Assert.That(simulation.Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
+            Assert.That(Board.TryGetUnit(initialPosition, out _), Is.False);
+            Assert.That(Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
+            Assert.That(Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
         }
 
         [Test]
-        public void AttackStateChange_MeleeAttack_CreatesApplyDamageStateChange()
+        public void MoveEntityCommand_Undo_UpdatesBoardNodeTypesAndMovesEntity()
         {
-            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            AttackStateChange stateChange = new AttackStateChange(enemy.Id, player.Id, 2, AttackType.Melee);
+            EntityModel entity = BoardWithOneEntity();
+            Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
+            Vector2Int endPosition = new Vector2Int(5, 5);
+            MoveCommand command = new MoveCommand(entity.Id, initialPosition, endPosition);
+            Runner.Apply(Board, new List<IBoardCommand>() { command });
 
-            stateChange.ApplyChangeToSimulation(simulation);
+            Runner.Undo(Board);
 
-            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
-            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(3));
-        }
-
-        [Test]
-        public void AttackStateChange_RangedAttack_CreatesApplyDamageStateChange()
-        {
-            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
-            AttackStateChange stateChange = new AttackStateChange(enemy.Id, player.Id, 2, AttackType.Ranged);
-
-            stateChange.ApplyChangeToSimulation(simulation);
-
-            simulation.Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
-            Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(3));
+            Assert.That(Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.False);
+            Assert.That(Board.TryGetUnit(initialPosition, out simulatedEntity), Is.True);
+            Assert.That(simulatedEntity.TilePosition.ToVector2Int(), Is.EqualTo(initialPosition));
+            Assert.That(Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Obstacle));
+            Assert.That(Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Walkable));
         }
     }
 }

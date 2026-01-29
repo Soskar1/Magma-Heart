@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using MagmaHeart.Core.BoardStateSystem.Actions.Args;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
@@ -13,25 +14,25 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         where TInput : MagmaHeartActionInput
         where TData : ActionData
     {
-        public abstract int GetEnergyCost(TArgs args, BoardState boardState);
+        public abstract int GetEnergyCost(TArgs args, Board board);
 
-        public override bool CanExecute(TArgs args, BoardState boardState)
+        public override bool CanExecute(TArgs args, Board board)
         {
-            boardState.Board.TryGetUnit(args.Input.Executor.Id, out EntityModel model);
+            board.TryGetUnit(args.Input.Executor.Id, out EntityModel model);
 
-            if (model.Energy.CurrentEnergy < GetEnergyCost(args, boardState))
+            if (model.Energy.CurrentEnergy < GetEnergyCost(args, board))
                 return false;
 
             return true;
         }
 
-        public override IEnumerable<StateChange> ProduceChanges(TArgs args, BoardState boardState)
+        public override IEnumerable<IBoardCommand> Execute(TArgs args, Board board)
         {
-            boardState.Board.TryGetUnit(args.Input.Executor.Id, out EntityModel model);
+            board.TryGetUnit(args.Input.Executor.Id, out EntityModel model);
 
-            return new List<StateChange>
+            return new List<IBoardCommand>
             {
-                new UpdateEnergyStateChange(args.TypedInput.TypedExecutor.Id, model.Energy.CurrentEnergy, model.Energy.CurrentEnergy - GetEnergyCost(args, boardState))
+                new UpdateEnergyCommand(args.TypedInput.TypedExecutor.Id, model.Energy.CurrentEnergy - GetEnergyCost(args, board))
             };
         }
     }

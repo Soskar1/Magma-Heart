@@ -17,26 +17,26 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public class AttackAction : CombatAction<AttackActionArgs, TargetEntityActionInput, AttackActionData>
     {
-        public override int GetEnergyCost(AttackActionArgs args, BoardState boardState) => args.EnergyCost;
+        public override int GetEnergyCost(AttackActionArgs args, Board board) => args.EnergyCost;
 
-        public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState boardState)
+        public override IEnumerable<IBoardCommand> Execute(AttackActionArgs args, Board board)
         {
-            IEnumerable<StateChange> changes = base.ProduceChanges(args, boardState);
+            IEnumerable<IBoardCommand> changes = base.Execute(args, board);
 
-            return changes.Concat(new List<StateChange>
+            return changes.Concat(new List<IBoardCommand>
             {
-                new AttackStateChange(args.TargetEntityInput.TypedExecutor.Id, args.TargetEntityInput.Target.Id, args.AttackDamage, args.AttackType),
+                new ApplyDamageCommand(args.TargetEntityInput.Target.Id, args.AttackDamage)
             });
         }
 
-        public override bool CanExecute(AttackActionArgs args, BoardState boardState)
+        public override bool CanExecute(AttackActionArgs args, Board board)
         {
-            bool result = base.CanExecute(args, boardState);
+            bool result = base.CanExecute(args, board);
             if (!result)
                 return result;
 
-            boardState.Board.TryGetUnit(args.TargetEntityInput.TypedExecutor.Id, out EntityModel attacker);
-            boardState.Board.TryGetUnit(args.TargetEntityInput.Target.Id, out EntityModel target);
+            board.TryGetUnit(args.TargetEntityInput.TypedExecutor.Id, out EntityModel attacker);
+            board.TryGetUnit(args.TargetEntityInput.Target.Id, out EntityModel target);
 
             if (RoomGrid.ManhattanDistance(attacker.TilePosition, target.TilePosition) > args.AttackDistance)
                 return false;
@@ -49,7 +49,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 foreach (Vector2Int tile in tiles)
                 {
-                    bool isObstacle = boardState.Board.GetNodeType(tile) == BoardNodeType.Obstacle;
+                    bool isObstacle = board.GetNodeType(tile) == BoardNodeType.Obstacle;
 
                     if (isObstacle && tile != attackerPosition && tile != targetPosition)
                         return false;
@@ -59,7 +59,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return true;
         }
 
-        public override bool TryCreateArgs(TargetEntityActionInput input, AttackActionData data, BoardState boardState, out AttackActionArgs args)
+        public override bool TryCreateArgs(TargetEntityActionInput input, AttackActionData data, Board board, out AttackActionArgs args)
         {
             EntityModel executor = input.TypedExecutor;
             EntityModel target = input.Target;
@@ -74,25 +74,25 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             if (!executor.IsPlayer && !target.IsPlayer)
                 return false;
 
-            boardState.Board.TryGetUnit(executor.Id, out EntityModel attacker);
+            board.TryGetUnit(executor.Id, out EntityModel attacker);
             int attackDamage = data.AttackDamage + attacker.Strength.CurrentStrength;
 
             AttackActionArgs candidate = new AttackActionArgs(input, data.EnergyCost, data.AttackDistance, attackDamage, data.AttackType);
 
-            if (!CanExecute(candidate, boardState))
+            if (!CanExecute(candidate, board))
                 return false;
 
             args = candidate;
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, BoardState boardState, out ActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, Board board, out ActionArgs args)
         {
-            foreach (AIUnitModel unit in boardState.Board.GetUnits())
+            foreach (AIUnitModel unit in board.GetUnits())
             {
                 TargetEntityActionInput input = new TargetEntityActionInput((EntityModel)executor, (EntityModel)unit);
 
-                if (TryCreateArgs(input, data, boardState, out args))
+                if (TryCreateArgs(input, data, board, out args))
                     return true;
             }
 

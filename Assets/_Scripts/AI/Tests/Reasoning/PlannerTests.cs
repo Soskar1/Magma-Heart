@@ -13,7 +13,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             Entity player = CreateEntity(10, new Vector2(5, 5), true);
             Entity enemy = CreateEntity(10, Vector2.zero, false);
-            Planner planner = new Planner(Strategy, Database);
+            Planner planner = new Planner(Strategy, Database, new States.CommandRunner());
 
             List<Plan> plans = planner.GetPlans(enemy);
             

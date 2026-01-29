@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using NUnit.Framework;
@@ -15,6 +16,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
         private AttackActionData m_attackData;
 
+        private CommandRunner m_commandRunner;
+
         [OneTimeSetUp]
         public void InitializeTasks()
         {
@@ -27,12 +30,20 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             ActionDefinition moveDefinition = moveData.GetDefinition();
             m_moveTask = new PlanTask(Database.Get(moveDefinition.ActionType), moveDefinition);
+
+            
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            m_commandRunner = new CommandRunner();
         }
 
         [Test]
         public void Constructor_OnePlanTask_CreatesPlanWithOneTask()
         {
-            Plan plan = new Plan(new List<PlanTask>() { m_attackTask });
+            Plan plan = new Plan(new List<PlanTask>() { m_attackTask }, m_commandRunner);
             
             Assert.That(plan.Tasks.Count(), Is.EqualTo(1));
             Assert.That(plan.Tasks.First(), Is.EqualTo(m_attackTask));
@@ -41,7 +52,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void Constructor_TwoPlanTask_CreatesPlanWithTwoTask()
         {
-            Plan plan = new Plan(new List<PlanTask> { m_attackTask, m_moveTask });
+            Plan plan = new Plan(new List<PlanTask> { m_attackTask, m_moveTask }, m_commandRunner);
 
             Assert.That(plan.Tasks.Count(), Is.EqualTo(2));
             Assert.That(plan.Tasks.First(), Is.EqualTo(m_attackTask));
@@ -57,16 +68,16 @@ namespace MagmaHeart.AI.Reasoning.Tests
             int initialHealth = 10;
             Entity player = CreateEntity(initialHealth, new Vector2(5, 5), true);
             Entity enemy = CreateEntity(initialHealth, new Vector2(4, 5), false);
-            SimulatedBoardState simulation = new SimulatedBoardState(Board);
+            Board simulation = Board.DeepCopy();
             List<PlanTask> planTasks = new List<PlanTask>();
             for (int i = 0; i < executionTimes; ++i)
                 planTasks.Add(m_attackTask);
-            Plan plan = new Plan(planTasks);
+            Plan plan = new Plan(planTasks, m_commandRunner);
 
             bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.True);
-            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            simulation.TryGetUnit(player.id, out Entity simulatedPlayer);
             Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth - m_attackData.Damage * executionTimes));
         }
 
@@ -79,16 +90,16 @@ namespace MagmaHeart.AI.Reasoning.Tests
             int initialHealth = 10;
             Entity player = CreateEntity(initialHealth, new Vector2(5, 5), true);
             Entity enemy = CreateEntity(initialHealth, new Vector2(4, 5), false);
-            SimulatedBoardState simulation = new SimulatedBoardState(Board);
+            Board simulation = Board.DeepCopy();
             List<PlanTask> planTasks = new List<PlanTask>();
             for (int i = 0; i < executionTimes; ++i)
                 planTasks.Add(m_attackTask);
-            Plan plan = new Plan(planTasks);
+            Plan plan = new Plan(planTasks, m_commandRunner);
             plan.TryExecute(simulation, enemy);
 
             plan.Undo(simulation);
 
-            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            simulation.TryGetUnit(player.id, out Entity simulatedPlayer);
             Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth));
         }
 
@@ -98,14 +109,14 @@ namespace MagmaHeart.AI.Reasoning.Tests
             int initialHealth = 10;
             Entity player = CreateEntity(initialHealth, new Vector2(5, 5), true);
             Entity enemy = CreateEntity(initialHealth, new Vector2(3, 5), false);
-            SimulatedBoardState simulation = new SimulatedBoardState(Board);
+            Board simulation = Board.DeepCopy();
             List<PlanTask> planTasks = new List<PlanTask>() { m_attackTask };
-            Plan plan = new Plan(planTasks);
+            Plan plan = new Plan(planTasks, m_commandRunner);
             
             bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.False);
-            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            simulation.TryGetUnit(player.id, out Entity simulatedPlayer);
             Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth));
         }
 
@@ -116,20 +127,20 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Vector2 initialEnemyPosition = new Vector2(0, 5);
             Entity player = CreateEntity(initialHealth, new Vector2(5, 5), true);
             Entity enemy = CreateEntity(initialHealth, initialEnemyPosition, false);
-            SimulatedBoardState simulation = new SimulatedBoardState(Board);
+            Board simulation = Board.DeepCopy();
             List<PlanTask> planTasks = new List<PlanTask>() {
                 m_moveTask, m_moveTask, m_attackTask
             };
-            Plan plan = new Plan(planTasks);
+            Plan plan = new Plan(planTasks, m_commandRunner);
 
             bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.False);
 
-            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            simulation.TryGetUnit(player.id, out Entity simulatedPlayer);
             Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth));
 
-            simulation.Board.TryGetUnit(enemy.id, out Entity simulatedEnemy);
+            simulation.TryGetUnit(enemy.id, out Entity simulatedEnemy);
             Assert.That(simulatedEnemy.Position, Is.EqualTo(initialEnemyPosition));
         }
     }

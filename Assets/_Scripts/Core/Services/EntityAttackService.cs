@@ -56,8 +56,9 @@ namespace MagmaHeart.Core.Services
 
         private async Task ApplyDamage(CombatBoardState boardState, Entity attacker, Entity target, float damage, CancellationToken cancellationToken)
         {
-            ApplyDamageStateChange damageStateChange = new ApplyDamageStateChange(target.Model.Id, damage);
-            await boardState.ApplyStateChangesAsync(new List<StateChange>() { damageStateChange }, cancellationToken);
+            throw new System.Exception("I think this method is not needed");
+            //ApplyDamageCommand damageStateChange = new ApplyDamageCommand(target.Model.Id, damage);
+            //await boardState.ApplyStateChangesAsync(new List<StateChange>() { damageStateChange }, cancellationToken);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,9 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class MoveAction : UnitAction<MoveActionArgs, TargetPositionActionInput, MoveActionData>
     {
-        public override IEnumerable<StateChange> ProduceChanges(MoveActionArgs args, BoardState boardState)
+        public override IEnumerable<IBoardCommand> Execute(MoveActionArgs args, Board board)
         {
-            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executorUnit);
+            board.TryGetUnit(args.Input.Executor.Id, out Entity executorUnit);
 
             Vector2 tmpPosition = executorUnit.Position;
 
@@ -28,15 +29,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 tmpPosition.y -= yMovement;
 
 
-            return new List<StateChange>
+            return new List<IBoardCommand>
             {
-                new MovementStateChange(args.Input.Executor.Id, executorUnit.Position, tmpPosition)
+                new MoveCommand(args.Input.Executor.Id, executorUnit.Position, tmpPosition)
             };
         }
 
-        public override bool CanExecute(MoveActionArgs args, BoardState boardState)
+        public override bool CanExecute(MoveActionArgs args, Board board)
         {
-            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executorUnit);
+            board.TryGetUnit(args.Input.Executor.Id, out Entity executorUnit);
 
             if (Vector2.Distance(executorUnit.Position, args.TypedInput.Target) <= 1)
                 return false;
@@ -44,11 +45,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override bool TryCreateArgs(TargetPositionActionInput input, MoveActionData data, BoardState boardState, out MoveActionArgs args)
+        public override bool TryCreateArgs(TargetPositionActionInput input, MoveActionData data, Board board, out MoveActionArgs args)
         {
             MoveActionArgs candidate = new MoveActionArgs(input, data);
 
-            if (!CanExecute(candidate, boardState))
+            if (!CanExecute(candidate, board))
             {
                 args = null;
                 return false;
@@ -58,18 +59,18 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, MoveActionData data, BoardState boardState, out ActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, MoveActionData data, Board board, out ActionArgs args)
         {
-            foreach (AIUnitModel unit in boardState.Board.GetUnits())
+            foreach (AIUnitModel unit in board.GetUnits())
             {
                 if (unit.Id == executor.Id)
                     continue;
 
-                boardState.Board.TryGetUnit(unit.Id, out Entity unitEntity);
+                board.TryGetUnit(unit.Id, out Entity unitEntity);
 
                 TargetPositionActionInput input = new TargetPositionActionInput(executor, unitEntity.Position);
 
-                if (TryCreateArgs(input, data, boardState, out args))
+                if (TryCreateArgs(input, data, board, out args))
                     return true;
             }
 

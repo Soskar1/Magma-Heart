@@ -40,7 +40,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             {
                 MovementActionArgs args = (MovementActionArgs)preview.Args;
 
-                List<Vector2> path = movementAction.CreatePath(args, state).Skip(1).ToList();
+                List<Vector2> path = movementAction.CreatePath(args, state.Board).Skip(1).ToList();
 
                 bool isReachable = path.LastOrDefault().ToVector3Int() == tile.Position;
                 m_tileHighlighter.Show(tile, isReachable);

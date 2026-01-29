@@ -1,4 +1,3 @@
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
 using MagmaHeart.AI.Boards;
@@ -9,8 +8,8 @@ namespace MagmaHeart.Core.Tests
 {
     internal sealed class AIScenarioBuilder
     {
-        private readonly CombatBoardState m_state;
-        public Board Board => m_state.Board;
+        private readonly Board m_board;
+        public Board Board => m_board;
 
         private readonly List<EntityModel> m_entities = new();
         private readonly List<EntityModel> m_players = new();
@@ -18,9 +17,9 @@ namespace MagmaHeart.Core.Tests
 
         private int m_nextId = 0;
 
-        private AIScenarioBuilder(CombatBoardState state) => m_state = state;
+        private AIScenarioBuilder(Board state) => m_board = state;
 
-        public static AIScenarioBuilder Create(CombatBoardState state) => new AIScenarioBuilder(state);
+        public static AIScenarioBuilder Create(Board board) => new AIScenarioBuilder(board);
         
         public EntityBuilder AddEntity()
         {
@@ -41,7 +40,7 @@ namespace MagmaHeart.Core.Tests
 
         public AIScenario Build()
         {
-            return new AIScenario(m_state, m_turnOrder);
+            return new AIScenario(m_board, m_turnOrder);
         }
     }
 }

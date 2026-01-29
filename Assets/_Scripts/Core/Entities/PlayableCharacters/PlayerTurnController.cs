@@ -96,8 +96,10 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
-            await preview.Action.ExecuteAsync(preview.Args, m_currentBoardState, m_cancellationTokenSource.Token);
-            
+            preview.Action.Execute(preview.Args, m_currentBoardState.Board);
+
+            throw new Exception("FIX THIS. NEED RUNNER");
+
             if (m_cancellationTokenSource.IsCancellationRequested)
                 return;
             

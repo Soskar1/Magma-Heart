@@ -7,13 +7,13 @@ namespace MagmaHeart.Core.Entities
 {
     public class MagmaHeartTurnContext : TurnContext
     {
-        public override IEnumerable<StateChange> ProduceStartTurnChanges(AIUnitModel model)
+        public override IEnumerable<IBoardCommand> StartTurn(AIUnitModel model)
         {
             EntityModel entityModel = model as EntityModel;
             int newEnergyValue = entityModel.Energy.CurrentEnergy + entityModel.Energy.EnergyRegenerationPerTurn;
-            return new List<StateChange>()
+            return new List<IBoardCommand>()
             {
-                new UpdateEnergyStateChange(entityModel.Id, entityModel.Energy.CurrentEnergy, newEnergyValue)
+                new UpdateEnergyCommand(entityModel.Id, newEnergyValue)
             };
         }
     }

@@ -1,4 +1,5 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 using System.Collections.Generic;
 
 namespace MagmaHeart.AI.Reasoning.Plans
@@ -8,19 +9,22 @@ namespace MagmaHeart.AI.Reasoning.Plans
         public IEnumerable<PlanTask> Tasks { get; init; }
         internal List<ExecutedTask> ExecutedTasks { get; init; }
 
-        public Plan(IEnumerable<PlanTask> tasks)
+        private readonly CommandRunner m_commandRunner;
+
+        public Plan(IEnumerable<PlanTask> tasks, CommandRunner commandRunner)
         {
             Tasks = tasks;
             ExecutedTasks = new List<ExecutedTask>();
+            m_commandRunner = commandRunner;
         }
 
-        public bool TryExecute(SimulatedBoardState simulation, AIUnitModel executor)
+        public bool TryExecute(Board simulation, AIUnitModel executor)
         {
             ExecutedTasks.Clear();
 
             foreach (PlanTask task in Tasks)
             {
-                bool executed = task.TryExecute(simulation, executor, out ExecutedTask executedTask);
+                bool executed = task.TryExecute(simulation, executor, m_commandRunner, out ExecutedTask executedTask);
 
                 if (executed)
                 {
@@ -34,17 +38,17 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 }
 
                 if (task.ExecuteUntilFail)
-                    while (task.TryExecute(simulation, executor, out executedTask))
+                    while (task.TryExecute(simulation, executor, m_commandRunner, out executedTask))
                         ExecutedTasks.Add(executedTask);
             }
 
             return true;
         }
 
-        internal void Undo(SimulatedBoardState simulation)
+        internal void Undo(Board simulation)
         {
             foreach (ExecutedTask _ in ExecutedTasks)
-                simulation.Undo();
+                m_commandRunner.Undo(simulation);
         }
     }
 }

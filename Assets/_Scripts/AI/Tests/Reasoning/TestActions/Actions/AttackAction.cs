@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.States;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +8,10 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class AttackAction : UnitAction<AttackActionArgs, TargetEntityActionInput, AttackActionData>
     {
-        public override bool CanExecute(AttackActionArgs args, BoardState boardState)
+        public override bool CanExecute(AttackActionArgs args, Board board)
         {
-            boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executor);
-            boardState.Board.TryGetUnit(args.TypedInput.Target.Id, out Entity target);
+            board.TryGetUnit(args.Input.Executor.Id, out Entity executor);
+            board.TryGetUnit(args.TypedInput.Target.Id, out Entity target);
 
             if (Vector2.Distance(executor.Position, target.Position) > 1)
                 return false;
@@ -18,18 +19,18 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override IEnumerable<StateChange> ProduceChanges(AttackActionArgs args, BoardState gameState)
+        public override IEnumerable<IBoardCommand> Execute(AttackActionArgs args, Board gameState)
         {
-            return new List<StateChange> {
+            return new List<IBoardCommand> {
                 new ApplyDamageStateChange(args.AttackActionData.Damage, args.TypedInput.Target.Id)
             };
         }
 
-        public override bool TryCreateArgs(TargetEntityActionInput input, AttackActionData data, BoardState boardState, out AttackActionArgs args)
+        public override bool TryCreateArgs(TargetEntityActionInput input, AttackActionData data, Board board, out AttackActionArgs args)
         {
             AttackActionArgs candidate = new AttackActionArgs(input, data);
 
-            if (!CanExecute(candidate, boardState))
+            if (!CanExecute(candidate, board))
             {
                 args = null;
                 return false;
@@ -39,15 +40,15 @@ namespace MagmaHeart.AI.Reasoning.Tests
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, BoardState boardState, out ActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, AttackActionData data, Board board, out ActionArgs args)
         {
-            foreach (AIUnitModel unit in boardState.Board.GetUnits())
+            foreach (AIUnitModel unit in board.GetUnits())
             {
                 if (unit.Id == executor.Id)
                     continue;
 
                 TargetEntityActionInput input = new TargetEntityActionInput(executor, unit);
-                if (TryCreateArgs(input, data, boardState, out args))
+                if (TryCreateArgs(input, data, board, out args))
                     return true;
             }
 

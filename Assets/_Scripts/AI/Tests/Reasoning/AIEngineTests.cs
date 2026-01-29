@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -11,17 +10,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
     internal class AIEngineTests : ReasoningTests
     {
         private EmptyTurnContext m_turnContext;
-        private DummyActualGameState m_state;
         private Entity m_player;
 
         internal class EmptyTurnContext : TurnContext
         {
-            public override IEnumerable<StateChange> ProduceStartTurnChanges(AIUnitModel model) => new List<StateChange>();
-        }
-
-        internal class DummyActualGameState : ActualBoardState
-        {
-            public DummyActualGameState(Board board) : base(board) { }
+            public override IEnumerable<IBoardCommand> StartTurn(AIUnitModel model) => new List<IBoardCommand>();
         }
 
         [OneTimeSetUp]
@@ -34,7 +27,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void Initialize()
         {
             m_player = CreateEntity(10, new Vector2(5, 5), true);
-            m_state = new DummyActualGameState(Board);
         }
 
         [Test]
@@ -45,7 +37,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity enemy = CreateEntity(10, Vector2.zero, false);
             CircularList<int> turnOrder = new CircularList<int>() { enemy.Id, m_player.Id };
 
-            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
+            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, Board);
 
             Assert.That(bestPlan.ExecutedTasks.Count(), Is.EqualTo(1));
             Assert.That(bestPlan.ExecutedTasks.First().Action, Is.TypeOf<MoveAction>());
@@ -59,7 +51,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             Entity enemy = CreateEntity(1, new Vector2(4, 5), false);
             CircularList<int> turnOrder = new CircularList<int>() { enemy.Id, m_player.Id };
 
-            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, m_state);
+            BestPlan bestPlan = engine.ChooseBestMove(turnOrder, Board);
 
             Assert.That(bestPlan.ExecutedTasks.Count(), Is.EqualTo(1));
             Assert.That(bestPlan.ExecutedTasks.First().Action, Is.TypeOf<RunAwayAction>());

@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
@@ -13,25 +14,27 @@ namespace MagmaHeart.AI.Reasoning
         private readonly Planner m_planner;
         private readonly TurnContext m_turnContext;
         private Strategy m_strategy;
+        private CommandRunner m_runner;
 
         public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead, TurnContext turnContext)
         {
             m_strategy = strategy;
             m_depth = lookAhead;
             m_turnContext = turnContext;
+            m_runner = new CommandRunner();
 
-            m_planner = new Planner(strategy, database);
+            m_planner = new Planner(strategy, database, m_runner);
         }
 
-        public BestPlan ChooseBestMove(ChainNode<int> unitTurnIds, ActualBoardState gameState)
+        public BestPlan ChooseBestMove(ChainNode<int> unitTurnIds, Board board)
         {  
-            SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
+            Board simulation = board.DeepCopy();
 
             float alpha = float.MinValue;
             float beta = float.MaxValue;
             float bestValue = float.MinValue;
 
-            simulation.Board.TryGetUnit(unitTurnIds.Value, out AIUnitModel currentUnit);
+            simulation.TryGetUnit(unitTurnIds.Value, out AIUnitModel currentUnit);
             
             BestPlan bestPlan = null;
             List<Plan> plans = m_planner.GetPlans(currentUnit);
@@ -58,14 +61,16 @@ namespace MagmaHeart.AI.Reasoning
             return bestPlan;
         }
 
-        private float Minimax(SimulatedBoardState simulation, ChainNode<int> turns, int currentDepth, float alpha, float beta)
+        private float Minimax(Board simulation, ChainNode<int> turns, int currentDepth, float alpha, float beta)
         {
-            simulation.Board.TryGetUnit(turns.Value, out AIUnitModel currentUnit);
+            simulation.TryGetUnit(turns.Value, out AIUnitModel currentUnit);
 
             if (currentDepth <= 0 || currentUnit.IsDisabled)
                 return m_strategy.EvaluateState(simulation);
 
-            m_turnContext.StartTurn(simulation, currentUnit);
+            IEnumerable<IBoardCommand> commands = m_turnContext.StartTurn(currentUnit);
+            m_runner.Apply(simulation, commands);
+
             List<Plan> plans = m_planner.GetPlans(currentUnit);
 
             if (!currentUnit.IsPlayer)
@@ -89,7 +94,7 @@ namespace MagmaHeart.AI.Reasoning
                         break;
                 }
 
-                m_turnContext.UndoTurn(simulation);
+                m_runner.Undo(simulation);
                 return maxEvaluation;
             }
             else
@@ -113,7 +118,7 @@ namespace MagmaHeart.AI.Reasoning
                         break;
                 }
 
-                m_turnContext.UndoTurn(simulation);
+                m_runner.Undo(simulation);
                 return minEvaluation;
             }
         }

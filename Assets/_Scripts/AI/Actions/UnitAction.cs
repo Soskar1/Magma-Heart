@@ -1,28 +1,15 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.States;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MagmaHeart.AI.Actions
 {
     public abstract class UnitAction
     {
-        public async Task ExecuteAsync(ActionArgs args, BoardState boardState, CancellationToken cancellationToken)
-        {
-            IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
-            await boardState.ApplyStateChangesAsync(changes, cancellationToken);
-        }
-
-        internal void Execute(ActionArgs args, SimulatedBoardState boardState)
-        {
-            IEnumerable<StateChange> changes = ProduceChanges(args, boardState);
-            boardState.ApplyStateChanges(changes);
-        }
-
-        public abstract IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState);
-        public abstract bool CanExecute(ActionArgs args, BoardState boardState);
-        public abstract bool TryCreateArgs(ActionInput input, ActionData data, BoardState boardState, out ActionArgs args);
-        public abstract bool TryGenerateArgs(AIUnitModel executor, ActionData data, BoardState boardState, out ActionArgs args);
+        public abstract IEnumerable<IBoardCommand> Execute(ActionArgs args, Board board);
+        public abstract bool CanExecute(ActionArgs args, Board board);
+        public abstract bool TryCreateArgs(ActionInput input, ActionData data, Board board, out ActionArgs args);
+        public abstract bool TryGenerateArgs(AIUnitModel executor, ActionData data, Board board, out ActionArgs args);
     }
 
     public abstract class UnitAction<TArgs, TInput, TData> : UnitAction
@@ -30,14 +17,14 @@ namespace MagmaHeart.AI.Actions
         where TInput : ActionInput
         where TData : ActionData
     {
-        public abstract IEnumerable<StateChange> ProduceChanges(TArgs args, BoardState boardState);
-        public override IEnumerable<StateChange> ProduceChanges(ActionArgs args, BoardState boardState) => ProduceChanges((TArgs)args, boardState);
+        public abstract IEnumerable<IBoardCommand> Execute(TArgs args, Board board);
+        public override IEnumerable<IBoardCommand> Execute(ActionArgs args, Board board) => Execute((TArgs)args, board);
 
-        public abstract bool CanExecute(TArgs args, BoardState boardState);
-        public override bool CanExecute(ActionArgs args, BoardState boardState) => CanExecute((TArgs)args, boardState);
+        public abstract bool CanExecute(TArgs args, Board board);
+        public override bool CanExecute(ActionArgs args, Board board) => CanExecute((TArgs)args, board);
 
-        public abstract bool TryCreateArgs(TInput input, TData data, BoardState boardState, out TArgs args);
-        public override bool TryCreateArgs(ActionInput input, ActionData data, BoardState boardState, out ActionArgs args)
+        public abstract bool TryCreateArgs(TInput input, TData data, Board board, out TArgs args);
+        public override bool TryCreateArgs(ActionInput input, ActionData data, Board board, out ActionArgs args)
         {
             if (input is not TInput typedInput)
             {
@@ -51,7 +38,7 @@ namespace MagmaHeart.AI.Actions
                 return false;
             }
 
-            if (!TryCreateArgs(typedInput, typedData, boardState, out TArgs typedArgs))
+            if (!TryCreateArgs(typedInput, typedData, board, out TArgs typedArgs))
             {
                 args = null;
                 return false;
@@ -61,16 +48,16 @@ namespace MagmaHeart.AI.Actions
             return true;
         }
 
-        public override bool TryGenerateArgs(AIUnitModel executor, ActionData data, BoardState boardState, out ActionArgs args)
+        public override bool TryGenerateArgs(AIUnitModel executor, ActionData data, Board board, out ActionArgs args)
         {
             args = null;
 
             if (data is not TData typedData)
                 return false; 
 
-            return TryGenerateArgs(executor, typedData, boardState, out args);
+            return TryGenerateArgs(executor, typedData, board, out args);
         }
 
-        public abstract bool TryGenerateArgs(AIUnitModel executor, TData data, BoardState boardState, out ActionArgs args);
+        public abstract bool TryGenerateArgs(AIUnitModel executor, TData data, Board board, out ActionArgs args);
     }
 }

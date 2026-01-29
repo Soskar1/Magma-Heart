@@ -1,5 +1,5 @@
-﻿using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Reasoning.Plans;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +25,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             }));
         }
 
-        public override float EvaluateState(SimulatedBoardState state)
+        public override float EvaluateState(Board board)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
@@ -48,7 +48,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 return 5 / distance;
             };
             
-            IEnumerable<AIUnitModel> aiUnits = state.Board.GetUnits();
+            IEnumerable<AIUnitModel> aiUnits = board.GetUnits();
             foreach (AIUnitModel unit in aiUnits)
             {
                 Entity entity = (Entity)unit;
