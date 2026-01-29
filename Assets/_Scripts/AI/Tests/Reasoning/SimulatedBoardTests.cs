@@ -42,6 +42,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             BoardGraph graph = new BoardGraph();
             graph.AddNode(Vector2.zero, BoardNodeType.Walkable);
             graph.AddNode(Vector2.up, BoardNodeType.Walkable);
+            graph.AddNode(new Vector2(1, 1), BoardNodeType.Walkable);
 
             m_board = new Board(graph);
             m_board.AddUnit(m_entity.Position, m_entity);
@@ -52,9 +53,11 @@ namespace MagmaHeart.AI.Reasoning.Tests
         [Test]
         public void SimulatedBoardState_CreatesSimulatedBoardWithUnitProperties()
         {
+            m_state.Board.TryGetUnit(m_entity.Id, out Entity simulatedEntity);
+
             Assert.That(ReferenceEquals(m_board, m_state.Board), Is.EqualTo(false));
-            Assert.That(m_state.GetProperty<Health>(m_entity).CurrentHealth, Is.EqualTo(m_entity.CurrentHealth));
-            Assert.That(m_state.GetProperty<Position>(m_entity).CurrentPosition, Is.EqualTo(m_entity.Position));
+            Assert.That(simulatedEntity.CurrentHealth, Is.EqualTo(m_entity.CurrentHealth));
+            Assert.That(simulatedEntity.Position, Is.EqualTo(m_entity.Position));
         }
 
         [Test]
@@ -66,6 +69,70 @@ namespace MagmaHeart.AI.Reasoning.Tests
             m_state.Undo();
 
             Assert.That(m_state.History.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Undo_TwoSimulations_RemovesLastStateChangeFromHistoryStack()
+        {
+            MovementStateChange movementStateChange = new MovementStateChange(m_entity.Id, Vector2.zero, Vector2.up);
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange });
+            movementStateChange = new MovementStateChange(m_entity.Id, Vector2.up, new Vector2(1, 1));
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange });
+
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(1));
+            m_state.Board.TryGetUnit(m_entity.Id, out Entity simulatedEntity);
+            Assert.That(simulatedEntity.Position, Is.EqualTo(Vector2.up));
+        }
+
+        [Test]
+        public void Undo_MultipleStateChangesInOneSimulation_RemovesLastStateChangeFromHistoryStack()
+        {
+            MovementStateChange movementStateChange1 = new MovementStateChange(m_entity.Id, Vector2.zero, Vector2.up);
+            MovementStateChange movementStateChange2 = new MovementStateChange(m_entity.Id, Vector2.up, new Vector2(1, 1));
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange1, movementStateChange2 });
+
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(0));
+            m_state.Board.TryGetUnit(m_entity.Id, out Entity simulatedEntity);
+            Assert.That(simulatedEntity.Position, Is.EqualTo(Vector2.zero));
+        }
+
+        [Test]
+        public void Undo_TwoSimulationsWithMultipleStateChangesInOneSimulation_RemovesLastStateChangeFromHistoryStack()
+        {
+            MovementStateChange movementStateChange1 = new MovementStateChange(m_entity.Id, Vector2.zero, Vector2.up);
+            MovementStateChange movementStateChange2 = new MovementStateChange(m_entity.Id, Vector2.up, new Vector2(1, 1));
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange1, movementStateChange2 });
+            movementStateChange1 = new MovementStateChange(m_entity.Id, new Vector2(1, 1), Vector2.up);
+            movementStateChange2 = new MovementStateChange(m_entity.Id, Vector2.up, Vector2.zero);
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange1, movementStateChange2 });
+
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(1));
+            m_state.Board.TryGetUnit(m_entity.Id, out Entity simulatedEntity);
+            Assert.That(simulatedEntity.Position, Is.EqualTo(new Vector2(1, 1)));
+        }
+
+        [Test]
+        public void Undo_TwoSimulationsWithMultipleStateChangesInOneSimulationMultipleUndos_ReturnToInitialState()
+        {
+            MovementStateChange movementStateChange1 = new MovementStateChange(m_entity.Id, Vector2.zero, Vector2.up);
+            MovementStateChange movementStateChange2 = new MovementStateChange(m_entity.Id, Vector2.up, new Vector2(1, 1));
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange1, movementStateChange2 });
+            movementStateChange1 = new MovementStateChange(m_entity.Id, new Vector2(1, 1), Vector2.up);
+            movementStateChange2 = new MovementStateChange(m_entity.Id, Vector2.up, Vector2.zero);
+            m_state.ApplyStateChanges(new List<StateChange>() { movementStateChange1, movementStateChange2 });
+
+            m_state.Undo();
+            m_state.Undo();
+
+            Assert.That(m_state.History.Count, Is.EqualTo(0));
+            m_state.Board.TryGetUnit(m_entity.Id, out Entity simulatedEntity);
+            Assert.That(simulatedEntity.Position, Is.EqualTo(Vector2.zero));
         }
     }
 }

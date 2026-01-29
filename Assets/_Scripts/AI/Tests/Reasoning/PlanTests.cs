@@ -88,8 +88,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
 
             plan.Undo(simulation);
 
-            Health health = simulation.GetProperty<Health>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(initialHealth));
+            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth));
         }
 
         [Test]
@@ -105,8 +105,8 @@ namespace MagmaHeart.AI.Reasoning.Tests
             bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.False);
-            Health health = simulation.GetProperty<Health>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(initialHealth));
+            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth));
         }
 
         [Test]
@@ -125,10 +125,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
             bool executed = plan.TryExecute(simulation, enemy);
 
             Assert.That(executed, Is.False);
-            Health health = simulation.GetProperty<Health>(player);
-            Assert.That(health.CurrentHealth, Is.EqualTo(initialHealth));
-            Position position = simulation.GetProperty<Position>(enemy);
-            Assert.That(position.CurrentPosition, Is.EqualTo(initialEnemyPosition));
+
+            simulation.Board.TryGetUnit(player.id, out Entity simulatedPlayer);
+            Assert.That(simulatedPlayer.CurrentHealth, Is.EqualTo(initialHealth));
+
+            simulation.Board.TryGetUnit(enemy.id, out Entity simulatedEnemy);
+            Assert.That(simulatedEnemy.Position, Is.EqualTo(initialEnemyPosition));
         }
     }
 }

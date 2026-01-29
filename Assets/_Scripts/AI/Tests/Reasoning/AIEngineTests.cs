@@ -2,7 +2,6 @@
 using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +22,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         internal class DummyActualGameState : ActualBoardState
         {
             public DummyActualGameState(Board board) : base(board) { }
-            public override T GetProperty<T>(AIUnitModel unit) => throw new NotImplementedException();
         }
 
         [OneTimeSetUp]

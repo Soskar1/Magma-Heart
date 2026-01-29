@@ -9,9 +9,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         public override bool CanExecute(AttackActionArgs args, BoardState boardState)
         {
-            Position possessorPosition = boardState.GetProperty<Position>(args.Input.Executor);
-            Position targetPosition = boardState.GetProperty<Position>(args.TypedInput.Target);
-
             boardState.Board.TryGetUnit(args.Input.Executor.Id, out Entity executor);
             boardState.Board.TryGetUnit(args.TypedInput.Target.Id, out Entity target);
 

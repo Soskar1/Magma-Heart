@@ -15,7 +15,6 @@ namespace MagmaHeart.AI.States
             Board = board;
         }
 
-        public abstract T GetProperty<T>(AIUnitModel unit) where T : PropertySnapshot;
         public virtual async Task ApplyStateChangesAsync(IEnumerable<StateChange> stateChanges, CancellationToken cancellationToken)
         {
             foreach (StateChange change in stateChanges)

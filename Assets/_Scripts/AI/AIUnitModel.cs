@@ -1,5 +1,4 @@
 ﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 
 namespace MagmaHeart.AI
@@ -16,13 +15,6 @@ namespace MagmaHeart.AI
             IsPlayer = isPlayer;
             Id = id;
             PossibleActions = new TypeMap<ActionData>();
-        }
-
-        public virtual TypeMap<PropertySnapshot> GetPropertySnapshots()
-        {
-            TypeMap<PropertySnapshot> properties = new TypeMap<PropertySnapshot>();
-
-            return properties;
         }
 
         public virtual AIUnitModel DeepCopy()

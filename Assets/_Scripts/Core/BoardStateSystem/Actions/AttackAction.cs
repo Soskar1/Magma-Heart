@@ -8,7 +8,6 @@ using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Linq;

@@ -8,7 +8,6 @@ using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Data;
@@ -101,7 +100,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 if (!executor.IsPlayer && !potentialTarget.IsPlayer)
                     continue;
 
-                Vector2 targetPosition = boardState.GetProperty<PositionPropertySnapshot>(potentialTarget).Position.ToVector2();
+                boardState.Board.TryGetUnit(potentialTarget.Id, out EntityModel targetUnit);
+                Vector2 targetPosition = targetUnit.TilePosition.ToVector2();
 
                 Vector2[] adjacentTiles =
                 {
@@ -123,7 +123,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                     //    continue;
 
                     //Vector2 targetTile = path.Skip(1).Take(energy.CurrentEnergy * data.MovementDistanceInTilesForOneEnergy).Last();
-                    TargetPositionActionInput input = new TargetPositionActionInput((EntityModel)executor, tile);
+                    TargetPositionActionInput input = new TargetPositionActionInput(entity, tile);
 
                     if (TryCreateArgs(input, data, boardState, out args))
                         return true;

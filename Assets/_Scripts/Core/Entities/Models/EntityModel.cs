@@ -1,9 +1,6 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.States;
-using MagmaHeart.Collections;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Entities.Properties;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -31,19 +28,6 @@ namespace MagmaHeart.Core.Entities
 
             foreach (ActionData actionData in data.Actions)
                 PossibleActions.Add(actionData.GetType(), actionData);
-        }
-
-        public override TypeMap<PropertySnapshot> GetPropertySnapshots()
-        {
-            TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
-
-            properties.Add(new HealthPropertySnapshot(Health.CurrentHealth, Health.MaxHealth));
-            properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy, Energy.MaxEnergy));
-            properties.Add(new StrengthPropertySnapshot(Strength.CurrentStrength));
-            properties.Add(new PositionPropertySnapshot(TilePosition));
-            properties.Add(new SpeedPropertySnapshot(Speed.CurrentSpeed));
-
-            return properties;
         }
 
         public override AIUnitModel DeepCopy()
