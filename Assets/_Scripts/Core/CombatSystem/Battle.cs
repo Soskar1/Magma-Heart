@@ -1,4 +1,4 @@
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
@@ -16,8 +16,10 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Dictionary<int, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnHealthChangedEventArgs>>();
-        private readonly TurnContext m_turnContext;
         private readonly MagmaHeartServices m_services;
+
+        private readonly IStartOfTurnCommandFactory m_startOfTurnCommandFactory;
+        private readonly ActionRunner m_actionRunner;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
@@ -32,10 +34,11 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(MagmaHeartServices services, TurnContext turnContext)
+        public Battle(MagmaHeartServices services, IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionRunner actionRunner)
         {
             m_services = services;
-            m_turnContext = turnContext;
+            m_startOfTurnCommandFactory = startOfTurnCommandFactory;
+            m_actionRunner = actionRunner;
         }
 
         public async Task Start(Room room, IEnumerable<Entity> entities)
@@ -76,8 +79,9 @@ namespace MagmaHeart.Core.CombatSystem
                 OnTurnSwitched?.Invoke(this, args);
 
                 m_cancellationTokenSource = new CancellationTokenSource();
-                throw new Exception("Review await StartTurnAsync");
-                //await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
+
+                IEnumerable<IBoardCommand> commands = m_startOfTurnCommandFactory.BuildStartOfTurnCommands(m_currentRoom, entity.Model);
+                await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
                 await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
 
                 if (!m_battleEnded)

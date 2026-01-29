@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
@@ -12,16 +12,16 @@ namespace MagmaHeart.AI.Reasoning
     {
         private readonly int m_depth;
         private readonly Planner m_planner;
-        private readonly TurnContext m_turnContext;
+        private readonly IStartOfTurnCommandFactory m_commandFactory;
         private Strategy m_strategy;
         private CommandRunner m_runner;
 
-        public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead, TurnContext turnContext)
+        public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead, IStartOfTurnCommandFactory factory)
         {
             m_strategy = strategy;
             m_depth = lookAhead;
-            m_turnContext = turnContext;
             m_runner = new CommandRunner();
+            m_commandFactory = factory;
 
             m_planner = new Planner(strategy, database, m_runner);
         }
@@ -68,7 +68,7 @@ namespace MagmaHeart.AI.Reasoning
             if (currentDepth <= 0 || currentUnit.IsDisabled)
                 return m_strategy.EvaluateState(simulation);
 
-            IEnumerable<IBoardCommand> commands = m_turnContext.StartTurn(currentUnit);
+            IEnumerable<IBoardCommand> commands = m_commandFactory.BuildStartOfTurnCommands(simulation, currentUnit);
             m_runner.Apply(simulation, commands);
 
             List<Plan> plans = m_planner.GetPlans(currentUnit);

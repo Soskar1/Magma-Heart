@@ -1,5 +1,6 @@
 using System;
 using MagmaHeart.Core.AI;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.Services;
@@ -10,10 +11,10 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private BattleInitializer m_battleInitializer;
 
-        public BattleContext Install(MagmaHeartServices services, AIContext aiContext, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController)
+        public BattleContext Install(MagmaHeartServices services, AIContext aiContext, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionRunner actionRunner)
         {
-            Battle battle = new Battle(services, aiContext.TurnContext);
-            m_battleInitializer = new BattleInitializer(services.SpawnService.EntitySpawner, aiContext.AiEngine, random, grid, minDistanceFromPlayer, dungeonController);
+            Battle battle = new Battle(services, aiContext.StartOfTurnCommandFactory, actionRunner);
+            m_battleInitializer = new BattleInitializer(services.SpawnService.EntitySpawner, aiContext.AiEngine, random, grid, minDistanceFromPlayer, dungeonController, actionRunner);
 
             return new BattleContext(battle, m_battleInitializer);
         }

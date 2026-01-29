@@ -1,10 +1,10 @@
 ﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    public record ApplyDamageCommand(int TargetId, float Damage) : IBoardCommand
+    public record ApplyDamageCommand(int ExecutorId, int TargetId, float Damage) : IBoardCommand
     {
         private float m_previosHealth;
 

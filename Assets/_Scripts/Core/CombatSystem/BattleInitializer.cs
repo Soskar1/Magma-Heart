@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;
@@ -15,6 +16,7 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly EntitySpawner m_entitySpawner;
         private readonly AIEngine m_aiEngine;
+        private readonly ActionRunner m_actionRunner;
         private readonly RoomGrid m_grid;
         private readonly Random m_random;
         private readonly float m_minDistanceFromPlayer;
@@ -29,13 +31,14 @@ namespace MagmaHeart.Core.CombatSystem
         private int m_additionalEnergy = 0;
         private int m_additionalEnergyRegeneration = 0;
 
-        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController)
+        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionRunner actionRunner)
         {
             m_entitySpawner = entitySpawner;
             m_aiEngine = aiEngine;
             m_random = random;
             m_minDistanceFromPlayer = minDistanceFromPlayer;
             m_grid = grid;
+            m_actionRunner = actionRunner;
 
             m_dungeonController = dungeonController;
             m_dungeonController.OnLocationChanged += HandleOnLocationChanged;
@@ -52,7 +55,7 @@ namespace MagmaHeart.Core.CombatSystem
             for (int i = 0; i < room.RoomData.EnemyCount + m_additionalMonsters; ++i)
             {
                 EntityData data = enemyPool[m_random.Next(enemyPool.Count)];
-                EnemyTurnController turnController = new EnemyTurnController(m_aiEngine);
+                EnemyTurnController turnController = new EnemyTurnController(m_aiEngine, m_actionRunner);
                 Entity entity = m_entitySpawner.Spawn(data, false, turnController);
 
                 // A dummy way to increase difficulty. In the future, difficulty handling will be different and this implementation will be removed

@@ -1,15 +1,16 @@
 ﻿using MagmaHeart.AI;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Core.Entities
 {
-    public class MagmaHeartTurnContext : TurnContext
+    public class StartOfTurnCommandFactory : IStartOfTurnCommandFactory
     {
-        public override IEnumerable<IBoardCommand> StartTurn(AIUnitModel model)
+        public IEnumerable<IBoardCommand> BuildStartOfTurnCommands(Board board, AIUnitModel unit)
         {
-            EntityModel entityModel = model as EntityModel;
+            EntityModel entityModel = unit as EntityModel;
             int newEnergyValue = entityModel.Energy.CurrentEnergy + entityModel.Energy.EnergyRegenerationPerTurn;
             return new List<IBoardCommand>()
             {

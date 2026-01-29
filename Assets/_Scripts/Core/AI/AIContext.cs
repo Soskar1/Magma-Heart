@@ -1,8 +1,8 @@
 ﻿using MagmaHeart.AI.Actions;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.AI.Reasoning;
-using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.AI
 {
-    public record AIContext(ActionDatabase ActionDatabase, AIEngine AiEngine, MagmaHeartTurnContext TurnContext);
+    public record AIContext(ActionDatabase ActionDatabase, AIEngine AiEngine, IStartOfTurnCommandFactory StartOfTurnCommandFactory);
 }

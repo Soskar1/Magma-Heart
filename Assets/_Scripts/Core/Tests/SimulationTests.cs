@@ -1,5 +1,5 @@
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
@@ -41,7 +41,7 @@ namespace MagmaHeart.Core.Tests
         public void ApplyDamageCommand_OneExecution_AppliesDamageToTargetInSimulation()
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            ApplyDamageCommand command = new ApplyDamageCommand(player.Id, 1);
+            ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 1);
 
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
@@ -53,7 +53,7 @@ namespace MagmaHeart.Core.Tests
         public void ApplyDamageCommand_DamageIsGreaterThanTargetsCurrentHealth_DisablesTarget()
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            ApplyDamageCommand command = new ApplyDamageCommand(player.Id, 6);
+            ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 6);
 
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
@@ -66,7 +66,7 @@ namespace MagmaHeart.Core.Tests
         public void ApplyDamageCommand_Undo_RevertsDamageToTargetInSimulation()
         {
             EntityModel entity = BoardWithOneEntity();
-            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, 2);
+            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 2);
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
             Runner.Undo(Board);
@@ -80,7 +80,7 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             entity.Health.CurrentHealth = 1;
-            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, 3);
+            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 3);
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
             Runner.Undo(Board);
@@ -145,7 +145,7 @@ namespace MagmaHeart.Core.Tests
             EntityModel entity = BoardWithOneEntity();
             Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
-            MoveCommand command = new MoveCommand(entity.Id, initialPosition, endPosition);
+            MoveCommand command = new MoveCommand(entity.Id, new List<Vector2>() { initialPosition, endPosition });
 
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
@@ -162,7 +162,7 @@ namespace MagmaHeart.Core.Tests
             EntityModel entity = BoardWithOneEntity();
             Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
-            MoveCommand command = new MoveCommand(entity.Id, initialPosition, endPosition);
+            MoveCommand command = new MoveCommand(entity.Id, new List<Vector2>() { initialPosition, endPosition });
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
             Runner.Undo(Board);

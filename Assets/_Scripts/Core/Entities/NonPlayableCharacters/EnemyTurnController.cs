@@ -1,9 +1,10 @@
-﻿using MagmaHeart.AI;
+﻿using MagmaHeart.AI.Execution;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.CombatSystem;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,11 +13,13 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
     public class EnemyTurnController : ITurnController
     {
         private readonly AIEngine m_aiEngine;
+        private readonly ActionRunner m_actionRunner;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public EnemyTurnController(AIEngine engine)
+        public EnemyTurnController(AIEngine engine, ActionRunner actionRunner)
         {
             m_aiEngine = engine;
+            m_actionRunner = actionRunner;
         }
 
         public async Task StartTurn(CombatBoardState boardState, TurnOrder turnOrder)
@@ -32,11 +35,8 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             {
                 foreach (ExecutedTask task in bestPlan.ExecutedTasks)
                 {
-                    if (m_cancellationTokenSource.Token.IsCancellationRequested)
-                        break;
-
-                    //await task.Action.ExecuteAsync(task.Args, boardState.Bo, m_cancellationTokenSource.Token);
-                    throw new System.Exception("USE RUNNER");
+                    IEnumerable<IBoardCommand> commands = task.Action.Execute(task.Args, boardState.Room);
+                    await m_actionRunner.ApplyAsync(boardState.Room, commands, m_cancellationTokenSource.Token);
                 }
             }
 

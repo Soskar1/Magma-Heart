@@ -2,7 +2,7 @@ using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Entities;
@@ -17,12 +17,12 @@ namespace MagmaHeart.Core.Tests
         public async Task<BestPlan> RunAI(int depth, ActionDatabase actionDatabase)
         {
             AggressiveStrategy strategy = new AggressiveStrategy();
-            MagmaHeartTurnContext turnContext = new MagmaHeartTurnContext();
-            AIEngine ai = new AIEngine(strategy, actionDatabase, depth, turnContext);
+            IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();
+            AIEngine ai = new AIEngine(strategy, actionDatabase, depth, factory);
 
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-            IEnumerable<IBoardCommand> commands = turnContext.StartTurn(TurnOrder.Head);
+            IEnumerable<IBoardCommand> commands = factory.BuildStartOfTurnCommands(Board, TurnOrder.Head);
             CommandRunner runner = new CommandRunner();
             runner.Apply(Board, commands);
 

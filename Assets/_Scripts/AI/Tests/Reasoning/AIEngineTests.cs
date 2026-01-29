@@ -1,4 +1,5 @@
-﻿using MagmaHeart.AI.States;
+﻿using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -9,19 +10,16 @@ namespace MagmaHeart.AI.Reasoning.Tests
 {
     internal class AIEngineTests : ReasoningTests
     {
-        private EmptyTurnContext m_turnContext;
+        private CommandFactory m_commandFactory;
         private Entity m_player;
 
-        internal class EmptyTurnContext : TurnContext
+        internal class CommandFactory : IStartOfTurnCommandFactory
         {
-            public override IEnumerable<IBoardCommand> StartTurn(AIUnitModel model) => new List<IBoardCommand>();
+            public IEnumerable<IBoardCommand> BuildStartOfTurnCommands(Board board, AIUnitModel unit) => new List<IBoardCommand>();
         }
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            m_turnContext = new EmptyTurnContext();
-        }
+        public void OneTimeSetUp() => m_commandFactory = new CommandFactory();
 
         [SetUp]
         public void Initialize()
@@ -33,7 +31,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChoosesMoveAction()
         {
             BasicStrategy strategy = new BasicStrategy();
-            AIEngine engine = new AIEngine(strategy, Database, 1, m_turnContext);
+            AIEngine engine = new AIEngine(strategy, Database, 1, m_commandFactory);
             Entity enemy = CreateEntity(10, Vector2.zero, false);
             CircularList<int> turnOrder = new CircularList<int>() { enemy.Id, m_player.Id };
 
@@ -47,7 +45,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public void ChooseBestMove_From3PossibleActions_ChooseRunAwayAction()
         {
             BasicStrategy strategy = new BasicStrategy();
-            AIEngine engine = new AIEngine(strategy, Database, 2, m_turnContext);
+            AIEngine engine = new AIEngine(strategy, Database, 2, m_commandFactory);
             Entity enemy = CreateEntity(1, new Vector2(4, 5), false);
             CircularList<int> turnOrder = new CircularList<int>() { enemy.Id, m_player.Id };
 

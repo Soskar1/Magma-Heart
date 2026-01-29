@@ -1,34 +1,37 @@
 ﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
 {
-    public record MoveCommand(int ExecutorId, Vector2Int From, Vector2Int To) : IBoardCommand
+    public record MoveCommand(int ExecutorId, List<Vector2> Path) : IBoardCommand
     {
         public void Execute(Board board)
         {
             board.TryGetUnit(ExecutorId, out EntityModel unit);
-            board.RemoveUnit(From);
-            board.AddUnit(To, unit);
+            board.RemoveUnit(Path.First());
+            board.AddUnit(Path.Last(), unit);
 
-            board.ChangeNodeType(From, BoardNodeType.Walkable);
-            board.ChangeNodeType(To, BoardNodeType.Obstacle);
+            board.ChangeNodeType(Path.First(), BoardNodeType.Walkable);
+            board.ChangeNodeType(Path.Last(), BoardNodeType.Obstacle);
 
-            unit.TilePosition = To.ToVector3Int();
+            unit.TilePosition = Path.Last().ToVector3Int();
         }
 
         public void Undo(Board board)
         {
             board.TryGetUnit(ExecutorId, out EntityModel unit);
-            board.RemoveUnit(To);
-            board.AddUnit(From, unit);
+            board.RemoveUnit(Path.Last());
+            board.AddUnit(Path.First(), unit);
 
-            board.ChangeNodeType(To, BoardNodeType.Walkable);
-            board.ChangeNodeType(From, BoardNodeType.Obstacle);
+            board.ChangeNodeType(Path.Last(), BoardNodeType.Walkable);
+            board.ChangeNodeType(Path.First(), BoardNodeType.Obstacle);
 
-            unit.TilePosition = From.ToVector3Int();
+            unit.TilePosition = Path.First().ToVector3Int();
         }
     }
 }

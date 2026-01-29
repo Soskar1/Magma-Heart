@@ -2,7 +2,7 @@ using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
@@ -33,7 +33,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<IBoardCommand>()
             {
-                new MoveCommand(args.TypedInput.TypedExecutor.Id, path.First().ToVector2Int(), path.Last().ToVector2Int())
+                new MoveCommand(args.TypedInput.TypedExecutor.Id, path)
             });
         }
 

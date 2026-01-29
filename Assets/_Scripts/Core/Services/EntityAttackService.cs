@@ -1,9 +1,6 @@
-﻿using MagmaHeart.AI.States;
-using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Entities;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;

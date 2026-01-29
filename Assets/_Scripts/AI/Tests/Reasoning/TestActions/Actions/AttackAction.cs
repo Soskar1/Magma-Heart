@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +22,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
         public override IEnumerable<IBoardCommand> Execute(AttackActionArgs args, Board gameState)
         {
             return new List<IBoardCommand> {
-                new ApplyDamageStateChange(args.AttackActionData.Damage, args.TypedInput.Target.Id)
+                new ApplyDamageStateChange(args.Input.Executor.Id, args.AttackActionData.Damage, args.TypedInput.Target.Id)
             };
         }
 

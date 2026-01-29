@@ -1,8 +1,11 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.AI.Execution;
+using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Input;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +15,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private readonly IActionPreviewProvider m_actionPreviewProvider;
         private readonly MouseListener m_mouseListener;
+        private readonly ActionRunner m_actionRunner;
 
         private ActionPreview m_currentPreview;
         private CombatBoardState m_currentBoardState;
@@ -36,10 +40,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnController(MouseListener mouseListener, IActionPreviewProvider previewProvider)
+        public PlayerTurnController(MouseListener mouseListener, IActionPreviewProvider previewProvider, ActionRunner actionRunner)
         {
             m_mouseListener = mouseListener;
             m_actionPreviewProvider = previewProvider;
+            m_actionRunner = actionRunner;
         }
 
         public void Enable()
@@ -96,9 +101,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
-            preview.Action.Execute(preview.Args, m_currentBoardState.Room);
-
-            throw new Exception("FIX THIS. NEED RUNNER");
+            
+            IEnumerable<IBoardCommand> commands = preview.Action.Execute(preview.Args, m_currentBoardState.Room);
+            await m_actionRunner.ApplyAsync(m_currentBoardState.Room, commands, m_cancellationTokenSource.Token);
 
             if (m_cancellationTokenSource.IsCancellationRequested)
                 return;

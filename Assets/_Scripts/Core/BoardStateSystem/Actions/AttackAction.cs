@@ -1,7 +1,7 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Bresenham;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
             return changes.Concat(new List<IBoardCommand>
             {
-                new ApplyDamageCommand(args.TargetEntityInput.Target.Id, args.AttackDamage)
+                new ApplyDamageCommand(args.Input.Executor.Id, args.TargetEntityInput.Target.Id, args.AttackDamage)
             });
         }
 

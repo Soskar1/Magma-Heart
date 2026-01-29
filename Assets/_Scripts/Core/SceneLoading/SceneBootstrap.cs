@@ -35,6 +35,9 @@ namespace MagmaHeart.Core.SceneLoading
         [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
+        [Header("Actions")]
+        [SerializeField] private int m_movementSpeed;
+
         [Header("Dungeon")]
         [SerializeField] private List<LocationData> m_locations;
         [SerializeField] private CombatTilemapRenderer m_combatTilemapRenderer;
@@ -97,8 +100,12 @@ namespace MagmaHeart.Core.SceneLoading
             MagmaHeartServices services = serviceInstaller.Install(spawner);
             m_installers.Add(serviceInstaller);
 
+            ActionRunnerInstaller actionRunnerInstaller = new ActionRunnerInstaller();
+            ActionRunner actionRunner = actionRunnerInstaller.Install(m_movementSpeed);
+            m_installers.Add(actionRunnerInstaller);
+
             BattleInstaller battleInstaller = new BattleInstaller();
-            BattleContext battleContext = battleInstaller.Install(services, aiContext, random, grid, m_minDistanceFromPlayer, dungeonController);
+            BattleContext battleContext = battleInstaller.Install(services, aiContext, random, grid, m_minDistanceFromPlayer, dungeonController, actionRunner);
             m_installers.Add(battleInstaller);
 
             ActionPreviewInstaller actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
@@ -106,7 +113,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_installers.Add(actionPreviewInstaller);
 
             PlayerInstaller playerInstaller = new PlayerInstaller();
-            Entity player = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, previewProvider);
+            Entity player = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, previewProvider, actionRunner);
             m_installers.Add(playerInstaller);
 
             CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);

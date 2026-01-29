@@ -1,9 +1,9 @@
 ﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.States;
+using MagmaHeart.AI.Execution;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record ApplyDamageStateChange(int Damage, int TargetId) : IBoardCommand
+    internal record ApplyDamageStateChange(int ExecutorId, int Damage, int TargetId) : IBoardCommand
     {
         public void Execute(Board board)
         {
