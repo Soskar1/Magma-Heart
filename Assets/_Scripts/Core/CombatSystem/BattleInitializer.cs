@@ -72,6 +72,7 @@ namespace MagmaHeart.Core.CombatSystem
                 } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer || occupiedTiles.Contains(dungeonTile.Position));
 
                 entity.transform.position = m_grid.ToTileCenter(dungeonTile.Position);
+                entity.Model.TilePosition = m_grid.WorldToTilePosition(entity.transform.position);
                 occupiedTiles.Add(dungeonTile.Position);
             }
 

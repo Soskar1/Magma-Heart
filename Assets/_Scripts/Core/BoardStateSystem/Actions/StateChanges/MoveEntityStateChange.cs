@@ -37,7 +37,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
             UpdateBoard(simulation);
 
             simulation.Board.TryGetUnit(ExecutorId, out EntityModel model);
-            model.CurrentTilePosition = AStarPath.Last().ToVector3Int();
+            model.TilePosition = AStarPath.Last().ToVector3Int();
         }
 
         public override void UndoChangeToSimulation(SimulatedBoardState simulation)
@@ -52,7 +52,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
             simulation.UpdateBoardNodeType(to, BoardNodeType.Walkable);
             simulation.UpdateBoardNodeType(from, BoardNodeType.Obstacle);
 
-            unit.CurrentTilePosition = from.ToVector3Int();
+            unit.TilePosition = from.ToVector3Int();
         }
 
         private void UpdateBoard(BoardState boardState)

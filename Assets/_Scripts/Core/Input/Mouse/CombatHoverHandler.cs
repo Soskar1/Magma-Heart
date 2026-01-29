@@ -64,7 +64,7 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
 
-            if (!m_dungeonController.CurrentRoom.TryGetEntity(presenter.Model, out Entity entity))
+            if (!m_dungeonController.CurrentRoom.TryGetEntity(presenter.Model.Id, out Entity entity))
                 return;
 
             m_currentEntity = entity;

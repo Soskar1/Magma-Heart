@@ -51,7 +51,7 @@ namespace MagmaHeart.Core.Tests
             Vector2 position = new Vector2(x, y);
             EntityStats stats = new EntityStats(m_health, m_energy, m_energy);
             EntityData data = new EntityData("", stats, m_actions == null ? new List<ActionData>() : m_actions);
-            EntityModel model = new EntityModel(data, () => position.ToVector3Int(), m_isPlayer, m_id);
+            EntityModel model = new EntityModel(data, position.ToVector3Int(), m_isPlayer, m_id);
             m_scenario.Board.AddUnit(position, model);
             m_scenario.Board.ChangeNodeType(position, BoardNodeType.Obstacle);
             m_scenario.RegisterEntity(model);

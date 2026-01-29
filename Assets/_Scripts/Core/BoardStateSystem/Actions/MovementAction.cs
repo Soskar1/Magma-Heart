@@ -40,7 +40,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public override int GetEnergyCost(MovementActionArgs args, BoardState boardState)
         {
-            EnergyPropertySnapshot energyProperty = boardState.GetProperty<EnergyPropertySnapshot>(args.Input.Executor);
             List<Vector2> path = CreatePath(args, boardState);
 
             if (path == null || !path.Any())
@@ -53,15 +52,14 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public List<Vector2> CreatePath(MovementActionArgs args, BoardState boardState)
         {
-            PositionPropertySnapshot position = boardState.GetProperty<PositionPropertySnapshot>(args.Input.Executor);
-            EnergyPropertySnapshot energyProperty = boardState.GetProperty<EnergyPropertySnapshot>(args.Input.Executor);
+            boardState.Board.TryGetUnit(args.Input.Executor.Id, out EntityModel entity);
 
-            List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, position.Position.ToVector2Int(), args.TargetPositionInput.Target);
+            List<Vector2> path = m_aStar.FindPath(boardState.Board.Graph, entity.TilePosition.ToVector2Int(), args.TargetPositionInput.Target);
 
             if (path == null || !path.Any())
                 return null;
 
-            return path.Take(energyProperty.CurrentEnergy * args.Speed + 1)
+            return path.Take(entity.Energy.CurrentEnergy * args.Speed + 1)
                 .ToList();
         }
 
@@ -75,8 +73,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public override bool TryCreateArgs(TargetPositionActionInput input, MovementActionData data, BoardState boardState, out MovementActionArgs args)
         {
-            SpeedPropertySnapshot speedProperty = boardState.GetProperty<SpeedPropertySnapshot>(input.Executor);
-            MovementActionArgs candidate = new MovementActionArgs(input, data.MovementDistanceInTilesForOneEnergy + speedProperty.Speed);
+            boardState.Board.TryGetUnit(input.Executor.Id, out EntityModel entity);
+            MovementActionArgs candidate = new MovementActionArgs(input, data.MovementDistanceInTilesForOneEnergy + entity.Speed.CurrentSpeed);
 
             if (!CanExecute(candidate, boardState))
             {
@@ -90,8 +88,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public override bool TryGenerateArgs(AIUnitModel executor, MovementActionData data, BoardState boardState, out ActionArgs args)
         {
-            Vector2 source = boardState.GetProperty<PositionPropertySnapshot>(executor).Position.ToVector2();
-            EnergyPropertySnapshot energy = boardState.GetProperty<EnergyPropertySnapshot>(executor);
+            boardState.Board.TryGetUnit(executor.Id, out EntityModel entity);
 
             foreach (AIUnitModel potentialTarget in boardState.Board.GetUnits())
             {
@@ -116,7 +113,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 List<Vector2> roomTiles =
                     adjacentTiles.Where(v => boardState.Board.Graph.ContainsNode(v) && boardState.Board.GetNodeType(v) == BoardNodeType.Walkable)
-                    .OrderBy(t => RoomGrid.ManhattanDistance(source.ToVector3Int(), t.ToVector3Int()))
+                    .OrderBy(t => RoomGrid.ManhattanDistance(entity.TilePosition, t.ToVector3Int()))
                     .ToList();
 
                 foreach (Vector2 tile in roomTiles)

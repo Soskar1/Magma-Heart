@@ -54,7 +54,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             else if (preview.Action is AttackAction)
             {
                 AttackActionArgs args = (AttackActionArgs)preview.Args;
-                m_dungeonController.CurrentRoom.TryGetEntity(args.TargetEntityInput.Target, out Entity entity);
+                m_dungeonController.CurrentRoom.TryGetEntity(args.TargetEntityInput.Target.Id, out Entity entity);
                 entity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
             }
         }

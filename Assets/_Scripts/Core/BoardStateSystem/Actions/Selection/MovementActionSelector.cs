@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
         {
             MovementActionData data = executor.PossibleActions.Get<MovementActionData>();
 
-            Vector2 sourceTile = executor.GetCurrentTilePosition().ToVector2();
+            Vector2 sourceTile = executor.TilePosition.ToVector2();
             TargetPositionActionInput input = new TargetPositionActionInput(executor, selectedTile.Position.ToVector2());
 
             if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.TryCreateArgs(input, data, combatBoardState, out MovementActionArgs args))

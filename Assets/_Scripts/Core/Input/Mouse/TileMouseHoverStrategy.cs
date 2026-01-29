@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.Input.Mouse
         {
             Vector3Int tilePosition = m_dungeonController.Grid.WorldToTilePosition(worldPosition);
             RoomTile hoveredTile = m_dungeonController.CurrentRoom.GetRoomTile(tilePosition);
-            m_dungeonController.CurrentRoom.TryGetEntity(hoveredTile, out Entity entity);
+            m_dungeonController.CurrentRoom.TryGetEntity(hoveredTile.Position, out Entity entity);
 
             return new CombatHoverResult(entity, hoveredTile);
         }

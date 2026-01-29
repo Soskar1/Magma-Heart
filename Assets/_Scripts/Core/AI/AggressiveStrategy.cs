@@ -59,7 +59,7 @@ namespace MagmaHeart.Core.AI
 
             Func<Vector3Int, float> getDistancePoints = (ai) =>
             {
-                float distance = Vector3Int.Distance(ai, player.CurrentTilePosition);
+                float distance = Vector3Int.Distance(ai, player.TilePosition);
                 if (distance == 0)
                     return 5;
 
@@ -82,7 +82,7 @@ namespace MagmaHeart.Core.AI
                     aiHP += aiEntity.Health.CurrentHealth;
 
                     if (!player.IsDisabled)
-                        distancePoints += getDistancePoints(aiEntity.CurrentTilePosition);
+                        distancePoints += getDistancePoints(aiEntity.TilePosition);
                 }
             }
 

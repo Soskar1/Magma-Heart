@@ -6,6 +6,7 @@ using MagmaHeart.Bresenham;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Properties;
 using MagmaHeart.Extensions;
@@ -35,16 +36,16 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             if (!result)
                 return result;
 
-            PositionPropertySnapshot attackerPositionProperty = boardState.GetProperty<PositionPropertySnapshot>(args.TargetEntityInput.TypedExecutor);
-            PositionPropertySnapshot targetPositionProperty = boardState.GetProperty<PositionPropertySnapshot>(args.TargetEntityInput.Target);
+            boardState.Board.TryGetUnit(args.TargetEntityInput.TypedExecutor.Id, out EntityModel attacker);
+            boardState.Board.TryGetUnit(args.TargetEntityInput.Target.Id, out EntityModel target);
 
-            if (attackerPositionProperty.ManhattanDistance(targetPositionProperty) > args.AttackDistance)
+            if (RoomGrid.ManhattanDistance(attacker.TilePosition, target.TilePosition) > args.AttackDistance)
                 return false;
 
             if (args.AttackType == AttackType.Ranged)
             {
-                Vector2Int attackerPosition = attackerPositionProperty.Position.ToVector2Int();
-                Vector2Int targetPosition = targetPositionProperty.Position.ToVector2Int();
+                Vector2Int attackerPosition = attacker.TilePosition.ToVector2Int();
+                Vector2Int targetPosition = target.TilePosition.ToVector2Int();
                 IEnumerable<Vector2Int> tiles = BresenhamLine.DrawLine(attackerPosition, targetPosition);
 
                 foreach (Vector2Int tile in tiles)
@@ -74,8 +75,8 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             if (!executor.IsPlayer && !target.IsPlayer)
                 return false;
 
-            StrengthPropertySnapshot strength = boardState.GetProperty<StrengthPropertySnapshot>(executor);
-            int attackDamage = data.AttackDamage + strength.Strength;
+            boardState.Board.TryGetUnit(executor.Id, out EntityModel attacker);
+            int attackDamage = data.AttackDamage + attacker.Strength.CurrentStrength;
 
             AttackActionArgs candidate = new AttackActionArgs(input, data.EnergyCost, data.AttackDistance, attackDamage, data.AttackType);
 

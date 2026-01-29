@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
+        private readonly Dictionary<int, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnHealthChangedEventArgs>>();
         private readonly TurnContext m_turnContext;
         private readonly MagmaHeartServices m_services;
 
@@ -53,7 +53,7 @@ namespace MagmaHeart.Core.CombatSystem
                     HandleEntityOnHealthChanged(entity.Model, args);
                 });
 
-                m_healthHandlers[entity.Model] = handler;
+                m_healthHandlers[entity.Model.Id] = handler;
                 entity.Health.OnHealthChanged += handler;
             }
 
@@ -92,12 +92,12 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
-            m_currentRoom.TryGetEntity(entityModel, out Entity entity);
+            m_currentRoom.TryGetEntity(entityModel.Id, out Entity entity);
             m_currentRoom.RemoveEntityFromRoom(entity);
 
-            EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
+            EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel.Id];
             entityModel.Health.OnHealthChanged -= handler;
-            m_healthHandlers.Remove(entityModel);
+            m_healthHandlers.Remove(entityModel.Id);
 
             if (entityModel.IsPlayer)
             {
@@ -113,7 +113,7 @@ namespace MagmaHeart.Core.CombatSystem
 
                 GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
 
-                bool anyEnemiesInRoom = m_currentRoom.Models.Any(e => e.IsPlayer == false);
+                bool anyEnemiesInRoom = m_currentRoom.Entities.Any(e => e.Model.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -127,7 +127,7 @@ namespace MagmaHeart.Core.CombatSystem
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
             foreach (Entity entity in leftEntities)
             {
-                if (m_healthHandlers.TryGetValue(entity.Model, out var handler))
+                if (m_healthHandlers.TryGetValue(entity.Model.Id, out var handler))
                     entity.Model.Health.OnHealthChanged -= handler;
 
                 m_currentRoom.RemoveEntityFromRoom(entity);

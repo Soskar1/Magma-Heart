@@ -21,8 +21,8 @@ namespace MagmaHeart.Core.Services
             if (cancellationToken.IsCancellationRequested)
                 return;
 
-            int targetX = target.Model.GetCurrentTilePosition().x;
-            int attackerX = attacker.Model.GetCurrentTilePosition().x;
+            int targetX = target.Model.TilePosition.x;
+            int attackerX = attacker.Model.TilePosition.x;
             attacker.Facing.TryUpdateFacing(targetX - attackerX);
 
             await attacker.Animation.PlayAttackAnimationAsync();

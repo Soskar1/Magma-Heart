@@ -4,15 +4,13 @@ using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.Properties;
-using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
 {
     public record EntityModel : AIUnitModel
     {
-        public Func<Vector3Int> GetCurrentTilePosition { get; init; }
-        public Vector3Int CurrentTilePosition { get; set; }
+        public Vector3Int TilePosition { get; set; }
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
         public StrengthModel Strength { get; init; }
@@ -20,12 +18,12 @@ namespace MagmaHeart.Core.Entities
         public EntityStats Stats { get; init; }
         public EntityData Data { get; init; }
 
-        public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer, int id) : base(isPlayer, id)
+        public EntityModel(EntityData data, Vector3Int startTilePosition, bool isPlayer, int id) : base(isPlayer, id)
         {
             Stats = data.Stats;
             Data = data;
 
-            GetCurrentTilePosition = getCurrentTilePosition;
+            TilePosition = startTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
             Energy = new EnergyModel(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
             Strength = new StrengthModel(Stats.Strength);
@@ -42,7 +40,7 @@ namespace MagmaHeart.Core.Entities
             properties.Add(new HealthPropertySnapshot(Health.CurrentHealth, Health.MaxHealth));
             properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy, Energy.MaxEnergy));
             properties.Add(new StrengthPropertySnapshot(Strength.CurrentStrength));
-            properties.Add(new PositionPropertySnapshot(GetCurrentTilePosition()));
+            properties.Add(new PositionPropertySnapshot(TilePosition));
             properties.Add(new SpeedPropertySnapshot(Speed.CurrentSpeed));
 
             return properties;
@@ -50,7 +48,7 @@ namespace MagmaHeart.Core.Entities
 
         public override AIUnitModel DeepCopy()
         {
-            EntityModel copy = new EntityModel(Data, GetCurrentTilePosition, IsPlayer, Id)
+            EntityModel copy = new EntityModel(Data, TilePosition, IsPlayer, Id)
             {
                 PossibleActions = PossibleActions.DeepCopy(),
                 Health = Health.DeepCopy(),

@@ -23,8 +23,8 @@ namespace MagmaHeart.Core.Tests
                 .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
                 .Build();
 
-            State.Room.TryGetUnit(playerPosition.ToVector2(), out EntityModel player);
-            State.Room.TryGetUnit(enemyPosition.ToVector2(), out EntityModel enemy);
+            State.Room.TryGetUnit(playerPosition, out EntityModel player);
+            State.Room.TryGetUnit(enemyPosition, out EntityModel enemy);
 
             return (player, enemy);
         }
@@ -36,7 +36,7 @@ namespace MagmaHeart.Core.Tests
                 .AddEntity().At(entityPosition.x, entityPosition.y)
                 .Build();
 
-            State.Room.TryGetUnit(entityPosition.ToVector2(), out EntityModel entity);
+            State.Room.TryGetUnit(entityPosition, out EntityModel entity);
             return entity;
         }
 
@@ -142,14 +142,14 @@ namespace MagmaHeart.Core.Tests
             EntityModel entity = BoardWithOneEntity();
             SimulatedBoardState simulation = new SimulatedBoardState(State.Board);
 
-            Vector2Int initialPosition = entity.GetCurrentTilePosition().ToVector2Int();
+            Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
             MoveEntityStateChange moveChange = new MoveEntityStateChange(entity.Id, new List<Vector2>() { initialPosition, endPosition });
 
             moveChange.ApplyChangeToSimulation(simulation);
 
             Assert.That(simulation.Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.True);
-            Assert.That(simulatedEntity.CurrentTilePosition.ToVector2Int(), Is.EqualTo(endPosition));
+            Assert.That(simulatedEntity.TilePosition.ToVector2Int(), Is.EqualTo(endPosition));
             Assert.That(simulation.Board.TryGetUnit(initialPosition, out _), Is.False);
             Assert.That(simulation.Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
             Assert.That(simulation.Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));

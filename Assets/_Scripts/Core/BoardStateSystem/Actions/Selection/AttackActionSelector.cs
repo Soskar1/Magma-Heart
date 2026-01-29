@@ -13,10 +13,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
         {
-            if (combatBoardState.Room.EntityIsOnTile(selectedTile, out EntityModel target))
+            if (combatBoardState.Room.TryGetEntity(selectedTile.Position, out Entity target))
             {
                 AttackActionData attackActionData = executor.PossibleActions.Get<AttackActionData>();
-                TargetEntityActionInput input = new TargetEntityActionInput(executor, target);
+                TargetEntityActionInput input = new TargetEntityActionInput(executor, target.Model);
 
                 if (m_attack.TryCreateArgs(input, attackActionData, combatBoardState, out AttackActionArgs args))
                 {

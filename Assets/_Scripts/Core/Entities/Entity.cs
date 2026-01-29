@@ -20,11 +20,13 @@ namespace MagmaHeart.Core.Entities
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
+        
+        private Func<Vector3Int> m_getCurrentTilePosition;
 
         public virtual void Initialize(EntityData data, RoomGrid grid, bool isPlayer, ITurnController turnController, int id)
         {
-            Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
-            Model = new EntityModel(data, getCurrentTilePosition, isPlayer, id);
+            m_getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
+            Model = new EntityModel(data, m_getCurrentTilePosition(), isPlayer, id);
             TurnController = turnController;
 
             TileBasedMovement = GetComponent<TileBasedMovement>();
@@ -35,6 +37,10 @@ namespace MagmaHeart.Core.Entities
             Animation.Initialize(data.AnimatorController);
         }
 
-        private void Update() => Animation.PlayAnimations();
+        private void Update()
+        {
+            Model.TilePosition = m_getCurrentTilePosition();
+            Animation.PlayAnimations();
+        }
     }
 }
