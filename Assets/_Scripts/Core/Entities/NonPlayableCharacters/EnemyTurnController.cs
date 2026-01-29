@@ -25,7 +25,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             foreach (Entity entity in turnOrder)
                 modelTurns.Add(entity.Model.Id);
             
-            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState.Board);
+            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState.Room);
             m_cancellationTokenSource = new CancellationTokenSource();
 
             if (bestPlan != null)

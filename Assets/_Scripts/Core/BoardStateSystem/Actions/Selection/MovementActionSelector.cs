@@ -20,9 +20,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             Vector2 sourceTile = executor.TilePosition.ToVector2();
             TargetPositionActionInput input = new TargetPositionActionInput(executor, selectedTile.Position.ToVector2());
 
-            if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.TryCreateArgs(input, data, combatBoardState.Board, out MovementActionArgs args))
+            if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.TryCreateArgs(input, data, combatBoardState.Room, out MovementActionArgs args))
             {
-                int energyCost = m_movementAction.GetEnergyCost(args, combatBoardState.Board);
+                int energyCost = m_movementAction.GetEnergyCost(args, combatBoardState.Room);
                 return new ActionSelectionResult(m_movementAction, args, energyCost);
             }
 

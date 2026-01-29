@@ -4,12 +4,12 @@ using MagmaHeart.Core.Services;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
-    public class CombatBoardState : ActualBoardState
+    public class CombatBoardState
     {
         public Room Room { get; init; }
         public MagmaHeartServices Services { get; init; }
 
-        public CombatBoardState(Room room, MagmaHeartServices services) : base(room)
+        public CombatBoardState(Room room, MagmaHeartServices services)
         {
             Room = room;
             Services = services;

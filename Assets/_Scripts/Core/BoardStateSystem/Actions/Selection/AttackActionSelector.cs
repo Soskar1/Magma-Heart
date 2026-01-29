@@ -18,9 +18,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
                 AttackActionData attackActionData = executor.PossibleActions.Get<AttackActionData>();
                 TargetEntityActionInput input = new TargetEntityActionInput(executor, target.Model);
 
-                if (m_attack.TryCreateArgs(input, attackActionData, combatBoardState.Board, out AttackActionArgs args))
+                if (m_attack.TryCreateArgs(input, attackActionData, combatBoardState.Room, out AttackActionArgs args))
                 {
-                    int energyCost = m_attack.GetEnergyCost(args, combatBoardState.Board);
+                    int energyCost = m_attack.GetEnergyCost(args, combatBoardState.Room);
                     return new ActionSelectionResult(m_attack, args, energyCost);
                 }
             }

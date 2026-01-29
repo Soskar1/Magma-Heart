@@ -96,7 +96,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
-            preview.Action.Execute(preview.Args, m_currentBoardState.Board);
+            preview.Action.Execute(preview.Args, m_currentBoardState.Room);
 
             throw new Exception("FIX THIS. NEED RUNNER");
 
