@@ -13,10 +13,7 @@ namespace MagmaHeart.Core.BoardStateSystem
         private readonly CommandRunner m_commandRunner;
         private readonly Dictionary<Type, IBoardCommandPresenter> m_presenters = new();
 
-        public ActionRunner()
-        {
-            m_commandRunner = new CommandRunner();
-        }
+        public ActionRunner() => m_commandRunner = new CommandRunner(useMemory: false);
 
         public async Task ApplyAsync(Room room, IEnumerable<IBoardCommand> commands, CancellationToken cancellationToken)
         {
