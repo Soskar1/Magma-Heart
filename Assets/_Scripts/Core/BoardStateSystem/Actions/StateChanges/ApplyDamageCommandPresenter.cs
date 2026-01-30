@@ -10,10 +10,5 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
         {
             throw new System.NotImplementedException();
         }
-
-        public Task Present(Room room, IBoardCommand command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

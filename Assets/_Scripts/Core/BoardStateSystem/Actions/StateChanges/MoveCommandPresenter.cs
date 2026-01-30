@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Execution;
-using MagmaHeart.Core.Dungeon;
+﻿using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
@@ -39,14 +38,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
             await entity.TileBasedMovement.StartMovementAsync(tilePath, m_movementSpeed);
 
             entity.Animation.PlayIdleAnimation();
-        }
-
-        public async Task Present(Room room, IBoardCommand command)
-        {
-            if (command is not MoveCommand)
-                return;
-
-            await Present(room, (MoveCommand)command);
         }
     }
 }
