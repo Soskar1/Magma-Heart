@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
 using MagmaHeart.Core.Dungeon;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,14 +10,11 @@ namespace MagmaHeart.Core.BoardStateSystem
 {
     public class ActionRunner
     {
-        private readonly MoveCommandPresenter m_movePresenter;
-        private readonly ApplyDamageCommandPresenter m_applyDamagePresenter;
         private readonly CommandRunner m_commandRunner;
+        private readonly Dictionary<Type, IBoardCommandPresenter> m_presenters = new();
 
-        public ActionRunner(MoveCommandPresenter movePresenter, ApplyDamageCommandPresenter applyDamagePresenter)
+        public ActionRunner()
         {
-            m_movePresenter = movePresenter;
-            m_applyDamagePresenter = applyDamagePresenter;
             m_commandRunner = new CommandRunner();
         }
 
@@ -35,14 +33,7 @@ namespace MagmaHeart.Core.BoardStateSystem
             }
         }
 
-        private IBoardCommandPresenter GetPresenter(IBoardCommand command)
-        {
-            if (command is MoveCommand)
-                return m_movePresenter;
-            else if (command is ApplyDamageCommand)
-                return m_applyDamagePresenter;
-
-            return null;
-        }
+        public void RegisterPresenter<T>(IBoardCommandPresenter presenter) where T : IBoardCommand => m_presenters[typeof(T)] = presenter;
+        private IBoardCommandPresenter GetPresenter(IBoardCommand cmd) => m_presenters.TryGetValue(cmd.GetType(), out var p) ? p : null;
     }
 }

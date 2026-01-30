@@ -7,9 +7,11 @@ namespace MagmaHeart.Core.BoardStateSystem
     {
         public ActionRunner Install(int moveCommandSpeed)
         {
-            MoveCommandPresenter moveCommandPresenter = new MoveCommandPresenter(moveCommandSpeed);
-            ApplyDamageCommandPresenter applyDamagePresenter = new ApplyDamageCommandPresenter();
-            return new ActionRunner(moveCommandPresenter, applyDamagePresenter);
+            ActionRunner runner = new ActionRunner();
+            runner.RegisterPresenter<MoveCommand>(new MoveCommandPresenter(moveCommandSpeed));
+            runner.RegisterPresenter<ApplyDamageCommand>(new ApplyDamageCommandPresenter());
+
+            return runner;
         }
 
         public void Dispose()

@@ -6518,6 +6518,7 @@ MonoBehaviour:
   m_playerData: {fileID: 11400000, guid: 9606ac1051baff841954357032ef2ef7, type: 2}
   m_cameraPrefab: {fileID: 3860478200218055625, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
   m_mouseListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
+  m_movementSpeed: 5
   m_locations:
   - {fileID: 11400000, guid: c633427e0bdd30f4d898d126ec05d286, type: 2}
   m_combatTilemapRenderer: {fileID: 8388963511706051692}
