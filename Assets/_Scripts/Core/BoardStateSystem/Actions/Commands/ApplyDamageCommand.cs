@@ -4,7 +4,7 @@ using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.Commands
 {
-    public record ApplyDamageCommand(int ExecutorId, int TargetId, float Damage) : IBoardCommand
+    public record ApplyDamageCommand(int ExecutorId, int TargetId, float Damage, AttackType AttackType) : IBoardCommand
     {
         private float m_previosHealth;
 

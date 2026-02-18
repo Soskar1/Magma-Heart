@@ -34,14 +34,14 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task MovementPlan_AggressiveStrategy_MovesTowardsPlayer(int depth)
+        public void MovementPlan_AggressiveStrategy_MovesTowardsPlayer(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithActions(ActionPresets.MeleeAttacker).At(0, 0)
                 .AddEntity().IsPlayer(true).WithActions(ActionPresets.MeleeAttacker).At(9, 9)
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
             Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
@@ -52,14 +52,14 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task AttackPlan_AggressiveStrategy_AttacksPlayer(int depth)
+        public void AttackPlan_AggressiveStrategy_AttacksPlayer(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithActions(ActionPresets.MeleeAttacker).At(3, 3)
                 .AddEntity().IsPlayer(true).WithActions(ActionPresets.MeleeAttacker).At(2, 3)
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(2));
             Assert.That(best.ExecutedTasks.All(task => task.Action.GetType() == typeof(AttackAction)));
@@ -70,14 +70,14 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task AttackPlan_EnemyWithLowHealthAndAggressiveStrategy_AttacksPlayer(int depth)
+        public void AttackPlan_EnemyWithLowHealthAndAggressiveStrategy_AttacksPlayer(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithHealth(1).WithActions(ActionPresets.MeleeAttacker).At(3, 3)
                 .AddEntity().IsPlayer(true).WithActions(ActionPresets.MeleeAttacker).At(2, 3)
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(2));
             Assert.That(best.ExecutedTasks.All(task => task.Action.GetType() == typeof(AttackAction)));
@@ -88,7 +88,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task Null_PlayerSurroundedByWalls_EnemyDoesNothing(int depth)
+        public void Null_PlayerSurroundedByWalls_EnemyDoesNothing(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithActions(ActionPresets.MeleeAttacker).At(4, 3)
@@ -96,7 +96,7 @@ namespace MagmaHeart.Core.Tests
                 .ModifyBoard().SurroundWithWalls(4, 3).Bake()
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             Assert.That(best, Is.Null);
         }
@@ -106,7 +106,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task MovementWithContinuousAttackPlan_OnePlayerTwoEnemiesWithLowHealth_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
+        public void MovementWithContinuousAttackPlan_OnePlayerTwoEnemiesWithLowHealth_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithHealth(1).WithActions(ActionPresets.MeleeAttacker).At(1, 1)
@@ -114,7 +114,7 @@ namespace MagmaHeart.Core.Tests
                 .AddEntity().IsPlayer(false).WithHealth(2).WithActions(ActionPresets.MeleeAttacker).At(3, 2)
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(2));
@@ -127,7 +127,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task MovementWithContinuousAttackPlan_OnePlayerTwoEnemies_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
+        public void MovementWithContinuousAttackPlan_OnePlayerTwoEnemies_EnemyMovesTowardsPlayerAndAttacksHim(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(0, 1)
@@ -135,7 +135,7 @@ namespace MagmaHeart.Core.Tests
                 .AddEntity().IsPlayer(false).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 1)
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(3));
@@ -149,7 +149,7 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task RangedAttack_WallPlacedBetweenEnemyAndPlayer_EnemyDoNotUseRangedAttackAsAFirstAction(int depth)
+        public void RangedAttack_WallPlacedBetweenEnemyAndPlayer_EnemyDoNotUseRangedAttackAsAFirstAction(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.RangedAttacker).At(2, 0)
@@ -157,7 +157,7 @@ namespace MagmaHeart.Core.Tests
                 .ModifyBoard().PlaceWallAt(2, 1).Bake()
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(2));
@@ -170,14 +170,14 @@ namespace MagmaHeart.Core.Tests
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        public async Task RangedAttack_EnemyIsFarAwayFromPlayer_EnemyUseRangedAttack(int depth)
+        public void RangedAttack_EnemyIsFarAwayFromPlayer_EnemyUseRangedAttack(int depth)
         {
             AIScenario scenario = AIScenarioBuilder.Create(Board)
                 .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.RangedAttacker).At(2, 0)
                 .AddEntity().IsPlayer(true).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 4)
                 .Build();
 
-            BestPlan best = await scenario.RunAI(depth, m_actionDatabase);
+            BestPlan best = scenario.RunAI(depth, m_actionDatabase);
 
             List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             Assert.That(executedTasks.Count, Is.EqualTo(2));

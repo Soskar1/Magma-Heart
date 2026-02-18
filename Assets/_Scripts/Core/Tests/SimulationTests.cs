@@ -1,5 +1,6 @@
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Execution;
+using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
@@ -41,7 +42,7 @@ namespace MagmaHeart.Core.Tests
         public void ApplyDamageCommand_OneExecution_AppliesDamageToTargetInSimulation()
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 1);
+            ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 1, AttackType.Melee);
 
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
@@ -53,7 +54,7 @@ namespace MagmaHeart.Core.Tests
         public void ApplyDamageCommand_DamageIsGreaterThanTargetsCurrentHealth_DisablesTarget()
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 6);
+            ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 6, AttackType.Melee);
 
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
@@ -66,7 +67,7 @@ namespace MagmaHeart.Core.Tests
         public void ApplyDamageCommand_Undo_RevertsDamageToTargetInSimulation()
         {
             EntityModel entity = BoardWithOneEntity();
-            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 2);
+            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 2, AttackType.Melee);
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
             Runner.Undo(Board);
@@ -80,7 +81,7 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             entity.Health.CurrentHealth = 1;
-            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 3);
+            ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 3, AttackType.Melee);
             Runner.Apply(Board, new List<IBoardCommand>() { command });
 
             Runner.Undo(Board);

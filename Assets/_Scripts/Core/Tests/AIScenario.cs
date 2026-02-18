@@ -8,13 +8,12 @@ using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Tests
 {
     internal record AIScenario(Board Board, CircularList<AIUnitModel> TurnOrder)
     {
-        public async Task<BestPlan> RunAI(int depth, ActionDatabase actionDatabase)
+        public BestPlan RunAI(int depth, ActionDatabase actionDatabase)
         {
             AggressiveStrategy strategy = new AggressiveStrategy();
             IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();

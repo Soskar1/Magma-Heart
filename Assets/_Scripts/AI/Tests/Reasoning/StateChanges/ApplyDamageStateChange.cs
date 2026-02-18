@@ -3,7 +3,7 @@ using MagmaHeart.AI.Execution;
 
 namespace MagmaHeart.AI.Reasoning.Tests
 {
-    internal record ApplyDamageStateChange(int ExecutorId, int Damage, int TargetId) : IBoardCommand
+    internal record ApplyDamageStateChange(int ExecutorId, int Damage, int TargetId, bool CanSimulate = true) : IBoardCommand
     {
         public void Execute(Board board)
         {

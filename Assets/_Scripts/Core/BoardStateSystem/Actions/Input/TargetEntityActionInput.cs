@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.BoardStateSystem.Actions.Input
 {
