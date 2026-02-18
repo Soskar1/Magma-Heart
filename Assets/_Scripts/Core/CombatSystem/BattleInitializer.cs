@@ -16,7 +16,7 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly EntitySpawner m_entitySpawner;
         private readonly AIEngine m_aiEngine;
-        private readonly ActionRunner m_actionRunner;
+        private readonly ActionExecutor m_actionRunner;
         private readonly RoomGrid m_grid;
         private readonly Random m_random;
         private readonly float m_minDistanceFromPlayer;
@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.CombatSystem
         private int m_additionalEnergy = 0;
         private int m_additionalEnergyRegeneration = 0;
 
-        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionRunner actionRunner)
+        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionExecutor actionRunner)
         {
             m_entitySpawner = entitySpawner;
             m_aiEngine = aiEngine;

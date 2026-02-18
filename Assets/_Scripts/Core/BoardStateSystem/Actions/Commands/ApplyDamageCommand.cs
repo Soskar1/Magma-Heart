@@ -2,7 +2,7 @@
 using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.Entities;
 
-namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
+namespace MagmaHeart.Core.BoardStateSystem.Actions.Commands
 {
     public record ApplyDamageCommand(int ExecutorId, int TargetId, float Damage) : IBoardCommand
     {

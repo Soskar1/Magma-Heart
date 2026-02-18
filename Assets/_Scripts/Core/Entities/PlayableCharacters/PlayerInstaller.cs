@@ -8,7 +8,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerInstaller : IInstaller
     {
-        public Entity Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, IActionPreviewProvider actionPreviewProvider, ActionRunner actionRunner)
+        public Entity Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, IActionPreviewProvider actionPreviewProvider, ActionExecutor actionRunner)
         {
             PlayerTurnController turnController = new PlayerTurnController(inputContext.MouseListener, actionPreviewProvider, actionRunner);
             Entity player = spawner.Spawn(playerData, true, turnController);

@@ -10,7 +10,6 @@ namespace MagmaHeart.AI.Execution
 
         internal Stack<List<IBoardCommand>> History => m_history;
 
-
         public CommandRunner(bool useMemory = true) => m_useMemory = useMemory;
 
         public void Apply(Board board, IEnumerable<IBoardCommand> commands)

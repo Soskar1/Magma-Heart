@@ -19,7 +19,7 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly MagmaHeartServices m_services;
 
         private readonly IStartOfTurnCommandFactory m_startOfTurnCommandFactory;
-        private readonly ActionRunner m_actionRunner;
+        private readonly ActionExecutor m_actionRunner;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(MagmaHeartServices services, IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionRunner actionRunner)
+        public Battle(MagmaHeartServices services, IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionExecutor actionRunner)
         {
             m_services = services;
             m_startOfTurnCommandFactory = startOfTurnCommandFactory;

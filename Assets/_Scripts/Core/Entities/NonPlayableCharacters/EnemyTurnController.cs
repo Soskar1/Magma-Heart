@@ -13,10 +13,10 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
     public class EnemyTurnController : ITurnController
     {
         private readonly AIEngine m_aiEngine;
-        private readonly ActionRunner m_actionRunner;
+        private readonly ActionExecutor m_actionRunner;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public EnemyTurnController(AIEngine engine, ActionRunner actionRunner)
+        public EnemyTurnController(AIEngine engine, ActionExecutor actionRunner)
         {
             m_aiEngine = engine;
             m_actionRunner = actionRunner;

@@ -1,6 +1,6 @@
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Execution;
-using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using NUnit.Framework;

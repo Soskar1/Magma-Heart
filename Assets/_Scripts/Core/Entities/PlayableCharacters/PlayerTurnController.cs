@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         private readonly IActionPreviewProvider m_actionPreviewProvider;
         private readonly MouseListener m_mouseListener;
-        private readonly ActionRunner m_actionRunner;
+        private readonly ActionExecutor m_actionRunner;
 
         private ActionPreview m_currentPreview;
         private CombatBoardState m_currentBoardState;
@@ -40,7 +40,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnController(MouseListener mouseListener, IActionPreviewProvider previewProvider, ActionRunner actionRunner)
+        public PlayerTurnController(MouseListener mouseListener, IActionPreviewProvider previewProvider, ActionExecutor actionRunner)
         {
             m_mouseListener = mouseListener;
             m_actionPreviewProvider = previewProvider;

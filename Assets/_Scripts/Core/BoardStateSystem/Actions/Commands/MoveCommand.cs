@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
+namespace MagmaHeart.Core.BoardStateSystem.Actions.Commands
 {
     public record MoveCommand(int ExecutorId, List<Vector2> Path) : IBoardCommand
     {

@@ -1,17 +1,22 @@
-﻿using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+﻿using MagmaHeart.AI.Execution;
+using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
+using MagmaHeart.Core.BoardStateSystem.Actions.Presenters;
 using MagmaHeart.Core.SceneLoading;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
     public class ActionRunnerInstaller : IInstaller
     {
-        public ActionRunner Install(int moveCommandSpeed)
+        public ActionExecutor Install(int moveCommandSpeed)
         {
-            ActionRunner runner = new ActionRunner();
-            runner.RegisterPresenter<MoveCommand>(new MoveCommandPresenter(moveCommandSpeed));
-            runner.RegisterPresenter<ApplyDamageCommand>(new ApplyDamageCommandPresenter());
+            CommandRunner commandRunner = new CommandRunner(useMemory: false);
+            IBoardCommandPresenter defaultPresenter = new DefaultCommandPresenter(commandRunner);
 
-            return runner;
+            ActionExecutor executor = new ActionExecutor(defaultPresenter);
+            executor.RegisterPresenter<MoveCommand>(new MoveCommandPresenter(commandRunner, moveCommandSpeed));
+            executor.RegisterPresenter<ApplyDamageCommand>(new ApplyDamageCommandPresenter(commandRunner));
+
+            return executor;
         }
 
         public void Dispose()

@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private BattleInitializer m_battleInitializer;
 
-        public BattleContext Install(MagmaHeartServices services, AIContext aiContext, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionRunner actionRunner)
+        public BattleContext Install(MagmaHeartServices services, AIContext aiContext, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionExecutor actionRunner)
         {
             Battle battle = new Battle(services, aiContext.StartOfTurnCommandFactory, actionRunner);
             m_battleInitializer = new BattleInitializer(services.SpawnService.EntitySpawner, aiContext.AiEngine, random, grid, minDistanceFromPlayer, dungeonController, actionRunner);

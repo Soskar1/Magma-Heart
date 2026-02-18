@@ -101,7 +101,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_installers.Add(serviceInstaller);
 
             ActionRunnerInstaller actionRunnerInstaller = new ActionRunnerInstaller();
-            ActionRunner actionRunner = actionRunnerInstaller.Install(m_movementSpeed);
+            ActionExecutor actionRunner = actionRunnerInstaller.Install(m_movementSpeed);
             m_installers.Add(actionRunnerInstaller);
 
             BattleInstaller battleInstaller = new BattleInstaller();

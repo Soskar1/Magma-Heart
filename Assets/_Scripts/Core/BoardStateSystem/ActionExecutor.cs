@@ -1,5 +1,5 @@
-﻿using MagmaHeart.AI.Execution;
-using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+﻿using MagmaHeart.Core.BoardStateSystem.Actions.Presenters;
+using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.Dungeon;
 using System;
 using System.Collections.Generic;
@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.BoardStateSystem
 {
-    public class ActionRunner
+    public class ActionExecutor
     {
-        private readonly CommandRunner m_commandRunner;
         private readonly Dictionary<Type, IBoardCommandPresenter> m_presenters = new();
+        private readonly IBoardCommandPresenter m_defaultPresenter;
 
-        public ActionRunner() => m_commandRunner = new CommandRunner(useMemory: false);
+        public ActionExecutor(IBoardCommandPresenter defaultPresenter)
+        {
+            m_defaultPresenter = defaultPresenter;
+        }
 
         public async Task ApplyAsync(Room room, IEnumerable<IBoardCommand> commands, CancellationToken cancellationToken)
         {
@@ -22,15 +25,12 @@ namespace MagmaHeart.Core.BoardStateSystem
                 if (cancellationToken.IsCancellationRequested)
                     return;
 
-                IBoardCommandPresenter presenter = GetPresenter(command);
-                m_commandRunner.Apply(room, command);
-
-                if (presenter != null)
-                    await presenter.Present(room, command);
+                IBoardCommandPresenter presenter = GetPresenter(command) ?? m_defaultPresenter;
+                await presenter.Present(room, command, cancellationToken);
             }
         }
 
         public void RegisterPresenter<T>(IBoardCommandPresenter presenter) where T : IBoardCommand => m_presenters[typeof(T)] = presenter;
-        private IBoardCommandPresenter GetPresenter(IBoardCommand cmd) => m_presenters.TryGetValue(cmd.GetType(), out var p) ? p : null;
+        private IBoardCommandPresenter GetPresenter(IBoardCommand cmd) => m_presenters.TryGetValue(cmd.GetType(), out var presenter) ? presenter : null;
     }
 }

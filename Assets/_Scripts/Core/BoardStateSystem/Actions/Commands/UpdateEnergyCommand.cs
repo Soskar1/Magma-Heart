@@ -2,7 +2,7 @@
 using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.Entities;
 
-namespace MagmaHeart.Core.BoardStateSystem.Actions.StateChanges
+namespace MagmaHeart.Core.BoardStateSystem.Actions.Commands
 {
     public record UpdateEnergyCommand(int ExecutorId, int NewEnergyValue) : IBoardCommand
     {

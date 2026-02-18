@@ -5,7 +5,7 @@ using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
-using MagmaHeart.Core.BoardStateSystem.Actions.StateChanges;
+using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;

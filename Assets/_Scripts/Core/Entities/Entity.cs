@@ -40,7 +40,6 @@ namespace MagmaHeart.Core.Entities
         private void Update()
         {
             Model.TilePosition = m_getCurrentTilePosition();
-            Animation.PlayAnimations();
         }
     }
 }
