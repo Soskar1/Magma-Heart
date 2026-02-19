@@ -4,6 +4,7 @@ using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,21 +23,21 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             m_actionRunner = actionRunner;
         }
 
-        public async Task StartTurn(CombatBoardState boardState, TurnOrder turnOrder)
+        public async Task StartTurn(Room room, TurnOrder turnOrder)
         {
             CircularList<int> modelTurns = new CircularList<int>();
             foreach (Entity entity in turnOrder)
                 modelTurns.Add(entity.Model.Id);
             
-            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState.Room);
+            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, room);
             m_cancellationTokenSource = new CancellationTokenSource();
 
             if (bestPlan != null)
             {
                 foreach (ExecutedTask task in bestPlan.ExecutedTasks)
                 {
-                    IEnumerable<IBoardCommand> commands = task.Action.Execute(task.Args, boardState.Room);
-                    await m_actionRunner.ApplyAsync(boardState.Room, commands, m_cancellationTokenSource.Token);
+                    IEnumerable<IBoardCommand> commands = task.Action.Execute(task.Args, room);
+                    await m_actionRunner.ApplyAsync(room, commands, m_cancellationTokenSource.Token);
                 }
             }
 

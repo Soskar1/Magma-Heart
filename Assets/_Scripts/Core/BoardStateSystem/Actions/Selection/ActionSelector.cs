@@ -7,14 +7,14 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
     {
         public ActionSelector Next { get; set; }
 
-        public ActionSelectionResult GetAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
+        public ActionSelectionResult GetAction(Room room, EntityModel executor, RoomTile selectedTile)
         {
             ActionSelectionResult result = null;
             ActionSelector selector = this;
 
             while (selector != null)
             {
-                result = selector.TrySelectAction(combatBoardState, executor, selectedTile);
+                result = selector.TrySelectAction(room, executor, selectedTile);
 
                 if (result != null)
                     break;
@@ -25,6 +25,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             return result;
         }
 
-        protected abstract ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile);
+        protected abstract ActionSelectionResult TrySelectAction(Room room, EntityModel executor, RoomTile selectedTile);
     }
 }

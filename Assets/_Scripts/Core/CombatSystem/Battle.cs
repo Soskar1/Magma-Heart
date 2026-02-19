@@ -3,7 +3,6 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +15,12 @@ namespace MagmaHeart.Core.CombatSystem
     public class Battle
     {
         private readonly Dictionary<int, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnHealthChangedEventArgs>>();
-        private readonly MagmaHeartServices m_services;
 
         private readonly IStartOfTurnCommandFactory m_startOfTurnCommandFactory;
         private readonly ActionExecutor m_actionRunner;
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
-        private CombatBoardState m_currentBoardState;
 
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
@@ -34,9 +31,8 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(MagmaHeartServices services, IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionExecutor actionRunner)
+        public Battle(IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionExecutor actionRunner)
         {
-            m_services = services;
             m_startOfTurnCommandFactory = startOfTurnCommandFactory;
             m_actionRunner = actionRunner;
         }
@@ -61,9 +57,8 @@ namespace MagmaHeart.Core.CombatSystem
             }
 
             m_currentTurnOrder = new TurnOrder(sortedEntities);
-            m_currentBoardState = new CombatBoardState(m_currentRoom, m_services);
 
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, m_currentBoardState);
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, m_currentRoom);
             OnBattleStarted?.Invoke(this, args);
 
             await ProcessBattle();
@@ -82,7 +77,7 @@ namespace MagmaHeart.Core.CombatSystem
 
                 IEnumerable<IBoardCommand> commands = m_startOfTurnCommandFactory.BuildStartOfTurnCommands(m_currentRoom, entity.Model);
                 await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
-                await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
+                await entity.TurnController.StartTurn(m_currentRoom, m_currentTurnOrder);
 
                 if (!m_battleEnded)
                     m_currentTurnOrder.Next();

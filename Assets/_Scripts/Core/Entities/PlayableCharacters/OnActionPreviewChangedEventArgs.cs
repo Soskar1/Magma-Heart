@@ -9,13 +9,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
     {
         public ActionPreview ActionPreview { get; init; }
         public RoomTile Tile { get; init; }
-        public CombatBoardState State { get; init; }
+        public Room Room { get; init; }
 
-        public OnActionPreviewChangedEventArgs(ActionPreview actionPreview, RoomTile tile, CombatBoardState state)
+        public OnActionPreviewChangedEventArgs(ActionPreview actionPreview, RoomTile tile, Room state)
         {
             ActionPreview = actionPreview;
             Tile = tile;
-            State = state;
+            Room = state;
         }
     }
 }

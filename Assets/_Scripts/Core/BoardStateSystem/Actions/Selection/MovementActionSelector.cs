@@ -13,16 +13,16 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public MovementActionSelector(MovementAction movementAction) => m_movementAction = movementAction;
 
-        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
+        protected override ActionSelectionResult TrySelectAction(Room room, EntityModel executor, RoomTile selectedTile)
         {
             MovementActionData data = executor.PossibleActions.Get<MovementActionData>();
 
             Vector2 sourceTile = executor.TilePosition.ToVector2();
             TargetPositionActionInput input = new TargetPositionActionInput(executor, selectedTile.Position.ToVector2());
 
-            if (combatBoardState.Room.TileIsAccessable(selectedTile) && m_movementAction.TryCreateArgs(input, data, combatBoardState.Room, out MovementActionArgs args))
+            if (room.TileIsAccessable(selectedTile) && m_movementAction.TryCreateArgs(input, data, room, out MovementActionArgs args))
             {
-                int energyCost = m_movementAction.GetEnergyCost(args, combatBoardState.Room);
+                int energyCost = m_movementAction.GetEnergyCost(args, room);
                 return new ActionSelectionResult(m_movementAction, args, energyCost);
             }
 

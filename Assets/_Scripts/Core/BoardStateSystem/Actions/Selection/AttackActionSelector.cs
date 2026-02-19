@@ -11,16 +11,16 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
         public AttackActionSelector(AttackAction action) => m_attack = action;
 
-        protected override ActionSelectionResult TrySelectAction(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
+        protected override ActionSelectionResult TrySelectAction(Room room, EntityModel executor, RoomTile selectedTile)
         {
-            if (combatBoardState.Room.TryGetEntity(selectedTile.Position, out Entity target))
+            if (room.TryGetEntity(selectedTile.Position, out Entity target))
             {
                 AttackActionData attackActionData = executor.PossibleActions.Get<AttackActionData>();
                 TargetEntityActionInput input = new TargetEntityActionInput(executor, target.Model);
 
-                if (m_attack.TryCreateArgs(input, attackActionData, combatBoardState.Room, out AttackActionArgs args))
+                if (m_attack.TryCreateArgs(input, attackActionData, room, out AttackActionArgs args))
                 {
-                    int energyCost = m_attack.GetEnergyCost(args, combatBoardState.Room);
+                    int energyCost = m_attack.GetEnergyCost(args, room);
                     return new ActionSelectionResult(m_attack, args, energyCost);
                 }
             }

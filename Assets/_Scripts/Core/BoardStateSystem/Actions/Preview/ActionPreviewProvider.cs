@@ -11,7 +11,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
         private readonly IActionPreviewService m_actionPreviewService;
         private readonly Battle m_battle;
         private EntityModel m_executor;
-        private CombatBoardState m_currentState;
+        private Room m_currentRoom;
         private ActionPreview m_currentPreview;
 
         public event EventHandler<OnActionPreviewChangedEventArgs> OnActionPreviewChanged;
@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             m_battle.OnTurnSwitched -= HandleOnTurnSwitched;
         }
 
-        private void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args) => m_currentState = args.CombatBoardState;
+        private void HandleOnBattleStarted(object obj, OnBattleStartedEventArgs args) => m_currentRoom = args.Room;
         private void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
             if (args.CurrentEntity.Model.IsPlayer)
@@ -45,11 +45,11 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             ActionPreview newPreview = null;
 
             if (tile != null)
-                newPreview = m_actionPreviewService.Preview(m_currentState, m_executor, tile);
+                newPreview = m_actionPreviewService.Preview(m_currentRoom, m_executor, tile);
 
             m_currentPreview = newPreview;
 
-            OnActionPreviewChangedEventArgs args = new OnActionPreviewChangedEventArgs(newPreview, tile, m_currentState);
+            OnActionPreviewChangedEventArgs args = new OnActionPreviewChangedEventArgs(newPreview, tile, m_currentRoom);
             OnActionPreviewChanged?.Invoke(this, args);
 
             return m_currentPreview;

@@ -29,7 +29,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             m_previewProvider.OnActionPreviewChanged -= HandleOnActionPreviewChanged;
         }
 
-        public void Present(ActionPreview preview, RoomTile tile, CombatBoardState state)
+        public void Present(ActionPreview preview, RoomTile tile, Room room)
         {
             m_tileHighlighter.Clear();
             
@@ -40,7 +40,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             {
                 MovementActionArgs args = (MovementActionArgs)preview.Args;
 
-                List<Vector2> path = movementAction.CreatePath(args, state.Room).Skip(1).ToList();
+                List<Vector2> path = movementAction.CreatePath(args, room).Skip(1).ToList();
 
                 bool isReachable = path.LastOrDefault().ToVector3Int() == tile.Position;
                 m_tileHighlighter.Show(tile, isReachable);
@@ -59,6 +59,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
             }
         }
 
-        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args) => Present(args.ActionPreview, args.Tile, args.State);
+        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args) => Present(args.ActionPreview, args.Tile, args.Room);
     }
 }

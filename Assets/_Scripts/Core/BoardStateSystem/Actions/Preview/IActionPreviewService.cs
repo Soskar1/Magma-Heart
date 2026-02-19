@@ -5,6 +5,6 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 {
     public interface IActionPreviewService
     {
-        public ActionPreview Preview(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile);
+        public ActionPreview Preview(Room room, EntityModel executor, RoomTile selectedTile);
     }
 }

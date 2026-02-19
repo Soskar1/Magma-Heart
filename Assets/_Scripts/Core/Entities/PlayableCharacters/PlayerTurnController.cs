@@ -2,9 +2,9 @@
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Input;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly ActionExecutor m_actionRunner;
 
         private ActionPreview m_currentPreview;
-        private CombatBoardState m_currentBoardState;
+        private Room m_currentRoom;
 
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
         public event Action OnCombatActionExecutionStarted;
@@ -71,13 +71,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void EndBattle()
         {
-            m_currentBoardState = null;
+            m_currentRoom = null;
             m_cancellationTokenSource.Cancel();
         }
 
-        public async Task StartTurn(CombatBoardState state, TurnOrder turnOrder)
+        public async Task StartTurn(Room room, TurnOrder turnOrder)
         {
-            m_currentBoardState = state;
+            m_currentRoom = room;
 
             CanExecuteActions = true;
 
@@ -102,8 +102,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
             
-            IEnumerable<IBoardCommand> commands = preview.Action.Execute(preview.Args, m_currentBoardState.Room);
-            await m_actionRunner.ApplyAsync(m_currentBoardState.Room, commands, m_cancellationTokenSource.Token);
+            IEnumerable<IBoardCommand> commands = preview.Action.Execute(preview.Args, m_currentRoom);
+            await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
 
             if (m_cancellationTokenSource.IsCancellationRequested)
                 return;

@@ -13,9 +13,9 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             m_selector = selector;
         }
 
-        public ActionPreview Preview(CombatBoardState combatBoardState, EntityModel executor, RoomTile selectedTile)
+        public ActionPreview Preview(Room room, EntityModel executor, RoomTile selectedTile)
         {
-            ActionSelectionResult result = m_selector.GetAction(combatBoardState, executor, selectedTile);
+            ActionSelectionResult result = m_selector.GetAction(room, executor, selectedTile);
 
             if (result == null)
                 return null;
