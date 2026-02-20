@@ -1,5 +1,4 @@
 ﻿using MagmaHeart.Abilities.Effects;
-using MagmaHeart.Abilities.Requirements;
 using MagmaHeart.Abilities.Resources;
 using MagmaHeart.Abilities.Targeting;
 using System.Collections.Generic;
@@ -13,19 +12,26 @@ namespace MagmaHeart.Abilities
             if (ability.Targeting != null && !ability.Targeting.ValidateChosenTarget(world, executorId, target))
                 return new AbilityPlan(false, ResourceCost.Zero, new List<AbilityEffect>());
 
-            ResourceCost cost = ability.Cost != null ? ability.Cost.ComputeCost(world, executorId, target) : ResourceCost.Zero;
+            ResourceCost totalCost = ResourceCost.Zero;
 
-            if (ability.Requirements != null)
+            if (ability.Cost != null)
             {
-                foreach (RequirementModule requirement in ability.Requirements)
+                foreach (CostModule cost in ability.Cost)
                 {
-                    if (requirement == null)
+                    if (cost == null)
                         continue;
 
-                    bool isMet = requirement.IsMet(world, executorId, target, cost);
-                    if (!isMet)
-                        return new AbilityPlan(false, cost, new List<AbilityEffect>());
+                    ResourceCost moduleCost = cost.ComputeCost(world, executorId, target);
+                    totalCost.Add(moduleCost);
                 }
+            }
+
+            foreach (var resource in totalCost.GetAllCosts())
+            {
+                var have = world.GetResource(executorId, resource.ResourceId);
+                
+                if (have < resource.Amount)
+                    return new AbilityPlan(false, totalCost, new List<AbilityEffect>());
             }
 
             List<AbilityEffect> effects = new List<AbilityEffect>();
@@ -42,7 +48,7 @@ namespace MagmaHeart.Abilities
                 }
             }
 
-            return new AbilityPlan(true, cost, effects);
+            return new AbilityPlan(true, totalCost, effects);
         }
     }
 }

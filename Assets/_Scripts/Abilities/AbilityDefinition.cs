@@ -1,24 +1,26 @@
 ﻿using MagmaHeart.Abilities.Effects;
-using MagmaHeart.Abilities.Requirements;
 using MagmaHeart.Abilities.Resources;
 using MagmaHeart.Abilities.Targeting;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Abilities
 {
-    [CreateAssetMenu(menuName = "Actions/Action Definition")]
+    [CreateAssetMenu(menuName = "Abilities/Ability Definition")]
     public class AbilityDefinition : ScriptableObject
     {
         [SerializeField] private string m_id;
         [SerializeField] private TargetingModule m_targeting;
-        [SerializeField] private CostModule m_cost;
-        [SerializeField] private RequirementModule[] m_requirements;
-        [SerializeField] private EffectModule[] m_effects;
+        
+        [SerializeReference, SubclassSelector]
+        private List<CostModule> m_cost;
+
+        [SerializeReference, SubclassSelector]
+        private List<EffectModule> m_effects;
 
         public string Id => m_id;
         public TargetingModule Targeting => m_targeting;
-        public CostModule Cost => m_cost;
-        public RequirementModule[] Requirements => m_requirements;
-        public EffectModule[] Effects => m_effects;
+        public List<CostModule> Cost => m_cost;
+        public List<EffectModule> Effects => m_effects;
     }
 }

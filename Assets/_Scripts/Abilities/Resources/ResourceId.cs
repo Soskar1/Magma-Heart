@@ -2,7 +2,7 @@
 
 namespace MagmaHeart.Abilities.Resources
 {
-    [CreateAssetMenu(menuName = "Actions/Resources/Resource Id")]
+    [CreateAssetMenu(menuName = "Abilities/Resources/Resource Id")]
     public class ResourceId : ScriptableObject
     {
         [SerializeField] private string m_id;

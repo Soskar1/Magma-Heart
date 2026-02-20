@@ -1,9 +1,10 @@
 ﻿using MagmaHeart.Abilities.Targeting;
-using UnityEngine;
+using System;
 
 namespace MagmaHeart.Abilities.Resources
 {
-    public abstract class CostModule : ScriptableObject
+    [Serializable]
+    public abstract class CostModule
     {
         public abstract ResourceCost ComputeCost(IGameWorld gameWorld, int executorId, AbilityTarget target);
     }
