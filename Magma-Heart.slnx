@@ -4,6 +4,7 @@
   <Project Path="MagmaHeart.Collections.csproj" />
   <Project Path="MagmaHeart.AI.Tests.csproj" />
   <Project Path="MagmaHeart.UIWindowPopupSystem.csproj" />
+  <Project Path="MagmaHeart.Abilities.csproj" />
   <Project Path="MagmaHeart.Extensions.csproj" />
   <Project Path="MagmaHeart.DungeonGeneration.csproj" />
   <Project Path="MagmaHeart.Core.Tests.csproj" />
