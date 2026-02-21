@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.StateMachine
             TravelStatePayload travelPayload = payload as TravelStatePayload;
 
             Entity player = m_context.Player;
-            Room room = m_context.DungeonController.CurrentRoom;
+            Room room = m_context.World.CurrentRoom;
 
             bool isEnteringRoom = travelPayload.Reason == TravelReason.EnterRoom;
 
@@ -36,7 +36,7 @@ namespace MagmaHeart.Core.StateMachine
             if (isEnteringRoom)
                 m_context.CameraController.MoveTo(endPosition);
 
-            player.transform.position = m_context.DungeonController.Grid.ToTileCenter(startPosition.ToVector2Int());
+            player.transform.position = m_context.World.ToTileCenter(startPosition.ToVector2Int());
 
             RoomTile start = room.GetRoomTile(startPosition);
             RoomTile end = room.GetRoomTile(endPosition);

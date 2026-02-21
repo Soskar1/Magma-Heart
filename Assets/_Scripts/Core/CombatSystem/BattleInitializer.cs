@@ -23,7 +23,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         // Note: We only need the OnLocationChanged event to adjust difficulty.
         // Difficulty is only stat based. In the future, difficulty handling will be different and this implementation will be removed
-        private readonly DungeonController m_dungeonController;
+        private readonly GameWorld m_gameWorld;
         private int m_additionalMonsters = 0;
         private int m_additionalHealth = 0;
         private int m_additionalStrength = 0;
@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.CombatSystem
         private int m_additionalEnergy = 0;
         private int m_additionalEnergyRegeneration = 0;
 
-        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController, ActionExecutor actionRunner)
+        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, GameWorld gameWorld, ActionExecutor actionRunner)
         {
             m_entitySpawner = entitySpawner;
             m_aiEngine = aiEngine;
@@ -40,11 +40,11 @@ namespace MagmaHeart.Core.CombatSystem
             m_grid = grid;
             m_actionRunner = actionRunner;
 
-            m_dungeonController = dungeonController;
-            m_dungeonController.OnLocationChanged += HandleOnLocationChanged;
+            m_gameWorld = gameWorld;
+            m_gameWorld.OnLocationChanged += HandleOnLocationChanged;
         }
 
-        public void Dispose() => m_dungeonController.OnLocationChanged -= HandleOnLocationChanged;
+        public void Dispose() => m_gameWorld.OnLocationChanged -= HandleOnLocationChanged;
 
         public IEnumerable<Entity> InitializeBattle(Room room, Entity player)
         {

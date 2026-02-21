@@ -13,13 +13,13 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
     {
         private readonly IActionPreviewProvider m_previewProvider;
         private readonly ICombatTileHighlighter m_tileHighlighter;
-        private readonly DungeonController m_dungeonController;
+        private readonly GameWorld m_gameWorld;
 
-        public CombatActionPreviewPresenter(DungeonController dungeonController, IActionPreviewProvider provider, ICombatTileHighlighter tileHighlighter)
+        public CombatActionPreviewPresenter(GameWorld gameWorld, IActionPreviewProvider provider, ICombatTileHighlighter tileHighlighter)
         {
             m_previewProvider = provider;
             m_tileHighlighter = tileHighlighter;
-            m_dungeonController = dungeonController;
+            m_gameWorld = gameWorld;
 
             m_previewProvider.OnActionPreviewChanged += HandleOnActionPreviewChanged;
         }
@@ -47,14 +47,14 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Preview
 
                 foreach (Vector2 point in path)
                 {
-                    RoomTile pathTile = m_dungeonController.CurrentRoom.GetRoomTile(point);
+                    RoomTile pathTile = m_gameWorld.GetTile(point);
                     m_tileHighlighter.Show(pathTile, true);
                 }
             }
             else if (preview.Action is AttackAction)
             {
                 AttackActionArgs args = (AttackActionArgs)preview.Args;
-                m_dungeonController.CurrentRoom.TryGetEntity(args.TargetEntityInput.Target.Id, out Entity entity);
+                m_gameWorld.TryGetEntity(args.TargetEntityInput.Target.Id, out Entity entity);
                 entity.Outline.ApplyOutline(OutlineSettings.CAN_ATTACK_OUTLINE);
             }
         }

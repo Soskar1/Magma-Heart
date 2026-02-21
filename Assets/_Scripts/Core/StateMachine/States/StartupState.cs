@@ -1,5 +1,4 @@
-﻿using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.TutorialSystem;
 using MagmaHeart.DungeonGeneration;
@@ -26,9 +25,9 @@ namespace MagmaHeart.Core.StateMachine.States
         public async Task EnterAsync(StatePayload payload = null)
         {
             Entity player = m_context.Player;
-            DungeonController dungeon = m_context.DungeonController;
+            GameWorld world = m_context.World;
 
-            RoomModel roomModel = dungeon.GenerateRoom();
+            RoomModel roomModel = world.GenerateRoom();
             await m_context.RoomRenderer.OnRoomRendered;
             
             if (!m_tutorial.Model.IsSet(TutorialFlags.OpenedWelcomeScreen))
@@ -37,7 +36,7 @@ namespace MagmaHeart.Core.StateMachine.States
                 m_tutorial.Model.TrySetFlag(TutorialFlags.OpenedWelcomeScreen);
             }
 
-            Vector2 center = dungeon.Grid.ToTileCenter(roomModel.WorldPosition);
+            Vector2 center = world.ToTileCenter(roomModel.WorldPosition);
             m_context.CameraController.MoveTo(center);
             player.transform.position = center;
            

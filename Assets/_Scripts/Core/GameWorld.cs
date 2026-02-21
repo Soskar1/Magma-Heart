@@ -27,6 +27,9 @@ namespace MagmaHeart.Core
         public event EventHandler OnRoomChanged;
         public event EventHandler OnLocationChanged;
 
+        public RoomGrid RoomGrid => m_roomGrid;
+        public Room CurrentRoom => m_currentRoom;
+
         public GameWorld(RoomGrid roomGrid, List<LocationData> locations, Random random)
         {
             m_roomGrid = roomGrid;
@@ -86,8 +89,8 @@ namespace MagmaHeart.Core
 
         public int GetDistance(int entityId1, int entityId2)
         {
-            m_currentRoom.TryGetEntity(entityId1, out Entity entity1);
-            m_currentRoom.TryGetEntity(entityId2, out Entity entity2);
+            TryGetEntity(entityId1, out Entity entity1);
+            TryGetEntity(entityId2, out Entity entity2);
 
             return Mathf.Abs(entity1.Model.TilePosition.x - entity2.Model.TilePosition.x) +
                    Mathf.Abs(entity1.Model.TilePosition.y - entity2.Model.TilePosition.y);
@@ -95,22 +98,30 @@ namespace MagmaHeart.Core
 
         public Vector3Int GetPosition(int entityId)
         {
-            m_currentRoom.TryGetEntity(entityId, out Entity entity);
+            TryGetEntity(entityId, out Entity entity);
             return entity.Model.TilePosition;
         }
 
         public float GetResource(int entityId, ResourceId resource)
         {
-            m_currentRoom.TryGetEntity(entityId, out Entity entity);
+            TryGetEntity(entityId, out Entity entity);
             return entity.Model.GetResource(resource);
         }
 
         public bool IsEnemy(int executorId, int targetId)
         {
-            m_currentRoom.TryGetEntity(executorId, out Entity executor);
-            m_currentRoom.TryGetEntity(targetId, out Entity target);
+            TryGetEntity(executorId, out Entity executor);
+            TryGetEntity(targetId, out Entity target);
 
             return executor.Model.IsPlayer != target.Model.IsPlayer;
         }
+
+        public bool TryGetEntity(int entityId, out Entity entity) => m_currentRoom.TryGetEntity(entityId, out entity);
+        public bool TryGetEntityAtPosition(Vector3Int position, out Entity entity) => m_currentRoom.TryGetEntity(position, out entity);
+
+        public RoomTile GetTile(Vector3 position) => m_currentRoom.GetRoomTile(position);
+
+        public Vector3Int WorldToTilePosition(Vector2 worldPosition) => m_roomGrid.WorldToTilePosition(worldPosition);
+        public Vector2 ToTileCenter(Vector2Int tile) => m_roomGrid.ToTileCenter(tile);
     }
 }

@@ -14,18 +14,18 @@ namespace MagmaHeart.Core.Dungeon
         [SerializeField] private TileBase m_wall;
         [SerializeField] private TileBase m_door;
 
-        private DungeonController m_controller;
+        private GameWorld m_gameWorld;
 
         private TaskCompletionSource<bool> m_renderedRoom;
         public Task<bool> OnRoomRendered => m_renderedRoom.Task;
 
-        public void Initialize(DungeonController dungeonController)
+        public void Initialize(GameWorld gameWorld)
         {
-            m_controller = dungeonController;
-            dungeonController.OnRoomGenerated += HandleOnRoomGenerated;
+            m_gameWorld = gameWorld;
+            gameWorld.OnRoomGenerated += HandleOnRoomGenerated;
         }
 
-        public void OnDisable() => m_controller.OnRoomGenerated -= HandleOnRoomGenerated;
+        public void OnDisable() => m_gameWorld.OnRoomGenerated -= HandleOnRoomGenerated;
 
         public void HandleOnRoomGenerated(object obj, OnRoomGeneratedEventArgs args)
         {

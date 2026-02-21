@@ -40,7 +40,7 @@ namespace MagmaHeart.Core.StateMachine
             m_turnController.OnCombatActionExecutionStarted += HandleOnCombatActionExecutionStarted;
             m_turnController.OnCombatActionExecuted += HandleOnCombatActionExecuted;
 
-            Room room = m_context.DungeonController.CurrentRoom;
+            Room room = m_context.World.CurrentRoom;
             m_camera.EnableManualMovement(room.RoomModel.OccupiedSpace);
             m_turnController.Enable();
 

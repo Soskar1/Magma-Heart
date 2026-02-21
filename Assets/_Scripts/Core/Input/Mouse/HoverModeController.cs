@@ -16,16 +16,16 @@ namespace MagmaHeart.Core.Input.Mouse
         private readonly IHoverHandler m_actionHandler;
         private readonly IHoverHandler m_combatHandler;
 
-        public HoverModeController(MouseHoverEngine engine, DungeonController dungeonController, GraphicRaycaster raycaster, IActionPreviewProvider actionPreviewProvider, ICombatTileHighlighter tileHighlighter)
+        public HoverModeController(MouseHoverEngine engine, GameWorld gameWorld, GraphicRaycaster raycaster, IActionPreviewProvider actionPreviewProvider, ICombatTileHighlighter tileHighlighter)
         {
             m_engine = engine;
 
             m_chainHead = new UIMouseHoverStrategy(raycaster);
             m_raycast = new RaycastMouseHoverStrategy();
-            m_tile = new TileMouseHoverStrategy(dungeonController);
+            m_tile = new TileMouseHoverStrategy(gameWorld);
 
             m_actionHandler = new ActionHoverHandler();
-            m_combatHandler = new CombatHoverHandler(dungeonController, actionPreviewProvider, tileHighlighter);
+            m_combatHandler = new CombatHoverHandler(gameWorld, actionPreviewProvider, tileHighlighter);
         }
 
         public void Disable() => m_engine.Disable();

@@ -10,7 +10,7 @@ using MagmaHeart.Core.TutorialSystem;
 namespace MagmaHeart.Core.SceneLoading
 {
     public record MagmaHeartContext(
-        DungeonController DungeonController,
+        GameWorld World,
         RoomRenderer RoomRenderer,
         Entity Player,
         HoverModeController HoverModeController,

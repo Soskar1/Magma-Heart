@@ -9,15 +9,15 @@ namespace MagmaHeart.Core.Input.Mouse
 {
     public class CombatHoverHandler : IHoverHandler
     {
-        private readonly DungeonController m_dungeonController;
+        private readonly GameWorld m_gameWorld;
         private readonly ICombatTileHighlighter m_tileHighlighter;
         private readonly IActionPreviewProvider m_actionPreviewProvider;
         private RoomTile m_currentTile;
         private Entity m_currentEntity;
 
-        public CombatHoverHandler(DungeonController dungeonController, IActionPreviewProvider actionPreviewProvider, ICombatTileHighlighter tileHighlighter)
+        public CombatHoverHandler(GameWorld gameWorld, IActionPreviewProvider actionPreviewProvider, ICombatTileHighlighter tileHighlighter)
         {
-            m_dungeonController = dungeonController;
+            m_gameWorld = gameWorld;
             m_actionPreviewProvider = actionPreviewProvider;
             m_tileHighlighter = tileHighlighter;
         }
@@ -64,7 +64,7 @@ namespace MagmaHeart.Core.Input.Mouse
             if (m_currentEntity != null && presenter.Model != m_currentEntity.Model)
                 m_currentEntity.Outline.RemoveOutline();
 
-            if (!m_dungeonController.CurrentRoom.TryGetEntity(presenter.Model.Id, out Entity entity))
+            if (!m_gameWorld.CurrentRoom.TryGetEntity(presenter.Model.Id, out Entity entity))
                 return;
 
             m_currentEntity = entity;

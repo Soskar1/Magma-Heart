@@ -85,7 +85,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_escapeScreen.Initialize(inputContext.UserInput);
 
             RoomGrid grid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
-            DungeonController dungeonController = new DungeonController(grid, m_locations, random);
+            GameWorld dungeonController = new GameWorld(grid, m_locations, random);
             m_roomRenderer.Initialize(dungeonController);
 
             AIInstaller aiInstaller = new AIInstaller();
