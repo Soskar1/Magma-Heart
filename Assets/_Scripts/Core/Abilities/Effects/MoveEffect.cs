@@ -7,12 +7,12 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Effects
 {
-    public record MoveEffect(int ExecutorId, List<Vector2Int> Path) : AbilityEffect(ExecutorId);
+    public record MoveEffect(int ExecutorId, List<Vector3Int> Path) : AbilityEffect(ExecutorId);
 
     [Serializable]
     public class BuildMoveEffect : EffectModule
     {
-        public override IEnumerable<AbilityEffect> BuildEffects(IGameWorld gameWorld, int executorId, AbilityTarget target)
+        public override IEnumerable<AbilityEffect> BuildEffects(IGameWorld world, int executorId, AbilityTarget target)
         {
             if (target.Kind != TargetKind.Path || target.Path == null || target.Path.Count == 0)
                 return new List<AbilityEffect>();

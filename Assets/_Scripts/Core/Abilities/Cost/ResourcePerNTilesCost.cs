@@ -26,8 +26,8 @@ namespace MagmaHeart.Core.Abilities.Cost
             }
             else if (target.Kind == TargetKind.Position)
             {
-                Vector2Int from = world.GetPosition(executorId);
-                List<Vector2Int> path = world.FindPath(from, target.Position);
+                Vector3Int from = world.GetPosition(executorId);
+                List<Vector3Int> path = world.FindPath(from, target.Position);
                 if (path == null)
                     return ResourceCost.Zero;
                 
