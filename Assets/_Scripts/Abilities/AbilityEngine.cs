@@ -50,5 +50,14 @@ namespace MagmaHeart.Abilities
 
             return new AbilityPlan(true, totalCost, effects);
         }
+
+        public List<AbilityEffect> BuildSpendCostEffects(int executorId, ResourceCost cost)
+        {
+            List<AbilityEffect> list = new List<AbilityEffect>();
+            foreach (var resource in cost.GetAllCosts())
+                list.Add(new SpendResourceEffect(executorId, resource.ResourceId, resource.Amount));
+            
+            return list;
+        }
     }
 }
