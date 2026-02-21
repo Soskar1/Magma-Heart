@@ -1,3 +1,4 @@
+using MagmaHeart.Abilities;
 using MagmaHeart.AI.Actions;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,12 +12,14 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private Sprite m_portraitImage;
         [SerializeField] private EntityStats m_stats;
         [SerializeField] private List<ActionData> m_actions;
+        [SerializeField] private List<AbilityDefinition> m_abilities;
         [SerializeField] private RuntimeAnimatorController m_animatorController;
 
         public string Name => m_name;
         public Sprite PortraitImage => m_portraitImage;
         public EntityStats Stats => m_stats;
         public List<ActionData> Actions => m_actions;
+        public List<AbilityDefinition> Abilities => m_abilities;
         public RuntimeAnimatorController AnimatorController => m_animatorController;
 
         public EntityData(string name, EntityStats stats, List<ActionData> actions)

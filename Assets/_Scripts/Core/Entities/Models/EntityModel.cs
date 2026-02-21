@@ -1,3 +1,4 @@
+using MagmaHeart.Abilities;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.Entities.Models;
@@ -28,6 +29,9 @@ namespace MagmaHeart.Core.Entities
 
             foreach (ActionData actionData in data.Actions)
                 PossibleActions.Add(actionData.GetType(), actionData);
+
+            foreach (AbilityDefinition ability in data.Abilities)
+                Abilities.Add(ability.Id, ability);
         }
 
         public override AIUnitModel DeepCopy()
