@@ -18,6 +18,8 @@ MonoBehaviour:
   - rid: 226000683239735490
   m_effects:
   - rid: 226000683239735492
+  m_requirements:
+  - rid: 226000697812320368
   references:
     version: 2
     RefIds:
@@ -28,4 +30,7 @@ MonoBehaviour:
         m_tilesPerResource: 2
     - rid: 226000683239735492
       type: {class: BuildMoveEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000697812320368
+      type: {class: TileIsAccessibleRequirement, ns: MagmaHeart.Core.Abilities.Requirements, asm: MagmaHeart.Core}
       data: 

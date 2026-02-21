@@ -101,7 +101,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
-            
+
             IEnumerable<IBoardCommand> commands = preview.Action.Execute(preview.Args, m_currentRoom);
             await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
 

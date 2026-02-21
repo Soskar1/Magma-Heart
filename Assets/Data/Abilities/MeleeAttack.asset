@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: MeleeAttack
   m_EditorClassIdentifier: 
   m_id: Melee Attack
-  m_targeting: {fileID: 11400000, guid: 91d2efe207d2a8543bde494131bd19d6, type: 2}
   m_cost:
   - rid: 226000683239735493
   m_effects:
   - rid: 226000683239735494
+  m_requirements:
+  - rid: 226000697812320372
   references:
     version: 2
     RefIds:
@@ -30,3 +31,8 @@ MonoBehaviour:
       type: {class: BuildDamageEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
       data:
         m_initialDamage: 1
+    - rid: 226000697812320372
+      type: {class: EnemyInRangeTargeting, ns: MagmaHeart.Core.Abilities.Requirements, asm: MagmaHeart.Core}
+      data:
+        m_minRange: 1
+        m_maxRange: 1

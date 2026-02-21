@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Effects
 {
-    public record MoveEffect(int ExecutorId, List<Vector3Int> Path) : AbilityEffect(ExecutorId);
+    public record MoveEffect(int ExecutorId, List<Vector3> Path) : AbilityEffect(ExecutorId);
 
     [Serializable]
     public class BuildMoveEffect : EffectModule

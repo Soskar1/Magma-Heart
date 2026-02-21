@@ -1,5 +1,4 @@
 using MagmaHeart.Abilities;
-using MagmaHeart.Abilities.Resources;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.Entities.Models;
@@ -46,24 +45,6 @@ namespace MagmaHeart.Core.Entities
                 Speed = Speed.DeepCopy()
             };
             return copy;
-        }
-
-        public float GetResource(ResourceId resource)
-        {
-            switch (resource.Id)
-            {
-                case "Health":
-                    return Health.CurrentHealth;
-                case "Energy":
-                    return Energy.CurrentEnergy;
-                case "Strength":
-                    return Strength.CurrentStrength;
-                case "Speed":
-                    return Speed.CurrentSpeed;
-                default:
-                    Debug.LogError($"Resource with id {resource.Id} not found.");
-                    return 0;
-            }
         }
     }
 }

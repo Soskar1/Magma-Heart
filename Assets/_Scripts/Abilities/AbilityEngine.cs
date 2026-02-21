@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Abilities.Effects;
+using MagmaHeart.Abilities.Requirements;
 using MagmaHeart.Abilities.Resources;
 using MagmaHeart.Abilities.Targeting;
 using System.Collections.Generic;
@@ -9,9 +10,6 @@ namespace MagmaHeart.Abilities
     {
         public AbilityPlan Plan(IGameWorld world, int executorId, AbilityDefinition ability, AbilityTarget target)
         {
-            if (ability.Targeting != null && !ability.Targeting.ValidateChosenTarget(world, executorId, target))
-                return new AbilityPlan(false, ResourceCost.Zero, new List<AbilityEffect>());
-
             ResourceCost totalCost = ResourceCost.Zero;
 
             if (ability.Cost != null)
@@ -28,9 +26,18 @@ namespace MagmaHeart.Abilities
 
             foreach (var resource in totalCost.GetAllCosts())
             {
-                var have = world.GetResource(executorId, resource.ResourceId);
+                float have = world.GetResource(executorId, resource.ResourceId);
                 
                 if (have < resource.Amount)
+                    return new AbilityPlan(false, totalCost, new List<AbilityEffect>());
+            }
+
+            foreach (IAbilityRequirement requirement in ability.Requirements)
+            {
+                if (requirement == null)
+                    continue;
+
+                if (!requirement.IsMet(world, executorId, target))
                     return new AbilityPlan(false, totalCost, new List<AbilityEffect>());
             }
 

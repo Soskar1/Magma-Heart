@@ -1,11 +1,11 @@
-using MagmaHeart.Extensions;
-using UnityEngine;
-using MagmaHeart.Core.Entities;
 using MagmaHeart.AI.Boards;
-using System.Collections.Generic;
-using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon.Data;
+using MagmaHeart.Core.Entities;
+using MagmaHeart.DungeonGeneration;
+using MagmaHeart.Extensions;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Dungeon
 {
@@ -53,26 +53,34 @@ namespace MagmaHeart.Core.Dungeon
             return new RoomTile(position, m_grid);
         }
 
-        public bool TileIsAccessable(RoomTile roomTile)
+        public bool TileIsAccessable(Vector3 worldPosition)
         {
-            DungeonTile tile = RoomModel.GetTile((Vector2Int)roomTile.Position);
+            DungeonTile tile = GetTile(worldPosition);
 
-            if (tile == null || tile.Type == TileType.Wall || TryGetEntity(roomTile.Position, out _))
+            if (tile == null || tile.Type == TileType.Wall || TryGetEntity(worldPosition, out _))
                 return false;
 
             return true;
         }
 
         public bool TryGetEntity(int entityId, out Entity entity) => m_entities.TryGetValue(entityId, out entity);
-        public bool TryGetEntity(Vector3Int position, out Entity entity)
+        public bool TryGetEntity(Vector3 position, out Entity entity)
         {
-            if (!TryGetUnit(position.ToVector2(), out EntityModel model))
+            DungeonTile tile = GetTile(position);
+
+            if (!TryGetUnit(tile.Position, out EntityModel model))
             {
                 entity = null;
                 return false;
             }
 
             return TryGetEntity(model.Id, out entity);
+        }
+
+        private DungeonTile GetTile(Vector3 worldPosition)
+        {
+            Vector3Int position = m_grid.WorldToTilePosition(worldPosition);
+            return RoomModel.GetTile(position.ToVector2Int());
         }
     }
 }

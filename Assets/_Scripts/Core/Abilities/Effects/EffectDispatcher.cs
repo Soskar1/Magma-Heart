@@ -40,7 +40,7 @@ namespace MagmaHeart.Core.Abilities.Effects
 
         private interface IUntypedHandler
         {
-            void Handle(AbilityEffect effect);
+            public void Handle(AbilityEffect effect);
         }
 
         private sealed class UntypedHandler<T> : IUntypedHandler where T : AbilityEffect

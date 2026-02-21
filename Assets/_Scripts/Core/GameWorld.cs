@@ -4,6 +4,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Dungeon.Data;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.DungeonGeneration;
+using MagmaHeart.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +83,7 @@ namespace MagmaHeart.Core
             return m_currentLocation.BossRoom;
         }
 
-        public List<Vector3Int> FindPath(Vector3Int from, Vector3Int to)
+        public List<Vector3> FindPath(Vector3 from, Vector3 to)
         {
             throw new System.NotImplementedException();
         }
@@ -96,7 +97,7 @@ namespace MagmaHeart.Core
                    Mathf.Abs(entity1.Model.TilePosition.y - entity2.Model.TilePosition.y);
         }
 
-        public Vector3Int GetPosition(int entityId)
+        public Vector3 GetPosition(int entityId)
         {
             TryGetEntity(entityId, out Entity entity);
             return entity.Model.TilePosition;
@@ -105,7 +106,7 @@ namespace MagmaHeart.Core
         public float GetResource(int entityId, ResourceId resource)
         {
             TryGetEntity(entityId, out Entity entity);
-            return entity.Model.GetResource(resource);
+            throw new System.NotImplementedException();
         }
 
         public bool IsEnemy(int executorId, int targetId)
@@ -116,8 +117,18 @@ namespace MagmaHeart.Core
             return executor.Model.IsPlayer != target.Model.IsPlayer;
         }
 
+        public int GetEntityAtPosition(Vector3 position)
+        {
+            if (TryGetEntityAtPosition(position, out Entity entity))
+                return entity.Model.Id;
+
+            return -1;
+        }
+
+        public bool PositionIsAccessible(Vector3 position) => m_currentRoom.TileIsAccessable(position);
+
         public bool TryGetEntity(int entityId, out Entity entity) => m_currentRoom.TryGetEntity(entityId, out entity);
-        public bool TryGetEntityAtPosition(Vector3Int position, out Entity entity) => m_currentRoom.TryGetEntity(position, out entity);
+        public bool TryGetEntityAtPosition(Vector3 position, out Entity entity) => m_currentRoom.TryGetEntity(position, out entity);
 
         public RoomTile GetTile(Vector3 position) => m_currentRoom.GetRoomTile(position);
 

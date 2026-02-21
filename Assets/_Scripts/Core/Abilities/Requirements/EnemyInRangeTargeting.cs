@@ -1,21 +1,21 @@
 ﻿using MagmaHeart.Abilities;
+using MagmaHeart.Abilities.Requirements;
 using MagmaHeart.Abilities.Targeting;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Abilities.Targeting
+namespace MagmaHeart.Core.Abilities.Requirements
 {
-    [CreateAssetMenu(menuName = "Abilities/Targeting/Enemy In Range Targeting")]
-    public class EnemyInRangeTargeting : TargetingModule
+    [System.Serializable]
+    public class EnemyInRangeTargeting : IAbilityRequirement
     {
         [SerializeField] private int m_minRange;
         [SerializeField] private int m_maxRange;
 
-        public override bool ValidateChosenTarget(IGameWorld world, int executorId, AbilityTarget target)
+        public bool IsMet(IGameWorld world, int executorId, AbilityTarget target)
         {
-            if (target.Kind != TargetKind.Entity)
-                return false;
-
-            if (!world.IsEnemy(executorId, target.EntityId))
+            bool isTargetingEntity = target.Kind.HasFlag(TargetKind.Entity);
+            
+            if (!isTargetingEntity)
                 return false;
 
             int distance = world.GetDistance(executorId, target.EntityId);
