@@ -96,7 +96,11 @@ namespace MagmaHeart.Core
                 return false;
             }
 
-            path = tmpPath.Cast<Vector3>().ToList();
+            path = tmpPath
+                .Select(point => m_worldGrid.ToTileCenter(point.ToVector2Int()))
+                .Cast<Vector3>()
+                .ToList();
+
             return true;
         }
 

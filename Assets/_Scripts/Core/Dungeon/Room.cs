@@ -16,6 +16,7 @@ namespace MagmaHeart.Core.Dungeon
         
         public RoomModel RoomModel { get; init; }
         public RoomData RoomData { get; init; }
+        public WorldGrid Grid => m_grid;
 
         public IEnumerable<Entity> Entities => m_entities.Values;
 

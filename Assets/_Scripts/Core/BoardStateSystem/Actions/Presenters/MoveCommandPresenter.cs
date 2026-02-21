@@ -2,7 +2,6 @@
 using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,20 +29,17 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Presenters
             List<Vector2> path = command.Path;
             room.TryGetEntity(command.ExecutorId, out Entity entity);
 
-            Vector3Int from = path.First().ToVector3Int();
-            Vector3Int to = path.Last().ToVector3Int();
+            Vector3 from = path.First();
+            Vector3 to = path.Last();
             entity.Facing.TryUpdateFacing(to.x - from.x);
-
-            List<DungeonTile> tilePath = new List<DungeonTile>();
-            foreach (Vector2 pathPoint in path)
-            {
-                DungeonTile tile = room.GetTile(pathPoint);
-                tilePath.Add(tile);
-            }
 
             entity.Animation.PlayRunAnimation();
 
-            await entity.TileBasedMovement.StartMovementAsync(tilePath, m_movementSpeed);
+            path = path
+                .Select(point => room.Grid.ToTileCenter(point.ToVector2Int()))
+                .ToList();
+
+            await entity.TileBasedMovement.StartMovementAsync(path, m_movementSpeed);
 
             entity.Animation.PlayIdleAnimation();
         }
