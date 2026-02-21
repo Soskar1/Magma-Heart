@@ -50,17 +50,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_mouseHover = mouseHover;
             m_abilitySelector = new AbilitySelector(gameWorld);
             m_actionRunner = actionRunner;
-        }
 
-        public void Enable()
-        {
-            m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
             m_mouseHover.OnHoverResultChanged += HandleOnHoverResultChanged;
         }
 
         public void Dispose()
         {
-            m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
             m_mouseHover.OnHoverResultChanged -= HandleOnHoverResultChanged;
         }
 
@@ -105,7 +100,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentExecutor = executor;
             CanExecuteActions = true;
 
-            Enable();
+            m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
 
             m_turnFinished = new TaskCompletionSource<bool>();
             await m_turnFinished.Task;
@@ -116,7 +111,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentExecutor = null;
             CanExecuteActions = false;
 
-            Dispose();
+            m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
 
             m_turnFinished.SetResult(true);
         }
