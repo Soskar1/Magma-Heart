@@ -39,21 +39,21 @@ namespace MagmaHeart.Core.Abilities.Selection
                     return plan;
             }
 
-            //if (hoversTile)
-            //{
-            //    Vector3 from = m_world.GetEntityPosition(executor.Id);
-            //    Vector3 to = hoverResult.Tile.Position.ToVector3();
-            //    bool foundValidPath = m_world.TryFindPath(from, to, out List<Vector3> path);
+            if (hoversTile)
+            {
+                Vector3 from = m_world.GetEntityPosition(executor.Id);
+                Vector3 to = hoverResult.Tile.Position.ToVector3();
+                bool foundValidPath = m_world.TryFindPath(from, to, out List<Vector3> path);
 
-            //    if (!foundValidPath)
-            //        return null;
+                if (!foundValidPath)
+                    return null;
 
-            //    AbilityTarget target = AbilityTarget.PathTarget(path);
-            //    AbilityPlan plan = m_abilityEngine.Plan(m_world, executor.Id, executor.MovementAbility, target);
-                
-            //    if (plan.IsLegal)
-            //        return plan;
-            //}
+                AbilityTarget target = AbilityTarget.PathTarget(path);
+                AbilityPlan plan = m_abilityEngine.Plan(m_world, executor.Id, executor.MovementAbility, target);
+
+                if (plan.IsLegal)
+                    return plan;
+            }
 
             return null;
         }

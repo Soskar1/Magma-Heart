@@ -97,8 +97,7 @@ namespace MagmaHeart.Core
             }
 
             path = tmpPath
-                .Select(point => m_worldGrid.ToTileCenter(point.ToVector2Int()))
-                .Cast<Vector3>()
+                .Select(point => (Vector3)m_worldGrid.ToTileCenter(point.ToVector2Int()))
                 .ToList();
 
             return true;

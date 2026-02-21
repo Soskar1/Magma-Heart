@@ -18,6 +18,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly IGameWorld m_gameWorld;
 
         private AbilityPlan m_currentSelectedAbility;
+        private HoverResult m_currentHover;
 
         public event EventHandler<OnAbilitySelectedEventArgs> OnAbilitySelected;
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
@@ -65,24 +66,24 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnHoverResultChanged(object _, OnHoverResultChangedEventArgs args)
         {
+            if (m_currentHover != null && m_currentHover == args.HoverResult)
+                return;
+
+            m_currentHover = args.HoverResult;
+
             if (m_currentExecutor == null)
             {
-                Debug.Log("Current executor is null. Cannot select ability.");
-
                 OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(null, args.HoverResult));
                 return;
             }
 
             if (!CanExecuteActions)
             {
-                Debug.Log("Cannot execute actions. Cannot select ability.");
-
                 OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(null, args.HoverResult));
                 return;
             }
 
             AbilityPlan plan = m_abilitySelector.SelectAbility(args.HoverResult, m_currentExecutor);
-            Debug.Log($"Successfully selected ability: {plan}");
             OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(plan, args.HoverResult));
         }
 
