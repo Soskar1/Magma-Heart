@@ -1,3 +1,4 @@
+using MagmaHeart.Abilities.Resources;
 using System;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace MagmaHeart.Core.Entities.Models
         private int m_energyRegenerationPerTurn;
 
         public event EventHandler<OnEnergyChangedEventArgs> OnEnergyChanged;
+
+        public ResourceId ResourceId { get; init; }
 
         public int MaxEnergy
         { 
@@ -56,8 +59,10 @@ namespace MagmaHeart.Core.Entities.Models
             }
         }
 
-        public EnergyModel(int maxEnergy, int energyRegenerationPerTurn)
+        public EnergyModel(ResourceId resourceId, int maxEnergy, int energyRegenerationPerTurn)
         {
+            ResourceId = resourceId;
+
             MaxEnergy = maxEnergy;
             EnergyRegenerationPerTurn = energyRegenerationPerTurn;
             m_currentEnergy = 0;
@@ -67,7 +72,7 @@ namespace MagmaHeart.Core.Entities.Models
 
         public EnergyModel DeepCopy()
         {
-            EnergyModel copy = new EnergyModel(MaxEnergy, EnergyRegenerationPerTurn)
+            EnergyModel copy = new EnergyModel(ResourceId, MaxEnergy, EnergyRegenerationPerTurn)
             {
                 CurrentEnergy = CurrentEnergy
             };

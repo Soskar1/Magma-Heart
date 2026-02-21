@@ -12,14 +12,18 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private Sprite m_portraitImage;
         [SerializeField] private EntityStats m_stats;
         [SerializeField] private List<ActionData> m_actions;
-        [SerializeField] private List<AbilityDefinition> m_abilities;
         [SerializeField] private RuntimeAnimatorController m_animatorController;
+        [SerializeField] private List<AbilityDefinition> m_additionalAbilities;
+        [SerializeField] private AbilityDefinition m_attackAbility;
+        [SerializeField] private AbilityDefinition m_movementAbility;
 
         public string Name => m_name;
         public Sprite PortraitImage => m_portraitImage;
         public EntityStats Stats => m_stats;
         public List<ActionData> Actions => m_actions;
-        public List<AbilityDefinition> Abilities => m_abilities;
+        public List<AbilityDefinition> AdditionalAbilities => m_additionalAbilities;
+        public AbilityDefinition AttackAbility => m_attackAbility;
+        public AbilityDefinition MovementAbility => m_movementAbility;
         public RuntimeAnimatorController AnimatorController => m_animatorController;
 
         public EntityData(string name, EntityStats stats, List<ActionData> actions)

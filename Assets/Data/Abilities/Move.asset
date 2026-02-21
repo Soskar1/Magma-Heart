@@ -13,24 +13,22 @@ MonoBehaviour:
   m_Name: Move
   m_EditorClassIdentifier: 
   m_id: Movement
-  m_targeting: {fileID: 11400000, guid: cc0d50ca69fc5564d8d49272c121b545, type: 2}
   m_cost:
-  - rid: 226000683239735490
+  - rid: 226000697812320388
   m_effects:
-  - rid: 226000683239735492
+  - rid: 226000697812320389
   m_requirements:
-  - rid: 226000697812320368
+  - rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 226000683239735490
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 226000697812320388
       type: {class: ResourcePerNTilesCost, ns: MagmaHeart.Core.Abilities.Cost, asm: MagmaHeart.Core}
       data:
         m_resourceId: {fileID: 11400000, guid: b3b3f88b56183314fa191013c2113355, type: 2}
         m_tilesPerResource: 2
-    - rid: 226000683239735492
+    - rid: 226000697812320389
       type: {class: BuildMoveEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
-      data: 
-    - rid: 226000697812320368
-      type: {class: TileIsAccessibleRequirement, ns: MagmaHeart.Core.Abilities.Requirements, asm: MagmaHeart.Core}
       data: 

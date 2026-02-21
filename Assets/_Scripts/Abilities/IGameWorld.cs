@@ -7,11 +7,11 @@ namespace MagmaHeart.Abilities
     public interface IGameWorld
     {
         public float GetResource(int entityId, ResourceId resource);
-        public Vector3 GetPosition(int entityId);
-        public List<Vector3> FindPath(Vector3 from, Vector3 to);
+        public Vector3 GetEntityPosition(int entityId);
+        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path);
         public int GetEntityAtPosition(Vector3 position);
         public bool PositionIsAccessible(Vector3 position);
-        public bool IsEnemy(int executorId, int targetId);
+        public bool AreEnemiesToEachOther(int executorId, int targetId);
         public int GetDistance(int entityId1, int entityId2);
     }
 }

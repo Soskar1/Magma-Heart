@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class EnemyTurnController : ITurnController
+    public class EnemyTurnController
     {
         private readonly AIEngine m_aiEngine;
         private readonly ActionExecutor m_actionRunner;

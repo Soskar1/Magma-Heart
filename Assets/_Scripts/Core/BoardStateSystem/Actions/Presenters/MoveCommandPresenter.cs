@@ -2,6 +2,7 @@
 using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,10 +34,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Presenters
             Vector3Int to = path.Last().ToVector3Int();
             entity.Facing.TryUpdateFacing(to.x - from.x);
 
-            List<RoomTile> tilePath = new List<RoomTile>();
+            List<DungeonTile> tilePath = new List<DungeonTile>();
             foreach (Vector2 pathPoint in path)
             {
-                RoomTile tile = room.GetRoomTile(pathPoint);
+                DungeonTile tile = room.GetTile(pathPoint);
                 tilePath.Add(tile);
             }
 

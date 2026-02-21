@@ -8,7 +8,6 @@ namespace MagmaHeart.Core.Input
     {
         private UserInput m_userInput;
         private MouseListener m_mouseListener;
-        private MouseHoverEngine m_hoverEngine;
 
         public InputContext Install(MouseListener mouseListenerPrefab)
         {
@@ -17,16 +16,13 @@ namespace MagmaHeart.Core.Input
             m_mouseListener = GameObject.Instantiate(mouseListenerPrefab);
             m_mouseListener.Initialize(m_userInput);
 
-            m_hoverEngine = new MouseHoverEngine(m_mouseListener);
-
-            return new InputContext(m_userInput, m_mouseListener, m_hoverEngine);
+            return new InputContext(m_userInput, m_mouseListener);
         }
 
         public void Dispose()
         {
             m_userInput.Disable();
             m_mouseListener.Disable();
-            m_hoverEngine.Disable();
         }
     }
 }

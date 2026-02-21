@@ -1,3 +1,4 @@
+using MagmaHeart.Abilities.Resources;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -10,6 +11,7 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private int m_energyRegenerationPerTurn = 5;
         [SerializeField] private int m_strength = 0;
         [SerializeField] private int m_speed = 0;
+        [SerializeField] private ResourceId m_energy;
 
         public EntityStats(float maxHealth = 5, int maxEnergy = 7, int energyRegenerationPerTurn = 5, int strength = 0, int speed = 0)
         {
@@ -25,6 +27,8 @@ namespace MagmaHeart.Core.Entities
         public int EnergyRegenerationPerTurn => m_energyRegenerationPerTurn;
         public int Strength => m_strength;
         public int Speed => m_speed;
+
+        public ResourceId EnergyId => m_energy;
 
         // Note: used for difficulty scaling. Possibly will need to remove this in the future
         public void IncreaseHealth(int amount) => m_maxHealth += amount;

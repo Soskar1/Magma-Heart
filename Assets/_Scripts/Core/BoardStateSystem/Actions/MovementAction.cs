@@ -6,7 +6,6 @@ using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
@@ -113,7 +112,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
 
                 List<Vector2> roomTiles =
                     adjacentTiles.Where(v => board.Graph.ContainsNode(v) && board.GetNodeType(v) == BoardNodeType.Walkable)
-                    .OrderBy(t => RoomGrid.ManhattanDistance(entity.TilePosition, t.ToVector3Int()))
+                    .OrderBy(t => WorldGrid.ManhattanDistance(entity.TilePosition, t.ToVector3Int()))
                     .ToList();
 
                 foreach (Vector2 tile in roomTiles)

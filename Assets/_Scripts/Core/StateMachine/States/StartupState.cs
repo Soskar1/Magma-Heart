@@ -42,8 +42,6 @@ namespace MagmaHeart.Core.StateMachine.States
            
             player.gameObject.SetActive(true);
 
-            m_context.HoverModeController.UseRaycastHover();
-
             await m_context.UI.WelcomeScreen.GetTask();
 
             m_tutorial.Model.TrySetFlag(TutorialFlags.HealthBarExplained);

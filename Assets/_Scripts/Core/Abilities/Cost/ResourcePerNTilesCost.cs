@@ -26,9 +26,9 @@ namespace MagmaHeart.Core.Abilities.Cost
             }
             else if (target.Kind == TargetKind.Position)
             {
-                Vector3 from = world.GetPosition(executorId);
-                List<Vector3> path = world.FindPath(from, target.Position);
-                if (path == null)
+                Vector3 from = world.GetEntityPosition(executorId);
+                bool foundPath = world.TryFindPath(from, target.Position, out List<Vector3> path);
+                if (foundPath && path == null)
                     return ResourceCost.Zero;
                 
                 steps = Math.Max(0, path.Count - 1);

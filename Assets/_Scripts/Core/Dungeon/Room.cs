@@ -12,14 +12,14 @@ namespace MagmaHeart.Core.Dungeon
     public class Room : Board
     {
         private readonly Dictionary<int, Entity> m_entities;
-        private readonly RoomGrid m_grid;
+        private readonly WorldGrid m_grid;
         
         public RoomModel RoomModel { get; init; }
         public RoomData RoomData { get; init; }
 
         public IEnumerable<Entity> Entities => m_entities.Values;
 
-        public Room(RoomModel model, RoomData roomData, RoomGrid grid) : base(BoardGraphBuilder.GenerateBoardGraph(model))
+        public Room(RoomModel model, RoomData roomData, WorldGrid grid) : base(BoardGraphBuilder.GenerateBoardGraph(model))
         {
             RoomModel = model;
             RoomData = roomData;
@@ -47,12 +47,6 @@ namespace MagmaHeart.Core.Dungeon
             ChangeNodeType(position, BoardNodeType.Walkable);
         }
 
-        public RoomTile GetRoomTile(Vector3 worldPosition)
-        {
-            Vector3Int position = m_grid.WorldToTilePosition(worldPosition);
-            return new RoomTile(position, m_grid);
-        }
-
         public bool TileIsAccessable(Vector3 worldPosition)
         {
             DungeonTile tile = GetTile(worldPosition);
@@ -77,7 +71,7 @@ namespace MagmaHeart.Core.Dungeon
             return TryGetEntity(model.Id, out entity);
         }
 
-        private DungeonTile GetTile(Vector3 worldPosition)
+        public DungeonTile GetTile(Vector3 worldPosition)
         {
             Vector3Int position = m_grid.WorldToTilePosition(worldPosition);
             return RoomModel.GetTile(position.ToVector2Int());

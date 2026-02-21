@@ -2,6 +2,7 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.StateMachine.States;
+using MagmaHeart.DungeonGeneration;
 using MagmaHeart.StateMachine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,9 +39,9 @@ namespace MagmaHeart.Core.StateMachine
 
             player.transform.position = m_context.World.ToTileCenter(startPosition.ToVector2Int());
 
-            RoomTile start = room.GetRoomTile(startPosition);
-            RoomTile end = room.GetRoomTile(endPosition);
-            List<RoomTile> path = new List<RoomTile>() { start, end };
+            DungeonTile start = room.GetTile(startPosition);
+            DungeonTile end = room.GetTile(endPosition);
+            List<DungeonTile> path = new List<DungeonTile>() { start, end };
 
             await m_context.Services.MovementService.MoveEntityAsync(player, path, m_travelSpeed);
             

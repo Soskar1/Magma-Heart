@@ -6521,16 +6521,16 @@ MonoBehaviour:
   m_movementSpeed: 5
   m_locations:
   - {fileID: 11400000, guid: c633427e0bdd30f4d898d126ec05d286, type: 2}
-  m_combatTilemapRenderer: {fileID: 8388963511706051692}
   m_dungeonTilemap: {fileID: 540808438}
   m_dungeonGrid: {fileID: 1863885643486044408}
-  m_roomRenderer: {fileID: 8388963511706051693}
+  m_worldPresenter: {fileID: 8388963511706051693}
   m_seed: -1
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 4ca55881ba0901544934d33a5252ef98, type: 2}
   m_entityPrefab: {fileID: 7422606736354459837, guid: 4207caed466d91c4c94cd751e08cbce4, type: 3}
   m_projectilePrefab: {fileID: 5171675335557925640, guid: ad117eca505b1a649806b6003fcd065c, type: 3}
   m_minDistanceFromPlayer: 2
+  m_abilitySelectorPresenter: {fileID: 8388963511706051694}
   m_windowDatabase: {fileID: 11400000, guid: f72c9c4f9ed40c14b848ad5042af3e88, type: 2}
   m_gameUI: {fileID: 1222064955}
   m_debugUI: {fileID: 382051349}
@@ -6712,29 +6712,14 @@ GameObject:
   - component: {fileID: 4599864832325589257}
   - component: {fileID: 1863885643486044408}
   - component: {fileID: 8388963511706051693}
-  - component: {fileID: 8388963511706051692}
+  - component: {fileID: 8388963511706051694}
   m_Layer: 0
-  m_Name: Room
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8388963511706051692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8388963511706051691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5ab1befd9487d7488f9ca68b5f2b39f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_combatTilemap: {fileID: 1157183066}
-  m_validCombatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
-  m_invalidCombatTile: {fileID: 11400000, guid: ebc9bbd401c80b742a68d5244ca5dc5d, type: 2}
 --- !u!114 &8388963511706051693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6752,6 +6737,24 @@ MonoBehaviour:
   m_floor: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wall: {fileID: 11400000, guid: 4ca55881ba0901544934d33a5252ef98, type: 2}
   m_door: {fileID: 11400000, guid: 2c71307b5dffaa44c8aaeb92e2f013cf, type: 2}
+--- !u!114 &8388963511706051694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388963511706051691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b780f130f6c37ad478f4694b4539e016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_combatTilemap: {fileID: 1157183066}
+  m_validCombatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
+  m_invalidCombatTile: {fileID: 11400000, guid: ebc9bbd401c80b742a68d5244ca5dc5d, type: 2}
+  m_allyOutlineColor: {r: 0, g: 1, b: 0, a: 1}
+  m_enemyOutlineColor: {r: 1, g: 0, b: 0, a: 1}
+  m_canAttackOutlineColor: {r: 1, g: 0.35, b: 0.35, a: 1}
 --- !u!114 &8458581491792506061
 MonoBehaviour:
   m_ObjectHideFlags: 0

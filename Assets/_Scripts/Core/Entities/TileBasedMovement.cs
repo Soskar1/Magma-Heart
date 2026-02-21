@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.DungeonGeneration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -12,11 +12,11 @@ namespace MagmaHeart.Core.Entities
         private int m_speed = 5;
         private int m_targetIndex;
         private bool m_canMove = false;
-        private List<RoomTile> m_currentPath = new List<RoomTile>();
+        private List<DungeonTile> m_currentPath = new List<DungeonTile>();
 
         private TaskCompletionSource<bool> m_movementFinished;
 
-        public Task StartMovementAsync(List<RoomTile> path, int speed)
+        public Task StartMovementAsync(List<DungeonTile> path, int speed)
         {
             m_currentPath = path;
             m_targetIndex = 0;
@@ -32,13 +32,13 @@ namespace MagmaHeart.Core.Entities
             if (!m_canMove)
                 return;
 
-            RoomTile target = m_currentPath[m_targetIndex];
+            DungeonTile target = m_currentPath[m_targetIndex];
 
-            transform.position = Vector3.MoveTowards(transform.position, target.TileCenter, m_speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target.Position.ToVector3(), m_speed * Time.deltaTime);
 
-            if (Vector3.Distance(transform.position, target.TileCenter) < m_changePointAtDistance)
+            if (Vector3.Distance(transform.position, target.Position.ToVector3()) < m_changePointAtDistance)
             {
-                transform.position = target.TileCenter;
+                transform.position = target.Position.ToVector3();
                 ++m_targetIndex;
             }
 

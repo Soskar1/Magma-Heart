@@ -16,6 +16,9 @@ namespace MagmaHeart.Core.Entities
         public EntityStats Stats { get; init; }
         public EntityData Data { get; init; }
 
+        public AbilityDefinition MovementAbility { get; init; }
+        public AbilityDefinition AttackAbility { get; init; }
+
         public EntityModel(EntityData data, Vector3Int startTilePosition, bool isPlayer, int id) : base(isPlayer, id)
         {
             Stats = data.Stats;
@@ -23,14 +26,19 @@ namespace MagmaHeart.Core.Entities
 
             TilePosition = startTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
-            Energy = new EnergyModel(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Energy = new EnergyModel(Stats.EnergyId, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
             Strength = new StrengthModel(Stats.Strength);
             Speed = new SpeedModel(Stats.Speed);
+
+            AttackAbility = data.AttackAbility;
+            MovementAbility = data.MovementAbility;
+            Abilities.Add(AttackAbility.Id, AttackAbility);
+            Abilities.Add(MovementAbility.Id, MovementAbility);
 
             foreach (ActionData actionData in data.Actions)
                 PossibleActions.Add(actionData.GetType(), actionData);
 
-            foreach (AbilityDefinition ability in data.Abilities)
+            foreach (AbilityDefinition ability in data.AdditionalAbilities)
                 Abilities.Add(ability.Id, ability);
         }
 

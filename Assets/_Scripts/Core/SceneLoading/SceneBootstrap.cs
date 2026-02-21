@@ -1,11 +1,9 @@
+using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.BoardStateSystem.Actions.Preview;
 using MagmaHeart.Core.CameraControls;
 using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Dungeon.Data;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
@@ -40,10 +38,9 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("Dungeon")]
         [SerializeField] private List<LocationData> m_locations;
-        [SerializeField] private CombatTilemapRenderer m_combatTilemapRenderer;
         [SerializeField] private Tilemap m_dungeonTilemap;
         [SerializeField] private Grid m_dungeonGrid;
-        [SerializeField] private RoomRenderer m_roomRenderer;
+        [SerializeField] private WorldPresenter m_worldPresenter;
         [SerializeField] private int m_seed;
         [SerializeField] private TileBase m_floorTile;
         [SerializeField] private TileBase m_wallTile;
@@ -54,6 +51,7 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private float m_minDistanceFromPlayer;
 
         [Header("UI")]
+        [SerializeField] private AbilitySelectorPresenter m_abilitySelectorPresenter;
         [SerializeField] private MagmaHeartWindowDatabaseDefinition m_windowDatabase;
         [SerializeField] private GameUI m_gameUI;
         [SerializeField] private DebugUI m_debugUI;
@@ -63,7 +61,6 @@ namespace MagmaHeart.Core.SceneLoading
         [Header("Tutorial")]
         [SerializeField] private TutorialWindowPresenter m_tutorialWindowPrefab;
 
-        private HoverModeController m_hoverModeController;
         private readonly List<IInstaller> m_installers = new List<IInstaller>();
 
         public async void Awake()
@@ -84,17 +81,21 @@ namespace MagmaHeart.Core.SceneLoading
             m_debugUI.Initialize(inputContext.UserInput, m_seed);
             m_escapeScreen.Initialize(inputContext.UserInput);
 
-            RoomGrid grid = new RoomGrid(m_dungeonGrid, m_dungeonTilemap);
-            GameWorld dungeonController = new GameWorld(grid, m_locations, random);
-            m_roomRenderer.Initialize(dungeonController);
-
-            AIInstaller aiInstaller = new AIInstaller();
-            AIContext aiContext = aiInstaller.Install();
-            m_installers.Add(aiInstaller);
+            WorldGrid grid = new WorldGrid(m_dungeonGrid, m_dungeonTilemap);
+            GameWorld gameWorld = new GameWorld(grid, m_locations, random);
+            m_worldPresenter.Initialize(gameWorld);
 
             SpawnServiceInstaller spawnServiceInstaller = new SpawnServiceInstaller();
             SpawnService spawner = spawnServiceInstaller.Install(m_entityPrefab, m_projectilePrefab, grid);
             m_installers.Add(spawnServiceInstaller);
+
+            PlayerInstaller playerInstaller = new PlayerInstaller();
+            PlayerContext playerContext = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, null, gameWorld, m_graphicRaycaster);
+            m_installers.Add(playerInstaller);
+
+            AIInstaller aiInstaller = new AIInstaller();
+            AIContext aiContext = aiInstaller.Install();
+            m_installers.Add(aiInstaller);
 
             ServiceInstaller serviceInstaller = new ServiceInstaller();
             MagmaHeartServices services = serviceInstaller.Install(spawner);
@@ -105,38 +106,28 @@ namespace MagmaHeart.Core.SceneLoading
             m_installers.Add(actionRunnerInstaller);
 
             BattleInstaller battleInstaller = new BattleInstaller();
-            BattleContext battleContext = battleInstaller.Install(services, aiContext, random, grid, m_minDistanceFromPlayer, dungeonController, actionRunner);
+            BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, gameWorld, actionRunner, playerContext.TurnController);
             m_installers.Add(battleInstaller);
 
-            ActionPreviewInstaller actionPreviewInstaller = new ActionPreviewInstaller(m_combatTilemapRenderer);
-            IActionPreviewProvider previewProvider = actionPreviewInstaller.Install(aiContext.ActionDatabase, battleContext.Battle, dungeonController);
-            m_installers.Add(actionPreviewInstaller);
-
-            PlayerInstaller playerInstaller = new PlayerInstaller();
-            Entity player = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, previewProvider, actionRunner);
-            m_installers.Add(playerInstaller);
-
             CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
-            camera.Initialize(player.transform, inputContext.UserInput, battleContext.Battle);
-
-            m_hoverModeController = new HoverModeController(inputContext.MouseHoverEngine, dungeonController, m_graphicRaycaster, previewProvider, m_combatTilemapRenderer);
-            m_hoverModeController.UseRaycastHover();
+            camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
 
             StatisticsInstaller statisticsInstaller = new StatisticsInstaller();
-            CompletedRoomsCounter completedRoomsCounter = statisticsInstaller.Install(dungeonController);
+            CompletedRoomsCounter completedRoomsCounter = statisticsInstaller.Install(gameWorld);
             m_installers.Add(statisticsInstaller);
 
-            m_gameUI.Initialize(player, battleContext.Battle, inputContext.MouseHoverEngine, previewProvider, completedRoomsCounter);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, gameWorld, completedRoomsCounter);
+            m_abilitySelectorPresenter.Initialize(gameWorld, playerContext.Player.Model, playerContext.TurnController);
 
             ArtifactInstaller artifactInstaller = new ArtifactInstaller();
-            RewardService rewardService = artifactInstaller.Install(player.Model, m_gameUI.RewardUI);
+            RewardService rewardService = artifactInstaller.Install(playerContext.Player.Model, m_gameUI.RewardUI);
             m_installers.Add(artifactInstaller);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
             m_installers.Add(tutorialInstaller);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(dungeonController, m_roomRenderer, player, m_hoverModeController, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(gameWorld, m_worldPresenter, playerContext.Player, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
             
             await stateMachine.Start();
@@ -146,8 +137,6 @@ namespace MagmaHeart.Core.SceneLoading
         {
             foreach (IInstaller installer in m_installers)
                 installer.Dispose();
-
-            m_hoverModeController.Disable();
 
             m_debugUI.Disable();
         }

@@ -10,10 +10,10 @@ namespace MagmaHeart.Core.Entities.Presenters
         [SerializeField] private Button m_nextTurnButton;
         private PlayerTurnController m_turnController;
 
-        public void Initialize(Entity player)
+        public void Initialize(PlayerTurnController playerTurnController)
         {
-            m_turnController = (PlayerTurnController)player.TurnController;
-            m_nextTurnButton.onClick.AddListener(player.TurnController.EndTurn);
+            m_turnController = playerTurnController;
+            m_nextTurnButton.onClick.AddListener(playerTurnController.EndTurn);
 
             m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
         }

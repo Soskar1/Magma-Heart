@@ -3,6 +3,8 @@ using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +33,15 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionExecutor actionRunner)
+        private readonly PlayerTurnController m_playerTurnController;
+        private readonly EnemyTurnController m_enemyTurnController;
+
+        public Battle(IStartOfTurnCommandFactory startOfTurnCommandFactory, ActionExecutor actionRunner, PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController)
         {
             m_startOfTurnCommandFactory = startOfTurnCommandFactory;
             m_actionRunner = actionRunner;
+            m_playerTurnController = playerTurnController;
+            m_enemyTurnController = enemyTurnController;
         }
 
         public async Task Start(Room room, IEnumerable<Entity> entities)
@@ -77,7 +84,11 @@ namespace MagmaHeart.Core.CombatSystem
 
                 IEnumerable<IBoardCommand> commands = m_startOfTurnCommandFactory.BuildStartOfTurnCommands(m_currentRoom, entity.Model);
                 await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
-                await entity.TurnController.StartTurn(m_currentRoom, m_currentTurnOrder);
+
+                if (entity.Model.IsPlayer)
+                    await m_playerTurnController.StartTurn(entity.Model);
+                else
+                    await m_enemyTurnController.StartTurn(m_currentRoom, m_currentTurnOrder);
 
                 if (!m_battleEnded)
                     m_currentTurnOrder.Next();
@@ -125,13 +136,15 @@ namespace MagmaHeart.Core.CombatSystem
         private void End(bool isPlayerVictory)
         {
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
+            m_enemyTurnController.EndBattle();
+            m_playerTurnController.EndBattle();
+
             foreach (Entity entity in leftEntities)
             {
                 if (m_healthHandlers.TryGetValue(entity.Model.Id, out var handler))
                     entity.Model.Health.OnHealthChanged -= handler;
 
                 m_currentRoom.RemoveEntityFromRoom(entity);
-                entity.TurnController.EndBattle();
 
                 // Maybe not the best place to put it, but it works...
                 entity.Energy.Reset();

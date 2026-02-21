@@ -6,7 +6,6 @@ using MagmaHeart.Bresenham;
 using MagmaHeart.Core.BoardStateSystem.Actions.Data;
 using MagmaHeart.Core.BoardStateSystem.Actions.Input;
 using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions
             board.TryGetUnit(args.TargetEntityInput.TypedExecutor.Id, out EntityModel attacker);
             board.TryGetUnit(args.TargetEntityInput.Target.Id, out EntityModel target);
 
-            if (RoomGrid.ManhattanDistance(attacker.TilePosition, target.TilePosition) > args.AttackDistance)
+            if (WorldGrid.ManhattanDistance(attacker.TilePosition, target.TilePosition) > args.AttackDistance)
                 return false;
 
             if (args.AttackType == AttackType.Ranged)

@@ -1,31 +1,33 @@
-﻿using MagmaHeart.AI.Execution;
+﻿using MagmaHeart.Abilities;
+using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.BoardStateSystem.Actions;
-using MagmaHeart.Core.CombatSystem;
-using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Input;
+using MagmaHeart.Core.Input.Mouse;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
-    public class PlayerTurnController : ITurnController
+    public class PlayerTurnController : IDisposable
     {
-        private readonly IActionPreviewProvider m_actionPreviewProvider;
-        private readonly MouseListener m_mouseListener;
+        private readonly AbilitySelector m_abilitySelector;
         private readonly ActionExecutor m_actionRunner;
+        private readonly MouseListener m_mouseListener;
+        private readonly MouseHover m_mouseHover;
+        private readonly IGameWorld m_gameWorld;
 
-        private ActionPreview m_currentPreview;
-        private Room m_currentRoom;
+        private AbilityPlan m_currentSelectedAbility;
 
+        public event EventHandler<OnAbilitySelectedEventArgs> OnAbilitySelected;
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
         public event Action OnCombatActionExecutionStarted;
         public event Action OnCombatActionExecuted;
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
+
+        private EntityModel m_currentExecutor;
 
         private bool m_canExecuteActions;
         public bool CanExecuteActions
@@ -40,46 +42,69 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnController(MouseListener mouseListener, IActionPreviewProvider previewProvider, ActionExecutor actionRunner)
+        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, ActionExecutor actionRunner, IGameWorld gameWorld)
         {
             m_mouseListener = mouseListener;
-            m_actionPreviewProvider = previewProvider;
+            m_gameWorld = gameWorld;
+            m_mouseHover = mouseHover;
+            m_abilitySelector = new AbilitySelector(gameWorld);
             m_actionRunner = actionRunner;
         }
 
         public void Enable()
         {
             m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
-            m_actionPreviewProvider.OnActionPreviewChanged += HandleOnActionPreviewChanged;
+            m_mouseHover.OnHoverResultChanged += HandleOnHoverResultChanged;
         }
 
-        public void Disable()
+        public void Dispose()
         {
             m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
-            m_actionPreviewProvider.OnActionPreviewChanged -= HandleOnActionPreviewChanged;
+            m_mouseHover.OnHoverResultChanged -= HandleOnHoverResultChanged;
         }
 
-        private void HandleOnActionPreviewChanged(object obj, OnActionPreviewChangedEventArgs args) => m_currentPreview = args.ActionPreview;
+        private void HandleOnHoverResultChanged(object _, OnHoverResultChangedEventArgs args)
+        {
+            if (m_currentExecutor == null)
+            {
+                Debug.Log("Current executor is null. Cannot select ability.");
+
+                OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(null, args.HoverResult));
+                return;
+            }
+
+            if (!CanExecuteActions)
+            {
+                Debug.Log("Cannot execute actions. Cannot select ability.");
+
+                OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(null, args.HoverResult));
+                return;
+            }
+
+            AbilityPlan plan = m_abilitySelector.SelectAbility(args.HoverResult, m_currentExecutor);
+            Debug.Log($"Successfully selected ability: {plan}");
+            OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(plan, args.HoverResult));
+        }
 
         private async void HandleOnGameLeftMouseButtonClick()
         {
-            if (m_currentPreview == null)
+            if (m_currentSelectedAbility == null)
                 return;
 
-            await Execute(m_currentPreview);
+            await Execute(m_currentSelectedAbility);
         }
 
         public void EndBattle()
         {
-            m_currentRoom = null;
             m_cancellationTokenSource.Cancel();
         }
 
-        public async Task StartTurn(Room room, TurnOrder turnOrder)
+        public async Task StartTurn(EntityModel executor)
         {
-            m_currentRoom = room;
-
+            m_currentExecutor = executor;
             CanExecuteActions = true;
+
+            Enable();
 
             m_turnFinished = new TaskCompletionSource<bool>();
             await m_turnFinished.Task;
@@ -87,12 +112,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void EndTurn()
         {
+            m_currentExecutor = null;
             CanExecuteActions = false;
+
+            Dispose();
 
             m_turnFinished.SetResult(true);
         }
 
-        private async Task Execute(ActionPreview preview)
+        private async Task Execute(AbilityPlan ability)
         {
             if (!CanExecuteActions)
                 return;
@@ -102,12 +130,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
 
-            IEnumerable<IBoardCommand> commands = preview.Action.Execute(preview.Args, m_currentRoom);
-            await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
+            Debug.Log($"Executing ability: {ability}. TODO");
+            //IEnumerable<IBoardCommand> commands = ability.Action.Execute(ability.Args, m_currentRoom);
+            //await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
 
-            if (m_cancellationTokenSource.IsCancellationRequested)
-                return;
-            
+            //if (m_cancellationTokenSource.IsCancellationRequested)
+            //    return;
+
             CanExecuteActions = true;
             OnCombatActionExecuted?.Invoke();
         }

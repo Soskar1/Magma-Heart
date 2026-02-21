@@ -1,5 +1,5 @@
-﻿using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.Core.Entities;
+using MagmaHeart.DungeonGeneration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,10 +9,10 @@ namespace MagmaHeart.Core.Services
 {
     public class EntityMovementService
     {
-        public async Task MoveEntityAsync(Entity entity, List<RoomTile> aStarPath, int speed)
+        public async Task MoveEntityAsync(Entity entity, List<DungeonTile> aStarPath, int speed)
         {
-            Vector3Int from = aStarPath.First().Position;
-            Vector3Int to = aStarPath.Last().Position;
+            Vector2Int from = aStarPath.First().Position;
+            Vector2Int to = aStarPath.Last().Position;
             entity.Facing.TryUpdateFacing(to.x - from.x);
 
             entity.Animation.PlayRunAnimation();

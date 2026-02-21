@@ -20,7 +20,11 @@ MonoBehaviour:
     m_energyRegenerationPerTurn: 3
     m_strength: 0
     m_speed: 0
+    m_energy: {fileID: 11400000, guid: b3b3f88b56183314fa191013c2113355, type: 2}
   m_actions:
   - {fileID: 11400000, guid: 8ad5dbaf386d51f4ea46622e42277a6a, type: 2}
   - {fileID: 11400000, guid: 4fd8e72a5b434e54c832596064888f7e, type: 2}
   m_animatorController: {fileID: 9100000, guid: 75d93d2f03f30b143b54ef2baeb96ec5, type: 2}
+  m_additionalAbilities: []
+  m_attackAbility: {fileID: 11400000, guid: 6427db122570038418d2ea58567c8126, type: 2}
+  m_movementAbility: {fileID: 11400000, guid: af844ce7707774443a50caeb39ad43d5, type: 2}
