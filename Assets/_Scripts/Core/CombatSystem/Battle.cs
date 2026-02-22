@@ -137,7 +137,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
             m_enemyTurnController.EndBattle();
-            m_playerTurnController.EndBattle();
+            m_playerTurnController.Disable();
 
             foreach (Entity entity in leftEntities)
             {

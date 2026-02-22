@@ -1,19 +1,19 @@
 ﻿using MagmaHeart.Abilities.Effects;
-using MagmaHeart.Abilities.Resources;
+using MagmaHeart.Core.Entities;
 
 namespace MagmaHeart.Core.Abilities.Effects.Handlers
 {
-    public interface IResourceService
-    {
-        public void Spend(int entityId, ResourceId resource, int amount);
-    }
-
     public sealed class SpendResourceHandler : IEffectHandler<SpendResourceEffect>
     {
-        private readonly IResourceService m_resourceService;
+        public void Handle(GameWorld world, SpendResourceEffect effect)
+        {
+            world.TryGetEntity(effect.ExecutorId, out Entity executor);
 
-        public SpendResourceHandler(IResourceService resources) => m_resourceService = resources;
-
-        public void Handle(SpendResourceEffect e) => m_resourceService.Spend(e.ExecutorId, e.Resource, e.Amount);
+            // TODO: Prototype. This should be more generic and not hardcoded to energy.
+            if (effect.Resource.Id == executor.Model.Energy.ResourceId.Id)
+            {
+                executor.Model.Energy.CurrentEnergy -= effect.Amount;
+            }
+        }
     }
 }

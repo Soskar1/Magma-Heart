@@ -1,4 +1,7 @@
 ﻿using MagmaHeart.Abilities;
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.Core.Abilities.Effects;
+using MagmaHeart.Core.Abilities.Effects.Handlers;
 using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Input.Mouse;
@@ -15,7 +18,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly ActionExecutor m_actionRunner;
         private readonly MouseListener m_mouseListener;
         private readonly MouseHover m_mouseHover;
-        private readonly IGameWorld m_gameWorld;
+        private readonly GameWorld m_gameWorld;
+        private readonly EffectDispatcher m_effectDispatcher;
 
         private AbilityPlan m_currentSelectedAbility;
         private HoverResult m_currentHover;
@@ -43,13 +47,18 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, ActionExecutor actionRunner, IGameWorld gameWorld)
+        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, ActionExecutor actionRunner, GameWorld gameWorld)
         {
             m_mouseListener = mouseListener;
             m_gameWorld = gameWorld;
             m_mouseHover = mouseHover;
             m_abilitySelector = new AbilitySelector(gameWorld);
             m_actionRunner = actionRunner;
+
+            m_effectDispatcher = new EffectDispatcher();
+            m_effectDispatcher.Register(new SpendResourceHandler());
+            m_effectDispatcher.Register(new DamageHandler());
+            m_effectDispatcher.Register(new MoveHandler());
 
             m_mouseHover.OnHoverResultChanged += HandleOnHoverResultChanged;
         }
@@ -78,8 +87,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 return;
             }
 
-            AbilityPlan plan = m_abilitySelector.SelectAbility(args.HoverResult, m_currentExecutor);
-            OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(plan, args.HoverResult));
+            m_currentSelectedAbility = m_abilitySelector.SelectAbility(args.HoverResult, m_currentExecutor);
+            OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(m_currentSelectedAbility, args.HoverResult));
         }
 
         private async void HandleOnGameLeftMouseButtonClick()
@@ -88,11 +97,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
                 return;
 
             await Execute(m_currentSelectedAbility);
-        }
-
-        public void EndBattle()
-        {
-            m_cancellationTokenSource.Cancel();
         }
 
         public async Task StartTurn(EntityModel executor)
@@ -108,12 +112,17 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void EndTurn()
         {
-            m_currentExecutor = null;
-            CanExecuteActions = false;
-
-            m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
+            Disable();
 
             m_turnFinished.SetResult(true);
+        }
+
+        public void Disable()
+        {
+            m_cancellationTokenSource.Cancel();
+            m_currentExecutor = null;
+            CanExecuteActions = false;
+            m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
         }
 
         private async Task Execute(AbilityPlan ability)
@@ -126,15 +135,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
 
-            Debug.Log($"Executing ability: {ability}. TODO");
-            //IEnumerable<IBoardCommand> commands = ability.Action.Execute(ability.Args, m_currentRoom);
-            //await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
+            foreach (AbilityEffect effect in ability.Effects)
+                m_effectDispatcher.Apply(m_gameWorld, effect);
 
-            //if (m_cancellationTokenSource.IsCancellationRequested)
-            //    return;
-
-            CanExecuteActions = true;
             OnCombatActionExecuted?.Invoke();
+            
+            if (m_currentExecutor != null)
+                CanExecuteActions = true;
+            
+            m_mouseHover.Hover(m_currentHover.WorldPosition);
         }
     }
 }

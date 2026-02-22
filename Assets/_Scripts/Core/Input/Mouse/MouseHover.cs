@@ -29,17 +29,19 @@ namespace MagmaHeart.Core.Input.Mouse
             m_listener.OnMouseWorldPositionChanged -= HandleMousePositionChanged;
         }
 
-        private void HandleMousePositionChanged(object _, OnMouseWorldPositionChangedEventArgs args)
+        private void HandleMousePositionChanged(object _, OnMouseWorldPositionChangedEventArgs args) => Hover(args.WorldPosition);
+
+        public void Hover(Vector2 worldPosition)
         {
-            HoverResult hoverResult = Hover(args.WorldPosition);
+            HoverResult hoverResult = GetHoverResult(worldPosition);
 
             OnHoverResultChangedEventArgs hoverArgs = new OnHoverResultChangedEventArgs(hoverResult);
             OnHoverResultChanged?.Invoke(this, hoverArgs);
         }
 
-        private HoverResult Hover(Vector2 worldPosition)
+        private HoverResult GetHoverResult(Vector2 worldPosition)
         {
-            HoverResult hoverResult = HoverResult.None;
+            HoverResult hoverResult = HoverResult.Empty(worldPosition);
             hoverResult = TryHoverUI(worldPosition, hoverResult);
             hoverResult = TryHoverEntity(worldPosition, hoverResult);
             hoverResult = TryHoverTile(worldPosition, hoverResult);

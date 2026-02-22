@@ -41,7 +41,7 @@ namespace MagmaHeart.Abilities
                     return new AbilityPlan(false, totalCost, new List<AbilityEffect>());
             }
 
-            List<AbilityEffect> effects = new List<AbilityEffect>();
+            List<AbilityEffect> effects = BuildSpendCostEffects(executorId, totalCost);
 
             if (ability.Effects != null)
             {
@@ -53,8 +53,6 @@ namespace MagmaHeart.Abilities
                     IEnumerable<AbilityEffect> moduleEffects = effectModule.BuildEffects(world, executorId, target);
                     effects.AddRange(moduleEffects);
                 }
-
-                effects.AddRange(BuildSpendCostEffects(executorId, totalCost));
             }
 
             return new AbilityPlan(true, totalCost, effects);

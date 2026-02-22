@@ -4,16 +4,17 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Input.Mouse
 {
-    public record HoverResult(HoverResultType Type, Entity Entity, DungeonTile Tile, GameObject UI)
+    public record HoverResult(HoverResultType Type, Vector2 WorldPosition, Entity Entity, DungeonTile Tile, GameObject UI)
     {
+        public Vector2 WorldPosition { get; private set; } = WorldPosition;
         public HoverResultType Type { get; private set; } = Type;
         public Entity Entity { get; private set; } = Entity;
         public DungeonTile Tile { get; private set; } = Tile;
         public GameObject UI { get; private set; } = UI;
 
-        public static HoverResult None => new HoverResult(HoverResultType.None, default, default, default);
-        public static HoverResult EntityHover(Entity entity) => new HoverResult(HoverResultType.Entity, entity, default, default);
-        public static HoverResult TileHover(DungeonTile tile) => new HoverResult(HoverResultType.Tile, default, tile, default);
+        public static HoverResult Empty(Vector2 worldPosition) => new HoverResult(HoverResultType.Empty, worldPosition, default, default, default);
+        public static HoverResult EntityHover(Entity entity, Vector2 worldPosition) => new HoverResult(HoverResultType.Entity, worldPosition, entity, default, default);
+        public static HoverResult TileHover(DungeonTile tile, Vector2 worldPosition) => new HoverResult(HoverResultType.Tile, worldPosition, default, tile, default);
 
         public HoverResult AppendUIInfo(GameObject ui)
         {

@@ -21,7 +21,7 @@ namespace MagmaHeart.Core.Abilities.Effects
             list.Add(new UntypedHandler<T>(handler));
         }
 
-        public void Apply(AbilityEffect effect)
+        public void Apply(GameWorld world, AbilityEffect effect)
         {
             if (effect == null) return;
 
@@ -29,18 +29,17 @@ namespace MagmaHeart.Core.Abilities.Effects
             if (m_handlers.TryGetValue(type, out List<IUntypedHandler> list))
             {
                 for (int i = 0; i < list.Count; i++)
-                    list[i].Handle(effect);
+                    list[i].Handle(world, effect);
             }
             else
             {
-                // Optional: log for debugging
-                // UnityEngine.Debug.LogWarning($"No handler registered for {type.Name}");
+                UnityEngine.Debug.LogWarning($"No handler registered for {type.Name}");
             }
         }
 
         private interface IUntypedHandler
         {
-            public void Handle(AbilityEffect effect);
+            public void Handle(GameWorld world, AbilityEffect effect);
         }
 
         private sealed class UntypedHandler<T> : IUntypedHandler where T : AbilityEffect
@@ -49,7 +48,7 @@ namespace MagmaHeart.Core.Abilities.Effects
 
             public UntypedHandler(IEffectHandler<T> handler) => m_handler = handler;
 
-            public void Handle(AbilityEffect effect) => m_handler.Handle((T)effect);
+            public void Handle(GameWorld world, AbilityEffect effect) => m_handler.Handle(world, (T)effect);
         }
     }
 }
