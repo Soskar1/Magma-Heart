@@ -1,4 +1,4 @@
-using MagmaHeart.Core.Abilities.Selection;
+using MagmaHeart.Abilities.Resources;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Presentation.UI;
 using System.Collections.Generic;
@@ -14,6 +14,10 @@ namespace MagmaHeart.Core.Entities.Presenters
         [SerializeField] private Sprite m_emptyEnergyCrystalGFX;
         [SerializeField] private Sprite m_activeEnergyCrystalGFX;
         [SerializeField] private Sprite m_priceEnergyCrystalGFX;
+
+        // TODO: I do not like this shit. We need to make it more cleaner. Good for prototype though
+        [SerializeField] private ResourceId m_resourceId;
+        public ResourceId Resource => m_resourceId;
 
         private List<Image> m_crystalVisuals;
         private EnergyModel m_playerEnergy;
@@ -38,10 +42,12 @@ namespace MagmaHeart.Core.Entities.Presenters
             m_playerEnergy.OnEnergyChanged -= HandleOnEnergyChanged;
         }
 
-        private void HandleOnEnergyChanged(object obj, OnEnergyChangedEventArgs args) => DisplayEnergy(args.CurrentEnergy);
+        private void HandleOnEnergyChanged(object obj, OnEnergyChangedEventArgs args) => DisplayCurrentEnergy();
 
-        private void DisplayEnergy(int currentEnergy)
+        public void DisplayCurrentEnergy()
         {
+            int currentEnergy = m_playerEnergy.CurrentEnergy;
+
             for (int i = 0; i < currentEnergy; ++i)
                 m_crystalVisuals[i].sprite = m_activeEnergyCrystalGFX;
 
@@ -49,17 +55,9 @@ namespace MagmaHeart.Core.Entities.Presenters
                 m_crystalVisuals[i].sprite = m_emptyEnergyCrystalGFX;
         }
 
-        private void HandleOnAbilitySelected(object _, OnAbilitySelectedEventArgs args)
+        public void DisplayCost(int cost)
         {
             int currentEnergy = m_playerEnergy.CurrentEnergy;
-
-            if (args.Plan == null)
-            {
-                DisplayEnergy(currentEnergy);
-                return;
-            }
-
-            int cost = args.Plan.ComputedCost[m_playerEnergy.ResourceId];
 
             for (int i = currentEnergy; i > currentEnergy - cost; --i)
                 m_crystalVisuals[i - 1].sprite = m_priceEnergyCrystalGFX;

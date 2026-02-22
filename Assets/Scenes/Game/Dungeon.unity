@@ -525,6 +525,7 @@ MonoBehaviour:
   m_emptyEnergyCrystalGFX: {fileID: 8713915412419360977, guid: b750710ae32151f4ab49efe52b66ae44, type: 3}
   m_activeEnergyCrystalGFX: {fileID: -6494811302086260735, guid: 36f4ce886a3340b48933a99c1476b07f, type: 3}
   m_priceEnergyCrystalGFX: {fileID: -2545692360956530447, guid: 94a7b951ad5f8fe4d81f9874baf1ea14, type: 3}
+  m_resourceId: {fileID: 11400000, guid: b3b3f88b56183314fa191013c2113355, type: 2}
 --- !u!114 &137812076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6755,6 +6756,7 @@ MonoBehaviour:
   m_outlinePresenter: {fileID: 8388963511706051695}
   m_entityInfoUI: {fileID: 1946546853}
   m_turnOrderPresenter: {fileID: 755473048}
+  m_energyPresenter: {fileID: 137812075}
 --- !u!114 &8388963511706051695
 MonoBehaviour:
   m_ObjectHideFlags: 0

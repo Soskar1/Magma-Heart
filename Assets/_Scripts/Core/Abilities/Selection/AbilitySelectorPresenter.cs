@@ -21,6 +21,7 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_turnOrderPresenter;
+        [SerializeField] private EnergyPresenter m_energyPresenter;
 
         private GameWorld m_world;
         private EntityModel m_executor;
@@ -40,7 +41,8 @@ namespace MagmaHeart.Core.Abilities.Selection
             m_effectPresenters = new Dictionary<Type, IEffectPresenter>
             {
                 { typeof(DamageEffect), new DamageEffectPresenter(m_outlinePresenter) },
-                { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) }
+                { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) },
+                { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
@@ -120,6 +122,7 @@ namespace MagmaHeart.Core.Abilities.Selection
         {
             m_combatTilemapPresenter.Clear();
             m_entityInfoUI.Hide();
+            m_energyPresenter.DisplayCurrentEnergy();
 
             if (m_currentEntitySelection != null)
             {

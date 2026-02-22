@@ -53,6 +53,8 @@ namespace MagmaHeart.Abilities
                     IEnumerable<AbilityEffect> moduleEffects = effectModule.BuildEffects(world, executorId, target);
                     effects.AddRange(moduleEffects);
                 }
+
+                effects.AddRange(BuildSpendCostEffects(executorId, totalCost));
             }
 
             return new AbilityPlan(true, totalCost, effects);
