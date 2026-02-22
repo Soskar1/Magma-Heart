@@ -32,7 +32,7 @@ namespace MagmaHeart.Core.CombatSystem.Presenters
             foreach (Entity entity in args.TurnOrder)
             {
                 EntityPresenter presenterInstance = Instantiate(m_entityPresenterPrefab, transform);
-                presenterInstance.Initialize(entity.Model, m_battle);
+                presenterInstance.Initialize(entity, m_battle);
 
                 m_currentPresenters.Add(entity.Model.Id, presenterInstance);
             }

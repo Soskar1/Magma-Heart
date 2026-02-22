@@ -11,16 +11,16 @@ namespace MagmaHeart.Core.Entities.Presenters
         [SerializeField] private Image m_currentTurnVisual;
         private Battle m_battle;
 
-        public EntityModel Model { get; private set; }
+        public Entity Entity { get; private set; }
 
-        public void Initialize(EntityModel entity, Battle battle)
+        public void Initialize(Entity entity, Battle battle)
         {
-            Model = entity;
+            Entity = entity;
             m_battle = battle;
             m_healthPresenter.Register(entity.Health);
 
-            if (entity.Data.PortraitImage != null)
-                m_portrait.sprite = entity.Data.PortraitImage;
+            if (entity.Model.Data.PortraitImage != null)
+                m_portrait.sprite = entity.Model.Data.PortraitImage;
 
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
         }
@@ -32,7 +32,7 @@ namespace MagmaHeart.Core.Entities.Presenters
 
         private void HandleOnTurnSwitched(object obj, OnTurnSwitchedEventArgs args)
         {
-            if (args.CurrentEntity.Model == Model)
+            if (args.CurrentEntity.Model == Entity.Model)
                 m_currentTurnVisual.enabled = true;
             else
                 m_currentTurnVisual.enabled = false;

@@ -6755,6 +6755,8 @@ MonoBehaviour:
   m_allyOutlineColor: {r: 0, g: 1, b: 0, a: 1}
   m_enemyOutlineColor: {r: 1, g: 0, b: 0, a: 1}
   m_canAttackOutlineColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  m_entityInfoUI: {fileID: 1946546853}
+  m_turnOrderPresenter: {fileID: 0}
 --- !u!114 &8458581491792506061
 MonoBehaviour:
   m_ObjectHideFlags: 0

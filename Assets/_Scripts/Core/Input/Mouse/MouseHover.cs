@@ -64,7 +64,7 @@ namespace MagmaHeart.Core.Input.Mouse
             {
                 UIMouseInteraction detection = raycastResult.gameObject.GetComponentInParent<UIMouseInteraction>();
                 if (detection != null)
-                    return currentHover.AppendUIInfo(raycastResult.gameObject);
+                    return currentHover.AppendUIInfo(detection.gameObject);
             }
 
             return currentHover;

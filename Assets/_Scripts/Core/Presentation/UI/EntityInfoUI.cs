@@ -37,31 +37,12 @@ namespace MagmaHeart.Core.Presentation.UI
             m_currentDisplayedEntity = null;
         }
 
-        private void DisplayEntityInfo(EntityModel model)
+        public void DisplayEntityInfo(EntityModel model)
         {
+            Show();
             m_entityName.text = model.Data.Name;
             m_healthPresenter.Register(model.Health);
         }
-
-        //private void HandleOnMouseHover(object obj, OnMouseHoverEventArgs args)
-        //{
-        //    EntityInfoExtractor extractor = new EntityInfoExtractor();
-        //    args.HoverResult.Accept(extractor);
-        //    EntityModel model = extractor.Model;
-
-        //    if (model == null || model.IsPlayer)
-        //    {
-        //        Hide();
-        //        return;
-        //    }
-
-        //    if (m_currentDisplayedEntity == model)
-        //        return;
-
-        //    m_currentDisplayedEntity = model;
-        //    DisplayEntityInfo(model);
-        //    Show();
-        //}
 
         private void HandleOnEntityDied(object obj, OnEntityDiedEventArgs args)
         {
