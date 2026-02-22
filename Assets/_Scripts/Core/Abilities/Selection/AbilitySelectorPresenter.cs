@@ -11,16 +11,12 @@ using MagmaHeart.DungeonGeneration;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace MagmaHeart.Core.Abilities.Selection
 {
     public class AbilitySelectorPresenter : MonoBehaviour
     {
-        [SerializeField] private Tilemap m_combatTilemap;
-        [SerializeField] private TileBase m_validCombatTile;
-        [SerializeField] private TileBase m_invalidCombatTile;
-
+        [SerializeField] private CombatTilemapPresenter m_combatTilemapPresenter;
         [SerializeField] private EntityOutlinePresenter m_outlinePresenter;
 
         [SerializeField] private EntityInfoUI m_entityInfoUI;
@@ -43,7 +39,8 @@ namespace MagmaHeart.Core.Abilities.Selection
 
             m_effectPresenters = new Dictionary<Type, IEffectPresenter>
             {
-                { typeof(DamageEffect), new DamageEffectPresenter(m_outlinePresenter) }
+                { typeof(DamageEffect), new DamageEffectPresenter(m_outlinePresenter) },
+                { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
@@ -83,7 +80,7 @@ namespace MagmaHeart.Core.Abilities.Selection
             if (hoversTile)
             {
                 DungeonTile tile = selection.HoverResult.Tile;
-                m_combatTilemap.SetTile(tile.Position.ToVector3Int(), m_invalidCombatTile);
+                m_combatTilemapPresenter.DisplayTile(tile.Position.ToVector3Int());
             }
 
             bool hoversEntity = selection.HoverResult.Type.HasFlag(HoverResultType.Entity);
@@ -121,7 +118,7 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void Clear()
         {
-            m_combatTilemap.ClearAllTiles();
+            m_combatTilemapPresenter.Clear();
             m_entityInfoUI.Hide();
 
             if (m_currentEntitySelection != null)
