@@ -1,4 +1,6 @@
-﻿using MagmaHeart.Abilities;
+﻿using MagmaHeart.Abilities.Effects;
+using MagmaHeart.Core.Abilities.Effects;
+using MagmaHeart.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
@@ -6,6 +8,8 @@ using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.DungeonGeneration;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -17,25 +21,30 @@ namespace MagmaHeart.Core.Abilities.Selection
         [SerializeField] private TileBase m_validCombatTile;
         [SerializeField] private TileBase m_invalidCombatTile;
 
-        [SerializeField] private Color m_allyOutlineColor = Color.green;
-        [SerializeField] private Color m_enemyOutlineColor = Color.red;
-        [SerializeField] private Color m_canAttackOutlineColor = new Color(1, 0.35f, 0.35f);
+        [SerializeField] private EntityOutlinePresenter m_outlinePresenter;
 
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_turnOrderPresenter;
 
-        private IGameWorld m_world;
+        private GameWorld m_world;
         private EntityModel m_executor;
 
         private PlayerTurnController m_playerTurnController;
         private OnAbilitySelectedEventArgs m_currentSelection;
         private Entity m_currentEntitySelection;
 
-        public void Initialize(IGameWorld world, EntityModel executor, PlayerTurnController playerTurnController)
+        private Dictionary<Type, IEffectPresenter> m_effectPresenters;
+
+        public void Initialize(GameWorld world, EntityModel executor, PlayerTurnController playerTurnController)
         {
             m_world = world;
             m_executor = executor;
             m_playerTurnController = playerTurnController;
+
+            m_effectPresenters = new Dictionary<Type, IEffectPresenter>
+            {
+                { typeof(DamageEffect), new DamageEffectPresenter(m_outlinePresenter) }
+            };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
         }
@@ -84,18 +93,27 @@ namespace MagmaHeart.Core.Abilities.Selection
             if (selection.Plan == null || !selection.Plan.IsLegal)
                 return;
 
-            // TODO: present ability
+            foreach (AbilityEffect effect in selection.Plan.Effects)
+            {
+                Type type = effect.GetType();
+                if (!m_effectPresenters.TryGetValue(type, out IEffectPresenter effectPresenter))
+                {
+                    Debug.LogWarning($"Presenter for {type} is not found!");
+                    continue;
+                }
+
+                effectPresenter.Present(m_world, effect);
+            }
         }
 
         private void PresentEntity(Entity entity)
         {
             m_currentEntitySelection = entity;
-            Color outlineColor = m_allyOutlineColor;
+
+            m_outlinePresenter.OutlineEntity(entity, OutlineType.Ally);
 
             if (m_world.AreEnemiesToEachOther(entity.Model.Id, m_executor.Id))
-                outlineColor = m_enemyOutlineColor;
-
-            entity.Outline.ApplyOutline(outlineColor);
+                m_outlinePresenter.OutlineEntity(entity, OutlineType.Enemy);
 
             if (!entity.Model.IsPlayer)
                 m_entityInfoUI.DisplayEntityInfo(entity.Model);
@@ -108,7 +126,7 @@ namespace MagmaHeart.Core.Abilities.Selection
 
             if (m_currentEntitySelection != null)
             {
-                m_currentEntitySelection.Outline.RemoveOutline();
+                m_outlinePresenter.ClearOutline(m_currentEntitySelection);
                 m_currentEntitySelection = null;
             }
         }

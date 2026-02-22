@@ -16,7 +16,9 @@ namespace MagmaHeart.Core.Abilities.Effects
 
         public override IEnumerable<AbilityEffect> BuildEffects(IGameWorld world, int executorId, AbilityTarget target)
         {
-            if (target.Kind != TargetKind.Entity)
+            bool isTargetingEntity = target.Kind.HasFlag(TargetKind.Entity);
+            
+            if (!isTargetingEntity)
                 return new List<AbilityEffect>();
 
             return new List<AbilityEffect>()

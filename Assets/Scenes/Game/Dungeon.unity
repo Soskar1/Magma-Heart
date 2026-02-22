@@ -6713,6 +6713,7 @@ GameObject:
   - component: {fileID: 1863885643486044408}
   - component: {fileID: 8388963511706051693}
   - component: {fileID: 8388963511706051694}
+  - component: {fileID: 8388963511706051695}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -6752,11 +6753,24 @@ MonoBehaviour:
   m_combatTilemap: {fileID: 1157183066}
   m_validCombatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
   m_invalidCombatTile: {fileID: 11400000, guid: ebc9bbd401c80b742a68d5244ca5dc5d, type: 2}
+  m_outlinePresenter: {fileID: 8388963511706051695}
+  m_entityInfoUI: {fileID: 1946546853}
+  m_turnOrderPresenter: {fileID: 755473048}
+--- !u!114 &8388963511706051695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388963511706051691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd8e3804db7cdf54687e3cd47c9fcd5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_allyOutlineColor: {r: 0, g: 1, b: 0, a: 1}
   m_enemyOutlineColor: {r: 1, g: 0, b: 0, a: 1}
   m_canAttackOutlineColor: {r: 1, g: 0.35, b: 0.35, a: 1}
-  m_entityInfoUI: {fileID: 1946546853}
-  m_turnOrderPresenter: {fileID: 0}
 --- !u!114 &8458581491792506061
 MonoBehaviour:
   m_ObjectHideFlags: 0
