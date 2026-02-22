@@ -6,11 +6,11 @@ namespace MagmaHeart.Abilities.Resources
     [Serializable]
     public sealed class ResourceCost
     {
-        private readonly Dictionary<ResourceId, int> m_amounts = new();
+        private readonly Dictionary<ParameterId, int> m_amounts = new();
 
         public static ResourceCost Zero => new();
 
-        public void Add(ResourceId resourceId, int amount)
+        public void Add(ParameterId resourceId, int amount)
         {
             if (amount == 0)
                 return;
@@ -27,12 +27,7 @@ namespace MagmaHeart.Abilities.Resources
                 Add(keyValuePair.Key, keyValuePair.Value);
         }
 
-        public int this[ResourceId resource]
-        {
-            get => m_amounts.TryGetValue(resource, out var amount) ? amount : 0;
-        }
-
-        public IEnumerable<(ResourceId ResourceId, int Amount)> GetAllCosts()
+        public IEnumerable<(ParameterId Id, int Amount)> GetAllCosts()
         {
             foreach (var keyValuePair in m_amounts)
             {

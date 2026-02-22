@@ -7,7 +7,6 @@ namespace MagmaHeart.Core.Abilities.Effects.Handlers
         public void Handle(GameWorld world, DamageEffect effect)
         {
             world.TryGetEntity(effect.TargetId, out Entity target);
-
             target.Health.CurrentHealth -= effect.Damage;
         }
     }

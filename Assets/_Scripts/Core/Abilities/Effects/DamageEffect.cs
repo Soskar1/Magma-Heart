@@ -13,6 +13,7 @@ namespace MagmaHeart.Core.Abilities.Effects
     public class BuildDamageEffect : EffectModule
     {
         [SerializeField] private int m_initialDamage = 5;
+        [SerializeField] private ParameterDatabase m_database;
 
         public override IEnumerable<AbilityEffect> BuildEffects(IGameWorld world, int executorId, AbilityTarget target)
         {
@@ -21,9 +22,11 @@ namespace MagmaHeart.Core.Abilities.Effects
             if (!isTargetingEntity)
                 return new List<AbilityEffect>();
 
+            IParameter strength = world.GetParameter(executorId, m_database.Strength);
+
             return new List<AbilityEffect>()
             {
-                new DamageEffect(executorId, target.EntityId, m_initialDamage)
+                new DamageEffect(executorId, target.EntityId, m_initialDamage + (int)strength.CurrentValue)
             };
         }
     }

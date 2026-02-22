@@ -119,7 +119,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public void Disable()
         {
-            m_cancellationTokenSource.Cancel();
+            if (m_cancellationTokenSource != null)
+                m_cancellationTokenSource.Cancel();
+            
             m_currentExecutor = null;
             CanExecuteActions = false;
             m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;

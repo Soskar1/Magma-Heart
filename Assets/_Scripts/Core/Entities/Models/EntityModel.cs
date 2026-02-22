@@ -2,6 +2,7 @@ using MagmaHeart.Abilities;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.Entities.Models;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -19,6 +20,8 @@ namespace MagmaHeart.Core.Entities
         public AbilityDefinition MovementAbility { get; init; }
         public AbilityDefinition AttackAbility { get; init; }
 
+        private readonly Dictionary<ParameterId, IParameter> m_parameters;
+
         public EntityModel(EntityData data, Vector3Int startTilePosition, bool isPlayer, int id) : base(isPlayer, id)
         {
             Stats = data.Stats;
@@ -26,9 +29,9 @@ namespace MagmaHeart.Core.Entities
 
             TilePosition = startTilePosition;
             Health = new HealthModel(Stats.MaxHealth);
-            Energy = new EnergyModel(Stats.EnergyId, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
-            Strength = new StrengthModel(Stats.Strength);
-            Speed = new SpeedModel(Stats.Speed);
+            Energy = new EnergyModel(data.ParameterDatabase.Energy, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Strength = new StrengthModel(Stats.Strength, data.ParameterDatabase.Strength);
+            Speed = new SpeedModel(Stats.Speed, data.ParameterDatabase.Speed);
 
             AttackAbility = data.AttackAbility;
             MovementAbility = data.MovementAbility;
@@ -40,6 +43,13 @@ namespace MagmaHeart.Core.Entities
 
             foreach (AbilityDefinition ability in data.AdditionalAbilities)
                 Abilities.Add(ability.Id, ability);
+
+            m_parameters = new Dictionary<ParameterId, IParameter>()
+            {
+                { data.ParameterDatabase.Energy, Energy },
+                { data.ParameterDatabase.Strength, Strength },
+                { data.ParameterDatabase.Speed, Speed  }
+            };
         }
 
         public override AIUnitModel DeepCopy()
@@ -53,6 +63,17 @@ namespace MagmaHeart.Core.Entities
                 Speed = Speed.DeepCopy()
             };
             return copy;
+        }
+
+        public IParameter GetParameter(ParameterId parameterId)
+        {
+            if (!m_parameters.TryGetValue(parameterId, out IParameter parameter))
+            {
+                Debug.LogWarning($"Parameter {parameterId} not found");
+                return null;
+            }
+
+            return parameter;
         }
     }
 }

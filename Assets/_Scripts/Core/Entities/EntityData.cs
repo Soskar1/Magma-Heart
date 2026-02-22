@@ -1,5 +1,6 @@
 using MagmaHeart.Abilities;
 using MagmaHeart.AI.Actions;
+using MagmaHeart.Core.Abilities;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private AbilityDefinition m_attackAbility;
         [SerializeField] private AbilityDefinition m_movementAbility;
 
+        [SerializeField] private ParameterDatabase m_parameterDatabase;
+
         public string Name => m_name;
         public Sprite PortraitImage => m_portraitImage;
         public EntityStats Stats => m_stats;
@@ -25,6 +28,7 @@ namespace MagmaHeart.Core.Entities
         public AbilityDefinition AttackAbility => m_attackAbility;
         public AbilityDefinition MovementAbility => m_movementAbility;
         public RuntimeAnimatorController AnimatorController => m_animatorController;
+        public ParameterDatabase ParameterDatabase => m_parameterDatabase;
 
         public EntityData(string name, EntityStats stats, List<ActionData> actions)
         {

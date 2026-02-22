@@ -118,14 +118,10 @@ namespace MagmaHeart.Core
             return entity.Model.TilePosition;
         }
 
-        public float GetResource(int entityId, ResourceId resource)
+        public IParameter GetParameter(int entityId, ParameterId parameter)
         {
             TryGetEntity(entityId, out Entity entity);
-
-            if (resource.Id == entity.Energy.ResourceId.Id)
-                return entity.Energy.CurrentEnergy;
-
-            return 0;
+            return entity.Model.GetParameter(parameter);
         }
 
         public bool AreEnemiesToEachOther(int executorId, int targetId)

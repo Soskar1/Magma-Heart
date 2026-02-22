@@ -25,12 +25,13 @@ MonoBehaviour:
     - rid: 226000697812320390
       type: {class: FixedResourceCost, ns: MagmaHeart.Abilities.Resources, asm: MagmaHeart.Abilities}
       data:
-        m_resourceId: {fileID: 11400000, guid: b3b3f88b56183314fa191013c2113355, type: 2}
+        m_parameterId: {fileID: 11400000, guid: 1e8f9dddeb3a6e04f9efd118bacc938a, type: 2}
         m_amount: 2
     - rid: 226000697812320391
       type: {class: BuildDamageEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
       data:
         m_initialDamage: 1
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
     - rid: 226000697812320392
       type: {class: EnemyInRangeRequirement, ns: MagmaHeart.Core.Abilities.Requirements, asm: MagmaHeart.Core}
       data:

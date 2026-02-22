@@ -1,4 +1,6 @@
+using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Resources;
+using MagmaHeart.Core.Abilities;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Presentation.UI;
 using System.Collections.Generic;
@@ -15,9 +17,8 @@ namespace MagmaHeart.Core.Entities.Presenters
         [SerializeField] private Sprite m_activeEnergyCrystalGFX;
         [SerializeField] private Sprite m_priceEnergyCrystalGFX;
 
-        // TODO: I do not like this shit. We need to make it more cleaner. Good for prototype though
-        [SerializeField] private ResourceId m_resourceId;
-        public ResourceId Resource => m_resourceId;
+        [SerializeField] private ParameterDatabase m_parameterDatabase;
+        public ParameterId Energy => m_parameterDatabase.Energy;
 
         private List<Image> m_crystalVisuals;
         private EnergyModel m_playerEnergy;

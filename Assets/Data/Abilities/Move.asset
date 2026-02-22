@@ -27,7 +27,7 @@ MonoBehaviour:
     - rid: 226000697812320388
       type: {class: ResourcePerNTilesCost, ns: MagmaHeart.Core.Abilities.Cost, asm: MagmaHeart.Core}
       data:
-        m_resourceId: {fileID: 11400000, guid: b3b3f88b56183314fa191013c2113355, type: 2}
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
         m_tilesPerResource: 2
     - rid: 226000697812320389
       type: {class: BuildMoveEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}

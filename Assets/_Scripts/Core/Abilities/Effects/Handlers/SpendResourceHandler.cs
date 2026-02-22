@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.Abilities.Effects.Handlers
             world.TryGetEntity(effect.ExecutorId, out Entity executor);
 
             // TODO: Prototype. This should be more generic and not hardcoded to energy.
-            if (effect.Resource.Id == executor.Model.Energy.ResourceId.Id)
+            if (effect.Parameter.Id == executor.Model.Energy.Id.Id)
             {
                 executor.Model.Energy.CurrentEnergy -= effect.Amount;
             }

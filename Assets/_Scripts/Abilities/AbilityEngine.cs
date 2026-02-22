@@ -24,11 +24,11 @@ namespace MagmaHeart.Abilities
                 }
             }
 
-            foreach (var resource in totalCost.GetAllCosts())
+            foreach (var parameter in totalCost.GetAllCosts())
             {
-                float have = world.GetResource(executorId, resource.ResourceId);
+                float have = world.GetParameter(executorId, parameter.Id).CurrentValue;
                 
-                if (have < resource.Amount)
+                if (have < parameter.Amount)
                     return new AbilityPlan(false, totalCost, new List<AbilityEffect>());
             }
 
@@ -61,8 +61,8 @@ namespace MagmaHeart.Abilities
         public List<AbilityEffect> BuildSpendCostEffects(int executorId, ResourceCost cost)
         {
             List<AbilityEffect> list = new List<AbilityEffect>();
-            foreach (var resource in cost.GetAllCosts())
-                list.Add(new SpendResourceEffect(executorId, resource.ResourceId, resource.Amount));
+            foreach (var parameter in cost.GetAllCosts())
+                list.Add(new SpendResourceEffect(executorId, parameter.Id, parameter.Amount));
             
             return list;
         }

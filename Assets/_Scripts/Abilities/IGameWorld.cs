@@ -6,7 +6,7 @@ namespace MagmaHeart.Abilities
 {
     public interface IGameWorld
     {
-        public float GetResource(int entityId, ResourceId resource);
+        public IParameter GetParameter(int entityId, ParameterId parameter);
         public Vector3 GetEntityPosition(int entityId);
         public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path);
         public int GetEntityAtPosition(Vector3 position);

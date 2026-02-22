@@ -1,6 +1,4 @@
-﻿using MagmaHeart.Abilities.Resources;
-
-namespace MagmaHeart.Abilities.Effects
+﻿namespace MagmaHeart.Abilities.Effects
 {
-    public sealed record SpendResourceEffect(int ExecutorId, ResourceId Resource, int Amount) : AbilityEffect(ExecutorId);
+    public sealed record SpendResourceEffect(int ExecutorId, ParameterId Parameter, int Amount) : AbilityEffect(ExecutorId);
 }
