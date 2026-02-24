@@ -28,7 +28,6 @@ namespace MagmaHeart.Core.Abilities.Selection
         private EntityModel m_executor;
 
         private PlayerTurnController m_playerTurnController;
-        private OnAbilitySelectedEventArgs m_currentSelection;
         private Entity m_currentEntitySelection;
 
         private Dictionary<Type, IEffectPresenter> m_effectPresenters;
@@ -57,8 +56,6 @@ namespace MagmaHeart.Core.Abilities.Selection
         private void HandleOnAbilitySelected(object _, OnAbilitySelectedEventArgs args)
         {
             Clear();
-
-            m_currentSelection = args;
             Present(args);
         }
 
