@@ -56,9 +56,6 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void HandleOnAbilitySelected(object _, OnAbilitySelectedEventArgs args)
         {
-            if (m_currentSelection != null && m_currentSelection.HoverResult == args.HoverResult)
-                return;
-            
             Clear();
 
             m_currentSelection = args;
