@@ -4,5 +4,5 @@ using System.Collections.Generic;
 
 namespace MagmaHeart.Abilities
 {
-    public record AbilityPlan(bool IsLegal, ResourceCost ComputedCost, IEnumerable<AbilityEffect> Effects);
+    public record AbilityPlan(AbilityDefinition AbilityDefinition, bool IsLegal, ResourceCost ComputedCost, IEnumerable<AbilityEffect> Effects);
 }

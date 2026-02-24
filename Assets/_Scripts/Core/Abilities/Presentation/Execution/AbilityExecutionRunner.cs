@@ -1,0 +1,44 @@
+﻿using MagmaHeart.Abilities;
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.Core.Abilities.Effects;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+
+namespace MagmaHeart.Core.Abilities.Presentation.Execution
+{
+    public class AbilityExecutionRunner
+    {
+        private readonly AbilityExecutionScriptDatabase m_database;
+        private readonly EffectDispatcher m_effectDispatcher;
+        private readonly GameWorld m_world;
+
+        public AbilityExecutionRunner(AbilityExecutionScriptDatabase database, EffectDispatcher effectDispatcher, GameWorld world)
+        {
+            m_database = database;
+            m_effectDispatcher = effectDispatcher;
+            m_world = world;
+        }
+
+        public async Task Run(AbilityPlan plan, int executorId)
+        {
+            bool scriptExists = m_database.TryGetScript(plan.AbilityDefinition, out AbilityExecutionScript script);
+
+            if (scriptExists)
+            {
+                var context = new AbilityExecutionContext(m_world, executorId, m_effectDispatcher);
+                List<IAbilityExecutionStep> executionSteps = script.BuildSteps(plan, executorId);
+
+                foreach (IAbilityExecutionStep step in executionSteps)
+                    await step.Run(context);
+            }
+            else
+            {
+                Debug.LogWarning($"No execution script found for ability {plan.AbilityDefinition.Id}. Applying effects directly.");
+
+                foreach (AbilityEffect effect in plan.Effects)
+                    m_effectDispatcher.Apply(m_world, effect);
+            }
+        }
+    }
+}

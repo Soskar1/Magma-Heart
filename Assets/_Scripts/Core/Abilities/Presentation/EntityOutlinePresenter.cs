@@ -1,7 +1,7 @@
 ﻿using MagmaHeart.Core.Entities;
 using UnityEngine;
 
-namespace MagmaHeart.Core.Abilities
+namespace MagmaHeart.Core.Abilities.Presentation
 {
     public enum OutlineType
     {

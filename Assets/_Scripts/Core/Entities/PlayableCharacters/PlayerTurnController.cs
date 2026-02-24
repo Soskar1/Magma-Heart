@@ -2,24 +2,21 @@
 using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Handlers;
+using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.Abilities.Selection;
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Input.Mouse;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
     public class PlayerTurnController : IDisposable
     {
         private readonly AbilitySelector m_abilitySelector;
-        private readonly ActionExecutor m_actionRunner;
+        private readonly AbilityExecutionRunner m_abilityExecutionRunner;
         private readonly MouseListener m_mouseListener;
         private readonly MouseHover m_mouseHover;
-        private readonly GameWorld m_gameWorld;
-        private readonly EffectDispatcher m_effectDispatcher;
 
         private AbilityPlan m_currentSelectedAbility;
         private HoverResult m_currentHover;
@@ -47,18 +44,12 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, ActionExecutor actionRunner, GameWorld gameWorld)
+        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, AbilityExecutionRunner abilityExecutionRunner, AbilitySelector abilitySelector)
         {
             m_mouseListener = mouseListener;
-            m_gameWorld = gameWorld;
             m_mouseHover = mouseHover;
-            m_abilitySelector = new AbilitySelector(gameWorld);
-            m_actionRunner = actionRunner;
-
-            m_effectDispatcher = new EffectDispatcher();
-            m_effectDispatcher.Register(new SpendResourceHandler());
-            m_effectDispatcher.Register(new DamageHandler());
-            m_effectDispatcher.Register(new MoveHandler());
+            m_abilitySelector = abilitySelector;
+            m_abilityExecutionRunner = abilityExecutionRunner;
 
             m_mouseHover.OnHoverResultChanged += HandleOnHoverResultChanged;
         }
@@ -137,8 +128,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             CanExecuteActions = false;
             OnCombatActionExecutionStarted?.Invoke();
 
-            foreach (AbilityEffect effect in ability.Effects)
-                m_effectDispatcher.Apply(m_gameWorld, effect);
+            await m_abilityExecutionRunner.Run(ability, m_currentExecutor.Id);
 
             OnCombatActionExecuted?.Invoke();
             

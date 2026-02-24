@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace MagmaHeart.Core.Abilities
+namespace MagmaHeart.Core.Abilities.Presentation
 {
     public class CombatTilemapPresenter : MonoBehaviour
     {

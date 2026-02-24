@@ -1,4 +1,5 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.Core.Abilities.Presentation.Execution;
+using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
@@ -11,13 +12,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
     public class PlayerInstaller : IInstaller
     {
-        public PlayerContext Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, ActionExecutor actionRunner, GameWorld gameWorld, GraphicRaycaster raycaster)
+        public PlayerContext Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, AbilityExecutionRunner abilityExecutionRunner, GameWorld world, GraphicRaycaster raycaster)
         {
             Entity player = spawner.Spawn(playerData, true);
             player.gameObject.SetActive(false);
 
-            MouseHover mouseHover = new MouseHover(inputContext.MouseListener, gameWorld, raycaster);
-            PlayerTurnController turnController = new PlayerTurnController(inputContext.MouseListener, mouseHover, actionRunner, gameWorld);
+            MouseHover mouseHover = new MouseHover(inputContext.MouseListener, world, raycaster);
+            AbilitySelector abilitySelector = new AbilitySelector(world);
+            PlayerTurnController turnController = new PlayerTurnController(inputContext.MouseListener, mouseHover, abilityExecutionRunner, abilitySelector);
 
             return new PlayerContext(player, turnController);
         }
