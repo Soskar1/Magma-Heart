@@ -42,6 +42,8 @@ namespace MagmaHeart.Core.Presentation.UI
             Show();
             m_entityName.text = model.Data.Name;
             m_healthPresenter.Register(model.Health);
+
+            m_currentDisplayedEntity = model;
         }
 
         private void HandleOnEntityDied(object obj, OnEntityDiedEventArgs args)
