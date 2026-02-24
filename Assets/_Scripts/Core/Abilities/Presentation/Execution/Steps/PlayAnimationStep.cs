@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Core.Entities;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
@@ -12,8 +13,11 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             m_animation = animationType;
         }
 
-        public Task Run(AbilityExecutionContext context)
+        public Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled(cancellationToken);
+
             context.World.TryGetEntity(context.ExecutorId, out Entity executor);
             executor.Animation.PlayAnimation(m_animation);
 

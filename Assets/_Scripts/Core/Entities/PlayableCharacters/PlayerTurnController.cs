@@ -1,13 +1,11 @@
 ﻿using MagmaHeart.Abilities;
-using MagmaHeart.Abilities.Effects;
-using MagmaHeart.Core.Abilities.Effects;
-using MagmaHeart.Core.Abilities.Effects.Handlers;
 using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.Input.Mouse;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
@@ -23,8 +21,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public event EventHandler<OnAbilitySelectedEventArgs> OnAbilitySelected;
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
-        public event Action OnCombatActionExecutionStarted;
-        public event Action OnCombatActionExecuted;
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
@@ -126,16 +122,15 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_cancellationTokenSource = new CancellationTokenSource();
             
             CanExecuteActions = false;
-            OnCombatActionExecutionStarted?.Invoke();
 
-            await m_abilityExecutionRunner.Run(ability, m_currentExecutor.Id);
+            await m_abilityExecutionRunner.Run(ability, m_currentExecutor.Id, m_cancellationTokenSource.Token);
 
-            OnCombatActionExecuted?.Invoke();
-            
             if (m_currentExecutor != null)
                 CanExecuteActions = true;
-            
-            m_mouseHover.Hover(m_currentHover.WorldPosition);
+
+            Vector2 hoverWorldPosition = m_currentHover.WorldPosition;
+            m_currentHover = null;
+            m_mouseHover.Hover(hoverWorldPosition);
         }
     }
 }

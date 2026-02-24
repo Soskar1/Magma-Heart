@@ -2,6 +2,7 @@
 using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
             m_world = world;
         }
 
-        public async Task Run(AbilityPlan plan, int executorId)
+        public async Task Run(AbilityPlan plan, int executorId, CancellationToken cancellationToken)
         {
             bool scriptExists = m_database.TryGetScript(plan.AbilityDefinition, out AbilityExecutionScript script);
 
@@ -30,7 +31,12 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
                 List<IAbilityExecutionStep> executionSteps = script.BuildSteps(plan, executorId);
 
                 foreach (IAbilityExecutionStep step in executionSteps)
-                    await step.Run(context);
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        return;
+
+                    await step.Run(context, cancellationToken);
+                }
             }
             else
             {

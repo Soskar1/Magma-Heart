@@ -12,6 +12,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
     public class PlayerInstaller : IInstaller
     {
+        private PlayerTurnController m_turnController;
+
         public PlayerContext Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, AbilityExecutionRunner abilityExecutionRunner, GameWorld world, GraphicRaycaster raycaster)
         {
             Entity player = spawner.Spawn(playerData, true);
@@ -19,11 +21,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             MouseHover mouseHover = new MouseHover(inputContext.MouseListener, world, raycaster);
             AbilitySelector abilitySelector = new AbilitySelector(world);
-            PlayerTurnController turnController = new PlayerTurnController(inputContext.MouseListener, mouseHover, abilityExecutionRunner, abilitySelector);
+            m_turnController = new PlayerTurnController(inputContext.MouseListener, mouseHover, abilityExecutionRunner, abilitySelector);
 
-            return new PlayerContext(player, turnController);
+            return new PlayerContext(player, m_turnController);
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            m_turnController.Dispose();
+        }
     }
 }

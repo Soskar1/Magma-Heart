@@ -16,8 +16,11 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             m_animationType = animationType;
         }
 
-        public async Task Run(AbilityExecutionContext context)
+        public async Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return;
+
             context.World.TryGetEntity(context.ExecutorId, out Entity entity);
             using var cancellationTokenSource = new CancellationTokenSource(m_timeout);
             await entity.Animation.WaitForAnimationEnd(m_animationType, cancellationTokenSource.Token);

@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Abilities.Effects;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
@@ -13,8 +14,11 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             m_effects = effects;
         }
 
-        public Task Run(AbilityExecutionContext context)
+        public Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled(cancellationToken);
+
             foreach (AbilityEffect effect in m_effects)
                 context.EffectDispatcher.Apply(context.World, effect);
 

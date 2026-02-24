@@ -14,8 +14,11 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             m_timeout = timeout;
         }
 
-        public async Task Run(AbilityExecutionContext context)
+        public async Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return;
+
             context.World.TryGetEntity(context.ExecutorId, out Entity executor);
             using var cancellationTokenSource = new CancellationTokenSource(m_timeout);
             await executor.Animation.WaitForAnimationEvent(cancellationTokenSource.Token);
