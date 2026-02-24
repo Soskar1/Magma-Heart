@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51620221c068ab84aaa1f1cfd8e1b36f, type: 3}
-  m_Name: ScriptDatabase
+  m_Script: {fileID: 11500000, guid: 485209c0c42ae9447b53d9fd71839eca, type: 3}
+  m_Name: MovementExecutionScript
   m_EditorClassIdentifier: 
-  m_scripts:
-  - {fileID: 11400000, guid: 90f1373fc094d684793fefd8f31b58e1, type: 2}
-  - {fileID: 11400000, guid: 6911eca54d03a64478d1ab1edb3f8c10, type: 2}
+  m_ability: {fileID: 11400000, guid: af844ce7707774443a50caeb39ad43d5, type: 2}

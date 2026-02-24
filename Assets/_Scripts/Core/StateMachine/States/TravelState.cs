@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.StateMachine
 
             player.transform.position = startPosition;
 
-            await m_context.Services.MovementService.MoveEntityAsync(player, new List<Vector2> { startPosition, endPosition }, m_travelSpeed);
+            await m_context.Services.MovementService.MoveEntityAsync(player, new List<Vector3> { startPosition, endPosition });
             
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)

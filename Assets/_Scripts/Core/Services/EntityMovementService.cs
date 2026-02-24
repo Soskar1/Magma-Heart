@@ -8,15 +8,15 @@ namespace MagmaHeart.Core.Services
 {
     public class EntityMovementService
     {
-        public async Task MoveEntityAsync(Entity entity, List<Vector2> aStarPath, int speed)
+        public async Task MoveEntityAsync(Entity entity, List<Vector3> aStarPath)
         {
-            Vector2 from = aStarPath.First();
-            Vector2 to = aStarPath.Last();
+            Vector3 from = aStarPath.First();
+            Vector3 to = aStarPath.Last();
             entity.Facing.TryUpdateFacing(to.x - from.x);
 
             entity.Animation.PlayRunAnimation();
 
-            await entity.TileBasedMovement.StartMovementAsync(aStarPath, speed);
+            await entity.TileBasedMovement.StartMovementAsync(aStarPath);
 
             entity.Animation.PlayIdleAnimation();
         }

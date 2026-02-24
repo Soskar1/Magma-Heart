@@ -13,12 +13,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Presenters
 {
     public class MoveCommandPresenter : IBoardCommandPresenter<MoveCommand>
     {
-        private readonly int m_movementSpeed;
         private readonly CommandRunner m_commandRunner;
 
-        public MoveCommandPresenter(CommandRunner commandRunner, int movementSpeed)
+        public MoveCommandPresenter(CommandRunner commandRunner)
         {
-            m_movementSpeed = movementSpeed;
             m_commandRunner = commandRunner;
         }
 
@@ -26,7 +24,7 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Presenters
         {
             m_commandRunner.Apply(room, command);
 
-            List<Vector2> path = command.Path;
+            List<Vector3> path = command.Path.Select(p => (Vector3)p).ToList();
             room.TryGetEntity(command.ExecutorId, out Entity entity);
 
             Vector3 from = path.First();
@@ -36,10 +34,10 @@ namespace MagmaHeart.Core.BoardStateSystem.Actions.Presenters
             entity.Animation.PlayRunAnimation();
 
             path = path
-                .Select(point => room.Grid.ToTileCenter(point.ToVector2Int()))
+                .Select(point => (Vector3)room.Grid.ToTileCenter(point.ToVector2Int()))
                 .ToList();
 
-            await entity.TileBasedMovement.StartMovementAsync(path, m_movementSpeed);
+            await entity.TileBasedMovement.StartMovementAsync(path);
 
             entity.Animation.PlayIdleAnimation();
         }
