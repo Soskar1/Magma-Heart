@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1eb989e809b1c4c458b9cae0a4795417, type: 3}
-  m_Name: MeleeAttackExecutionScript
+  m_Script: {fileID: 11500000, guid: 693f520fb801ebd45847826e75ff0e51, type: 3}
+  m_Name: MeleeAttack
   m_EditorClassIdentifier: 
-  m_ability: {fileID: 11400000, guid: 6427db122570038418d2ea58567c8126, type: 2}
-  m_timeoutSeconds: 5
+  m_ability: {fileID: 0}
+  m_steps: []
+  references:
+    version: 2
+    RefIds: []

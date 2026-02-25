@@ -1,7 +1,6 @@
 ﻿using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -27,10 +26,9 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
 
             if (scriptExists)
             {
-                var context = new AbilityExecutionContext(m_world, executorId, m_effectDispatcher);
-                List<IAbilityExecutionStep> executionSteps = script.BuildSteps(plan, executorId);
+                var context = new AbilityExecutionContext(m_world, executorId, m_effectDispatcher, plan);
 
-                foreach (IAbilityExecutionStep step in executionSteps)
+                foreach (IAbilityExecutionStep step in script.Steps)
                 {
                     if (cancellationToken.IsCancellationRequested)
                         return;

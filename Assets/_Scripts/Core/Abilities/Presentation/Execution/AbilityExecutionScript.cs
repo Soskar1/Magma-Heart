@@ -4,11 +4,15 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution
 {
-    public abstract class AbilityExecutionScript : ScriptableObject
+    [CreateAssetMenu(menuName = "Magma Heart Data/Ability Execution/Script")]
+    public class AbilityExecutionScript : ScriptableObject
     {
         [SerializeField] private AbilityDefinition m_ability;
-        public AbilityDefinition Ability => m_ability;
 
-        public abstract List<IAbilityExecutionStep> BuildSteps(AbilityPlan plan, int executorId);
+        [SerializeReference, SubclassSelector]
+        private List<IAbilityExecutionStep> m_steps;
+
+        public AbilityDefinition Ability => m_ability;
+        public IReadOnlyList<IAbilityExecutionStep> Steps => m_steps;
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ScriptDatabase
   m_EditorClassIdentifier: 
   m_scripts:
-  - {fileID: 11400000, guid: 90f1373fc094d684793fefd8f31b58e1, type: 2}
-  - {fileID: 11400000, guid: 6911eca54d03a64478d1ab1edb3f8c10, type: 2}
+  - {fileID: 11400000, guid: ffce429a4db6dc244a577aa5f8a7f920, type: 2}
+  - {fileID: 11400000, guid: 3702f74708c721344a99a73cd6313a8a, type: 2}

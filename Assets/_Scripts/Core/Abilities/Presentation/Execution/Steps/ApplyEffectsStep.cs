@@ -1,25 +1,19 @@
 ﻿using MagmaHeart.Abilities.Effects;
-using System.Collections.Generic;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 {
+    [Serializable]
     public class ApplyEffectsStep : IAbilityExecutionStep
     {
-        private readonly IEnumerable<AbilityEffect> m_effects;
-
-        public ApplyEffectsStep(IEnumerable<AbilityEffect> effects)
-        {
-            m_effects = effects;
-        }
-
         public Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
                 return Task.FromCanceled(cancellationToken);
 
-            foreach (AbilityEffect effect in m_effects)
+            foreach (AbilityEffect effect in context.Plan.Effects)
                 context.EffectDispatcher.Apply(context.World, effect);
 
             return Task.CompletedTask;

@@ -2,17 +2,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 {
+    [Serializable]
     public class WaitForAnimationEventStep : IAbilityExecutionStep
     {
-        private readonly TimeSpan m_timeout;
-
-        public WaitForAnimationEventStep(TimeSpan timeout)
-        {
-            m_timeout = timeout;
-        }
+        [SerializeField] private float m_timeoutSeconds = 5f;
 
         public async Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
@@ -20,8 +17,8 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 return;
 
             context.World.TryGetEntity(context.ExecutorId, out Entity executor);
-            using var cancellationTokenSource = new CancellationTokenSource(m_timeout);
-            await executor.Animation.WaitForAnimationEvent(cancellationTokenSource.Token);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(m_timeoutSeconds));
+            await executor.Animation.WaitForAnimationEvent(cts.Token);
         }
     }
 }
