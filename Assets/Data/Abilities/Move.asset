@@ -17,13 +17,10 @@ MonoBehaviour:
   - rid: 226000697812320388
   m_effects:
   - rid: 226000697812320389
-  m_requirements:
-  - rid: -2
+  m_requirements: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 226000697812320388
       type: {class: ResourcePerNTilesCost, ns: MagmaHeart.Core.Abilities.Cost, asm: MagmaHeart.Core}
       data:

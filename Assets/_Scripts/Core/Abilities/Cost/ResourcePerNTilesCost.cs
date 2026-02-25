@@ -22,7 +22,8 @@ namespace MagmaHeart.Core.Abilities.Cost
 
             int steps = 0;
 
-            if (target.Kind == TargetKind.Path && target.Path != null && target.Path.Count > 0)
+            bool isTargetingPath = target.Kind.HasFlag(TargetKind.Path);
+            if (isTargetingPath && target.Path != null && target.Path.Count > 0)
                 steps = Math.Max(0, target.Path.Count - 1);
             else
                 return ResourceCost.Zero;

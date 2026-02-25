@@ -14,8 +14,13 @@ namespace MagmaHeart.Core.Abilities.Effects
     {
         public override IEnumerable<AbilityEffect> BuildEffects(IGameWorld world, int executorId, AbilityTarget target)
         {
-            if (target.Kind != TargetKind.Path || target.Path == null || target.Path.Count == 0)
+            bool isTargetingPath = target.Kind.HasFlag(TargetKind.Path);
+
+            if (!isTargetingPath || target.Path == null || target.Path.Count == 0)
+            {
+                Debug.LogWarning($"Invalid target for MoveEffect: {target}");
                 return new List<AbilityEffect>();
+            }
 
             return new List<AbilityEffect>()
             {

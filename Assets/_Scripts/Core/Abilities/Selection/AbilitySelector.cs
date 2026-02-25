@@ -1,9 +1,10 @@
-﻿using MagmaHeart.Core.Input.Mouse;
-using MagmaHeart.Abilities;
+﻿using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Targeting;
-using System.Collections.Generic;
-using UnityEngine;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Input.Mouse;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Selection
 {
@@ -32,11 +33,17 @@ namespace MagmaHeart.Core.Abilities.Selection
 
             if (hoversEntity)
             {
-                AbilityTarget target = AbilityTarget.EntityTarget(hoverResult.Entity.Model.Id, hoverResult.Entity.Model.TilePosition);
-                AbilityPlan plan = m_abilityEngine.Plan(m_world, executor.Id, executor.AttackAbility, target);
+                Vector3 executorPosition = m_world.GetEntityPosition(executor.Id);
+                Vector3 targetTilePosition = m_world.GetEntityPosition(hoverResult.Entity.Model.Id);
 
-                if (plan.IsLegal)
-                    return plan;
+                if (executorPosition != targetTilePosition && TryFindPathToEntity(executorPosition, targetTilePosition, out List<Vector3> path))
+                {
+                    AbilityTarget target = AbilityTarget.EntityTarget(hoverResult.Entity.Model.Id, path);
+                    AbilityPlan plan = m_abilityEngine.Plan(m_world, executor.Id, executor.AttackAbility, target);
+
+                    if (plan.IsLegal)
+                        return plan;
+                }
             }
 
             if (hoversTile)
@@ -56,6 +63,26 @@ namespace MagmaHeart.Core.Abilities.Selection
             }
 
             return null;
+        }
+
+        private bool TryFindPathToEntity(Vector3 executorPosition, Vector3 targetTilePosition, out List<Vector3> path)
+        {
+            IEnumerable<Vector3> sortedCandidates = new[]
+            {
+                targetTilePosition + Vector3.up,
+                targetTilePosition + Vector3.down,
+                targetTilePosition + Vector3.left,
+                targetTilePosition + Vector3.right,
+            }.OrderBy(candidate => Vector3.SqrMagnitude(executorPosition - (Vector3)candidate));
+
+            foreach (Vector3 candidate in sortedCandidates)
+            {
+                if (m_world.TryFindPath(executorPosition, candidate, out path))
+                    return true;
+            }
+
+            path = null;
+            return false;
         }
     }
 }

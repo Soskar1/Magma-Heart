@@ -13,12 +13,10 @@ namespace MagmaHeart.Abilities.Targeting
         public List<Vector3> Path { get; init; }
 
         public static AbilityTarget None() => new() { Kind = TargetKind.None };
-        public static AbilityTarget EntityTarget(int entityId, Vector3 position)
-            => new()
-            { 
-                Kind = TargetKind.Entity | TargetKind.Position,
+        public static AbilityTarget EntityTarget(int entityId, List<Vector3> path) => new() { 
+                Kind = TargetKind.Entity | TargetKind.Path,
                 EntityId = entityId,
-                Position = position
+                Path = path
             };
         public static AbilityTarget PositionTarget(Vector3 position) => new() { Kind = TargetKind.Position, Position = position };
         public static AbilityTarget PathTarget(List<Vector3> path) => new() { Kind = TargetKind.Path, Path = path };

@@ -1,10 +1,10 @@
 ﻿using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 {
@@ -18,17 +18,19 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 
             context.World.TryGetEntity(context.ExecutorId, out Entity entity);
 
-            List<MoveEffect> moveEffects = context.Plan.Effects
+            MoveEffect moveEffect = context.Plan.Effects
                 .OfType<MoveEffect>()
-                .ToList();
+                .FirstOrDefault();
 
-            foreach (MoveEffect effect in moveEffects)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                    return;
+            Vector3 lastPathPosition = moveEffect.Path.Last();
+            Vector3Int lastTilePosition = context.World.WorldToTilePosition(lastPathPosition);
 
-                await entity.TileBasedMovement.StartMovementAsync(effect.Path);
-            }
+            if (entity.Model.TilePosition == lastTilePosition)
+                return;
+
+            entity.Facing.TryUpdateFacing(lastPathPosition.x - entity.Model.TilePosition.x);
+
+            await entity.TileBasedMovement.StartMovementAsync(moveEffect.Path);
         }
     }
 }

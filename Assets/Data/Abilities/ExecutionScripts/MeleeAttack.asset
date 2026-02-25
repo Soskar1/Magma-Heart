@@ -15,8 +15,11 @@ MonoBehaviour:
   m_ability: {fileID: 11400000, guid: 6427db122570038418d2ea58567c8126, type: 2}
   m_requirements:
   - rid: 226000796857139307
+  - rid: 226000796857139353
   m_steps:
   - rid: 226000796857139320
+  - rid: 226000796857139355
+  - rid: 226000796857139356
   - rid: 226000796857139293
   - rid: 226000796857139294
   - rid: 226000796857139319
@@ -50,4 +53,14 @@ MonoBehaviour:
       data: 
     - rid: 226000796857139320
       type: {class: SpendResourceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139353
+      type: {class: HasMoveEffectRequirement, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Requirements, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139355
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 1
+    - rid: 226000796857139356
+      type: {class: MoveEntityStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 

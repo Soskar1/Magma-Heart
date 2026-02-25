@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_id: Melee Attack
   m_cost:
+  - rid: 226000796857139352
   - rid: 226000697812320390
   m_effects:
+  - rid: 226000796857139348
   - rid: 226000697812320391
-  m_requirements:
-  - rid: 226000697812320392
+  m_requirements: []
   references:
     version: 2
     RefIds:
@@ -32,8 +33,11 @@ MonoBehaviour:
       data:
         m_initialDamage: 1
         m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
-    - rid: 226000697812320392
-      type: {class: EnemyInRangeRequirement, ns: MagmaHeart.Core.Abilities.Requirements, asm: MagmaHeart.Core}
+    - rid: 226000796857139348
+      type: {class: BuildMoveEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139352
+      type: {class: ResourcePerNTilesCost, ns: MagmaHeart.Core.Abilities.Cost, asm: MagmaHeart.Core}
       data:
-        m_minRange: 1
-        m_maxRange: 1
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
+        m_tilesPerResource: 2
