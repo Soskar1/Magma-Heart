@@ -12,8 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693f520fb801ebd45847826e75ff0e51, type: 3}
   m_Name: MeleeAttack
   m_EditorClassIdentifier: 
-  m_ability: {fileID: 0}
-  m_steps: []
+  m_ability: {fileID: 11400000, guid: 6427db122570038418d2ea58567c8126, type: 2}
+  m_requirements:
+  - rid: 226000796857139307
+  m_steps:
+  - rid: 226000796857139293
+  - rid: 226000796857139294
+  - rid: 226000796857139295
+  - rid: 226000796857139296
+  - rid: 226000796857139297
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 226000796857139293
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 2
+    - rid: 226000796857139294
+      type: {class: WaitForAnimationEventStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_timeoutSeconds: 5
+    - rid: 226000796857139295
+      type: {class: ApplyEffectsStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139296
+      type: {class: WaitForAnimationEndStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 2
+        m_timeoutSeconds: 5
+    - rid: 226000796857139297
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 0
+    - rid: 226000796857139307
+      type: {class: HasDamageEffectRequirement, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Requirements, asm: MagmaHeart.Core}
+      data: 

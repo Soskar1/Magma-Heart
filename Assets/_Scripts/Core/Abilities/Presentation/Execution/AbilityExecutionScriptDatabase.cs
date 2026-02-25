@@ -21,7 +21,18 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
             }
         }
 
-        public bool TryGetScript(AbilityDefinition ability, out AbilityExecutionScript script)
-            => m_lookup.TryGetValue(ability, out script);
+        public bool TryGetValidScript(AbilityDefinition ability, AbilityPlan plan, out AbilityExecutionScript script)
+        {
+            script = null;
+
+            if (!m_lookup.TryGetValue(ability, out AbilityExecutionScript candidate))
+                return false;
+
+            if (!candidate.IsValid(plan))
+                return false;
+
+            script = candidate;
+            return true;
+        }
     }
 }

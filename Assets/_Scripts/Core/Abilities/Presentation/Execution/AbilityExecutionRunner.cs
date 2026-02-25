@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
 
         public async Task Run(AbilityPlan plan, int executorId, CancellationToken cancellationToken)
         {
-            bool scriptExists = m_database.TryGetScript(plan.AbilityDefinition, out AbilityExecutionScript script);
+            bool scriptExists = m_database.TryGetValidScript(plan.AbilityDefinition, plan, out AbilityExecutionScript script);
 
             if (scriptExists)
             {
