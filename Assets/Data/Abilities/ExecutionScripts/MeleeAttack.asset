@@ -16,9 +16,10 @@ MonoBehaviour:
   m_requirements:
   - rid: 226000796857139307
   m_steps:
+  - rid: 226000796857139320
   - rid: 226000796857139293
   - rid: 226000796857139294
-  - rid: 226000796857139295
+  - rid: 226000796857139319
   - rid: 226000796857139296
   - rid: 226000796857139297
   references:
@@ -32,9 +33,6 @@ MonoBehaviour:
       type: {class: WaitForAnimationEventStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_timeoutSeconds: 5
-    - rid: 226000796857139295
-      type: {class: ApplyEffectsStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
-      data: 
     - rid: 226000796857139296
       type: {class: WaitForAnimationEndStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
@@ -46,4 +44,10 @@ MonoBehaviour:
         m_animationType: 0
     - rid: 226000796857139307
       type: {class: HasDamageEffectRequirement, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Requirements, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139319
+      type: {class: ApplyDamageStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139320
+      type: {class: SpendResourceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 

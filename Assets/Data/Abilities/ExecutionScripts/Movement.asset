@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ability: {fileID: 11400000, guid: af844ce7707774443a50caeb39ad43d5, type: 2}
   m_requirements:
-  - rid: 226000796857139309
+  - rid: 226000796857139314
   m_steps:
+  - rid: 226000796857139329
+  - rid: 226000796857139328
   - rid: 226000796857139289
   - rid: 226000796857139290
-  - rid: 226000796857139291
+  - rid: 226000796857139327
   - rid: 226000796857139292
   references:
     version: 2
@@ -30,13 +32,19 @@ MonoBehaviour:
     - rid: 226000796857139290
       type: {class: MoveEntityStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
-    - rid: 226000796857139291
-      type: {class: ApplyEffectsStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
-      data: 
     - rid: 226000796857139292
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_animationType: 0
-    - rid: 226000796857139309
+    - rid: 226000796857139314
       type: {class: HasMoveEffectRequirement, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Requirements, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139327
+      type: {class: OccupyBoardSpaceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139328
+      type: {class: FreeBoardSpaceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139329
+      type: {class: SpendResourceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
