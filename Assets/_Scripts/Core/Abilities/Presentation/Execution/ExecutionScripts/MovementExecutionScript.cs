@@ -13,7 +13,10 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.ExecutionScripts
     {
         public override List<IAbilityExecutionStep> BuildSteps(AbilityPlan plan, int executorId)
         {
-            List<MoveEffect> moveEffects = plan.Effects.Where(effect => effect is MoveEffect).Cast<MoveEffect>().ToList();
+            List<MoveEffect> moveEffects = plan.Effects
+                .Where(effect => effect is MoveEffect)
+                .Cast<MoveEffect>()
+                .ToList();
 
             List<IAbilityExecutionStep> steps = new List<IAbilityExecutionStep>
             {
