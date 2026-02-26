@@ -21,8 +21,9 @@ namespace MagmaHeart.Core.Tests
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             IEnumerable<IBoardCommand> commands = factory.BuildStartOfTurnCommands(Board, TurnOrder.Head);
-            CommandRunner runner = new CommandRunner();
-            runner.Apply(Board, commands);
+            //CommandRunner runner = new CommandRunner();
+            //runner.Apply(Board, commands);
+            throw new System.NotImplementedException("AIScenario.RunAI: Apply the start of turn commands here");
 
             CircularList<int> modelTurns = new CircularList<int>();
             foreach (AIUnitModel entity in TurnOrder)

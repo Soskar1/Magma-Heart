@@ -10,13 +10,11 @@ namespace MagmaHeart.AI.Reasoning.Plans
         public IEnumerable<PlanTask> Tasks { get; init; }
         internal List<AbilityPlan> ExecutedAbilities { get; init; }
 
-        private readonly CommandRunner m_commandRunner;
 
-        public Plan(IEnumerable<PlanTask> tasks, CommandRunner commandRunner)
+        public Plan(IEnumerable<PlanTask> tasks)
         {
             Tasks = tasks;
             ExecutedAbilities = new List<AbilityPlan>();
-            m_commandRunner = commandRunner;
         }
 
         public bool TryExecute(Board simulation, AIUnitModel executor)
@@ -25,7 +23,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
 
             foreach (PlanTask task in Tasks)
             {
-                bool executed = task.TryExecute(simulation, executor, m_commandRunner, out AbilityPlan abilityPlan);
+                bool executed = task.TryExecute(simulation, executor, out AbilityPlan abilityPlan);
 
                 if (executed)
                 {
@@ -39,7 +37,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 }
 
                 if (task.ExecuteUntilFail)
-                    while (task.TryExecute(simulation, executor, m_commandRunner, out abilityPlan))
+                    while (task.TryExecute(simulation, executor, out abilityPlan))
                         ExecutedAbilities.Add(abilityPlan);
             }
 
@@ -49,7 +47,9 @@ namespace MagmaHeart.AI.Reasoning.Plans
         internal void Undo(Board simulation)
         {
             foreach (AbilityPlan _ in ExecutedAbilities)
-                m_commandRunner.Undo(simulation);
+            {
+
+            }    
         }
     }
 }

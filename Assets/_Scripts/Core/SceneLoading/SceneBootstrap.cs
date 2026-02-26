@@ -109,12 +109,8 @@ namespace MagmaHeart.Core.SceneLoading
             MagmaHeartServices services = serviceInstaller.Install(spawner);
             m_installers.Add(serviceInstaller);
 
-            ActionRunnerInstaller actionRunnerInstaller = new ActionRunnerInstaller();
-            ActionExecutor actionRunner = actionRunnerInstaller.Install(spawner);
-            m_installers.Add(actionRunnerInstaller);
-
             BattleInstaller battleInstaller = new BattleInstaller();
-            BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, world, actionRunner, playerContext.TurnController);
+            BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, world, playerContext.TurnController);
             m_installers.Add(battleInstaller);
 
             CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);

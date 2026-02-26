@@ -1,7 +1,6 @@
 ﻿using MagmaHeart.AI;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Execution;
-using MagmaHeart.Core.BoardStateSystem.Actions.Commands;
 using System.Collections.Generic;
 
 namespace MagmaHeart.Core.Entities
@@ -12,9 +11,10 @@ namespace MagmaHeart.Core.Entities
         {
             EntityModel entityModel = unit as EntityModel;
             int newEnergyValue = entityModel.Energy.CurrentEnergy + entityModel.Energy.EnergyRegenerationPerTurn;
+            throw new System.Exception("FIX THIS: Energy regeneration is not implemented yet");
             return new List<IBoardCommand>()
             {
-                new UpdateEnergyCommand(entityModel.Id, newEnergyValue)
+                // new UpdateEnergyCommand(entityModel.Id, newEnergyValue)
             };
         }
     }

@@ -1,11 +1,7 @@
-﻿using MagmaHeart.AI.Execution;
-using MagmaHeart.AI.Reasoning;
-using MagmaHeart.AI.Reasoning.Plans;
+﻿using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Collections;
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,13 +10,11 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
     public class EnemyTurnController
     {
         private readonly AIEngine m_aiEngine;
-        private readonly ActionExecutor m_actionRunner;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public EnemyTurnController(AIEngine engine, ActionExecutor actionRunner)
+        public EnemyTurnController(AIEngine engine)
         {
             m_aiEngine = engine;
-            m_actionRunner = actionRunner;
         }
 
         public async Task StartTurn(Room room, TurnOrder turnOrder)

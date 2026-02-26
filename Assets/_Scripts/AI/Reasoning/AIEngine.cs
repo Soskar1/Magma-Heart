@@ -13,16 +13,14 @@ namespace MagmaHeart.AI.Reasoning
         private readonly Planner m_planner;
         private readonly IStartOfTurnCommandFactory m_commandFactory;
         private Strategy m_strategy;
-        private CommandRunner m_runner;
 
         public AIEngine(Strategy strategy, int lookAhead, IStartOfTurnCommandFactory factory)
         {
             m_strategy = strategy;
             m_depth = lookAhead;
-            m_runner = new CommandRunner();
             m_commandFactory = factory;
 
-            m_planner = new Planner(strategy, m_runner);
+            m_planner = new Planner(strategy);
         }
 
         public BestPlan ChooseBestMove(ChainNode<int> unitTurnIds, Board board)
@@ -68,7 +66,7 @@ namespace MagmaHeart.AI.Reasoning
                 return m_strategy.EvaluateState(simulation);
 
             IEnumerable<IBoardCommand> commands = m_commandFactory.BuildStartOfTurnCommands(simulation, currentUnit);
-            m_runner.Apply(simulation, commands);
+            // m_runner.Apply(simulation, commands);
 
             List<Plan> plans = m_planner.GetPlans(currentUnit);
 
@@ -93,7 +91,7 @@ namespace MagmaHeart.AI.Reasoning
                         break;
                 }
 
-                m_runner.Undo(simulation);
+                // m_runner.Undo(simulation);
                 return maxEvaluation;
             }
             else
@@ -117,7 +115,7 @@ namespace MagmaHeart.AI.Reasoning
                         break;
                 }
 
-                m_runner.Undo(simulation);
+                // m_runner.Undo(simulation);
                 return minEvaluation;
             }
         }

@@ -1,5 +1,4 @@
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.Execution;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.DungeonGeneration;
 using NUnit.Framework;
@@ -11,7 +10,6 @@ namespace MagmaHeart.Core.Tests
     {
         public Board Board { get; private set; }
         private BoardDimensions m_boardDimensions;
-        public CommandRunner Runner { get; private set; }
 
         [OneTimeSetUp]
         public void InitializeBoardDimensions()
@@ -25,8 +23,6 @@ namespace MagmaHeart.Core.Tests
             RoomModel roomModel = RoomPresets.CreateEmptyRoom(m_boardDimensions);
             Room room = new Room(roomModel, null, null);
             Board = room;
-
-            Runner = new CommandRunner();
         }
     }
 }

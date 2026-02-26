@@ -18,12 +18,11 @@ namespace MagmaHeart.Core.CombatSystem
             Random random,
             float minDistanceFromPlayer,
             GameWorld gameWorld,
-            ActionExecutor actionRunner,
             PlayerTurnController playerTurnController)
         {
-            EnemyTurnController enemyTurnController = new EnemyTurnController(aiContext.AiEngine, actionRunner);
+            EnemyTurnController enemyTurnController = new EnemyTurnController(aiContext.AiEngine);
 
-            Battle battle = new Battle(aiContext.StartOfTurnCommandFactory, actionRunner, playerTurnController, enemyTurnController);
+            Battle battle = new Battle(aiContext.StartOfTurnCommandFactory, playerTurnController, enemyTurnController);
             m_battleInitializer = new BattleInitializer(spawner, random, minDistanceFromPlayer, gameWorld);
 
             return new BattleContext(battle, m_battleInitializer);
