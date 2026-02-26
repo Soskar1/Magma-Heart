@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Execution;
 
 namespace MagmaHeart.AI.Reasoning.Plans
 {
     internal class Planner
     {
-        private readonly ActionDatabase m_database;
         private readonly Strategy m_strategy;
         private readonly CommandRunner m_commandRunner;
 
-        public Planner(Strategy strategy, ActionDatabase database, CommandRunner commandRunner)
+        public Planner(Strategy strategy, CommandRunner commandRunner)
         {
-            m_database = database;
             m_strategy = strategy;
             m_commandRunner = commandRunner;
         }
@@ -42,18 +39,18 @@ namespace MagmaHeart.AI.Reasoning.Plans
 
             foreach (PlanTaskDefinition taskDefinition in planDefinition.TaskDefinitions)
             {
-                Type actionType = taskDefinition.ActionType;
-                ActionDefinition actionDefinition = executor.PossibleActions
-                    .Select(action => action.GetDefinition())
-                    .Where(action => action.ActionType == actionType)
-                    .FirstOrDefault();
+                //Type actionType = taskDefinition.ActionType;
+                //ActionDefinition actionDefinition = executor.PossibleActions
+                //    .Select(action => action.GetDefinition())
+                //    .Where(action => action.ActionType == actionType)
+                //    .FirstOrDefault();
 
-                if (actionDefinition is null)
-                    return null;
+                //if (actionDefinition is null)
+                //    return null;
 
-                UnitAction action = m_database.Get(actionDefinition.ActionType);
-                PlanTask planTask = new PlanTask(action, actionDefinition, taskDefinition.ExecuteUntilFail);
-                planTasks.Add(planTask);
+                //UnitAction action = m_database.Get(actionDefinition.ActionType);
+                //PlanTask planTask = new PlanTask(action, actionDefinition, taskDefinition.ExecuteUntilFail);
+                //planTasks.Add(planTask);
             }
 
             return new Plan(planTasks, m_commandRunner);

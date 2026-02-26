@@ -12,17 +12,17 @@ namespace MagmaHeart.AI.Reasoning.Tests
         private const float DISTANCE_WEIGHT = 0.1f;
 
         public BasicStrategy() {
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(MoveAction))
-            }));
+            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+            //    new PlanTaskDefinition(typeof(MoveAction))
+            //}));
 
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(AttackAction))
-            }));
+            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+            //    new PlanTaskDefinition(typeof(AttackAction))
+            //}));
 
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(RunAwayAction))
-            }));
+            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+            //    new PlanTaskDefinition(typeof(RunAwayAction))
+            //}));
         }
 
         public override float EvaluateState(Board board)

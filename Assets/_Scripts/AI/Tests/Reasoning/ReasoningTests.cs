@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Boards;
 using NUnit.Framework;
 using System.Reflection;
 using UnityEngine;
@@ -10,14 +9,12 @@ namespace MagmaHeart.AI.Reasoning.Tests
     {
         public Board Board { get; private set; }
         public BasicStrategy Strategy { get; private set; }
-        public ActionDatabase Database { get; private set; }
         private int m_nextId = 0;
 
         [OneTimeSetUp]
         public void InitializeDatabase()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            Database = new ActionDatabase(assembly);
             Strategy = new BasicStrategy();
         }
 
@@ -39,13 +36,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
             entity.Position = position;
             ++m_nextId;
             
-            AttackActionData attackData = new AttackActionData(4);
-            MoveActionData moveData = new MoveActionData(3);
-            RunAwayActionData runAwayData = new RunAwayActionData(3);
-
-            entity.PossibleActions.Add(attackData);
-            entity.PossibleActions.Add(moveData);
-            entity.PossibleActions.Add(runAwayData);
             Board.AddUnit(position, entity);
 
             return entity;

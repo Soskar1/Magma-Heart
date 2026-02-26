@@ -34,11 +34,13 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
             if (bestPlan != null)
             {
-                foreach (ExecutedTask task in bestPlan.ExecutedTasks)
-                {
-                    IEnumerable<IBoardCommand> commands = task.Action.Execute(task.Args, room);
-                    await m_actionRunner.ApplyAsync(room, commands, m_cancellationTokenSource.Token);
-                }
+                throw new System.NotImplementedException("EnemyTurnController.StartTurn: Execute the best plan's commands here");
+
+                //foreach (ExecutedTask task in bestPlan.ExecutedTasks)
+                //{
+                //    IEnumerable<IBoardCommand> commands = task.Action.Execute(task.Args, room);
+                //    await m_actionRunner.ApplyAsync(room, commands, m_cancellationTokenSource.Token);
+                //}
             }
 
             EndTurn();

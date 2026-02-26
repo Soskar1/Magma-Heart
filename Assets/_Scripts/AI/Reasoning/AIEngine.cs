@@ -1,5 +1,4 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.AI.Execution;
 using MagmaHeart.Collections;
@@ -16,14 +15,14 @@ namespace MagmaHeart.AI.Reasoning
         private Strategy m_strategy;
         private CommandRunner m_runner;
 
-        public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead, IStartOfTurnCommandFactory factory)
+        public AIEngine(Strategy strategy, int lookAhead, IStartOfTurnCommandFactory factory)
         {
             m_strategy = strategy;
             m_depth = lookAhead;
             m_runner = new CommandRunner();
             m_commandFactory = factory;
 
-            m_planner = new Planner(strategy, database, m_runner);
+            m_planner = new Planner(strategy, m_runner);
         }
 
         public BestPlan ChooseBestMove(ChainNode<int> unitTurnIds, Board board)
@@ -52,7 +51,7 @@ namespace MagmaHeart.AI.Reasoning
                 if (evaluation > bestValue)
                 {
                     bestValue = evaluation;
-                    bestPlan = new BestPlan(plan.ExecutedTasks);
+                    bestPlan = new BestPlan(plan.ExecutedAbilities);
                 }
 
                 alpha = Math.Max(alpha, bestValue);

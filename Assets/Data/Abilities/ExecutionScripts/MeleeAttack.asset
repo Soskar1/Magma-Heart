@@ -19,7 +19,9 @@ MonoBehaviour:
   m_steps:
   - rid: 226000796857139320
   - rid: 226000796857139355
+  - rid: 226000796857139365
   - rid: 226000796857139356
+  - rid: 226000796857139366
   - rid: 226000796857139293
   - rid: 226000796857139294
   - rid: 226000796857139319
@@ -63,4 +65,10 @@ MonoBehaviour:
         m_animationType: 1
     - rid: 226000796857139356
       type: {class: MoveEntityStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139365
+      type: {class: FreeBoardSpaceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139366
+      type: {class: OccupyBoardSpaceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 

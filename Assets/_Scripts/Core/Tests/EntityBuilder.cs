@@ -1,4 +1,3 @@
-using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
@@ -11,7 +10,6 @@ namespace MagmaHeart.Core.Tests
     {
         private readonly AIScenarioBuilder m_scenario;
         private readonly int m_id;
-        private List<ActionData> m_actions;
         private int m_health = 5;
         private int m_energy = 5;
         private bool m_isPlayer = false;
@@ -20,12 +18,6 @@ namespace MagmaHeart.Core.Tests
         {
             m_scenario = scenario;
             m_id = id;
-        }
-
-        public EntityBuilder WithActions(List<ActionData> actions)
-        {
-            m_actions = actions;
-            return this;
         }
 
         public EntityBuilder WithHealth(int health)
@@ -50,7 +42,7 @@ namespace MagmaHeart.Core.Tests
         {
             Vector2 position = new Vector2(x, y);
             EntityStats stats = new EntityStats(m_health, m_energy, m_energy);
-            EntityData data = new EntityData("", stats, m_actions == null ? new List<ActionData>() : m_actions);
+            EntityData data = new EntityData("", stats);
             EntityModel model = new EntityModel(data, position.ToVector3Int(), m_isPlayer, m_id);
             m_scenario.Board.AddUnit(position, model);
             m_scenario.Board.ChangeNodeType(position, BoardNodeType.Obstacle);

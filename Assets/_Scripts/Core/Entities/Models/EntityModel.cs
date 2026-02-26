@@ -1,6 +1,5 @@
 using MagmaHeart.Abilities;
 using MagmaHeart.AI;
-using MagmaHeart.AI.Actions;
 using MagmaHeart.Core.Entities.Models;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,9 +37,6 @@ namespace MagmaHeart.Core.Entities
             Abilities.Add(AttackAbility.Id, AttackAbility);
             Abilities.Add(MovementAbility.Id, MovementAbility);
 
-            foreach (ActionData actionData in data.Actions)
-                PossibleActions.Add(actionData.GetType(), actionData);
-
             foreach (AbilityDefinition ability in data.AdditionalAbilities)
                 Abilities.Add(ability.Id, ability);
 
@@ -56,7 +52,7 @@ namespace MagmaHeart.Core.Entities
         {
             EntityModel copy = new EntityModel(Data, TilePosition, IsPlayer, Id)
             {
-                PossibleActions = PossibleActions.DeepCopy(),
+                Abilities = new Dictionary<string, AbilityDefinition>(Abilities),
                 Health = Health.DeepCopy(),
                 Energy = Energy.DeepCopy(),
                 Strength = Strength.DeepCopy(),

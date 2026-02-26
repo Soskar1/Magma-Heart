@@ -2,10 +2,8 @@
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.AI
@@ -17,18 +15,19 @@ namespace MagmaHeart.Core.AI
         private const float AI_IS_NOT_ALIVE_POINTS = -50;
 
         public AggressiveStrategy() {
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(MovementAction))
-            }));
+            throw new NotImplementedException("FIX THIS");
+            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+            //    new PlanTaskDefinition(typeof(MovementAction))
+            //}));
 
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(AttackAction), true),
-            }));
+            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+            //    new PlanTaskDefinition(typeof(AttackAction), true),
+            //}));
 
-            Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-                new PlanTaskDefinition(typeof(MovementAction)),
-                new PlanTaskDefinition(typeof(AttackAction), true)
-            }));
+            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
+            //    new PlanTaskDefinition(typeof(MovementAction)),
+            //    new PlanTaskDefinition(typeof(AttackAction), true)
+            //}));
         }
 
         public override float EvaluateState(Board board)

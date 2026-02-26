@@ -1,5 +1,4 @@
 using MagmaHeart.AI;
-using MagmaHeart.AI.Actions;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.Execution;
@@ -13,11 +12,11 @@ namespace MagmaHeart.Core.Tests
 {
     internal record AIScenario(Board Board, CircularList<AIUnitModel> TurnOrder)
     {
-        public BestPlan RunAI(int depth, ActionDatabase actionDatabase)
+        public BestPlan RunAI(int depth)
         {
             AggressiveStrategy strategy = new AggressiveStrategy();
             IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();
-            AIEngine ai = new AIEngine(strategy, actionDatabase, depth, factory);
+            AIEngine ai = new AIEngine(strategy, depth, factory);
 
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 

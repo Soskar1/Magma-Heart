@@ -1,4 +1,5 @@
-﻿using MagmaHeart.AI.Boards;
+﻿using MagmaHeart.Abilities;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Execution;
 using System.Collections.Generic;
 
@@ -7,28 +8,28 @@ namespace MagmaHeart.AI.Reasoning.Plans
     public class Plan
     {
         public IEnumerable<PlanTask> Tasks { get; init; }
-        internal List<ExecutedTask> ExecutedTasks { get; init; }
+        internal List<AbilityPlan> ExecutedAbilities { get; init; }
 
         private readonly CommandRunner m_commandRunner;
 
         public Plan(IEnumerable<PlanTask> tasks, CommandRunner commandRunner)
         {
             Tasks = tasks;
-            ExecutedTasks = new List<ExecutedTask>();
+            ExecutedAbilities = new List<AbilityPlan>();
             m_commandRunner = commandRunner;
         }
 
         public bool TryExecute(Board simulation, AIUnitModel executor)
         {
-            ExecutedTasks.Clear();
+            ExecutedAbilities.Clear();
 
             foreach (PlanTask task in Tasks)
             {
-                bool executed = task.TryExecute(simulation, executor, m_commandRunner, out ExecutedTask executedTask);
+                bool executed = task.TryExecute(simulation, executor, m_commandRunner, out AbilityPlan abilityPlan);
 
                 if (executed)
                 {
-                    ExecutedTasks.Add(executedTask);
+                    ExecutedAbilities.Add(abilityPlan);
                 }
                 else
                 {
@@ -38,8 +39,8 @@ namespace MagmaHeart.AI.Reasoning.Plans
                 }
 
                 if (task.ExecuteUntilFail)
-                    while (task.TryExecute(simulation, executor, m_commandRunner, out executedTask))
-                        ExecutedTasks.Add(executedTask);
+                    while (task.TryExecute(simulation, executor, m_commandRunner, out abilityPlan))
+                        ExecutedAbilities.Add(abilityPlan);
             }
 
             return true;
@@ -47,7 +48,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
 
         internal void Undo(Board simulation)
         {
-            foreach (ExecutedTask _ in ExecutedTasks)
+            foreach (AbilityPlan _ in ExecutedAbilities)
                 m_commandRunner.Undo(simulation);
         }
     }

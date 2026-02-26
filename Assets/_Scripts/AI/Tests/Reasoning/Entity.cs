@@ -11,7 +11,6 @@ namespace MagmaHeart.AI.Reasoning.Tests
         {
             return new Entity(IsPlayer, Id)
             {
-                PossibleActions = PossibleActions.DeepCopy(),
                 CurrentHealth = CurrentHealth,
                 Position = Position
             };
