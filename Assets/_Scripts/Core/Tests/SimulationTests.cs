@@ -1,10 +1,5 @@
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.Execution;
-using MagmaHeart.Core.BoardStateSystem.Actions;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Extensions;
-using NUnit.Framework;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Tests

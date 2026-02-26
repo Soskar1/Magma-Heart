@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.CombatSystem
         {
             EnemyTurnController enemyTurnController = new EnemyTurnController(aiContext.AiEngine);
 
-            Battle battle = new Battle(aiContext.StartOfTurnCommandFactory, playerTurnController, enemyTurnController);
+            Battle battle = new Battle(playerTurnController, enemyTurnController);
             m_battleInitializer = new BattleInitializer(spawner, random, minDistanceFromPlayer, gameWorld);
 
             return new BattleContext(battle, m_battleInitializer);

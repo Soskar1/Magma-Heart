@@ -1,5 +1,3 @@
-using MagmaHeart.AI.Execution;
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
@@ -18,8 +16,6 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private readonly Dictionary<int, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnHealthChangedEventArgs>>();
 
-        private readonly IStartOfTurnCommandFactory m_startOfTurnCommandFactory;
-
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
 
@@ -35,9 +31,8 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly PlayerTurnController m_playerTurnController;
         private readonly EnemyTurnController m_enemyTurnController;
 
-        public Battle(IStartOfTurnCommandFactory startOfTurnCommandFactory, PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController)
+        public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController)
         {
-            m_startOfTurnCommandFactory = startOfTurnCommandFactory;
             m_playerTurnController = playerTurnController;
             m_enemyTurnController = enemyTurnController;
         }
@@ -80,7 +75,7 @@ namespace MagmaHeart.Core.CombatSystem
 
                 m_cancellationTokenSource = new CancellationTokenSource();
 
-                IEnumerable<IBoardCommand> commands = m_startOfTurnCommandFactory.BuildStartOfTurnCommands(m_currentRoom, entity.Model);
+                // IEnumerable<IBoardCommand> commands = m_startOfTurnCommandFactory.BuildStartOfTurnCommands(m_currentRoom, entity.Model);
                 // await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
 
                 if (entity.Model.IsPlayer)

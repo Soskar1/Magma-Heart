@@ -1,11 +1,8 @@
 using MagmaHeart.AI;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
-using MagmaHeart.AI.Execution;
 using MagmaHeart.Collections;
 using MagmaHeart.Core.AI;
-using MagmaHeart.Core.Entities;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace MagmaHeart.Core.Tests
@@ -15,14 +12,13 @@ namespace MagmaHeart.Core.Tests
         public BestPlan RunAI(int depth)
         {
             AggressiveStrategy strategy = new AggressiveStrategy();
-            IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();
-            AIEngine ai = new AIEngine(strategy, depth, factory);
+            AIEngine ai = new AIEngine(strategy, depth);
 
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-            IEnumerable<IBoardCommand> commands = factory.BuildStartOfTurnCommands(Board, TurnOrder.Head);
-            //CommandRunner runner = new CommandRunner();
-            //runner.Apply(Board, commands);
+            // IEnumerable<IBoardCommand> commands = factory.BuildStartOfTurnCommands(Board, TurnOrder.Head);
+            // CommandRunner runner = new CommandRunner();
+            // runner.Apply(Board, commands);
             throw new System.NotImplementedException("AIScenario.RunAI: Apply the start of turn commands here");
 
             CircularList<int> modelTurns = new CircularList<int>();

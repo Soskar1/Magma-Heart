@@ -1,6 +1,4 @@
-﻿using MagmaHeart.AI.Execution;
-using MagmaHeart.AI.Reasoning;
-using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.SceneLoading;
 
 namespace MagmaHeart.Core.AI
@@ -10,10 +8,10 @@ namespace MagmaHeart.Core.AI
         public AIContext Install()
         {
             AggressiveStrategy strategy = new AggressiveStrategy();
-            IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();
+            // IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();
 
-            AIEngine aiEngine = new AIEngine(strategy, 2, factory);
-            return new AIContext(aiEngine, factory);
+            AIEngine aiEngine = new AIEngine(strategy, 2);
+            return new AIContext(aiEngine);
         }
 
         public void Dispose() { }
