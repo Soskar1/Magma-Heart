@@ -1,9 +1,8 @@
 ﻿using MagmaHeart.Abilities.Effects;
-using MagmaHeart.AI;
 using System;
 using System.Collections.Generic;
 
-namespace MagmaHeart.Core.Abilities.Effects
+namespace MagmaHeart.AI
 {
     public sealed class EffectDispatcher
     {

@@ -25,18 +25,6 @@ namespace MagmaHeart.AI.Reasoning.Plans
 
         public AbilityDefinition Ability => m_ability;
         public bool ExecuteUntilFail => m_executeUntilFail;
-
-        public bool TryExecute(Board simulation, AIUnitModel executor, out AbilityPlan abilityPlan)
-        {
-            abilityPlan = null;
-
-            // AbilityTarget target = m_targetSelector.SelectTarget(simulation, executor.Id);
-
-            //IEnumerable<IBoardCommand> commands = Action.Execute(args, simulation);
-            //runner.Apply(simulation, commands);
-
-            //abilityPlan = new ExecutedTask(Action, args);
-            return true;
-        }
+        public ITargetSelector TargetSelector => m_targetSelector;
     }
 }

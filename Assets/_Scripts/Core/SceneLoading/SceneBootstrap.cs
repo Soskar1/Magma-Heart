@@ -1,4 +1,5 @@
 using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Abilities;
 using MagmaHeart.Core.Abilities.Effects;
@@ -118,7 +119,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_installers.Add(playerInstaller);
 
             AIInstaller aiInstaller = new AIInstaller();
-            AIContext aiContext = aiInstaller.Install();
+            AIContext aiContext = aiInstaller.Install(startOfTurnEffectFactory, effectDispatcher);
             m_installers.Add(aiInstaller);
 
             ServiceInstaller serviceInstaller = new ServiceInstaller();

@@ -1,7 +1,6 @@
 ﻿using MagmaHeart.Abilities.Effects;
-using MagmaHeart.AI;
 
-namespace MagmaHeart.Core.Abilities.Effects
+namespace MagmaHeart.AI
 {
     public interface IEffectHandler<in T> where T : AbilityEffect
     {

@@ -1,6 +1,6 @@
 using System;
+using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
-using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.AI;
 using MagmaHeart.Core.Entities.NonPlayableCharacters;

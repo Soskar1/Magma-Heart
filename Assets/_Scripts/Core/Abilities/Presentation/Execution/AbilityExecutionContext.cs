@@ -1,5 +1,5 @@
 using MagmaHeart.Abilities;
-using MagmaHeart.Core.Abilities.Effects;
+using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution
 {

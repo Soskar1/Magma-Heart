@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Abilities;
 using MagmaHeart.AI.Boards;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.AI
@@ -13,5 +14,6 @@ namespace MagmaHeart.AI
         public bool RemoveUnit(Vector2 position);
         public void MoveUnit(int unitId, Vector2 newPosition);
         public Vector2 WorldToTilePosition(Vector2 worldPosition);
+        public IEnumerable<AIUnitModel> GetUnits();
     } 
 }

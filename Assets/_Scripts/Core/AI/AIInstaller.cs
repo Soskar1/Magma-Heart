@@ -1,16 +1,16 @@
-﻿using MagmaHeart.AI.Reasoning;
+﻿using MagmaHeart.AI;
+using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.SceneLoading;
 
 namespace MagmaHeart.Core.AI
 {
     public class AIInstaller : IInstaller
     {
-        public AIContext Install()
+        public AIContext Install(IStartOfTurnEffectFactory factory, EffectDispatcher effectDispatcher)
         {
             AggressiveStrategy strategy = new AggressiveStrategy();
-            // IStartOfTurnCommandFactory factory = new StartOfTurnCommandFactory();
 
-            AIEngine aiEngine = new AIEngine(strategy, 2);
+            AIEngine aiEngine = new AIEngine(strategy, 2, factory, effectDispatcher);
             return new AIContext(aiEngine);
         }
 

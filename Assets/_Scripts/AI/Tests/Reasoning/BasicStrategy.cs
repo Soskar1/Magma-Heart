@@ -1,6 +1,4 @@
-﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.Reasoning.Plans;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,7 +23,7 @@ namespace MagmaHeart.AI.Reasoning.Tests
             //}));
         }
 
-        public override float EvaluateState(Board board)
+        public override float EvaluateState(IBoardGameWorld board)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
@@ -48,51 +46,51 @@ namespace MagmaHeart.AI.Reasoning.Tests
                 return 5 / distance;
             };
             
-            IEnumerable<AIUnitModel> aiUnits = board.GetUnits();
-            foreach (AIUnitModel unit in aiUnits)
-            {
-                Entity entity = (Entity)unit;
+            //IEnumerable<AIUnitModel> aiUnits = board.GetUnits();
+            //foreach (AIUnitModel unit in aiUnits)
+            //{
+            //    Entity entity = (Entity)unit;
 
-                if (unit.IsPlayer)
-                {
-                    if (!entity.IsDisabled)
-                    {
-                        playerIsAlive = true;
-                        playerHP = entity.CurrentHealth;
-                        playerPosition = entity.Position;
-                    }
-                    else
-                    {
-                        playerIsNotAlivePoints = 100;
-                    }
-                }
-                else
-                {
-                    if (entity.CurrentHealth <= 0)
-                    {
-                        ++aiNotAliveCount;
-                    }
-                    else
-                    {
-                        aiHP += entity.CurrentHealth;
-                    }
-                }
-            }
+            //    if (unit.IsPlayer)
+            //    {
+            //        if (!entity.IsDisabled)
+            //        {
+            //            playerIsAlive = true;
+            //            playerHP = entity.CurrentHealth;
+            //            playerPosition = entity.Position;
+            //        }
+            //        else
+            //        {
+            //            playerIsNotAlivePoints = 100;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (entity.CurrentHealth <= 0)
+            //        {
+            //            ++aiNotAliveCount;
+            //        }
+            //        else
+            //        {
+            //            aiHP += entity.CurrentHealth;
+            //        }
+            //    }
+            //}
 
-            if (playerIsAlive)
-            {
-                foreach (AIUnitModel unit in aiUnits)
-                {
-                    if (unit.IsPlayer)
-                        continue;
+            //if (playerIsAlive)
+            //{
+            //    foreach (AIUnitModel unit in aiUnits)
+            //    {
+            //        if (unit.IsPlayer)
+            //            continue;
 
-                    Entity entity = (Entity)unit;
-                    if (entity.IsDisabled)
-                        continue;
+            //        Entity entity = (Entity)unit;
+            //        if (entity.IsDisabled)
+            //            continue;
 
-                    distancePoints += getDistancePoints(entity.Position);
-                }
-            }
+            //        distancePoints += getDistancePoints(entity.Position);
+            //    }
+            //}
 
             return playerIsNotAlivePoints
                 + aiIsNotAlivePoints * aiNotAliveCount

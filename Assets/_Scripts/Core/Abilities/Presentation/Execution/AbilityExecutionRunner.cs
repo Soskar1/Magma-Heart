@@ -1,6 +1,6 @@
 ﻿using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Effects;
-using MagmaHeart.Core.Abilities.Effects;
+using MagmaHeart.AI;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;

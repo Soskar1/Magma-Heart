@@ -4,6 +4,9 @@ using MagmaHeart.AI.Reasoning;
 using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.Core.Entities;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.AI
@@ -15,7 +18,6 @@ namespace MagmaHeart.Core.AI
         private const float AI_IS_NOT_ALIVE_POINTS = -50;
 
         public AggressiveStrategy() {
-            //throw new NotImplementedException("FIX THIS");
             //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
             //    new PlanTaskDefinition(typeof(MovementAction))
             //}));
@@ -30,7 +32,7 @@ namespace MagmaHeart.Core.AI
             //}));
         }
 
-        public override float EvaluateState(Board board)
+        public override float EvaluateState(IBoardGameWorld world)
         {
             // !IS_ALIVE == -50 if AI
             // !IS_ALIVE == 100 if PLAYER
@@ -40,9 +42,10 @@ namespace MagmaHeart.Core.AI
             float distancePoints = 0;
             float playerIsNotAlivePoints = 0;
             int aiNotAliveCount = 0;
-
             EntityModel player = null;
-            foreach (AIUnitModel unitModel in board.GetUnits())
+            IList<AIUnitModel> allUnits = world.GetUnits().ToList();
+
+            foreach (AIUnitModel unitModel in allUnits)
             {
                 if (unitModel.IsPlayer)
                 {
@@ -65,14 +68,12 @@ namespace MagmaHeart.Core.AI
                 return 5 / distance;
             };
 
-            foreach (AIUnitModel unit in board.GetUnits())
+            foreach (AIUnitModel unit in allUnits)
             {
                 if (unit.IsPlayer)
                     continue;
 
-                board.TryGetUnit(unit.Id, out EntityModel aiEntity);
-
-                if (aiEntity.IsDisabled)
+                if (unit.IsDisabled)
                 {
                     ++aiNotAliveCount;
                 }
