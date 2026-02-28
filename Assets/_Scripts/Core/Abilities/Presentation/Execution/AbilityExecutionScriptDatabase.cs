@@ -26,7 +26,10 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
             script = null;
 
             if (!m_lookup.TryGetValue(ability, out AbilityExecutionScript candidate))
+            {
+                Debug.LogWarning($"No execution script found for ability {plan.AbilityDefinition.Id}. Applying effects directly.");
                 return false;
+            }
 
             if (!candidate.IsValid(plan))
                 return false;

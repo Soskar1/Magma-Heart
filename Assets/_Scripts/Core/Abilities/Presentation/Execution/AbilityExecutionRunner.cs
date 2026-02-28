@@ -38,8 +38,6 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
             }
             else
             {
-                Debug.LogWarning($"No execution script found for ability {plan.AbilityDefinition.Id}. Applying effects directly.");
-
                 foreach (AbilityEffect effect in plan.Effects)
                     m_effectDispatcher.Apply(m_world, effect);
             }

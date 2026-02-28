@@ -16,9 +16,12 @@ MonoBehaviour:
   - m_ability: {fileID: 11400000, guid: af844ce7707774443a50caeb39ad43d5, type: 2}
     m_executeUntilFail: 0
     m_targetSelector:
-      rid: -2
+      rid: 8924568307561922632
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 8924568307561922632
+      type: {class: PossiblePathToNearestEnemyTargetSelector, ns: MagmaHeart.Core.AI, asm: MagmaHeart.Core}
+      data:
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
+        m_tilesPerResource: 2

@@ -10,6 +10,9 @@ namespace MagmaHeart.Abilities
     {
         public AbilityPlan Plan(IGameWorld world, int executorId, AbilityDefinition ability, AbilityTarget target)
         {
+            if (target == AbilityTarget.None)
+                return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>());
+
             ResourceCost totalCost = ResourceCost.Zero;
 
             if (ability.Cost != null)
