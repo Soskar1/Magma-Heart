@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Abilities;
+using MagmaHeart.Abilities.Targeting;
 using MagmaHeart.AI.Boards;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,9 @@ namespace MagmaHeart.AI.Reasoning.Plans
     {
         [SerializeField] private AbilityDefinition m_ability;
         [SerializeField] private bool m_executeUntilFail;
+        
+        [SerializeReference, SubclassSelector]
+        private ITargetSelector m_targetSelector;
 
         public AbilityDefinition Ability => m_ability;
         public bool ExecuteUntilFail => m_executeUntilFail;
@@ -26,8 +30,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
         {
             abilityPlan = null;
 
-            //if (!Action.TryGenerateArgs(executor, ActionDefinition.Data, simulation, out ActionArgs args))
-            //    return false;
+            // AbilityTarget target = m_targetSelector.SelectTarget(simulation, executor.Id);
 
             //IEnumerable<IBoardCommand> commands = Action.Execute(args, simulation);
             //runner.Apply(simulation, commands);

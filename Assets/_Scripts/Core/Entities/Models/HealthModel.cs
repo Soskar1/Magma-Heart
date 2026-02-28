@@ -1,13 +1,17 @@
+using MagmaHeart.Abilities;
 using System;
 
 namespace MagmaHeart.Core.Entities.Models
 {
-    public class HealthModel
+    public class HealthModel : IParameter
     {
         private float m_currentHealth;
         private float m_maxHealth;
 
         public event EventHandler<OnHealthChangedEventArgs> OnHealthChanged;
+
+        public ParameterId Id { get; init; }
+        public float CurrentValue => CurrentHealth;
 
         public float CurrentHealth
         {
@@ -42,19 +46,22 @@ namespace MagmaHeart.Core.Entities.Models
             }
         }
 
-        public HealthModel(float maxHealth)
+        public HealthModel(float maxHealth, ParameterId id)
         {
             m_maxHealth = maxHealth;
             m_currentHealth = maxHealth;
+            Id = id;
         }
 
         public HealthModel DeepCopy()
         {
-            HealthModel copy = new HealthModel(MaxHealth)
+            HealthModel copy = new HealthModel(MaxHealth, Id)
             {
                 CurrentHealth = CurrentHealth
             };
             return copy;
         }
+
+        public void SetValue(float value) => CurrentHealth = value;
     }
 }

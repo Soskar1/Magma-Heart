@@ -1,4 +1,5 @@
 ﻿using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ namespace MagmaHeart.Core.Abilities.Effects
             list.Add(new UntypedHandler<T>(handler));
         }
 
-        public void Apply(GameWorld world, AbilityEffect effect)
+        public void Apply(IBoardGameWorld world, AbilityEffect effect)
         {
             if (effect == null) return;
 
@@ -39,7 +40,7 @@ namespace MagmaHeart.Core.Abilities.Effects
 
         private interface IUntypedHandler
         {
-            public void Handle(GameWorld world, AbilityEffect effect);
+            public void Handle(IBoardGameWorld world, AbilityEffect effect);
         }
 
         private sealed class UntypedHandler<T> : IUntypedHandler where T : AbilityEffect
@@ -48,7 +49,7 @@ namespace MagmaHeart.Core.Abilities.Effects
 
             public UntypedHandler(IEffectHandler<T> handler) => m_handler = handler;
 
-            public void Handle(GameWorld world, AbilityEffect effect) => m_handler.Handle(world, (T)effect);
+            public void Handle(IBoardGameWorld world, AbilityEffect effect) => m_handler.Handle(world, (T)effect);
         }
     }
 }

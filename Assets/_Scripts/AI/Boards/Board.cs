@@ -8,14 +8,16 @@ namespace MagmaHeart.AI.Boards
     {
         public BoardGraph Graph { get; init; }
 
-        private Dictionary<Vector2, AIUnitModel> m_units;
-        private Dictionary<int, AIUnitModel> m_unitsById;
+        private IDictionary<Vector2, AIUnitModel> m_units;
+        private IDictionary<int, AIUnitModel> m_unitsById;
+        private IDictionary<int, Vector2> m_unitPositions;
 
         public Board(BoardGraph graph)
         {
             Graph = graph;
             m_units = new Dictionary<Vector2, AIUnitModel>();
             m_unitsById = new Dictionary<int, AIUnitModel>();
+            m_unitPositions = new Dictionary<int, Vector2>();
         }
 
         public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType) => Graph.ChangeNodeType(position, newNodeType);
@@ -28,6 +30,7 @@ namespace MagmaHeart.AI.Boards
 
             m_units[position] = unit;
             m_unitsById[unit.Id] = unit;
+            m_unitPositions[unit.Id] = position;
         }
 
         public bool RemoveUnit(Vector2 position)
@@ -37,6 +40,7 @@ namespace MagmaHeart.AI.Boards
 
             AIUnitModel model = m_units[position];
             m_unitsById.Remove(model.Id);
+            m_unitPositions.Remove(model.Id);
 
             return m_units.Remove(position);
         }
@@ -72,6 +76,8 @@ namespace MagmaHeart.AI.Boards
             unit = null;
             return false;
         }
+
+        public bool TryGetUnitPosition(int id, out Vector2 position) => m_unitPositions.TryGetValue(id, out position);
 
         public Board DeepCopy()
         {

@@ -1,3 +1,6 @@
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Abilities;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Handlers;
 using MagmaHeart.Core.Abilities.Presentation.Execution;
@@ -41,6 +44,12 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("Abilities")]
         [SerializeField] private AbilityExecutionScriptDatabase m_scriptDatabase;
+
+        [Header("Parameters")]
+        [SerializeField] private ParameterDatabase m_parameterDatabase;
+
+        [Header("Combat")]
+        [SerializeField] private int m_energyRegenPerTurn = 5;
 
         [Header("Dungeon")]
         [SerializeField] private List<LocationData> m_locations;
@@ -95,7 +104,14 @@ namespace MagmaHeart.Core.SceneLoading
             SpawnService spawner = spawnServiceInstaller.Install(m_entityPrefab, m_projectilePrefab, grid);
             m_installers.Add(spawnServiceInstaller);
 
-            AbilityExecutionRunner abilityExecutionRunner = GetAbilityExecutionRunner(world);
+            EffectDispatcher effectDispatcher = new EffectDispatcher();
+            effectDispatcher = new EffectDispatcher();
+            effectDispatcher.Register(new SpendResourceHandler());
+            effectDispatcher.Register(new DamageHandler());
+            effectDispatcher.Register(new MoveHandler());
+            effectDispatcher.Register(new RestoreParameterHandler());
+            AbilityExecutionRunner abilityExecutionRunner = new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
+            IStartOfTurnEffectFactory startOfTurnEffectFactory = new StartOfTurnEffectFactory(m_parameterDatabase.Energy, m_energyRegenPerTurn);
 
             PlayerInstaller playerInstaller = new PlayerInstaller();
             PlayerContext playerContext = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, abilityExecutionRunner, world, m_graphicRaycaster);
@@ -110,7 +126,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_installers.Add(serviceInstaller);
 
             BattleInstaller battleInstaller = new BattleInstaller();
-            BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, world, playerContext.TurnController);
+            BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, world, playerContext.TurnController, abilityExecutionRunner, effectDispatcher, startOfTurnEffectFactory);
             m_installers.Add(battleInstaller);
 
             CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
@@ -135,17 +151,6 @@ namespace MagmaHeart.Core.SceneLoading
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
             
             await stateMachine.Start();
-        }
-
-        private AbilityExecutionRunner GetAbilityExecutionRunner(GameWorld world)
-        {
-            EffectDispatcher effectDispatcher = new EffectDispatcher();
-            effectDispatcher = new EffectDispatcher();
-            effectDispatcher.Register(new SpendResourceHandler());
-            effectDispatcher.Register(new DamageHandler());
-            effectDispatcher.Register(new MoveHandler());
-            
-            return new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
         }
 
         public void OnDisable()

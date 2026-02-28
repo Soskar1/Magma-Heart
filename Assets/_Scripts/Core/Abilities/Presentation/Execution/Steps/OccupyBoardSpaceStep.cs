@@ -35,7 +35,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             }
 
             Vector3 end = moveEffect.Path.Last();
-            Vector2 endTile = context.World.WorldToTilePosition(end).ToVector2();
+            Vector2 endTile = context.World.WorldToTilePosition(end);
 
             context.World.CurrentRoom.AddUnit(endTile, executor.Model);
             context.World.CurrentRoom.ChangeNodeType(endTile, BoardNodeType.Obstacle);

@@ -7,11 +7,7 @@ namespace MagmaHeart.Core.Entities.Models
         private int m_currentStrength;
         
         public ParameterId Id { get; init; }
-        public float CurrentValue
-        {
-            get => CurrentStrength;
-            set => CurrentStrength = (int)value;
-        }
+        public float CurrentValue => CurrentStrength;
 
         public int CurrentStrength
         {
@@ -26,5 +22,7 @@ namespace MagmaHeart.Core.Entities.Models
         }
 
         public StrengthModel DeepCopy() => new StrengthModel(m_currentStrength, Id);
+
+        public void SetValue(float value) => CurrentStrength = (int)value;
     }
 }

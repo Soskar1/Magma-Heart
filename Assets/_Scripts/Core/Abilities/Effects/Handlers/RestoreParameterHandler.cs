@@ -1,15 +1,14 @@
 ﻿using MagmaHeart.Abilities;
-using MagmaHeart.Abilities.Effects;
 using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.Abilities.Effects.Handlers
 {
-    public sealed class SpendResourceHandler : IEffectHandler<SpendResourceEffect>
+    public class RestoreParameterHandler : IEffectHandler<RestoreParameterEffect>
     {
-        public void Handle(IBoardGameWorld world, SpendResourceEffect effect)
+        public void Handle(IBoardGameWorld world, RestoreParameterEffect effect)
         {
             IParameter parameter = world.GetParameter(effect.ExecutorId, effect.Parameter);
-            float newValue = parameter.CurrentValue - effect.Amount;
+            float newValue = parameter.CurrentValue + effect.Amount;
 
             world.SetParameter(effect.ExecutorId, effect.Parameter, newValue);
         }

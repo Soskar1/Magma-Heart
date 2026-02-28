@@ -1,5 +1,7 @@
-﻿using MagmaHeart.AI.Reasoning;
+﻿using MagmaHeart.Abilities;
+using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Collections;
+using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using System.Threading;
@@ -10,11 +12,13 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
     public class EnemyTurnController
     {
         private readonly AIEngine m_aiEngine;
+        private readonly AbilityExecutionRunner m_abilityExecutionRunner;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public EnemyTurnController(AIEngine engine)
+        public EnemyTurnController(AIEngine engine, AbilityExecutionRunner abilityExecutionRunner)
         {
             m_aiEngine = engine;
+            m_abilityExecutionRunner = abilityExecutionRunner;
         }
 
         public async Task StartTurn(Room room, TurnOrder turnOrder)
@@ -23,19 +27,19 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             foreach (Entity entity in turnOrder)
                 modelTurns.Add(entity.Model.Id);
             
-            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, room);
+            //BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, room);
             m_cancellationTokenSource = new CancellationTokenSource();
 
-            if (bestPlan != null)
-            {
-                throw new System.NotImplementedException("EnemyTurnController.StartTurn: Execute the best plan's commands here");
+            //if (bestPlan != null)
+            //{
+            //    foreach (AbilityPlan ability in bestPlan.ExecutedTasks)
+            //    {
+            //        if (m_cancellationTokenSource.IsCancellationRequested)
+            //            break;
 
-                //foreach (ExecutedTask task in bestPlan.ExecutedTasks)
-                //{
-                //    IEnumerable<IBoardCommand> commands = task.Action.Execute(task.Args, room);
-                //    await m_actionRunner.ApplyAsync(room, commands, m_cancellationTokenSource.Token);
-                //}
-            }
+            //        await m_abilityExecutionRunner.Run(ability, turnOrder.Current.Model.Id, m_cancellationTokenSource.Token);
+            //    }
+            //}
 
             EndTurn();
         }

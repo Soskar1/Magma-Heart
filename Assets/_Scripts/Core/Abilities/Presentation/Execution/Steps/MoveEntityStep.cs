@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Extensions;
 using System;
 using System.Linq;
 using System.Threading;
@@ -23,7 +24,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 .FirstOrDefault();
 
             Vector3 lastPathPosition = moveEffect.Path.Last();
-            Vector3Int lastTilePosition = context.World.WorldToTilePosition(lastPathPosition);
+            Vector3Int lastTilePosition = context.World.WorldToTilePosition(lastPathPosition).ToVector3Int();
 
             if (entity.Model.TilePosition == lastTilePosition)
                 return;

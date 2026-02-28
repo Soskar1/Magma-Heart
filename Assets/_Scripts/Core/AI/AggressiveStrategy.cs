@@ -15,7 +15,7 @@ namespace MagmaHeart.Core.AI
         private const float AI_IS_NOT_ALIVE_POINTS = -50;
 
         public AggressiveStrategy() {
-            throw new NotImplementedException("FIX THIS");
+            //throw new NotImplementedException("FIX THIS");
             //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
             //    new PlanTaskDefinition(typeof(MovementAction))
             //}));

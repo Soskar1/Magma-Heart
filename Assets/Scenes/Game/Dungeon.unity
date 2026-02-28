@@ -6521,6 +6521,8 @@ MonoBehaviour:
   m_mouseListenerPrefab: {fileID: 2527205584613921446, guid: bb3de5d6f96e9fa4191e3f501f6b73c4, type: 3}
   m_movementSpeed: 5
   m_scriptDatabase: {fileID: 11400000, guid: 1ff1e459d4e3d0e40baa99ae0c96849b, type: 2}
+  m_parameterDatabase: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
+  m_energyRegenPerTurn: 5
   m_locations:
   - {fileID: 11400000, guid: c633427e0bdd30f4d898d126ec05d286, type: 2}
   m_dungeonTilemap: {fileID: 540808438}

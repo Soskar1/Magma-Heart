@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Effects
 {
-    public record DamageEffect(int ExecutorId, int TargetId, int Damage) : AbilityEffect(ExecutorId);
+    public record DamageEffect(int ExecutorId, int TargetId, int Damage, ParameterId HealthId) : AbilityEffect(ExecutorId);
 
     [Serializable]
     public class BuildDamageEffect : EffectModule
@@ -26,7 +26,7 @@ namespace MagmaHeart.Core.Abilities.Effects
 
             return new List<AbilityEffect>()
             {
-                new DamageEffect(executorId, target.EntityId, m_initialDamage + (int)strength.CurrentValue)
+                new DamageEffect(executorId, target.EntityId, m_initialDamage + (int)strength.CurrentValue, m_database.Health)
             };
         }
     }

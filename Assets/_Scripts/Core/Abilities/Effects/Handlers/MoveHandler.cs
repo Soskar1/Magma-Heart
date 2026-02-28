@@ -1,26 +1,26 @@
-﻿using MagmaHeart.AI.Boards;
-using MagmaHeart.Core.Entities;
-using MagmaHeart.DungeonGeneration;
+﻿using MagmaHeart.AI;
+using MagmaHeart.AI.Boards;
 using System.Linq;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Effects.Handlers
 {
     public class MoveHandler : IEffectHandler<MoveEffect>
     {
-        public void Handle(GameWorld world, MoveEffect effect)
+        public void Handle(IBoardGameWorld world, MoveEffect effect)
         {
-            world.TryGetEntity(effect.ExecutorId, out Entity executor);
+            AIUnitModel model = world.GetUnit(effect.ExecutorId);
 
             var path = effect.Path;
-            executor.transform.position = path.Last();
+            world.MoveUnit(model.Id, path.Last());
 
-            DungeonTile firstTile = world.GetTile(path.First());
-            DungeonTile lastTile = world.GetTile(path.Last());
+            Vector2 firstTile = world.WorldToTilePosition(path.First());
+            Vector2 lastTile = world.WorldToTilePosition(path.Last());
 
-            world.CurrentRoom.RemoveUnit(firstTile.Position);
-            world.CurrentRoom.AddUnit(lastTile.Position, executor.Model);
-            world.CurrentRoom.ChangeNodeType(firstTile.Position, BoardNodeType.Walkable);
-            world.CurrentRoom.ChangeNodeType(lastTile.Position, BoardNodeType.Obstacle);
+            world.RemoveUnit(firstTile);
+            world.AddUnit(lastTile, model);
+            world.ChangeNodeType(firstTile, BoardNodeType.Walkable);
+            world.ChangeNodeType(lastTile, BoardNodeType.Obstacle);
         }
     }
 }

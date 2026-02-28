@@ -1,6 +1,5 @@
 ﻿using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.Abilities.Effects;
-using MagmaHeart.Extensions;
 using System;
 using System.Linq;
 using System.Threading;
@@ -26,7 +25,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             }
 
             Vector3 start = moveEffect.Path.First();
-            Vector2 startTile = context.World.WorldToTilePosition(start).ToVector2();
+            Vector2 startTile = context.World.WorldToTilePosition(start);
 
             bool isUnitRemoved = context.World.CurrentRoom.RemoveUnit(startTile);
 

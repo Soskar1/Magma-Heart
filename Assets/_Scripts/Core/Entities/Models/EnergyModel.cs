@@ -13,11 +13,7 @@ namespace MagmaHeart.Core.Entities.Models
         public event EventHandler<OnEnergyChangedEventArgs> OnEnergyChanged;
 
         public ParameterId Id { get; init; }
-        public float CurrentValue
-        {
-            get => CurrentEnergy;
-            set => CurrentEnergy = (int)value;
-        }
+        public float CurrentValue => CurrentEnergy;
 
         public int MaxEnergy
         { 
@@ -83,5 +79,7 @@ namespace MagmaHeart.Core.Entities.Models
             };
             return copy;
         }
+
+        public void SetValue(float value) => CurrentEnergy = (int)value;
     }
 }

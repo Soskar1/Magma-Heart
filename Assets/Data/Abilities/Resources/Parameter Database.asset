@@ -15,3 +15,4 @@ MonoBehaviour:
   m_strength: {fileID: 11400000, guid: 293f7e101f45e494cade085f14ee9790, type: 2}
   m_speed: {fileID: 11400000, guid: 396dca790206e4c43abfc8c5e63e5484, type: 2}
   m_energy: {fileID: 11400000, guid: 1e8f9dddeb3a6e04f9efd118bacc938a, type: 2}
+  m_health: {fileID: 11400000, guid: 4a2955bd2e8192d4988da4666f969b82, type: 2}

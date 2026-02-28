@@ -7,11 +7,7 @@ namespace MagmaHeart.Core.Entities.Models
         private int m_currentSpeed;
         
         public ParameterId Id { get; init; }
-        public float CurrentValue
-        {
-            get => CurrentSpeed;
-            set => CurrentSpeed = (int)value;
-        }
+        public float CurrentValue => CurrentSpeed;
 
         public int CurrentSpeed
         {
@@ -26,5 +22,7 @@ namespace MagmaHeart.Core.Entities.Models
         }
 
         public SpeedModel DeepCopy() => new SpeedModel(m_currentSpeed, Id);
+
+        public void SetValue(float value) => CurrentSpeed = (int)value;
     }
 }

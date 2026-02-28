@@ -1,3 +1,7 @@
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI;
+using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
@@ -30,11 +34,18 @@ namespace MagmaHeart.Core.CombatSystem
 
         private readonly PlayerTurnController m_playerTurnController;
         private readonly EnemyTurnController m_enemyTurnController;
+        private readonly EffectDispatcher m_effectDispatcher;
+        private readonly IStartOfTurnEffectFactory m_startOfTurnEffectFactory;
+        private readonly IBoardGameWorld m_world;
 
-        public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController)
+        public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController, EffectDispatcher effectDispatcher, IStartOfTurnEffectFactory startOfTurnEffectFactory, IBoardGameWorld world)
         {
             m_playerTurnController = playerTurnController;
             m_enemyTurnController = enemyTurnController;
+
+            m_effectDispatcher = effectDispatcher;
+            m_startOfTurnEffectFactory = startOfTurnEffectFactory;
+            m_world = world;
         }
 
         public async Task Start(Room room, IEnumerable<Entity> entities)
@@ -75,8 +86,9 @@ namespace MagmaHeart.Core.CombatSystem
 
                 m_cancellationTokenSource = new CancellationTokenSource();
 
-                // IEnumerable<IBoardCommand> commands = m_startOfTurnCommandFactory.BuildStartOfTurnCommands(m_currentRoom, entity.Model);
-                // await m_actionRunner.ApplyAsync(m_currentRoom, commands, m_cancellationTokenSource.Token);
+                IReadOnlyList<AbilityEffect> effects = m_startOfTurnEffectFactory.CreateStartOfTurnEffects(m_world, entity.Model.Id);
+                foreach (AbilityEffect effect in effects)
+                    m_effectDispatcher.Apply(m_world, effect);
 
                 if (entity.Model.IsPlayer)
                     await m_playerTurnController.StartTurn(entity.Model);

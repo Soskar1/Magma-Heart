@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Abilities;
-using MagmaHeart.Abilities.Resources;
+using MagmaHeart.AI;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Dungeon.Data;
@@ -14,7 +15,7 @@ using Random = System.Random;
 
 namespace MagmaHeart.Core
 {
-    public class GameWorld : IGameWorld
+    public class GameWorld : IBoardGameWorld
     {
         private readonly WorldGrid m_worldGrid;
         private readonly List<LocationData> m_locations;
@@ -132,16 +133,6 @@ namespace MagmaHeart.Core
             return executor.Model.IsPlayer != target.Model.IsPlayer;
         }
 
-        public int GetEntityAtPosition(Vector3 position)
-        {
-            if (TryGetEntityAtPosition(position, out Entity entity))
-                return entity.Model.Id;
-
-            return -1;
-        }
-
-        public bool PositionIsAccessible(Vector3 position) => m_currentRoom.TileIsAccessable(position);
-
         public bool TryGetEntity(int entityId, out Entity entity) => m_currentRoom.TryGetEntity(entityId, out entity);
         public bool TryGetEntityAtPosition(Vector3 position, out Entity entity) => m_currentRoom.TryGetEntity(position, out entity);
 
@@ -153,7 +144,30 @@ namespace MagmaHeart.Core
             return m_currentRoom.GetTile(worldPosition);
         }
 
-        public Vector3Int WorldToTilePosition(Vector2 worldPosition) => m_worldGrid.WorldToTilePosition(worldPosition);
+        public Vector2 WorldToTilePosition(Vector2 worldPosition) => m_worldGrid.WorldToTilePosition(worldPosition).ToVector2();
         public Vector2 ToTileCenter(Vector2Int tile) => m_worldGrid.ToTileCenter(tile);
+
+        public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType) => m_currentRoom.ChangeNodeType(position, newNodeType);
+        public BoardNodeType GetNodeType(Vector2 position) => m_currentRoom.GetNodeType(position);
+
+        public void AddUnit(Vector2 position, AIUnitModel unit) => m_currentRoom.AddUnit(position, unit);
+        public bool RemoveUnit(Vector2 position) => m_currentRoom.RemoveUnit(position);
+
+        public void SetParameter(int entityId, ParameterId parameter, float newValue)
+        {
+            m_currentRoom.TryGetUnit(entityId, out AIUnitModel unit);
+            unit.Parameters[parameter].SetValue(newValue);
+        }
+
+        public AIUnitModel GetUnit(int id) => CurrentRoom.TryGetUnit(id, out AIUnitModel unit) ? unit : null;
+
+        public void MoveUnit(int unitId, Vector2 newPosition)
+        {
+            CurrentRoom.TryGetUnit(unitId, out AIUnitModel unit);
+            CurrentRoom.TryGetUnitPosition(unitId, out Vector2 oldPosition);
+
+            CurrentRoom.RemoveUnit(oldPosition);
+            CurrentRoom.AddUnit(newPosition, unit);
+        }
     }
 }
