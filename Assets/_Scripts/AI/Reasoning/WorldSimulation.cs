@@ -113,13 +113,15 @@ namespace MagmaHeart.AI.Reasoning
 
         public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path)
         {
-            path = m_aStar
-                .FindPath(m_board.Graph, from, to)
+            path = null;
+            var tmpPath = m_aStar.FindPath(m_board.Graph, from, to);
+                
+            if (tmpPath == null || tmpPath.Count == 0 || tmpPath.Last() != (Vector2)to)
+                return false;
+
+            path = tmpPath
                 .Select(point => (Vector3)point)
                 .ToList();
-
-            if (path == null || path.Count == 0 || path.Last() != to)
-                return false;
 
             return true;
         }

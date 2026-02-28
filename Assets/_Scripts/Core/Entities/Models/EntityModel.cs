@@ -47,15 +47,25 @@ namespace MagmaHeart.Core.Entities
 
         public override AIUnitModel DeepCopy()
         {
+            HealthModel healthCopy = Health.DeepCopy();
+            EnergyModel energyCopy = Energy.DeepCopy();
+            StrengthModel strengthCopy = Strength.DeepCopy();
+            SpeedModel speedCopy = Speed.DeepCopy();
+
             EntityModel copy = new EntityModel(Data, TilePosition, IsPlayer, Id)
             {
                 Abilities = new Dictionary<string, AbilityDefinition>(Abilities),
-                Parameters = new Dictionary<ParameterId, IParameter>(Parameters),
-                Health = Health.DeepCopy(),
-                Energy = Energy.DeepCopy(),
-                Strength = Strength.DeepCopy(),
-                Speed = Speed.DeepCopy()
+                Health = healthCopy,
+                Energy = energyCopy,
+                Strength = strengthCopy,
+                Speed = speedCopy
             };
+
+            copy.Parameters[Data.ParameterDatabase.Health] = healthCopy;
+            copy.Parameters[Data.ParameterDatabase.Energy] = energyCopy;
+            copy.Parameters[Data.ParameterDatabase.Strength] = strengthCopy;
+            copy.Parameters[Data.ParameterDatabase.Speed] = speedCopy;
+
             return copy;
         }
     }

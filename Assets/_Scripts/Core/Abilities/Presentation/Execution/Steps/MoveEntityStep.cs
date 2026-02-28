@@ -2,6 +2,7 @@
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,15 +24,16 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 .OfType<MoveEffect>()
                 .FirstOrDefault();
 
-            Vector3 lastPathPosition = moveEffect.Path.Last();
-            Vector3Int lastTilePosition = context.World.WorldToTilePosition(lastPathPosition).ToVector3Int();
+            List<Vector3> tiledPath = moveEffect.Path
+                .Select(point => (Vector3)context.World.ToTileCenter(point.ToVector2Int()))
+                .ToList();
 
-            if (entity.Model.TilePosition == lastTilePosition)
+            if (entity.Model.TilePosition == tiledPath.Last().ToVector3Int())
                 return;
 
-            entity.Facing.TryUpdateFacing(lastPathPosition.x - entity.Model.TilePosition.x);
+            entity.Facing.TryUpdateFacing(tiledPath.Last().x - entity.Model.TilePosition.x);
 
-            await entity.TileBasedMovement.StartMovementAsync(moveEffect.Path);
+            await entity.TileBasedMovement.StartMovementAsync(tiledPath);
         }
     }
 }
