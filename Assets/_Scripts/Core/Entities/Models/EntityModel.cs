@@ -50,6 +50,7 @@ namespace MagmaHeart.Core.Entities
             EntityModel copy = new EntityModel(Data, TilePosition, IsPlayer, Id)
             {
                 Abilities = new Dictionary<string, AbilityDefinition>(Abilities),
+                Parameters = new Dictionary<ParameterId, IParameter>(Parameters),
                 Health = Health.DeepCopy(),
                 Energy = Energy.DeepCopy(),
                 Strength = Strength.DeepCopy(),

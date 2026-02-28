@@ -1,36 +1,21 @@
 ﻿using MagmaHeart.AI;
-using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
-using MagmaHeart.AI.Reasoning.Plans;
+using MagmaHeart.Core.Abilities;
 using MagmaHeart.Core.Entities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.Core.AI
 {
+    [CreateAssetMenu(menuName = "AI/Strategy")]
     public class AggressiveStrategy : Strategy
     {
-        private const float PLAYER_HEALTH_WEIGHT = 0.8f;
-        private const float DISTANCE_WEIGHT = 0.1f;
-        private const float AI_IS_NOT_ALIVE_POINTS = -50;
-
-        public AggressiveStrategy() {
-            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-            //    new PlanTaskDefinition(typeof(MovementAction))
-            //}));
-
-            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-            //    new PlanTaskDefinition(typeof(AttackAction), true),
-            //}));
-
-            //Plans.Add(new PlanDefinition(new List<PlanTaskDefinition>() {
-            //    new PlanTaskDefinition(typeof(MovementAction)),
-            //    new PlanTaskDefinition(typeof(AttackAction), true)
-            //}));
-        }
+        [SerializeField] private float m_playerHealthWeight = 0.8f;
+        [SerializeField] private float m_distanceWeight = 0.1f;
+        [SerializeField] private float m_aiIsNotAlivePoints = -50;
+        [SerializeField] private ParameterDatabase m_parameters;
 
         public override float EvaluateState(IBoardGameWorld world)
         {
@@ -59,9 +44,9 @@ namespace MagmaHeart.Core.AI
             if (player.IsDisabled)
                 playerIsNotAlivePoints = 100;
 
-            Func<Vector3Int, float> getDistancePoints = (ai) =>
+            Func<Vector3, float> getDistancePoints = (ai) =>
             {
-                float distance = Vector3Int.Distance(ai, player.TilePosition);
+                float distance = Vector3.Distance(ai, player.TilePosition);
                 if (distance == 0)
                     return 5;
 
@@ -79,17 +64,20 @@ namespace MagmaHeart.Core.AI
                 }
                 else
                 {
-                    aiHP += aiEntity.Health.CurrentHealth;
+                    aiHP += world.GetParameter(unit.Id, m_parameters.Health).CurrentValue;
 
                     if (!player.IsDisabled)
-                        distancePoints += getDistancePoints(aiEntity.TilePosition);
+                    {
+                        Vector3 position = world.GetEntityPosition(unit.Id);
+                        distancePoints += getDistancePoints(position);
+                    }
                 }
             }
 
             return playerIsNotAlivePoints
-                + AI_IS_NOT_ALIVE_POINTS * aiNotAliveCount
-                + PLAYER_HEALTH_WEIGHT * playerHealthDifference
-                + DISTANCE_WEIGHT * distancePoints;
+                + m_aiIsNotAlivePoints * aiNotAliveCount
+                + m_playerHealthWeight * playerHealthDifference
+                + m_distanceWeight * distancePoints;
         }
     }
 }

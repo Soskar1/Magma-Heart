@@ -108,7 +108,7 @@ namespace MagmaHeart.AI.Reasoning
         public IParameter GetParameter(int entityId, ParameterId parameter)
         {
             m_board.TryGetUnit(entityId, out AIUnitModel unit);
-            return unit?.GetParameter(parameter);
+            return unit.GetParameter(parameter);
         }
 
         public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path)
@@ -125,5 +125,7 @@ namespace MagmaHeart.AI.Reasoning
         }
 
         public Vector2 WorldToTilePosition(Vector2 worldPosition) => worldPosition;
+
+        public IEnumerable<AIUnitModel> GetUnits() => m_board.GetUnits();
     }
 }

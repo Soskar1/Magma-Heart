@@ -10,6 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ce58507018931c4895bfa99e8d4fabe, type: 3}
-  m_Name: New Plan Definition
+  m_Name: Move
   m_EditorClassIdentifier: 
-  m_taskDefinitions: []
+  m_taskDefinitions:
+  - m_ability: {fileID: 11400000, guid: af844ce7707774443a50caeb39ad43d5, type: 2}
+    m_executeUntilFail: 0
+    m_targetSelector:
+      rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

@@ -7,7 +7,7 @@ namespace MagmaHeart.AI.Reasoning.Plans
     public class Plan
     {
         public IEnumerable<PlanTask> Tasks { get; init; }
-        internal List<AbilityPlan> ExecutedAbilities { get; init; }
+        public IList<AbilityPlan> ExecutedAbilities { get; init; }
         private readonly EffectDispatcher m_effectDispatcher;
         private readonly AbilityEngine m_abilityEngine;
 

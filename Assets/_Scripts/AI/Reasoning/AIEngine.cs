@@ -25,7 +25,7 @@ namespace MagmaHeart.AI.Reasoning
             m_abilityEngine = new AbilityEngine();
         }
 
-        public BestPlan ChooseBestMove(ChainNode<int> unitTurnIds, Board board)
+        public IEnumerable<AbilityPlan> ChooseBestMove(ChainNode<int> unitTurnIds, Board board)
         {  
             Board boardCopy = board.DeepCopy();
             WorldSimulation worldSimulation = new WorldSimulation(boardCopy);
@@ -36,7 +36,7 @@ namespace MagmaHeart.AI.Reasoning
 
             AIUnitModel currentUnit = worldSimulation.GetUnit(unitTurnIds.Value);
 
-            BestPlan bestPlan = null;
+            IEnumerable<AbilityPlan> bestPlan = null;
             List<Plan> plans = GetPlans(currentUnit);
 
             foreach (Plan plan in plans)
@@ -54,7 +54,7 @@ namespace MagmaHeart.AI.Reasoning
                 if (evaluation > bestValue)
                 {
                     bestValue = evaluation;
-                    bestPlan = new BestPlan(plan.ExecutedAbilities);
+                    bestPlan = plan.ExecutedAbilities;
                 }
 
                 alpha = Math.Max(alpha, bestValue);

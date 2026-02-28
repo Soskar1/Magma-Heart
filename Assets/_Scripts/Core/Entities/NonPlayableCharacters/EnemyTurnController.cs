@@ -4,6 +4,7 @@ using MagmaHeart.Collections;
 using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,20 +27,20 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
             CircularList<int> modelTurns = new CircularList<int>();
             foreach (Entity entity in turnOrder)
                 modelTurns.Add(entity.Model.Id);
-            
-            //BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, room);
+
+            IEnumerable<AbilityPlan> abilitites = m_aiEngine.ChooseBestMove(modelTurns, room);
             m_cancellationTokenSource = new CancellationTokenSource();
 
-            //if (bestPlan != null)
-            //{
-            //    foreach (AbilityPlan ability in bestPlan.ExecutedTasks)
-            //    {
-            //        if (m_cancellationTokenSource.IsCancellationRequested)
-            //            break;
+            if (abilitites != null)
+            {
+                foreach (AbilityPlan ability in abilitites)
+                {
+                    if (m_cancellationTokenSource.IsCancellationRequested)
+                        break;
 
-            //        await m_abilityExecutionRunner.Run(ability, turnOrder.Current.Model.Id, m_cancellationTokenSource.Token);
-            //    }
-            //}
+                    await m_abilityExecutionRunner.Run(ability, turnOrder.Current.Model.Id, m_cancellationTokenSource.Token);
+                }
+            }
 
             EndTurn();
         }

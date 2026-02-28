@@ -24,7 +24,8 @@ namespace MagmaHeart.AI
         {
             return new AIUnitModel(IsPlayer, Id)
             {
-                Abilities = new Dictionary<string, AbilityDefinition>(Abilities)
+                Abilities = new Dictionary<string, AbilityDefinition>(Abilities),
+                Parameters = new Dictionary<ParameterId, IParameter>(Parameters)
             };
         }
 

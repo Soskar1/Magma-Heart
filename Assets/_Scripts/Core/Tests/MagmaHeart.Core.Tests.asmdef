@@ -8,7 +8,8 @@
         "MagmaHeart.AI",
         "MagmaHeart.Extensions",
         "MagmaHeart.Collections",
-        "MagmaHeart.DungeonGeneration"
+        "MagmaHeart.DungeonGeneration",
+        "MagmaHeart.Abilities"
     ],
     "includePlatforms": [
         "Editor"

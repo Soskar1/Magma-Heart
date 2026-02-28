@@ -1,6 +1,4 @@
 ﻿using MagmaHeart.Abilities;
-using MagmaHeart.Abilities.Targeting;
-using MagmaHeart.AI.Boards;
 using System.Collections.Generic;
 using UnityEngine;
 

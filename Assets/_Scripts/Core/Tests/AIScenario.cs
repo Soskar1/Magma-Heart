@@ -1,15 +1,14 @@
+using MagmaHeart.Abilities;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Boards;
-using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Collections;
-using MagmaHeart.Core.AI;
-using System.Threading;
+using System.Collections.Generic;
 
 namespace MagmaHeart.Core.Tests
 {
     internal record AIScenario(Board Board, CircularList<AIUnitModel> TurnOrder)
     {
-        public BestPlan RunAI(int depth)
+        public IEnumerable<AbilityPlan> RunAI(int depth)
         {
             //AggressiveStrategy strategy = new AggressiveStrategy();
             //AIEngine ai = new AIEngine(strategy, depth);
