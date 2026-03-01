@@ -7,7 +7,7 @@ namespace MagmaHeart.AI.Boards.Tests
     internal class BoardTests
     {
         private Board m_board;
-        private AIUnitModel Unit => new AIUnitModel(false, 0);
+        private AIUnitModel Unit => new AIUnitModel(false, 0, null);
 
         [SetUp]
         public void SetUp()
