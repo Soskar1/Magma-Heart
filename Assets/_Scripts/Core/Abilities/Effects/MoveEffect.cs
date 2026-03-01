@@ -17,10 +17,7 @@ namespace MagmaHeart.Core.Abilities.Effects
             bool isTargetingPath = target.Kind.HasFlag(TargetKind.Path);
 
             if (!isTargetingPath || target.Path == null || target.Path.Count == 0)
-            {
-                Debug.LogWarning($"Invalid target for MoveEffect: {target}");
                 return new List<AbilityEffect>();
-            }
 
             return new List<AbilityEffect>()
             {

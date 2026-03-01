@@ -5,12 +5,10 @@ namespace MagmaHeart.Core.Services
     public class SpawnService
     {
         public EntitySpawner EntitySpawner { get; init; }
-        public ProjectileSpawner ProjectileSpawner { get; init; }
 
-        public SpawnService(EntitySpawner entitySpawner, ProjectileSpawner projectileSpawner)
+        public SpawnService(EntitySpawner entitySpawner)
         {
             EntitySpawner = entitySpawner;
-            ProjectileSpawner = projectileSpawner;
         }
     }
 }

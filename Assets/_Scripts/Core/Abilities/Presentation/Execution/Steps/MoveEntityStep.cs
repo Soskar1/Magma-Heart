@@ -30,6 +30,9 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 .OfType<MoveEffect>()
                 .FirstOrDefault();
 
+            if (moveEffect == null)
+                return;
+
             List<Vector3> tiledPath = moveEffect.Path
                 .Select(point => (Vector3)context.World.ToTileCenter(point.ToVector2Int()))
                 .ToList();

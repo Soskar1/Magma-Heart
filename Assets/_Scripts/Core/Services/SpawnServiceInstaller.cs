@@ -9,9 +9,8 @@ namespace MagmaHeart.Core.Services
         public SpawnService Install(Entity entityPrefab, Projectile projectilePrefab, WorldGrid worldGird)
         {
             EntitySpawner enemySpawner = new EntitySpawner(entityPrefab, worldGird);
-            ProjectileSpawner projectileSpawner = new ProjectileSpawner(projectilePrefab);
             
-            return new SpawnService(enemySpawner, projectileSpawner);
+            return new SpawnService(enemySpawner);
         }
 
         public void Dispose() { }

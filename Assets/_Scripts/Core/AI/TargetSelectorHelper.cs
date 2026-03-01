@@ -1,6 +1,4 @@
-﻿using MagmaHeart.Abilities.Targeting;
-using MagmaHeart.AI;
-using PlasticPipe.PlasticProtocol.Messages;
+﻿using MagmaHeart.AI;
 
 namespace MagmaHeart.Core.AI
 {

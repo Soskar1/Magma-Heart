@@ -6,9 +6,9 @@ namespace MagmaHeart.Core.AI
 {
     public class AIInstaller : IInstaller
     {
-        public AIContext Install(Strategy strategy, IStartOfTurnEffectFactory factory, EffectDispatcher effectDispatcher)
+        public AIContext Install(Strategy strategy, IStartOfTurnEffectFactory factory, EffectDispatcher effectDispatcher, int lookAhead)
         {
-            AIEngine aiEngine = new AIEngine(strategy, 2, factory, effectDispatcher);
+            AIEngine aiEngine = new AIEngine(strategy, lookAhead, factory, effectDispatcher);
             return new AIContext(aiEngine);
         }
 

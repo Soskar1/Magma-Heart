@@ -11,7 +11,7 @@ namespace MagmaHeart.Abilities
         public AbilityPlan Plan(IGameWorld world, int executorId, AbilityDefinition ability, AbilityTarget target)
         {
             if (target == AbilityTarget.None)
-                return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>());
+                return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>(), target);
 
             ResourceCost totalCost = ResourceCost.Zero;
 
@@ -32,7 +32,7 @@ namespace MagmaHeart.Abilities
                 float have = world.GetParameter(executorId, parameter.Id).CurrentValue;
                 
                 if (have < parameter.Amount)
-                    return new AbilityPlan(ability, false, totalCost, new List<AbilityEffect>());
+                    return new AbilityPlan(ability, false, totalCost, new List<AbilityEffect>(), target);
             }
 
             foreach (IAbilityRequirement requirement in ability.Requirements)
@@ -41,7 +41,7 @@ namespace MagmaHeart.Abilities
                     continue;
 
                 if (!requirement.IsMet(world, executorId, target))
-                    return new AbilityPlan(ability, false, totalCost, new List<AbilityEffect>());
+                    return new AbilityPlan(ability, false, totalCost, new List<AbilityEffect>(), target);
             }
 
             List<AbilityEffect> effects = BuildSpendCostEffects(executorId, totalCost);
@@ -58,7 +58,7 @@ namespace MagmaHeart.Abilities
                 }
             }
 
-            return new AbilityPlan(ability, true, totalCost, effects);
+            return new AbilityPlan(ability, true, totalCost, effects, target);
         }
 
         public List<AbilityEffect> BuildSpendCostEffects(int executorId, ResourceCost cost)

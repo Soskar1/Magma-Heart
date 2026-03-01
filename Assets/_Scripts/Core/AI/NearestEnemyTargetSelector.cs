@@ -10,12 +10,17 @@ namespace MagmaHeart.Core.AI
     [Serializable]
     public class NearestEnemyTargetSelector : ITargetSelector
     {
+        [SerializeField] private int m_maxRange = 1;
+
         public AbilityTarget SelectTarget(IBoardGameWorld world, int executorId)
         {
             AIUnitModel target = TargetSelectorHelper.SelectNearestTarget(world, executorId);
 
             if (target == null)
                 return AbilityTarget.None;
+
+            if (world.GetDistance(executorId, target.Id) <= m_maxRange)
+                return AbilityTarget.EntityTarget(target.Id, new List<Vector3>());
 
             Vector3 executorPosition = world.GetEntityPosition(executorId);
             Vector3 targetTilePosition = world.GetEntityPosition(target.Id);
@@ -25,7 +30,8 @@ namespace MagmaHeart.Core.AI
             if (!foundPath)
                 return AbilityTarget.None;
 
-            return AbilityTarget.EntityTarget(target.Id, path);
+            var trimmed = path.GetRange(0, path.Count - m_maxRange + 1);
+            return AbilityTarget.EntityTarget(target.Id, trimmed);
         }
     }
 }

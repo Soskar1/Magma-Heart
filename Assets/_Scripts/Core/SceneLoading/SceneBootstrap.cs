@@ -37,6 +37,7 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("AI")]
         [SerializeField] private Strategy m_strategy;
+        [SerializeField] private int m_lookAhead;
 
         [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
@@ -120,7 +121,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_installers.Add(playerInstaller);
 
             AIInstaller aiInstaller = new AIInstaller();
-            AIContext aiContext = aiInstaller.Install(m_strategy, startOfTurnEffectFactory, effectDispatcher);
+            AIContext aiContext = aiInstaller.Install(m_strategy, startOfTurnEffectFactory, effectDispatcher, m_lookAhead);
             m_installers.Add(aiInstaller);
 
             ServiceInstaller serviceInstaller = new ServiceInstaller();

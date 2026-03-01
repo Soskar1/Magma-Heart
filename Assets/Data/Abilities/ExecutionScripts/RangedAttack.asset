@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693f520fb801ebd45847826e75ff0e51, type: 3}
   m_Name: RangedAttack
   m_EditorClassIdentifier: 
-  m_ability: {fileID: 11400000, guid: 6427db122570038418d2ea58567c8126, type: 2}
+  m_ability: {fileID: 11400000, guid: 1a79243b3e5d2b142aaa4e91f73d33bb, type: 2}
   m_requirements:
   - rid: 226000796857139307
-  - rid: 226000796857139353
   m_steps:
   - rid: 226000796857139320
   - rid: 226000796857139355
@@ -53,9 +52,6 @@ MonoBehaviour:
       data: 
     - rid: 226000796857139320
       type: {class: SpendResourceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
-      data: 
-    - rid: 226000796857139353
-      type: {class: HasMoveEffectRequirement, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Requirements, asm: MagmaHeart.Core}
       data: 
     - rid: 226000796857139355
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
