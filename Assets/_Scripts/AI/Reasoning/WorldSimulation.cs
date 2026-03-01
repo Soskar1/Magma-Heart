@@ -95,7 +95,7 @@ namespace MagmaHeart.AI.Reasoning
         public int GetDistance(int entityId1, int entityId2)
         {
             Vector3 position1 = GetEntityPosition(entityId1);
-            Vector3 position2 = GetEntityPosition(entityId1);
+            Vector3 position2 = GetEntityPosition(entityId2);
 
             return (int)Mathf.Abs(position1.x - position2.x) +
                    (int)Mathf.Abs(position1.y - position2.y);

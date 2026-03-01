@@ -1,10 +1,13 @@
-using MagmaHeart.AI.Reasoning;
-using NUnit.Framework;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using MagmaHeart.Abilities;
+using MagmaHeart.Core.Abilities.Effects;
+using NUnit.Framework;
 
 namespace MagmaHeart.Core.Tests
 {
-    internal class AITests : CoreTests
+    public class AITests : CoreTests
     {
         [Test]
         [TestCase(1)]
@@ -13,16 +16,15 @@ namespace MagmaHeart.Core.Tests
         [TestCase(4)]
         public void MovementPlan_AggressiveStrategy_MovesTowardsPlayer(int depth)
         {
-            //AIScenario scenario = AIScenarioBuilder.Create(Board)
-            //    .AddEntity().IsPlayer(false).WithActions(ActionPresets.MeleeAttacker).At(0, 0)
-            //    .AddEntity().IsPlayer(true).WithActions(ActionPresets.MeleeAttacker).At(9, 9)
-            //    .Build();
+            AIScenario scenario = AIScenarioBuilder.Create(World)
+                .AddEntity().IsPlayer(false).WithData(EntityDatabase.SkeletonWarrior).At(0, 0)
+                .AddEntity().IsPlayer(true).WithData(EntityDatabase.Warrior).At(9, 9)
+                .Build();
 
-            //BestPlan best = scenario.RunAI(depth);
+            IList<AbilityPlan> best = scenario.RunAI(depth, TestDatabase).ToList();
 
-            //Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(1));
-            throw new System.NotImplementedException("FIX THIS");
-            //Assert.That(best.ExecutedTasks.First().Action, Is.TypeOf<MovementAction>());
+            Assert.That(best.Count, Is.EqualTo(1));
+            Assert.That(best.First().Effects, Has.Some.InstanceOf<MoveEffect>());
         }
 
         [Test]
@@ -59,7 +61,7 @@ namespace MagmaHeart.Core.Tests
             //BestPlan best = scenario.RunAI(depth);
 
             //Assert.That(best.ExecutedTasks.Count(), Is.EqualTo(2));
-            throw new System.NotImplementedException("FIX THIS");
+            // throw new System.NotImplementedException("FIX THIS");
             //Assert.That(best.ExecutedTasks.All(task => task.Action.GetType() == typeof(AttackAction)));
         }
 
@@ -95,7 +97,7 @@ namespace MagmaHeart.Core.Tests
             //    .Build();
 
             //BestPlan best = scenario.RunAI(depth);
-            throw new System.NotImplementedException("FIX THIS");
+            // throw new System.NotImplementedException("FIX THIS");
             //List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             //Assert.That(executedTasks.Count, Is.EqualTo(2));
             //Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
@@ -116,7 +118,7 @@ namespace MagmaHeart.Core.Tests
             //    .Build();
 
             //BestPlan best = scenario.RunAI(depth);
-            throw new System.NotImplementedException("FIX THIS");
+            // throw new System.NotImplementedException("FIX THIS");
             //List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             //Assert.That(executedTasks.Count, Is.EqualTo(3));
             //Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
@@ -138,7 +140,7 @@ namespace MagmaHeart.Core.Tests
             //    .Build();
 
             //BestPlan best = scenario.RunAI(depth);
-            throw new System.NotImplementedException("FIX THIS");
+            //throw new System.NotImplementedException("FIX THIS");
             //List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             //Assert.That(executedTasks.Count, Is.EqualTo(2));
             //Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
@@ -158,7 +160,7 @@ namespace MagmaHeart.Core.Tests
             //    .Build();
 
             //BestPlan best = scenario.RunAI(depth);
-            throw new System.NotImplementedException("FIX THIS");
+            //throw new System.NotImplementedException("FIX THIS");
             //List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
             //Assert.That(executedTasks.Count, Is.EqualTo(2));
             //Assert.That(executedTasks[0].Action, Is.TypeOf<AttackAction>());

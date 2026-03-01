@@ -1,16 +1,24 @@
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI;
 using MagmaHeart.AI.Boards;
+using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Abilities.Effects;
+using MagmaHeart.Core.Abilities.Effects.Handlers;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Extensions;
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Tests
 {
-    internal class SimulationTests : CoreTests
+    public class SimulationTests : CoreTests
     {
         internal (EntityModel, EntityModel) EnemyAndPlayerNearEachOther()
         {
             Vector2Int playerPosition = new Vector2Int(2, 3);
             Vector2Int enemyPosition = new Vector2Int(3, 3);
-            AIScenario scenario = AIScenarioBuilder.Create(Board)
+            AIScenarioBuilder.Create(World, TestDatabase)
                 .AddEntity().IsPlayer(true).At(playerPosition.x, playerPosition.y)
                 .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
                 .Build();
@@ -24,7 +32,7 @@ namespace MagmaHeart.Core.Tests
         internal EntityModel BoardWithOneEntity()
         {
             Vector2Int entityPosition = new Vector2Int(3, 3);
-            AIScenario scenario = AIScenarioBuilder.Create(Board)
+            AIScenarioBuilder.Create(World, TestDatabase)
                 .AddEntity().At(entityPosition.x, entityPosition.y)
                 .Build();
 
@@ -32,141 +40,145 @@ namespace MagmaHeart.Core.Tests
             return entity;
         }
 
-        //[Test]
-        //public void ApplyDamageCommand_OneExecution_AppliesDamageToTargetInSimulation()
-        //{
-        //    (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-        //    ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 1, AttackType.Melee);
+        [Test]
+        public void ApplyDamageEffect_OneExecution_AppliesDamageToTargetInSimulation()
+        {
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+            dispatcher.Apply(simulation, new DamageEffect(enemy.Id, player.Id, 1, TestDatabase.Health));
 
-        //    Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
-        //    Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(4));
-        //}
+            Assert.That(player.Health.CurrentHealth, Is.EqualTo(4));
+        }
 
-        //[Test]
-        //public void ApplyDamageCommand_DamageIsGreaterThanTargetsCurrentHealth_DisablesTarget()
-        //{
-        //    (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-        //    ApplyDamageCommand command = new ApplyDamageCommand(enemy.Id, player.Id, 6, AttackType.Melee);
+        [Test]
+        public void ApplyDamageEffect_DamageIsGreaterThanTargetsCurrentHealth_ClampsToZero()
+        {
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+            dispatcher.Apply(simulation, new DamageEffect(enemy.Id, player.Id, 6, TestDatabase.Health));
 
-        //    Board.TryGetUnit(player.Id, out EntityModel simulatedPlayer);
-        //    Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(0));
-        //    Assert.That(simulatedPlayer.IsDisabled, Is.True);
-        //}
+            Assert.That(player.Health.CurrentHealth, Is.EqualTo(0));
+        }
 
-        //[Test]
-        //public void ApplyDamageCommand_Undo_RevertsDamageToTargetInSimulation()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 2, AttackType.Melee);
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+        [Test]
+        public void ApplyDamageEffect_Undo_RevertsDamageToTargetInSimulation()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Undo(Board);
+            simulation.SaveCheckpoint();
+            dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 2, TestDatabase.Health));
+            simulation.RestoreCheckpoint();
 
-        //    Board.TryGetUnit(entity.Id, out EntityModel simulatedPlayer);
-        //    Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(5));
-        //}
+            Assert.That(entity.Health.CurrentHealth, Is.EqualTo(5));
+        }
 
-        //[Test]
-        //public void ApplyDamageCommand_UndoAndLowHealth_RevertsDamageToTargetInSimulation()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    entity.Health.CurrentHealth = 1;
-        //    ApplyDamageCommand command = new ApplyDamageCommand(entity.Id, entity.Id, 3, AttackType.Melee);
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+        [Test]
+        public void ApplyDamageEffect_UndoWithLowHealth_RevertsDamageToTargetInSimulation()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            entity.Health.CurrentHealth = 1;
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Undo(Board);
+            simulation.SaveCheckpoint();
+            dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 3, TestDatabase.Health));
+            simulation.RestoreCheckpoint();
 
-        //    Board.TryGetUnit(entity.Id, out EntityModel simulatedPlayer);
-        //    Assert.That(simulatedPlayer.Health.CurrentHealth, Is.EqualTo(1));
-        //}
+            Assert.That(entity.Health.CurrentHealth, Is.EqualTo(1));
+        }
 
-        //[Test]
-        //public void UpdateEnergyCommand_OneExecution_UpdatesEnergyForTargetInSimulation()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, 3);
+        [Test]
+        public void RestoreEnergyEffect_OneExecution_IncreasesEnergyForTargetInSimulation()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+            dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, TestDatabase.Energy, 3));
 
-        //    Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
-        //    Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(3));
-        //}
+            Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(3));
+        }
 
-        //[Test]
-        //public void UpdateEnergyCommand_NewEnergyValueIsAboveMaxEnergy_SetsEnergyValueToMaxEnergy()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    int energyToSet = entity.Energy.MaxEnergy + 1;
-        //    UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, energyToSet);
+        [Test]
+        public void RestoreEnergyEffect_RestorationExceedsMaxEnergy_ClampsToMaxEnergy()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+            dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, TestDatabase.Energy, entity.Energy.MaxEnergy + 1));
 
-        //    Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
-        //    Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(entity.Energy.MaxEnergy));
-        //}
+            Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(entity.Energy.MaxEnergy));
+        }
 
-        //[Test]
-        //public void UpdateEnergyCommand_NewEnergyValueIsNegative_SetsEnergyValueToZero()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, -1);
+        [Test]
+        public void SpendEnergyEffect_SpendMoreThanAvailable_ClampsToZero()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
-            
-        //    Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
-        //    Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(0));
-        //}
+            dispatcher.Apply(simulation, new SpendResourceEffect(entity.Id, TestDatabase.Energy, 1));
 
-        //[Test]
-        //public void UpdateEnergyCommand_Undo_SetsInitialValue()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    UpdateEnergyCommand command = new UpdateEnergyCommand(entity.Id, 4);
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+            Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(0));
+        }
 
-        //    Runner.Undo(Board);
+        [Test]
+        public void RestoreEnergyEffect_Undo_ReturnsInitialValue()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
 
-        //    Board.TryGetUnit(entity.Id, out EntityModel simulatedEntity);
-        //    Assert.That(simulatedEntity.Energy.CurrentEnergy, Is.EqualTo(0));
-        //}
+            simulation.SaveCheckpoint();
+            dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, TestDatabase.Energy, 4));
+            simulation.RestoreCheckpoint();
 
-        //[Test]
-        //public void MoveEntityCommand_UpdatesBoardNodeTypesAndMovesEntity()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
-        //    Vector2Int endPosition = new Vector2Int(5, 5);
-        //    MoveCommand command = new MoveCommand(entity.Id, new List<Vector2>() { initialPosition, endPosition });
+            Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(0));
+        }
 
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+        [Test]
+        public void MoveEffect_UpdatesBoardNodeTypesAndMovesEntity()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
+            Vector2Int endPosition = new Vector2Int(5, 5);
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
+            List<Vector3> path = new List<Vector3> { new Vector3(initialPosition.x, initialPosition.y), new Vector3(endPosition.x, endPosition.y) };
 
-        //    Assert.That(Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.True);
-        //    Assert.That(simulatedEntity.TilePosition.ToVector2Int(), Is.EqualTo(endPosition));
-        //    Assert.That(Board.TryGetUnit(initialPosition, out _), Is.False);
-        //    Assert.That(Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
-        //    Assert.That(Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
-        //}
+            dispatcher.Apply(simulation, new MoveEffect(entity.Id, path));
 
-        //[Test]
-        //public void MoveEntityCommand_Undo_UpdatesBoardNodeTypesAndMovesEntity()
-        //{
-        //    EntityModel entity = BoardWithOneEntity();
-        //    Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
-        //    Vector2Int endPosition = new Vector2Int(5, 5);
-        //    MoveCommand command = new MoveCommand(entity.Id, new List<Vector2>() { initialPosition, endPosition });
-        //    Runner.Apply(Board, new List<IBoardCommand>() { command });
+            Assert.That(Board.TryGetUnit(endPosition, out EntityModel _), Is.True);
+            Assert.That(Board.TryGetUnit(initialPosition, out _), Is.False);
+            Assert.That(Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Walkable));
+            Assert.That(Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Obstacle));
+        }
 
-        //    Runner.Undo(Board);
+        [Test]
+        public void MoveEffect_Undo_RevertsNodeTypesAndRestoresEntityPosition()
+        {
+            EntityModel entity = BoardWithOneEntity();
+            Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
+            Vector2Int endPosition = new Vector2Int(5, 5);
+            WorldSimulation simulation = new WorldSimulation(Board);
+            EffectDispatcher dispatcher = CreateDispatcher();
+            List<Vector3> path = new List<Vector3> { new Vector3(initialPosition.x, initialPosition.y), new Vector3(endPosition.x, endPosition.y) };
 
-        //    Assert.That(Board.TryGetUnit(endPosition, out EntityModel simulatedEntity), Is.False);
-        //    Assert.That(Board.TryGetUnit(initialPosition, out simulatedEntity), Is.True);
-        //    Assert.That(simulatedEntity.TilePosition.ToVector2Int(), Is.EqualTo(initialPosition));
-        //    Assert.That(Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Obstacle));
-        //    Assert.That(Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Walkable));
-        //}
+            simulation.SaveCheckpoint();
+            dispatcher.Apply(simulation, new MoveEffect(entity.Id, path));
+            simulation.RestoreCheckpoint();
+
+            Assert.That(Board.TryGetUnit(initialPosition, out EntityModel _), Is.True);
+            Assert.That(Board.TryGetUnit(endPosition, out _), Is.False);
+            Assert.That(Board.GetNodeType(initialPosition), Is.EqualTo(BoardNodeType.Obstacle));
+            Assert.That(Board.GetNodeType(endPosition), Is.EqualTo(BoardNodeType.Walkable));
+        }
     }
 }

@@ -26,23 +26,34 @@ namespace MagmaHeart.Core.Entities
             Data = data;
 
             TilePosition = startTilePosition;
-            Health = new HealthModel(Stats.MaxHealth, data.ParameterDatabase.Health);
-            Energy = new EnergyModel(data.ParameterDatabase.Energy, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
-            Strength = new StrengthModel(Stats.Strength, data.ParameterDatabase.Strength);
-            Speed = new SpeedModel(Stats.Speed, data.ParameterDatabase.Speed);
+            Health = new HealthModel(Stats.MaxHealth, data.ParameterDatabase?.Health);
+            Energy = new EnergyModel(data.ParameterDatabase?.Energy, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Strength = new StrengthModel(Stats.Strength, data.ParameterDatabase?.Strength);
+            Speed = new SpeedModel(Stats.Speed, data.ParameterDatabase?.Speed);
 
-            AttackAbility = data.AttackAbility;
-            MovementAbility = data.MovementAbility;
-            Abilities.Add(AttackAbility.Id, AttackAbility);
-            Abilities.Add(MovementAbility.Id, MovementAbility);
+            if (data.AttackAbility != null)
+            {
+                AttackAbility = data.AttackAbility;
+                Abilities.Add(AttackAbility.Id, AttackAbility);
+            }
 
-            foreach (AbilityDefinition ability in data.AdditionalAbilities)
-                Abilities.Add(ability.Id, ability);
+            if (data.MovementAbility != null)
+            {
+                MovementAbility = data.MovementAbility;
+                Abilities.Add(MovementAbility.Id, MovementAbility);
+            }
 
-            Parameters.Add(data.ParameterDatabase.Energy, Energy);
-            Parameters.Add(data.ParameterDatabase.Strength, Strength);
-            Parameters.Add(data.ParameterDatabase.Speed, Speed);
-            Parameters.Add(data.ParameterDatabase.Health, Health);
+            if (data.AdditionalAbilities != null)
+                foreach (AbilityDefinition ability in data.AdditionalAbilities)
+                    Abilities.Add(ability.Id, ability);
+
+            if (data.ParameterDatabase != null)
+            {
+                Parameters.Add(data.ParameterDatabase.Energy, Energy);
+                Parameters.Add(data.ParameterDatabase.Strength, Strength);
+                Parameters.Add(data.ParameterDatabase.Speed, Speed);
+                Parameters.Add(data.ParameterDatabase.Health, Health);
+            }
         }
 
         public override AIUnitModel DeepCopy()
@@ -61,10 +72,13 @@ namespace MagmaHeart.Core.Entities
                 Speed = speedCopy
             };
 
-            copy.Parameters[Data.ParameterDatabase.Health] = healthCopy;
-            copy.Parameters[Data.ParameterDatabase.Energy] = energyCopy;
-            copy.Parameters[Data.ParameterDatabase.Strength] = strengthCopy;
-            copy.Parameters[Data.ParameterDatabase.Speed] = speedCopy;
+            if (Data.ParameterDatabase != null)
+            {
+                copy.Parameters[Data.ParameterDatabase.Health] = healthCopy;
+                copy.Parameters[Data.ParameterDatabase.Energy] = energyCopy;
+                copy.Parameters[Data.ParameterDatabase.Strength] = strengthCopy;
+                copy.Parameters[Data.ParameterDatabase.Speed] = speedCopy;
+            }
 
             return copy;
         }

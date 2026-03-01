@@ -1,15 +1,18 @@
 using MagmaHeart.Core.Entities;
 using System.Collections.Generic;
-using MagmaHeart.AI.Boards;
 using MagmaHeart.Collections;
 using MagmaHeart.AI;
+using MagmaHeart.Core.Abilities;
 
 namespace MagmaHeart.Core.Tests
 {
     internal sealed class AIScenarioBuilder
     {
-        private readonly Board m_board;
-        public Board Board => m_board;
+        private readonly TestGameWorld m_world;
+        public TestGameWorld World => m_world;
+
+        private readonly ParameterDatabase m_database;
+        public ParameterDatabase Database => m_database;
 
         private readonly List<EntityModel> m_entities = new();
         private readonly List<EntityModel> m_players = new();
@@ -17,9 +20,13 @@ namespace MagmaHeart.Core.Tests
 
         private int m_nextId = 0;
 
-        private AIScenarioBuilder(Board state) => m_board = state;
+        private AIScenarioBuilder(TestGameWorld world, ParameterDatabase database = null)
+        {
+            m_world = world;
+            m_database = database;
+        }
 
-        public static AIScenarioBuilder Create(Board board) => new AIScenarioBuilder(board);
+        public static AIScenarioBuilder Create(TestGameWorld world, ParameterDatabase database = null) => new AIScenarioBuilder(world, database);
         
         public EntityBuilder AddEntity()
         {
@@ -40,7 +47,7 @@ namespace MagmaHeart.Core.Tests
 
         public AIScenario Build()
         {
-            return new AIScenario(m_board, m_turnOrder);
+            return new AIScenario(m_world, m_turnOrder);
         }
     }
 }

@@ -26,11 +26,5 @@ namespace MagmaHeart.Core.Entities
         public AbilityDefinition MovementAbility => m_movementAbility;
         public RuntimeAnimatorController AnimatorController => m_animatorController;
         public ParameterDatabase ParameterDatabase => m_parameterDatabase;
-
-        public EntityData(string name, EntityStats stats)
-        {
-            m_name = name;
-            m_stats = stats;
-        }
     }
 }
