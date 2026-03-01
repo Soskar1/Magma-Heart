@@ -51,7 +51,7 @@ namespace MagmaHeart.AI.Reasoning
 
                 worldSimulation.RestoreCheckpoint();
 
-                if (evaluation >= bestValue)
+                if (evaluation > bestValue)
                 {
                     bestValue = evaluation;
                     bestPlan = plan.ExecutedAbilities;

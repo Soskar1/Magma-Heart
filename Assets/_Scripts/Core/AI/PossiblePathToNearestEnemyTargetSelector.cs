@@ -6,7 +6,6 @@ using MagmaHeart.Abilities.Targeting;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Abilities;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 namespace MagmaHeart.Core.AI
@@ -19,6 +18,10 @@ namespace MagmaHeart.Core.AI
 
         public AbilityTarget SelectTarget(IBoardGameWorld world, int executorId)
         {
+            IParameter energy = world.GetParameter(executorId, m_database.Energy);
+            if (energy.CurrentValue <= 0)
+                return AbilityTarget.None;
+
             AIUnitModel target = TargetSelectorHelper.SelectNearestTarget(world, executorId);
 
             if (target == null)
@@ -34,12 +37,13 @@ namespace MagmaHeart.Core.AI
 
             IParameter speed = world.GetParameter(executorId, m_database.Speed);
             int totalTilesPerResource = m_tilesPerResource + (int)speed.CurrentValue;
-            int maxEnergyToSpend = Mathf.CeilToInt(path.Count / (float)totalTilesPerResource);
+            int energyCost = Mathf.CeilToInt(path.Count / (float)totalTilesPerResource);
+            int maxEnergyToSpend = Mathf.Min(energyCost, (int)energy.CurrentValue);
 
-            IParameter energy = world.GetParameter(executorId, m_database.Energy);
-            int availableEnergy = Mathf.Min(maxEnergyToSpend, (int)energy.CurrentValue);
+            if (maxEnergyToSpend <= 0)
+                return AbilityTarget.None;
 
-            return AbilityTarget.PathTarget(path.Take(availableEnergy * totalTilesPerResource).ToList());
+            return AbilityTarget.PathTarget(path.Take(maxEnergyToSpend * totalTilesPerResource).ToList());
         }
     }
 }

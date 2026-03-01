@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_plans:
   - {fileID: 11400000, guid: 69f70299fd41b2041aaff366d1dcc372, type: 2}
+  - {fileID: 11400000, guid: 79e348190fec4af4b96765cce07dbb82, type: 2}
   m_playerHealthWeight: 0.8
   m_distanceWeight: 0.1
   m_aiIsNotAlivePoints: -50
