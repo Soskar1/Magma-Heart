@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Effects;
@@ -14,7 +15,7 @@ namespace MagmaHeart.Core.Tests
 {
     internal record AIScenario(TestGameWorld World, CircularList<AIUnitModel> TurnOrder)
     {
-        public IEnumerable<AbilityPlan> RunAI(int depth, ParameterDatabase parameters)
+        public IList<AbilityPlan> RunAI(int depth, ParameterDatabase parameters)
         {
             AggressiveStrategy strategy = AssetDatabase.LoadAssetAtPath<AggressiveStrategy>("Assets/Data/AI/AggressiveStrategy.asset");
 
@@ -32,7 +33,9 @@ namespace MagmaHeart.Core.Tests
             foreach (AIUnitModel entity in TurnOrder)
                 modelTurns.Add(entity.Id);
 
-            return ai.ChooseBestMove(modelTurns, World.Board);
+            IEnumerable<AbilityPlan> result = ai.ChooseBestMove(modelTurns, World.Board);
+
+            return result is null ? null : result.ToList();
         }
     }
 }

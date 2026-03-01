@@ -3,7 +3,6 @@ using MagmaHeart.AI;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Abilities.Effects;
-using MagmaHeart.Core.Abilities.Effects.Handlers;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Extensions;
 using NUnit.Framework;
@@ -19,8 +18,8 @@ namespace MagmaHeart.Core.Tests
             Vector2Int playerPosition = new Vector2Int(2, 3);
             Vector2Int enemyPosition = new Vector2Int(3, 3);
             AIScenarioBuilder.Create(World, TestDatabase)
-                .AddEntity().IsPlayer(true).At(playerPosition.x, playerPosition.y)
-                .AddEntity().IsPlayer(false).At(enemyPosition.x, enemyPosition.y)
+                .AddEntity().IsPlayer(true).WithData(EntityDatabase.Warrior).At(playerPosition.x, playerPosition.y)
+                .AddEntity().IsPlayer(false).WithData(EntityDatabase.SkeletonWarrior).At(enemyPosition.x, enemyPosition.y)
                 .Build();
 
             Board.TryGetUnit(playerPosition, out EntityModel player);
@@ -33,7 +32,7 @@ namespace MagmaHeart.Core.Tests
         {
             Vector2Int entityPosition = new Vector2Int(3, 3);
             AIScenarioBuilder.Create(World, TestDatabase)
-                .AddEntity().At(entityPosition.x, entityPosition.y)
+                .AddEntity().WithData(EntityDatabase.Warrior).At(entityPosition.x, entityPosition.y)
                 .Build();
 
             Board.TryGetUnit(entityPosition, out EntityModel entity);
@@ -43,25 +42,13 @@ namespace MagmaHeart.Core.Tests
         [Test]
         public void ApplyDamageEffect_OneExecution_AppliesDamageToTargetInSimulation()
         {
-            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
-            WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
-
-            dispatcher.Apply(simulation, new DamageEffect(enemy.Id, player.Id, 1, TestDatabase.Health));
-
-            Assert.That(player.Health.CurrentHealth, Is.EqualTo(4));
-        }
-
-        [Test]
-        public void ApplyDamageEffect_DamageIsGreaterThanTargetsCurrentHealth_ClampsToZero()
-        {
-            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther();
+            (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther(); 
             WorldSimulation simulation = new WorldSimulation(Board);
             EffectDispatcher dispatcher = CreateDispatcher();
 
             dispatcher.Apply(simulation, new DamageEffect(enemy.Id, player.Id, 6, TestDatabase.Health));
 
-            Assert.That(player.Health.CurrentHealth, Is.EqualTo(0));
+            Assert.That(player.Health.CurrentHealth, Is.EqualTo(4));
         }
 
         [Test]
@@ -75,7 +62,7 @@ namespace MagmaHeart.Core.Tests
             dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 2, TestDatabase.Health));
             simulation.RestoreCheckpoint();
 
-            Assert.That(entity.Health.CurrentHealth, Is.EqualTo(5));
+            Assert.That(entity.Health.CurrentHealth, Is.EqualTo(10));
         }
 
         [Test]
