@@ -67,7 +67,7 @@ namespace MagmaHeart.AI.Reasoning
         {
             List<Plan> plans = new List<Plan>();
 
-            foreach (PlanDefinition planDefinition in m_strategy.Plans)
+            foreach (PlanDefinition planDefinition in executor.Plans)
             {
                 Plan plan = new Plan(planDefinition.TaskDefinitions, m_effectDispatcher, m_abilityEngine);
 

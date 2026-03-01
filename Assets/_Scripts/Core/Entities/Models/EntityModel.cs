@@ -20,7 +20,7 @@ namespace MagmaHeart.Core.Entities
         public AbilityDefinition MovementAbility { get; init; }
         public AbilityDefinition AttackAbility { get; init; }
 
-        public EntityModel(EntityData data, Vector3Int startTilePosition, bool isPlayer, int id) : base(isPlayer, id)
+        public EntityModel(EntityData data, Vector3Int startTilePosition, bool isPlayer, int id) : base(isPlayer, id, data.Plans)
         {
             Stats = data.Stats;
             Data = data;
@@ -42,10 +42,6 @@ namespace MagmaHeart.Core.Entities
                 MovementAbility = data.MovementAbility;
                 Abilities.Add(MovementAbility.Id, MovementAbility);
             }
-
-            if (data.AdditionalAbilities != null)
-                foreach (AbilityDefinition ability in data.AdditionalAbilities)
-                    Abilities.Add(ability.Id, ability);
 
             if (data.ParameterDatabase != null)
             {
