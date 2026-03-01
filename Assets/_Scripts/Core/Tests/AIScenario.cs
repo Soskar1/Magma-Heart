@@ -15,12 +15,11 @@ namespace MagmaHeart.Core.Tests
 {
     internal record AIScenario(TestGameWorld World, CircularList<AIUnitModel> TurnOrder)
     {
-        public IList<AbilityPlan> RunAI(int depth, ParameterDatabase parameters)
+        public IList<AbilityPlan> RunAI(int depth, ParameterDatabase parameters, EffectDispatcher dispatcher)
         {
             AggressiveStrategy strategy = AssetDatabase.LoadAssetAtPath<AggressiveStrategy>("Assets/Data/AI/AggressiveStrategy.asset");
 
             IStartOfTurnEffectFactory factory = new StartOfTurnEffectFactory(parameters.Energy, 2);
-            EffectDispatcher dispatcher = CoreTests.CreateDispatcher();
             AIEngine ai = new AIEngine(strategy, depth, factory, dispatcher);
 
             using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();

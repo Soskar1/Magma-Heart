@@ -17,7 +17,7 @@ namespace MagmaHeart.Core.Tests
         {
             Vector2Int playerPosition = new Vector2Int(2, 3);
             Vector2Int enemyPosition = new Vector2Int(3, 3);
-            AIScenarioBuilder.Create(World, TestDatabase)
+            AIScenarioBuilder.Create(World, ParameterDatabase)
                 .AddEntity().IsPlayer(true).WithData(EntityDatabase.Warrior).At(playerPosition.x, playerPosition.y)
                 .AddEntity().IsPlayer(false).WithData(EntityDatabase.SkeletonWarrior).At(enemyPosition.x, enemyPosition.y)
                 .Build();
@@ -31,7 +31,7 @@ namespace MagmaHeart.Core.Tests
         internal EntityModel BoardWithOneEntity()
         {
             Vector2Int entityPosition = new Vector2Int(3, 3);
-            AIScenarioBuilder.Create(World, TestDatabase)
+            AIScenarioBuilder.Create(World, ParameterDatabase)
                 .AddEntity().WithData(EntityDatabase.Warrior).At(entityPosition.x, entityPosition.y)
                 .Build();
 
@@ -44,9 +44,8 @@ namespace MagmaHeart.Core.Tests
         {
             (EntityModel player, EntityModel enemy) = EnemyAndPlayerNearEachOther(); 
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
-            dispatcher.Apply(simulation, new DamageEffect(enemy.Id, player.Id, 6, TestDatabase.Health));
+            Dispatcher.Apply(simulation, new DamageEffect(enemy.Id, player.Id, 6, ParameterDatabase.Health));
 
             Assert.That(player.Health.CurrentHealth, Is.EqualTo(4));
         }
@@ -56,10 +55,9 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
             simulation.SaveCheckpoint();
-            dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 2, TestDatabase.Health));
+            Dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 2, ParameterDatabase.Health));
             simulation.RestoreCheckpoint();
 
             Assert.That(entity.Health.CurrentHealth, Is.EqualTo(10));
@@ -71,10 +69,9 @@ namespace MagmaHeart.Core.Tests
             EntityModel entity = BoardWithOneEntity();
             entity.Health.CurrentHealth = 1;
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
             simulation.SaveCheckpoint();
-            dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 3, TestDatabase.Health));
+            Dispatcher.Apply(simulation, new DamageEffect(entity.Id, entity.Id, 3, ParameterDatabase.Health));
             simulation.RestoreCheckpoint();
 
             Assert.That(entity.Health.CurrentHealth, Is.EqualTo(1));
@@ -85,9 +82,8 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
-            dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, TestDatabase.Energy, 3));
+            Dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, ParameterDatabase.Energy, 3));
 
             Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(3));
         }
@@ -97,9 +93,8 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
-            dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, TestDatabase.Energy, entity.Energy.MaxEnergy + 1));
+            Dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, ParameterDatabase.Energy, entity.Energy.MaxEnergy + 1));
 
             Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(entity.Energy.MaxEnergy));
         }
@@ -109,9 +104,8 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
-            dispatcher.Apply(simulation, new SpendResourceEffect(entity.Id, TestDatabase.Energy, 1));
+            Dispatcher.Apply(simulation, new SpendResourceEffect(entity.Id, ParameterDatabase.Energy, 1));
 
             Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(0));
         }
@@ -121,10 +115,9 @@ namespace MagmaHeart.Core.Tests
         {
             EntityModel entity = BoardWithOneEntity();
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
 
             simulation.SaveCheckpoint();
-            dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, TestDatabase.Energy, 4));
+            Dispatcher.Apply(simulation, new RestoreParameterEffect(entity.Id, ParameterDatabase.Energy, 4));
             simulation.RestoreCheckpoint();
 
             Assert.That(entity.Energy.CurrentEnergy, Is.EqualTo(0));
@@ -137,10 +130,9 @@ namespace MagmaHeart.Core.Tests
             Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
             List<Vector3> path = new List<Vector3> { new Vector3(initialPosition.x, initialPosition.y), new Vector3(endPosition.x, endPosition.y) };
 
-            dispatcher.Apply(simulation, new MoveEffect(entity.Id, path));
+            Dispatcher.Apply(simulation, new MoveEffect(entity.Id, path));
 
             Assert.That(Board.TryGetUnit(endPosition, out EntityModel _), Is.True);
             Assert.That(Board.TryGetUnit(initialPosition, out _), Is.False);
@@ -155,11 +147,10 @@ namespace MagmaHeart.Core.Tests
             Vector2Int initialPosition = entity.TilePosition.ToVector2Int();
             Vector2Int endPosition = new Vector2Int(5, 5);
             WorldSimulation simulation = new WorldSimulation(Board);
-            EffectDispatcher dispatcher = CreateDispatcher();
             List<Vector3> path = new List<Vector3> { new Vector3(initialPosition.x, initialPosition.y), new Vector3(endPosition.x, endPosition.y) };
 
             simulation.SaveCheckpoint();
-            dispatcher.Apply(simulation, new MoveEffect(entity.Id, path));
+            Dispatcher.Apply(simulation, new MoveEffect(entity.Id, path));
             simulation.RestoreCheckpoint();
 
             Assert.That(Board.TryGetUnit(initialPosition, out EntityModel _), Is.True);
