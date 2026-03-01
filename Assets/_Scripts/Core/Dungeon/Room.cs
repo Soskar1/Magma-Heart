@@ -1,5 +1,5 @@
+using MagmaHeart.Core.Dungeon;
 using MagmaHeart.AI.Boards;
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon.Data;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.DungeonGeneration;

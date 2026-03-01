@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MagmaHeart.AI.Reasoning;
-using MagmaHeart.Core.BoardStateSystem;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Spawning;

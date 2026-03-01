@@ -1,5 +1,4 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
-using MagmaHeart.Core.CombatSystem;
+﻿using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.Dungeon;
 using System.Threading.Tasks;
 
