@@ -1,5 +1,6 @@
 ﻿using MagmaHeart.Abilities;
 using MagmaHeart.AI.Reasoning.Plans;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace MagmaHeart.AI
     {
         public int Id { get; init; }
         public bool IsPlayer { get; init; }
-        public bool IsDisabled { get; set; } = false;
+        public Func<bool> IsDisabled { get; init; }
         public Dictionary<string, AbilityDefinition> Abilities { get; init; }
         public IDictionary<ParameterId, IParameter> Parameters { get; init; }
         public IReadOnlyList<PlanDefinition> Plans { get; init; }
@@ -21,6 +22,7 @@ namespace MagmaHeart.AI
             Abilities = new Dictionary<string, AbilityDefinition>();
             Parameters = new Dictionary<ParameterId, IParameter>();
             Plans = plans;
+            IsDisabled = () => false;
         }
 
         public virtual AIUnitModel DeepCopy()

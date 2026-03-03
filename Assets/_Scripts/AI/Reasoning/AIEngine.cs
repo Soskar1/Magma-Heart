@@ -84,7 +84,7 @@ namespace MagmaHeart.AI.Reasoning
         {
             AIUnitModel currentUnit = simulation.GetUnit(turns.Value);
 
-            if (currentDepth <= 0 || currentUnit.IsDisabled)
+            if (currentDepth <= 0 || currentUnit.IsDisabled())
                 return m_strategy.EvaluateState(simulation);
 
             IReadOnlyList<AbilityEffect> startOfTurnEffects = m_startOfTurnEffectFactory.CreateStartOfTurnEffects(simulation, currentUnit.Id);

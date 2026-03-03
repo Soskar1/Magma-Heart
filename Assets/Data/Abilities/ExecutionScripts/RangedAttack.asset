@@ -21,6 +21,7 @@ MonoBehaviour:
   - rid: 226000796857139356
   - rid: 226000796857139293
   - rid: 226000796857139294
+  - rid: 279046192406986848
   - rid: 226000796857139319
   - rid: 226000796857139296
   - rid: 226000796857139297
@@ -60,3 +61,7 @@ MonoBehaviour:
     - rid: 226000796857139356
       type: {class: MoveEntityStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
+    - rid: 279046192406986848
+      type: {class: FireProjectileStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_projectilePrefab: {fileID: 5171675335557925640, guid: ad117eca505b1a649806b6003fcd065c, type: 3}

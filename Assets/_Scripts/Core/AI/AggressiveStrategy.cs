@@ -40,8 +40,9 @@ namespace MagmaHeart.Core.AI
             }
 
             float playerHealthDifference = player.Health.MaxHealth - player.Health.CurrentHealth;
+            float playerHealthCoefficient = player.Health.MaxHealth / player.Health.CurrentHealth;
 
-            if (player.IsDisabled)
+            if (player.IsDisabled())
                 playerIsNotAlivePoints = 100;
 
             Func<Vector3, float> getDistancePoints = (ai) =>
@@ -58,7 +59,7 @@ namespace MagmaHeart.Core.AI
                 if (unit.IsPlayer)
                     continue;
 
-                if (unit.IsDisabled)
+                if (unit.IsDisabled())
                 {
                     ++aiNotAliveCount;
                 }
@@ -66,7 +67,7 @@ namespace MagmaHeart.Core.AI
                 {
                     aiHP += world.GetParameter(unit.Id, m_parameters.Health).CurrentValue;
 
-                    if (!player.IsDisabled)
+                    if (!player.IsDisabled())
                     {
                         Vector3 position = world.GetEntityPosition(unit.Id);
                         distancePoints += getDistancePoints(position);
@@ -77,6 +78,7 @@ namespace MagmaHeart.Core.AI
             return playerIsNotAlivePoints
                 + m_aiIsNotAlivePoints * aiNotAliveCount
                 + m_playerHealthWeight * playerHealthDifference
+                + m_playerHealthWeight * playerHealthCoefficient
                 + m_distanceWeight * distancePoints;
         }
     }

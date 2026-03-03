@@ -30,6 +30,7 @@ namespace MagmaHeart.Core.Entities
             Energy = new EnergyModel(data.ParameterDatabase?.Energy, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
             Strength = new StrengthModel(Stats.Strength, data.ParameterDatabase?.Strength);
             Speed = new SpeedModel(Stats.Speed, data.ParameterDatabase?.Speed);
+            IsDisabled = () => Health.CurrentHealth <= 0;
 
             if (data.AttackAbility != null)
             {
