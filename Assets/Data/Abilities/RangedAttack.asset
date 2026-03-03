@@ -19,7 +19,8 @@ MonoBehaviour:
   m_effects:
   - rid: 226000796857139348
   - rid: 226000697812320391
-  m_requirements: []
+  m_requirements:
+  - rid: 279046238576836706
   references:
     version: 2
     RefIds:
@@ -41,3 +42,6 @@ MonoBehaviour:
       data:
         m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
         m_tilesPerResource: 2
+    - rid: 279046238576836706
+      type: {class: EnemyIsInLineOfSight, ns: MagmaHeart.Core.Abilities.Requirements, asm: MagmaHeart.Core}
+      data: 
