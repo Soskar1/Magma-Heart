@@ -127,6 +127,9 @@ namespace MagmaHeart.Core
 
         public bool AreEnemiesToEachOther(int executorId, int targetId)
         {
+            if (executorId == targetId)
+                return false;
+
             TryGetEntity(executorId, out Entity executor);
             TryGetEntity(targetId, out Entity target);
 
