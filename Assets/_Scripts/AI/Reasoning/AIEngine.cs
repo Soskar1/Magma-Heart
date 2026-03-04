@@ -41,11 +41,11 @@ namespace MagmaHeart.AI.Reasoning
 
             foreach (Plan plan in plans)
             {
+                worldSimulation.SaveCheckpoint();
+
                 bool isExecuted = plan.TryExecute(worldSimulation, currentUnit);
                 if (!isExecuted)
                     continue;
-
-                worldSimulation.SaveCheckpoint();
 
                 float evaluation = Minimax(worldSimulation, unitTurnIds.Next, m_depth - 1, alpha, beta);
 
@@ -101,10 +101,11 @@ namespace MagmaHeart.AI.Reasoning
                 float maxEvaluation = float.MinValue;
                 foreach (Plan plan in plans)
                 {
+                    simulation.SaveCheckpoint();
+
                     bool isExecuted = plan.TryExecute(simulation, currentUnit);
                     if (!isExecuted)
                         continue;
-                    simulation.SaveCheckpoint();
 
                     float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
@@ -126,11 +127,11 @@ namespace MagmaHeart.AI.Reasoning
                 float minEvaluation = float.MaxValue;
                 foreach (Plan plan in plans)
                 {
+                    simulation.SaveCheckpoint();
+
                     bool isExecuted = plan.TryExecute(simulation, currentUnit);
                     if (!isExecuted)
                         continue;
-
-                    simulation.SaveCheckpoint();
 
                     float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 

@@ -156,22 +156,28 @@ namespace MagmaHeart.Core.Tests
         [TestCase(4)]
         public void RangedAttack_WallPlacedBetweenEnemyAndPlayer_EnemyDoNotUseRangedAttackAsAFirstAction(int depth)
         {
-            //AIScenario scenario = AIScenarioBuilder.Create(World)
-            //    .AddEntity()
-            //        .IsPlayer(false)
-            //        .WithHealth(2)
-            //        .WithEnergy(5)
-            //        .WithActions(ActionPresets.RangedAttacker)
-            //        .At(2, 0)
-            //    .AddEntity().IsPlayer(true).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 2)
-            //    .ModifyBoard().PlaceWallAt(2, 1).Bake()
-            //    .Build();
-            throw new System.NotImplementedException("FIX THIS");
-            //BestPlan best = scenario.RunAI(depth);
-            //List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
-            //Assert.That(executedTasks.Count, Is.EqualTo(2));
-            //Assert.That(executedTasks[0].Action, Is.TypeOf<MovementAction>());
-            //Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
+            AIScenario scenario = AIScenarioBuilder.Create(World)
+                .AddEntity()
+                    .IsPlayer(false)
+                    .WithParameterValue(ParameterDatabase.Health, 2)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.Vampire)
+                    .At(2, 0)
+                .AddEntity()
+                    .IsPlayer(true)
+                    .WithParameterValue(ParameterDatabase.Health, 5)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.Warrior)
+                    .At(2, 2)
+                .ModifyBoard()
+                    .PlaceWallAt(2, 1)
+                    .Bake()
+                .Build();
+
+            IList<AbilityPlan> executedAbilities = scenario.RunAI(depth, ParameterDatabase, Dispatcher);
+            Assert.That(executedAbilities.Count, Is.EqualTo(2));
+            Assert.That(executedAbilities[0].Effects, Has.Some.InstanceOf<MoveEffect>());
+            Assert.That(executedAbilities[1].Effects, Has.Some.InstanceOf<DamageEffect>());
         }
 
         [Test]
@@ -181,19 +187,59 @@ namespace MagmaHeart.Core.Tests
         [TestCase(4)]
         public void RangedAttack_EnemyIsFarAwayFromPlayer_EnemyUseRangedAttack(int depth)
         {
-            throw new System.NotImplementedException("FIX THIS");
+            AIScenario scenario = AIScenarioBuilder.Create(World)
+                .AddEntity()
+                    .IsPlayer(false)
+                    .WithParameterValue(ParameterDatabase.Health, 2)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.Vampire)
+                    .At(2, 0)
+                .AddEntity()
+                    .IsPlayer(true)
+                    .WithParameterValue(ParameterDatabase.Health, 5)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.Warrior)
+                    .At(2, 4)
+                .Build();
 
-            //AIScenario scenario = AIScenarioBuilder.Create(Board)
-            //    .AddEntity().IsPlayer(false).WithHealth(2).WithEnergy(5).WithActions(ActionPresets.RangedAttacker).At(2, 0)
-            //    .AddEntity().IsPlayer(true).WithHealth(5).WithEnergy(5).WithActions(ActionPresets.MeleeAttacker).At(2, 4)
-            //    .Build();
+            IList<AbilityPlan> executedAbilities = scenario.RunAI(depth, ParameterDatabase, Dispatcher);
+            Assert.That(executedAbilities.Count, Is.EqualTo(2));
+            Assert.That(executedAbilities[0].Effects, Has.Some.InstanceOf<DamageEffect>());
+            Assert.That(executedAbilities[1].Effects, Has.Some.InstanceOf<DamageEffect>());
+        }
 
-            //BestPlan best = scenario.RunAI(depth);
-            //throw new System.NotImplementedException("FIX THIS");
-            //List<ExecutedTask> executedTasks = best.ExecutedTasks.ToList();
-            //Assert.That(executedTasks.Count, Is.EqualTo(2));
-            //Assert.That(executedTasks[0].Action, Is.TypeOf<AttackAction>());
-            //Assert.That(executedTasks[1].Action, Is.TypeOf<AttackAction>());
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public void RangedAttack_TwoEnemies_EnemyUseRangedAttack(int depth)
+        {
+            AIScenario scenario = AIScenarioBuilder.Create(World)
+                .AddEntity()
+                    .IsPlayer(false)
+                    .WithParameterValue(ParameterDatabase.Health, 2)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.Vampire)
+                    .At(1, 5)
+                .AddEntity()
+                    .IsPlayer(true)
+                    .WithParameterValue(ParameterDatabase.Health, 5)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.Warrior)
+                    .At(4, 4)
+                .AddEntity()
+                    .IsPlayer(false)
+                    .WithParameterValue(ParameterDatabase.Health, 5)
+                    .WithParameterValue(ParameterDatabase.Energy, 5)
+                    .WithData(EntityDatabase.SkeletonWarrior)
+                    .At(5, 4)
+                .Build();
+
+            IList<AbilityPlan> executedAbilities = scenario.RunAI(depth, ParameterDatabase, Dispatcher);
+            Assert.That(executedAbilities.Count, Is.EqualTo(2));
+            Assert.That(executedAbilities[0].Effects, Has.Some.InstanceOf<DamageEffect>());
+            Assert.That(executedAbilities[1].Effects, Has.Some.InstanceOf<DamageEffect>());
         }
     }
 }
