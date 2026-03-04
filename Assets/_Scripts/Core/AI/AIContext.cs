@@ -1,8 +1,6 @@
-﻿using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.Reasoning;
-using MagmaHeart.Core.Entities;
+﻿using MagmaHeart.AI.Reasoning;
 
 namespace MagmaHeart.Core.AI
 {
-    public record AIContext(ActionDatabase ActionDatabase, AIEngine AiEngine, MagmaHeartTurnContext TurnContext);
+    public record AIContext(AIEngine AiEngine);
 }

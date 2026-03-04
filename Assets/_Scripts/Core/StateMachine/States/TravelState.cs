@@ -15,10 +15,14 @@ namespace MagmaHeart.Core.StateMachine
         private readonly MagmaHeartContext m_context;
         private const int m_travelSpeed = TileBasedMovement.DEFAULT_SPEED * 2;
 
+        private readonly GameWorld m_world;
+
         public TravelState(MagmaHeartStateMachine stateMachine, MagmaHeartContext context)
         {
             m_stateMachine = stateMachine;
             m_context = context;
+
+            m_world = m_context.World;
         }
 
         public async Task EnterAsync(StatePayload payload)
@@ -26,23 +30,19 @@ namespace MagmaHeart.Core.StateMachine
             TravelStatePayload travelPayload = payload as TravelStatePayload;
 
             Entity player = m_context.Player;
-            Room room = m_context.DungeonController.CurrentRoom;
+            Room room = m_world.CurrentRoom;
 
             bool isEnteringRoom = travelPayload.Reason == TravelReason.EnterRoom;
 
-            Vector3 startPosition = isEnteringRoom ? room.RoomModel.EntranceDoor.Position.ToVector3() : player.transform.position;
-            Vector3 endPosition = isEnteringRoom ? room.RoomModel.WorldPosition.ToVector3() : room.RoomModel.ExitDoor.Position.ToVector3();
+            Vector2 startPosition = m_world.ToTileCenter(isEnteringRoom ? room.RoomModel.EntranceDoor.Position : player.transform.position.ToVector2Int());
+            Vector2 endPosition = m_world.ToTileCenter(isEnteringRoom ? room.RoomModel.WorldPosition : room.RoomModel.ExitDoor.Position);
 
             if (isEnteringRoom)
                 m_context.CameraController.MoveTo(endPosition);
 
-            player.transform.position = m_context.DungeonController.Grid.ToTileCenter(startPosition.ToVector2Int());
+            player.transform.position = startPosition;
 
-            RoomTile start = room.GetRoomTile(startPosition);
-            RoomTile end = room.GetRoomTile(endPosition);
-            List<RoomTile> path = new List<RoomTile>() { start, end };
-
-            await m_context.Services.MovementService.MoveEntityAsync(player, path, m_travelSpeed);
+            await m_context.Services.MovementService.MoveEntityAsync(player, new List<Vector3> { startPosition, endPosition });
             
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)

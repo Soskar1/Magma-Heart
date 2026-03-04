@@ -1,13 +1,9 @@
-﻿using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.AI.States;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 namespace MagmaHeart.AI.Reasoning
 {
-    public abstract class Strategy
+    public abstract class Strategy : ScriptableObject
     {
-        public List<PlanDefinition> Plans { get; init; } = new List<PlanDefinition>();
-
-        public abstract float EvaluateState(SimulatedBoardState boardState);
+        public abstract float EvaluateState(IBoardGameWorld world);
     }
 }

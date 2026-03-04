@@ -1,9 +1,12 @@
-using MagmaHeart.AI.States;
-using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI;
+using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Services;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +18,10 @@ namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<EntityModel, EventHandler<OnHealthChangedEventArgs>>();
-        private readonly TurnContext m_turnContext;
-        private readonly MagmaHeartServices m_services;
+        private readonly Dictionary<int, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnHealthChangedEventArgs>>();
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
-        private CombatBoardState m_currentBoardState;
 
         public event EventHandler<OnBattleStartedEventArgs> OnBattleStarted;
         public event EventHandler<OnBattleEndedEventArgs> OnBattleEnded;
@@ -32,10 +32,20 @@ namespace MagmaHeart.Core.CombatSystem
 
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public Battle(MagmaHeartServices services, TurnContext turnContext)
+        private readonly PlayerTurnController m_playerTurnController;
+        private readonly EnemyTurnController m_enemyTurnController;
+        private readonly EffectDispatcher m_effectDispatcher;
+        private readonly IStartOfTurnEffectFactory m_startOfTurnEffectFactory;
+        private readonly IBoardGameWorld m_world;
+
+        public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController, EffectDispatcher effectDispatcher, IStartOfTurnEffectFactory startOfTurnEffectFactory, IBoardGameWorld world)
         {
-            m_services = services;
-            m_turnContext = turnContext;
+            m_playerTurnController = playerTurnController;
+            m_enemyTurnController = enemyTurnController;
+
+            m_effectDispatcher = effectDispatcher;
+            m_startOfTurnEffectFactory = startOfTurnEffectFactory;
+            m_world = world;
         }
 
         public async Task Start(Room room, IEnumerable<Entity> entities)
@@ -53,14 +63,13 @@ namespace MagmaHeart.Core.CombatSystem
                     HandleEntityOnHealthChanged(entity.Model, args);
                 });
 
-                m_healthHandlers[entity.Model] = handler;
+                m_healthHandlers[entity.Model.Id] = handler;
                 entity.Health.OnHealthChanged += handler;
             }
 
             m_currentTurnOrder = new TurnOrder(sortedEntities);
-            m_currentBoardState = new CombatBoardState(m_currentRoom, m_services);
 
-            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, m_currentBoardState);
+            OnBattleStartedEventArgs args = new OnBattleStartedEventArgs(m_currentTurnOrder, m_currentRoom);
             OnBattleStarted?.Invoke(this, args);
 
             await ProcessBattle();
@@ -76,8 +85,15 @@ namespace MagmaHeart.Core.CombatSystem
                 OnTurnSwitched?.Invoke(this, args);
 
                 m_cancellationTokenSource = new CancellationTokenSource();
-                await m_turnContext.StartTurnAsync(m_currentBoardState, entity.Model, m_cancellationTokenSource.Token);
-                await entity.TurnController.StartTurn(m_currentBoardState, m_currentTurnOrder);
+
+                IReadOnlyList<AbilityEffect> effects = m_startOfTurnEffectFactory.CreateStartOfTurnEffects(m_world, entity.Model.Id);
+                foreach (AbilityEffect effect in effects)
+                    m_effectDispatcher.Apply(m_world, effect);
+
+                if (entity.Model.IsPlayer)
+                    await m_playerTurnController.StartTurn(entity.Model);
+                else
+                    await m_enemyTurnController.StartTurn(m_currentRoom, m_currentTurnOrder);
 
                 if (!m_battleEnded)
                     m_currentTurnOrder.Next();
@@ -92,12 +108,12 @@ namespace MagmaHeart.Core.CombatSystem
 
         private void RemoveEntityFromConsideration(EntityModel entityModel)
         {
-            m_currentRoom.TryGetEntity(entityModel, out Entity entity);
+            m_currentRoom.TryGetEntity(entityModel.Id, out Entity entity);
             m_currentRoom.RemoveEntityFromRoom(entity);
 
-            EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel];
+            EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel.Id];
             entityModel.Health.OnHealthChanged -= handler;
-            m_healthHandlers.Remove(entityModel);
+            m_healthHandlers.Remove(entityModel.Id);
 
             if (entityModel.IsPlayer)
             {
@@ -113,7 +129,7 @@ namespace MagmaHeart.Core.CombatSystem
 
                 GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
 
-                bool anyEnemiesInRoom = m_currentRoom.Models.Any(e => e.IsPlayer == false);
+                bool anyEnemiesInRoom = m_currentRoom.Entities.Any(e => e.Model.IsPlayer == false);
                 if (!anyEnemiesInRoom)
                 {
                     // Win
@@ -125,13 +141,15 @@ namespace MagmaHeart.Core.CombatSystem
         private void End(bool isPlayerVictory)
         {
             List<Entity> leftEntities = m_currentRoom.Entities.ToList();
+            m_enemyTurnController.EndBattle();
+            m_playerTurnController.Disable();
+
             foreach (Entity entity in leftEntities)
             {
-                if (m_healthHandlers.TryGetValue(entity.Model, out var handler))
+                if (m_healthHandlers.TryGetValue(entity.Model.Id, out var handler))
                     entity.Model.Health.OnHealthChanged -= handler;
 
                 m_currentRoom.RemoveEntityFromRoom(entity);
-                entity.TurnController.EndBattle();
 
                 // Maybe not the best place to put it, but it works...
                 entity.Energy.Reset();

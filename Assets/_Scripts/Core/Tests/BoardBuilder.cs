@@ -6,7 +6,7 @@ namespace MagmaHeart.Core.Tests
     internal sealed class BoardBuilder
     {
         private readonly AIScenarioBuilder m_scenario;
-        private Board Board => m_scenario.Board;
+        private Board Board => m_scenario.World.Board;
 
         public BoardBuilder(AIScenarioBuilder scenario) => m_scenario = scenario;
 

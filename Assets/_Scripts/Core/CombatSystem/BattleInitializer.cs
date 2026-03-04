@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
 using MagmaHeart.Core.Spawning;
 using MagmaHeart.DungeonGeneration;
 using UnityEngine;
@@ -14,14 +12,12 @@ namespace MagmaHeart.Core.CombatSystem
     public class BattleInitializer : IDisposable
     {
         private readonly EntitySpawner m_entitySpawner;
-        private readonly AIEngine m_aiEngine;
-        private readonly RoomGrid m_grid;
         private readonly Random m_random;
         private readonly float m_minDistanceFromPlayer;
 
         // Note: We only need the OnLocationChanged event to adjust difficulty.
         // Difficulty is only stat based. In the future, difficulty handling will be different and this implementation will be removed
-        private readonly DungeonController m_dungeonController;
+        private readonly GameWorld m_gameWorld;
         private int m_additionalMonsters = 0;
         private int m_additionalHealth = 0;
         private int m_additionalStrength = 0;
@@ -29,19 +25,17 @@ namespace MagmaHeart.Core.CombatSystem
         private int m_additionalEnergy = 0;
         private int m_additionalEnergyRegeneration = 0;
 
-        public BattleInitializer(EntitySpawner entitySpawner, AIEngine aiEngine, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController)
+        public BattleInitializer(EntitySpawner entitySpawner, Random random, float minDistanceFromPlayer, GameWorld gameWorld)
         {
             m_entitySpawner = entitySpawner;
-            m_aiEngine = aiEngine;
             m_random = random;
             m_minDistanceFromPlayer = minDistanceFromPlayer;
-            m_grid = grid;
 
-            m_dungeonController = dungeonController;
-            m_dungeonController.OnLocationChanged += HandleOnLocationChanged;
+            m_gameWorld = gameWorld;
+            m_gameWorld.OnLocationChanged += HandleOnLocationChanged;
         }
 
-        public void Dispose() => m_dungeonController.OnLocationChanged -= HandleOnLocationChanged;
+        public void Dispose() => m_gameWorld.OnLocationChanged -= HandleOnLocationChanged;
 
         public IEnumerable<Entity> InitializeBattle(Room room, Entity player)
         {
@@ -52,8 +46,7 @@ namespace MagmaHeart.Core.CombatSystem
             for (int i = 0; i < room.RoomData.EnemyCount + m_additionalMonsters; ++i)
             {
                 EntityData data = enemyPool[m_random.Next(enemyPool.Count)];
-                EnemyTurnController turnController = new EnemyTurnController(m_aiEngine);
-                Entity entity = m_entitySpawner.Spawn(data, false, turnController);
+                Entity entity = m_entitySpawner.Spawn(data, false);
 
                 // A dummy way to increase difficulty. In the future, difficulty handling will be different and this implementation will be removed
                 entity.Model.Speed.CurrentSpeed = entity.Model.Speed.CurrentSpeed + m_additionalSpeed;
@@ -71,7 +64,8 @@ namespace MagmaHeart.Core.CombatSystem
                     dungeonTile = room.RoomModel.GetTileAtIndex(m_random.Next(room.RoomModel.TileCount));
                 } while (dungeonTile.Type == TileType.Wall || Vector2.Distance(player.transform.position, dungeonTile.Position) < m_minDistanceFromPlayer || occupiedTiles.Contains(dungeonTile.Position));
 
-                entity.transform.position = m_grid.ToTileCenter(dungeonTile.Position);
+                entity.transform.position = m_gameWorld.WorldGrid.ToTileCenter(dungeonTile.Position);
+                entity.Model.TilePosition = m_gameWorld.WorldGrid.WorldToTilePosition(entity.transform.position);
                 occupiedTiles.Add(dungeonTile.Position);
             }
 

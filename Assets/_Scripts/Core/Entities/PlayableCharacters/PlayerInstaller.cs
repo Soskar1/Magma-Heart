@@ -1,21 +1,34 @@
-﻿using MagmaHeart.Core.BoardStateSystem.Actions;
+﻿using MagmaHeart.Core.Abilities.Presentation.Execution;
+using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.Input;
+using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.Spawning;
+using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Entities.PlayableCharacters
 {
+    public record PlayerContext(Entity Player, PlayerTurnController TurnController);
+
     public class PlayerInstaller : IInstaller
     {
-        public Entity Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, IActionPreviewProvider actionPreviewProvider)
+        private PlayerTurnController m_turnController;
+
+        public PlayerContext Install(EntitySpawner spawner, EntityData playerData, InputContext inputContext, AbilityExecutionRunner abilityExecutionRunner, GameWorld world, GraphicRaycaster raycaster)
         {
-            PlayerTurnController turnController = new PlayerTurnController(inputContext.MouseListener, actionPreviewProvider);
-            Entity player = spawner.Spawn(playerData, true, turnController);
+            Entity player = spawner.Spawn(playerData, true);
             player.gameObject.SetActive(false);
 
-            return player;
+            MouseHover mouseHover = new MouseHover(inputContext.MouseListener, world, raycaster);
+            AbilitySelector abilitySelector = new AbilitySelector(world);
+            m_turnController = new PlayerTurnController(inputContext.MouseListener, mouseHover, abilityExecutionRunner, abilitySelector);
+
+            return new PlayerContext(player, m_turnController);
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            m_turnController.Dispose();
+        }
     }
 }

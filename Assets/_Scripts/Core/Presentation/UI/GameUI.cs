@@ -1,9 +1,10 @@
-using MagmaHeart.Core.BoardStateSystem.Actions;
+using MagmaHeart.Abilities;
+using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.Entities.Presenters;
-using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Statistics;
 using UnityEngine;
 
@@ -26,12 +27,12 @@ namespace MagmaHeart.Core.Presentation.UI
 
         private Battle m_battle;
 
-        public void Initialize(Entity player, Battle battle, MouseHoverEngine mouseHoverEngine, IActionPreviewProvider previewProvider, CompletedRoomsCounter roomCounter)
+        public void Initialize(Entity player, Battle battle, PlayerTurnController playerTurnController, IGameWorld gameWorld, CompletedRoomsCounter roomCounter)
         {
             m_healthBar.Register(player.Health);
-            m_endTurnButton.Initialize(player);
-            m_energyHUD.Initialize(player, previewProvider);
-            m_entityInfoUI.Initialize(mouseHoverEngine, battle);
+            m_endTurnButton.Initialize(playerTurnController);
+            m_energyHUD.Initialize(player);
+            m_entityInfoUI.Initialize(battle);
             m_battleTurnOrder.Initialize(battle);
             m_gaveOverUI.Initialize(battle, roomCounter);
             m_roomCounterPresenter.Initialize(roomCounter);

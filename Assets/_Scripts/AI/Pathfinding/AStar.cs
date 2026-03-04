@@ -101,7 +101,6 @@ namespace MagmaHeart.AI.Pathfinding
                 }
             }
 
-            Debug.LogWarning($"Path between {start} and {target} does not exist!");
             return null;
         }
 

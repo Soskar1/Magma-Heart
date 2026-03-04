@@ -1,15 +1,19 @@
+using MagmaHeart.Abilities;
 using System;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities.Models
 {
-    public class EnergyModel
+    public class EnergyModel : IParameter
     {
         private int m_currentEnergy;
         private int m_maxEnergy;
         private int m_energyRegenerationPerTurn;
 
         public event EventHandler<OnEnergyChangedEventArgs> OnEnergyChanged;
+
+        public ParameterId Id { get; init; }
+        public float CurrentValue => CurrentEnergy;
 
         public int MaxEnergy
         { 
@@ -56,13 +60,26 @@ namespace MagmaHeart.Core.Entities.Models
             }
         }
 
-        public EnergyModel(int maxEnergy, int energyRegenerationPerTurn)
+        public EnergyModel(ParameterId parameterId, int maxEnergy, int energyRegenerationPerTurn)
         {
+            Id = parameterId;
+
             MaxEnergy = maxEnergy;
             EnergyRegenerationPerTurn = energyRegenerationPerTurn;
             m_currentEnergy = 0;
         }
 
         public void Reset() => CurrentEnergy = 0;
+
+        public EnergyModel DeepCopy()
+        {
+            EnergyModel copy = new EnergyModel(Id, MaxEnergy, EnergyRegenerationPerTurn)
+            {
+                CurrentEnergy = CurrentEnergy
+            };
+            return copy;
+        }
+
+        public void SetValue(float value) => CurrentEnergy = (int)value;
     }
 }

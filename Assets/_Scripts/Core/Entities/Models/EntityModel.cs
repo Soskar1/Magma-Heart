@@ -1,17 +1,15 @@
+using MagmaHeart.Abilities;
 using MagmaHeart.AI;
-using MagmaHeart.AI.Actions;
-using MagmaHeart.AI.States;
-using MagmaHeart.Collections;
 using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Entities.Properties;
-using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 namespace MagmaHeart.Core.Entities
 {
     public record EntityModel : AIUnitModel
     {
-        public Func<Vector3Int> GetCurrentTilePosition { get; init; }
+        public Vector3Int TilePosition { get; set; }
         public HealthModel Health { get; init; }
         public EnergyModel Energy { get; init; }
         public StrengthModel Strength { get; init; }
@@ -19,32 +17,67 @@ namespace MagmaHeart.Core.Entities
         public EntityStats Stats { get; init; }
         public EntityData Data { get; init; }
 
-        public EntityModel(EntityData data, Func<Vector3Int> getCurrentTilePosition, bool isPlayer) : base(isPlayer)
+        public AbilityDefinition MovementAbility { get; init; }
+        public AbilityDefinition AttackAbility { get; init; }
+
+        public EntityModel(EntityData data, Vector3Int startTilePosition, bool isPlayer, int id) : base(isPlayer, id, data.Plans)
         {
             Stats = data.Stats;
             Data = data;
 
-            GetCurrentTilePosition = getCurrentTilePosition;
-            Health = new HealthModel(Stats.MaxHealth);
-            Energy = new EnergyModel(Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
-            Strength = new StrengthModel(Stats.Strength);
-            Speed = new SpeedModel(Stats.Speed);
+            TilePosition = startTilePosition;
+            Health = new HealthModel(Stats.MaxHealth, data.ParameterDatabase?.Health);
+            Energy = new EnergyModel(data.ParameterDatabase?.Energy, Stats.MaxEnergy, Stats.EnergyRegenerationPerTurn);
+            Strength = new StrengthModel(Stats.Strength, data.ParameterDatabase?.Strength);
+            Speed = new SpeedModel(Stats.Speed, data.ParameterDatabase?.Speed);
+            IsDisabled = () => Health.CurrentHealth <= 0;
 
-            foreach (ActionData actionData in data.Actions)
-                PossibleActions.Add(actionData.GetType(), actionData);
+            if (data.AttackAbility != null)
+            {
+                AttackAbility = data.AttackAbility;
+                Abilities.Add(AttackAbility.Id, AttackAbility);
+            }
+
+            if (data.MovementAbility != null)
+            {
+                MovementAbility = data.MovementAbility;
+                Abilities.Add(MovementAbility.Id, MovementAbility);
+            }
+
+            if (data.ParameterDatabase != null)
+            {
+                Parameters.Add(data.ParameterDatabase.Energy, Energy);
+                Parameters.Add(data.ParameterDatabase.Strength, Strength);
+                Parameters.Add(data.ParameterDatabase.Speed, Speed);
+                Parameters.Add(data.ParameterDatabase.Health, Health);
+            }
         }
 
-        public override TypeMap<PropertySnapshot> GetPropertySnapshots()
+        public override AIUnitModel DeepCopy()
         {
-            TypeMap<PropertySnapshot> properties = base.GetPropertySnapshots();
+            HealthModel healthCopy = Health.DeepCopy();
+            EnergyModel energyCopy = Energy.DeepCopy();
+            StrengthModel strengthCopy = Strength.DeepCopy();
+            SpeedModel speedCopy = Speed.DeepCopy();
 
-            properties.Add(new HealthPropertySnapshot(Health.CurrentHealth, Health.MaxHealth));
-            properties.Add(new EnergyPropertySnapshot(Energy.CurrentEnergy, Energy.MaxEnergy));
-            properties.Add(new StrengthPropertySnapshot(Strength.CurrentStrength));
-            properties.Add(new PositionPropertySnapshot(GetCurrentTilePosition()));
-            properties.Add(new SpeedPropertySnapshot(Speed.CurrentSpeed));
+            EntityModel copy = new EntityModel(Data, TilePosition, IsPlayer, Id)
+            {
+                Abilities = new Dictionary<string, AbilityDefinition>(Abilities),
+                Health = healthCopy,
+                Energy = energyCopy,
+                Strength = strengthCopy,
+                Speed = speedCopy
+            };
 
-            return properties;
+            if (Data.ParameterDatabase != null)
+            {
+                copy.Parameters[Data.ParameterDatabase.Health] = healthCopy;
+                copy.Parameters[Data.ParameterDatabase.Energy] = energyCopy;
+                copy.Parameters[Data.ParameterDatabase.Strength] = strengthCopy;
+                copy.Parameters[Data.ParameterDatabase.Speed] = speedCopy;
+            }
+
+            return copy;
         }
     }
 }

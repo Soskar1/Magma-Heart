@@ -1,4 +1,3 @@
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
 
@@ -7,18 +6,21 @@ namespace MagmaHeart.Core.Spawning
     public class EntitySpawner
     {
         private readonly Entity m_prefab;
-        private readonly RoomGrid m_roomGrid;
+        private readonly WorldGrid m_worldGrid;
 
-        public EntitySpawner(Entity prefab, RoomGrid roomGrid)
+        private int m_nextId = 0;
+
+        public EntitySpawner(Entity prefab, WorldGrid worldGrid)
         {
             m_prefab = prefab;
-            m_roomGrid = roomGrid;
+            m_worldGrid = worldGrid;
         }
 
-        public Entity Spawn(EntityData data, bool isPlayer, ITurnController turnController)
+        public Entity Spawn(EntityData data, bool isPlayer)
         {
             Entity entity = GameObject.Instantiate(m_prefab);
-            entity.Initialize(data, m_roomGrid, isPlayer, turnController);
+            entity.Initialize(data, m_worldGrid, isPlayer, m_nextId);
+            ++m_nextId;
 
             return entity;
         }

@@ -1,41 +1,44 @@
-﻿using MagmaHeart.AI;
+﻿using MagmaHeart.Abilities;
 using MagmaHeart.AI.Reasoning;
-using MagmaHeart.AI.Reasoning.Plans;
 using MagmaHeart.Collections;
-using MagmaHeart.Core.BoardStateSystem;
+using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.CombatSystem;
+using MagmaHeart.Core.Dungeon;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 {
-    public class EnemyTurnController : ITurnController
+    public class EnemyTurnController
     {
         private readonly AIEngine m_aiEngine;
+        private readonly AbilityExecutionRunner m_abilityExecutionRunner;
         private CancellationTokenSource m_cancellationTokenSource;
 
-        public EnemyTurnController(AIEngine engine)
+        public EnemyTurnController(AIEngine engine, AbilityExecutionRunner abilityExecutionRunner)
         {
             m_aiEngine = engine;
+            m_abilityExecutionRunner = abilityExecutionRunner;
         }
 
-        public async Task StartTurn(CombatBoardState boardState, TurnOrder turnOrder)
+        public async Task StartTurn(Room room, TurnOrder turnOrder)
         {
-            CircularList<AIUnitModel> modelTurns = new CircularList<AIUnitModel>();
+            CircularList<int> modelTurns = new CircularList<int>();
             foreach (Entity entity in turnOrder)
-                modelTurns.Add(entity.Model);
-            
-            BestPlan bestPlan = m_aiEngine.ChooseBestMove(modelTurns, boardState);
+                modelTurns.Add(entity.Model.Id);
+
+            IEnumerable<AbilityPlan> abilitites = m_aiEngine.ChooseBestMove(modelTurns, room);
             m_cancellationTokenSource = new CancellationTokenSource();
 
-            if (bestPlan != null)
+            if (abilitites != null)
             {
-                foreach (ExecutedTask task in bestPlan.ExecutedTasks)
+                foreach (AbilityPlan ability in abilitites)
                 {
-                    if (m_cancellationTokenSource.Token.IsCancellationRequested)
+                    if (m_cancellationTokenSource.IsCancellationRequested)
                         break;
 
-                    await task.Action.ExecuteAsync(task.Args, boardState, m_cancellationTokenSource.Token);
+                    await m_abilityExecutionRunner.Run(ability, turnOrder.Current.Model.Id, m_cancellationTokenSource.Token);
                 }
             }
 

@@ -441,6 +441,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -2676,6 +2689,7 @@ TextureImporter:
       Warrior_Run_7: -7083850147136336687
       Warrior_Sheet-Effect_0: -1342143772
       Warrior_Sheet-Effect_1: -338834305
+      Warrior_Sheet-Effect_103: 1209288620382777180
       Warrior_Sheet-Effect_116: -9866729
       Warrior_Sheet-Effect_18: 111539710
       Warrior_Sheet-Effect_19: -1564578714
@@ -2734,6 +2748,7 @@ TextureImporter:
       Warrior_Sheet-Effect_71: 1976390343
       Warrior_Sheet-Effect_72: 1190306093
       Warrior_Sheet-Effect_73: -117261159
+      Warrior_Sheet-Effect_91: -2106872485169043283
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

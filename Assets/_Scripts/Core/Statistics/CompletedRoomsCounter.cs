@@ -1,11 +1,10 @@
 using System;
-using MagmaHeart.Core.Dungeon;
 
 namespace MagmaHeart.Core.Statistics
 {
     public class CompletedRoomsCounter : IDisposable
     {
-        private readonly DungeonController m_dungeon;
+        private readonly GameWorld m_gameWorld;
         private int m_completedRooms = 0;
 
         public event EventHandler<OnCompletedRoomsCounterChangedEventArgs> OnCompletedRoomsCounterChanged;
@@ -22,13 +21,13 @@ namespace MagmaHeart.Core.Statistics
             }
         }
 
-        public CompletedRoomsCounter(DungeonController dungeon)
+        public CompletedRoomsCounter(GameWorld gameWorld)
         {
-            m_dungeon = dungeon;
-            m_dungeon.OnRoomChanged += HandleOnRoomChanged;
+            m_gameWorld = gameWorld;
+            m_gameWorld.OnRoomChanged += HandleOnRoomChanged;
         }
 
-        public void Dispose() => m_dungeon.OnRoomChanged -= HandleOnRoomChanged;
+        public void Dispose() => m_gameWorld.OnRoomChanged -= HandleOnRoomChanged;
 
         private void HandleOnRoomChanged(object _, EventArgs __) => ++CompletedRooms;
     }

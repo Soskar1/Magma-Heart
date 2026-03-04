@@ -1,5 +1,4 @@
 ﻿using System;
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Presentation;
 using UnityEngine;
@@ -15,17 +14,17 @@ namespace MagmaHeart.Core.Entities
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
-        public ITurnController TurnController { get; private set; }
         public TileBasedMovement TileBasedMovement { get; private set; }
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
+        
+        private Func<Vector3Int> m_getCurrentTilePosition;
 
-        public virtual void Initialize(EntityData data, RoomGrid grid, bool isPlayer, ITurnController turnController)
+        public virtual void Initialize(EntityData data, WorldGrid grid, bool isPlayer, int id)
         {
-            Func<Vector3Int> getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
-            Model = new EntityModel(data, getCurrentTilePosition, isPlayer);
-            TurnController = turnController;
+            m_getCurrentTilePosition = () => grid.WorldToTilePosition(transform.position);
+            Model = new EntityModel(data, m_getCurrentTilePosition(), isPlayer, id);
 
             TileBasedMovement = GetComponent<TileBasedMovement>();
             Facing = GetComponent<Facing>();
@@ -35,6 +34,9 @@ namespace MagmaHeart.Core.Entities
             Animation.Initialize(data.AnimatorController);
         }
 
-        private void Update() => Animation.PlayAnimations();
+        private void Update()
+        {
+            Model.TilePosition = m_getCurrentTilePosition();
+        }
     }
 }

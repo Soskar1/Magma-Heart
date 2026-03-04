@@ -1,8 +1,13 @@
-﻿namespace MagmaHeart.Core.Entities.Models
+﻿using MagmaHeart.Abilities;
+
+namespace MagmaHeart.Core.Entities.Models
 {
-    public class StrengthModel
+    public class StrengthModel : IParameter
     {
         private int m_currentStrength;
+        
+        public ParameterId Id { get; init; }
+        public float CurrentValue => CurrentStrength;
 
         public int CurrentStrength
         {
@@ -10,6 +15,14 @@
             set => m_currentStrength = value;
         }
 
-        public StrengthModel(int initialStrength) => m_currentStrength = initialStrength;
+        public StrengthModel(int initialStrength, ParameterId id)
+        {
+            m_currentStrength = initialStrength;
+            Id = id;
+        }
+
+        public StrengthModel DeepCopy() => new StrengthModel(m_currentStrength, Id);
+
+        public void SetValue(float value) => CurrentStrength = (int)value;
     }
 }

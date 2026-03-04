@@ -1,4 +1,4 @@
-﻿using MagmaHeart.Core.BoardStateSystem;
+﻿using MagmaHeart.Core.Dungeon;
 using System;
 
 namespace MagmaHeart.Core.CombatSystem
@@ -6,12 +6,12 @@ namespace MagmaHeart.Core.CombatSystem
     public class OnBattleStartedEventArgs : EventArgs
     {
         public TurnOrder TurnOrder { get; init; }
-        public CombatBoardState CombatBoardState { get; init; }
+        public Room Room { get; init; }
 
-        public OnBattleStartedEventArgs(TurnOrder turnOrder, CombatBoardState combatBoardState)
+        public OnBattleStartedEventArgs(TurnOrder turnOrder, Room room)
         {
             TurnOrder = turnOrder;
-            CombatBoardState = combatBoardState;
+            Room = room;
         }
     }
 }

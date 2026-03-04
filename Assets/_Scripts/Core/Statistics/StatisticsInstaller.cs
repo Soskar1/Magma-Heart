@@ -1,4 +1,3 @@
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.SceneLoading;
 
 namespace MagmaHeart.Core.Statistics
@@ -7,9 +6,9 @@ namespace MagmaHeart.Core.Statistics
     {
         private CompletedRoomsCounter m_completedRoomsCounter;
 
-        public CompletedRoomsCounter Install(DungeonController dungeon)
+        public CompletedRoomsCounter Install(GameWorld gameWorld)
         {
-            m_completedRoomsCounter = new CompletedRoomsCounter(dungeon);
+            m_completedRoomsCounter = new CompletedRoomsCounter(gameWorld);
             return m_completedRoomsCounter;
         }
 

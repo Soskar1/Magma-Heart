@@ -1,8 +1,12 @@
 using System;
+using MagmaHeart.AI;
+using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.AI;
-using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using MagmaHeart.Core.SceneLoading;
-using MagmaHeart.Core.Services;
+using MagmaHeart.Core.Spawning;
 
 namespace MagmaHeart.Core.CombatSystem
 {
@@ -10,10 +14,21 @@ namespace MagmaHeart.Core.CombatSystem
     {
         private BattleInitializer m_battleInitializer;
 
-        public BattleContext Install(MagmaHeartServices services, AIContext aiContext, Random random, RoomGrid grid, float minDistanceFromPlayer, DungeonController dungeonController)
+        public BattleContext Install(
+            EntitySpawner spawner,
+            AIContext aiContext,
+            Random random,
+            float minDistanceFromPlayer,
+            GameWorld gameWorld,
+            PlayerTurnController playerTurnController,
+            AbilityExecutionRunner abilityExecutionRunner,
+            EffectDispatcher effectDispatcher,
+            IStartOfTurnEffectFactory startOfTurnEffectFactory)
         {
-            Battle battle = new Battle(services, aiContext.TurnContext);
-            m_battleInitializer = new BattleInitializer(services.SpawnService.EntitySpawner, aiContext.AiEngine, random, grid, minDistanceFromPlayer, dungeonController);
+            EnemyTurnController enemyTurnController = new EnemyTurnController(aiContext.AiEngine, abilityExecutionRunner);
+
+            Battle battle = new Battle(playerTurnController, enemyTurnController, effectDispatcher, startOfTurnEffectFactory, gameWorld);
+            m_battleInitializer = new BattleInitializer(spawner, random, minDistanceFromPlayer, gameWorld);
 
             return new BattleContext(battle, m_battleInitializer);
         }

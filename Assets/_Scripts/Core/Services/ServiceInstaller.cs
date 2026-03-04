@@ -6,10 +6,9 @@ namespace MagmaHeart.Core.Services
     {
         public MagmaHeartServices Install(SpawnService spawnService)
         {
-            EntityAttackService attackService = new EntityAttackService(spawnService);
             EntityMovementService movementService = new EntityMovementService();
 
-            return new MagmaHeartServices(movementService, attackService, spawnService);
+            return new MagmaHeartServices(movementService, spawnService);
         }
 
         public void Dispose() { }

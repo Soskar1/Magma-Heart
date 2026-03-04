@@ -1,6 +1,7 @@
-﻿using MagmaHeart.AI.Actions;
+﻿using MagmaHeart.Abilities;
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI.Boards;
 using MagmaHeart.AI.Reasoning.Plans;
-using MagmaHeart.AI.States;
 using MagmaHeart.Collections;
 using System;
 using System.Collections.Generic;
@@ -10,44 +11,50 @@ namespace MagmaHeart.AI.Reasoning
     public class AIEngine
     {
         private readonly int m_depth;
-        private readonly Planner m_planner;
-        private readonly TurnContext m_turnContext;
         private Strategy m_strategy;
+        private readonly EffectDispatcher m_effectDispatcher;
+        private readonly IStartOfTurnEffectFactory m_startOfTurnEffectFactory;
+        private readonly AbilityEngine m_abilityEngine;
 
-        public AIEngine(Strategy strategy, ActionDatabase database, int lookAhead, TurnContext turnContext)
+        public AIEngine(Strategy strategy, int lookAhead, IStartOfTurnEffectFactory startOfTurnEffects, EffectDispatcher effectDispatcher)
         {
             m_strategy = strategy;
             m_depth = lookAhead;
-            m_turnContext = turnContext;
-
-            m_planner = new Planner(strategy, database);
+            m_startOfTurnEffectFactory = startOfTurnEffects;
+            m_effectDispatcher = effectDispatcher;
+            m_abilityEngine = new AbilityEngine();
         }
 
-        public BestPlan ChooseBestMove(ChainNode<AIUnitModel> unitTurns, ActualBoardState gameState)
+        public IEnumerable<AbilityPlan> ChooseBestMove(ChainNode<int> unitTurnIds, Board board)
         {  
-            SimulatedBoardState simulation = new SimulatedBoardState(gameState.Board);
+            Board boardCopy = board.DeepCopy();
+            WorldSimulation worldSimulation = new WorldSimulation(boardCopy);
 
             float alpha = float.MinValue;
             float beta = float.MaxValue;
             float bestValue = float.MinValue;
 
-            BestPlan bestPlan = null;
-            List<Plan> plans = m_planner.GetPlans(unitTurns.Value);
+            AIUnitModel currentUnit = worldSimulation.GetUnit(unitTurnIds.Value);
+
+            IEnumerable<AbilityPlan> bestPlan = null;
+            List<Plan> plans = GetPlans(currentUnit);
 
             foreach (Plan plan in plans)
             {
-                bool isExecuted = plan.TryExecute(simulation, unitTurns.Value);
+                worldSimulation.SaveCheckpoint();
+
+                bool isExecuted = plan.TryExecute(worldSimulation, currentUnit);
                 if (!isExecuted)
                     continue;
 
-                float evaluation = Minimax(simulation, unitTurns.Next, m_depth - 1, alpha, beta);
+                float evaluation = Minimax(worldSimulation, unitTurnIds.Next, m_depth - 1, alpha, beta);
 
-                plan.Undo(simulation);
+                worldSimulation.RestoreCheckpoint();
 
                 if (evaluation > bestValue)
                 {
                     bestValue = evaluation;
-                    bestPlan = new BestPlan(plan.ExecutedTasks);
+                    bestPlan = plan.ExecutedAbilities;
                 }
 
                 alpha = Math.Max(alpha, bestValue);
@@ -56,16 +63,37 @@ namespace MagmaHeart.AI.Reasoning
             return bestPlan;
         }
 
-        private float Minimax(SimulatedBoardState simulation, ChainNode<AIUnitModel> turns, int currentDepth, float alpha, float beta)
+        public List<Plan> GetPlans(AIUnitModel executor)
         {
-            AIUnitModel currentUnit = turns.Value;
-            IsAlivePropertySnapshot isAlive = simulation.GetProperty<IsAlivePropertySnapshot>(currentUnit);
+            List<Plan> plans = new List<Plan>();
 
-            if (currentDepth <= 0 || !isAlive)
+            foreach (PlanDefinition planDefinition in executor.Plans)
+            {
+                Plan plan = new Plan(planDefinition.TaskDefinitions, m_effectDispatcher, m_abilityEngine);
+
+                if (plan == null)
+                    continue;
+
+                plans.Add(plan);
+            }
+
+            return plans;
+        }
+
+        private float Minimax(WorldSimulation simulation, ChainNode<int> turns, int currentDepth, float alpha, float beta)
+        {
+            AIUnitModel currentUnit = simulation.GetUnit(turns.Value);
+
+            if (currentDepth <= 0 || currentUnit.IsDisabled())
                 return m_strategy.EvaluateState(simulation);
 
-            m_turnContext.StartTurn(simulation, currentUnit);
-            List<Plan> plans = m_planner.GetPlans(currentUnit);
+            IReadOnlyList<AbilityEffect> startOfTurnEffects = m_startOfTurnEffectFactory.CreateStartOfTurnEffects(simulation, currentUnit.Id);
+            foreach (AbilityEffect effect in startOfTurnEffects) 
+                m_effectDispatcher.Apply(simulation, effect);
+
+            simulation.SaveCheckpoint();
+
+            List<Plan> plans = GetPlans(currentUnit);
 
             if (!currentUnit.IsPlayer)
             {
@@ -73,13 +101,15 @@ namespace MagmaHeart.AI.Reasoning
                 float maxEvaluation = float.MinValue;
                 foreach (Plan plan in plans)
                 {
+                    simulation.SaveCheckpoint();
+
                     bool isExecuted = plan.TryExecute(simulation, currentUnit);
                     if (!isExecuted)
                         continue;
 
                     float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                    plan.Undo(simulation);
+                    simulation.RestoreCheckpoint();
 
                     maxEvaluation = Math.Max(maxEvaluation, evaluation);
                     alpha = Math.Max(alpha, evaluation);
@@ -88,7 +118,7 @@ namespace MagmaHeart.AI.Reasoning
                         break;
                 }
 
-                m_turnContext.UndoTurn(simulation);
+                simulation.RestoreCheckpoint();
                 return maxEvaluation;
             }
             else
@@ -97,13 +127,15 @@ namespace MagmaHeart.AI.Reasoning
                 float minEvaluation = float.MaxValue;
                 foreach (Plan plan in plans)
                 {
+                    simulation.SaveCheckpoint();
+
                     bool isExecuted = plan.TryExecute(simulation, currentUnit);
                     if (!isExecuted)
                         continue;
 
                     float evaluation = Minimax(simulation, turns.Next, currentDepth - 1, alpha, beta);
 
-                    plan.Undo(simulation);
+                    simulation.RestoreCheckpoint();
 
                     minEvaluation = Math.Min(minEvaluation, evaluation);
                     beta = Math.Min(beta, evaluation);
@@ -112,7 +144,7 @@ namespace MagmaHeart.AI.Reasoning
                         break;
                 }
 
-                m_turnContext.UndoTurn(simulation);
+                simulation.RestoreCheckpoint();
                 return minEvaluation;
             }
         }

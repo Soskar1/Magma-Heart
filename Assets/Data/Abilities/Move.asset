@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c45eb04ea4caf64d89baccf00b15c46, type: 3}
+  m_Name: Move
+  m_EditorClassIdentifier: 
+  m_id: Movement
+  m_cost:
+  - rid: 226000697812320388
+  m_effects:
+  - rid: 226000697812320389
+  m_requirements: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 226000697812320388
+      type: {class: ResourcePerNTilesCost, ns: MagmaHeart.Core.Abilities.Cost, asm: MagmaHeart.Core}
+      data:
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
+        m_tilesPerResource: 2
+    - rid: 226000697812320389
+      type: {class: BuildMoveEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data: 
