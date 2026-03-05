@@ -9,10 +9,10 @@ namespace MagmaHeart.Core.Artifacts
     {
         private Inventory m_inventory;
 
-        public RewardService Install(EntityModel inventoryOwner, RewardUI rewardUI)
+        public RewardService Install(EntityModel inventoryOwner, RewardUI rewardUI, ArtifactDatabase artifactDatabase)
         {
             m_inventory = new Inventory(inventoryOwner, rewardUI);
-            return new RewardService(m_inventory);
+            return new RewardService(m_inventory, artifactDatabase);
         }
 
         public void Dispose()

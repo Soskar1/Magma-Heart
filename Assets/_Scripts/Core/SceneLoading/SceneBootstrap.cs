@@ -39,6 +39,9 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private Strategy m_strategy;
         [SerializeField] private int m_lookAhead;
 
+        [Header("Artifacts")]
+        [SerializeField] private ArtifactDatabase m_artifactDatabase;
+
         [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
@@ -143,7 +146,7 @@ namespace MagmaHeart.Core.SceneLoading
             m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController);
 
             ArtifactInstaller artifactInstaller = new ArtifactInstaller();
-            RewardService rewardService = artifactInstaller.Install(playerContext.Player.Model, m_gameUI.RewardUI);
+            RewardService rewardService = artifactInstaller.Install(playerContext.Player.Model, m_gameUI.RewardUI, m_artifactDatabase);
             m_installers.Add(artifactInstaller);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
