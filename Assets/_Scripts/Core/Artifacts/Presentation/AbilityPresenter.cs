@@ -1,17 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MagmaHeart.Core.Artifacts
+namespace MagmaHeart.Core.Artifacts.Presentation
 {
-    public class ArtifactPresenter : MonoBehaviour
+    public class AbilityPresenter : MonoBehaviour
     {
-        [SerializeField] private Artifact m_artifact;
         [SerializeField] private Image m_image;
+        private Artifact m_artifact;
 
         public void Initialize(Artifact artifact)
         {
             m_artifact = artifact;
-            m_image.sprite = artifact.Data.Icon;
+            m_image.sprite = m_artifact.Data.Icon;
         }
     }
 }

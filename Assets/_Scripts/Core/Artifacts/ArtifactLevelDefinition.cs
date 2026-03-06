@@ -10,10 +10,7 @@ namespace MagmaHeart.Core.Artifacts
     {
         [SerializeReference, SubclassSelector]
         private List<IStatModifier> m_statModifiers;
-        
-        [SerializeField] private AbilityDefinition m_abilityDefinition;
 
         public IReadOnlyList<IStatModifier> StatModifiers => m_statModifiers;
-        public AbilityDefinition AbilityDefinition => m_abilityDefinition;
     }
 }

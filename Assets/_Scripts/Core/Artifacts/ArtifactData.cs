@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MagmaHeart.Abilities;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Artifacts
@@ -11,6 +12,7 @@ namespace MagmaHeart.Core.Artifacts
         [SerializeField] private Rarity m_rarity;
         [SerializeField] private Sprite m_icon;
         [SerializeField] private List<ArtifactLevelDefinition> m_levelDefinitions;
+        [SerializeField] private AbilityDefinition m_abilityDefinition;
 
         public string Name => m_name;
         public string Description => m_description;
@@ -18,5 +20,6 @@ namespace MagmaHeart.Core.Artifacts
         public Sprite Icon => m_icon;
         public IReadOnlyList<ArtifactLevelDefinition> LevelDefinitions => m_levelDefinitions;
         public int MaxLevel => m_levelDefinitions.Count;
+        public AbilityDefinition AbilityDefinition => m_abilityDefinition;
     }
 }

@@ -1,5 +1,7 @@
 using MagmaHeart.Abilities;
 using MagmaHeart.Core.Abilities.Selection;
+using MagmaHeart.Core.Artifacts;
+using MagmaHeart.Core.Artifacts.Presentation;
 using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities;
@@ -21,13 +23,20 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private GameOverUI m_gaveOverUI;
         [SerializeField] private WelcomeScreen m_welcomeScreen;
         [SerializeField] private CompletedRoomsCounterPresenter m_roomCounterPresenter;
+        [SerializeField] private AvailableAbilitiesWindow m_availableAbilitiesWindow;
 
         public RewardUI RewardUI => m_rewardUI;
         public WelcomeScreen WelcomeScreen => m_welcomeScreen;
 
         private Battle m_battle;
 
-        public void Initialize(Entity player, Battle battle, PlayerTurnController playerTurnController, IGameWorld gameWorld, CompletedRoomsCounter roomCounter)
+        public void Initialize(
+            Entity player,
+            Battle battle,
+            PlayerTurnController playerTurnController,
+            IGameWorld gameWorld,
+            CompletedRoomsCounter roomCounter,
+            Inventory inventory)
         {
             m_healthBar.Register(player.Health);
             m_endTurnButton.Initialize(playerTurnController);
@@ -36,6 +45,8 @@ namespace MagmaHeart.Core.Presentation.UI
             m_battleTurnOrder.Initialize(battle);
             m_gaveOverUI.Initialize(battle, roomCounter);
             m_roomCounterPresenter.Initialize(roomCounter);
+            m_rewardUI.Initialize(inventory);
+            m_availableAbilitiesWindow.Initialize(inventory);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
