@@ -18,22 +18,40 @@ MonoBehaviour:
   m_icon: {fileID: 21300000, guid: c7006076edb0e36449cc8d628c44b4c8, type: 3}
   m_levelDefinitions:
   - m_statModifiers:
-    - m_parameterToModify: {fileID: 11400000, guid: 293f7e101f45e494cade085f14ee9790, type: 2}
-      m_amount: 1
+    - rid: 279046284954042454
     m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
-    - m_parameterToModify: {fileID: 11400000, guid: 293f7e101f45e494cade085f14ee9790, type: 2}
-      m_amount: 2
+    - rid: 279046284954042455
     m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
-    - m_parameterToModify: {fileID: 11400000, guid: 293f7e101f45e494cade085f14ee9790, type: 2}
-      m_amount: 3
+    - rid: 279046284954042456
     m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
-    - m_parameterToModify: {fileID: 11400000, guid: 293f7e101f45e494cade085f14ee9790, type: 2}
-      m_amount: 4
+    - rid: 279046284954042457
     m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
-    - m_parameterToModify: {fileID: 11400000, guid: 293f7e101f45e494cade085f14ee9790, type: 2}
-      m_amount: 5
+    - rid: 279046284954042458
     m_abilityDefinition: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 279046284954042454
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 1
+    - rid: 279046284954042455
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 2
+    - rid: 279046284954042456
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 3
+    - rid: 279046284954042457
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 4
+    - rid: 279046284954042458
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 5
