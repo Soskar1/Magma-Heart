@@ -7,7 +7,6 @@ namespace MagmaHeart.Abilities.Targeting
     {
         None = 0,
         Entity = 1,
-        Position = 2,
-        Path = 4
+        Path = 2
     }
 }

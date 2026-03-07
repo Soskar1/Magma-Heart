@@ -15,6 +15,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly AbilityExecutionRunner m_abilityExecutionRunner;
         private readonly MouseListener m_mouseListener;
         private readonly MouseHover m_mouseHover;
+        private readonly AbilitySelectionState m_abilitySelectionState;
 
         private AbilityPlan m_currentSelectedAbility;
         private HoverResult m_currentHover;
@@ -46,6 +47,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_mouseHover = mouseHover;
             m_abilitySelector = abilitySelector;
             m_abilityExecutionRunner = abilityExecutionRunner;
+            m_abilitySelectionState = new AbilitySelectionState();
 
             m_mouseHover.OnHoverResultChanged += HandleOnHoverResultChanged;
         }
@@ -62,21 +64,20 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             m_currentHover = args.HoverResult;
 
-            if (m_currentExecutor == null)
+            if (m_currentExecutor == null || !CanExecuteActions)
             {
                 OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(null, args.HoverResult));
                 return;
             }
 
-            if (!CanExecuteActions)
-            {
-                OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(null, args.HoverResult));
-                return;
-            }
+            AbilityDefinition armedAbility = m_abilitySelectionState.HasArmedAbility ? m_abilitySelectionState.ArmedAbility : null;
 
-            m_currentSelectedAbility = m_abilitySelector.SelectAbility(args.HoverResult, m_currentExecutor);
+            m_currentSelectedAbility = m_abilitySelector.SelectAbility(args.HoverResult, m_currentExecutor, armedAbility);
             OnAbilitySelected?.Invoke(this, new OnAbilitySelectedEventArgs(m_currentSelectedAbility, args.HoverResult));
         }
+
+        public void ArmAbility(AbilityDefinition ability) => m_abilitySelectionState.Arm(ability);
+        public void DisarmAbility() => m_abilitySelectionState.Disarm();
 
         private async void HandleOnGameLeftMouseButtonClick()
         {

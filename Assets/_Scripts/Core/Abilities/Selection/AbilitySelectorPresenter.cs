@@ -42,7 +42,8 @@ namespace MagmaHeart.Core.Abilities.Selection
             {
                 { typeof(DamageEffect), new DamageEffectPresenter(m_outlinePresenter) },
                 { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) },
-                { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) }
+                { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
+                { typeof(HealEffect), new HealEffectPresenter(m_outlinePresenter) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;

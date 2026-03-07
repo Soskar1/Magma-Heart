@@ -1,3 +1,4 @@
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Artifacts.Presentation
@@ -7,11 +8,13 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         [SerializeField] private AbilityPresenter m_abilityPresenterPrefab;
         [SerializeField] private Transform m_abilityContainer;
         private Inventory m_inventory;
+        private PlayerTurnController m_turnController;
 
-        public void Initialize(Inventory inventory)
+        public void Initialize(Inventory inventory, PlayerTurnController playerTurnController)
         {
             m_inventory = inventory;
-            
+            m_turnController = playerTurnController;
+
             inventory.OnArtifactPicked += HandleOnArtifactPicked;
         }
 
@@ -30,7 +33,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             AbilityPresenter instance = Instantiate(m_abilityPresenterPrefab, m_abilityContainer);
             
-            instance.Initialize(artifact);
+            instance.Initialize(artifact, m_turnController);
         }
     }
 }

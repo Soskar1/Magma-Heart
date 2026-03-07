@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Abilities.Requirements;
 using MagmaHeart.Abilities.Resources;
+using MagmaHeart.Abilities.Targeting;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace MagmaHeart.Abilities
     public class AbilityDefinition : ScriptableObject
     {
         [SerializeField] private string m_id;
+        [SerializeField] private TargetKind m_targetKind;
         
         [SerializeReference, SubclassSelector]
         private List<CostModule> m_cost;
@@ -24,5 +26,6 @@ namespace MagmaHeart.Abilities
         public List<CostModule> Cost => m_cost;
         public List<EffectModule> Effects => m_effects;
         public List<IAbilityRequirement> Requirements => m_requirements;
+        public TargetKind TargetKind => m_targetKind;
     }
 }

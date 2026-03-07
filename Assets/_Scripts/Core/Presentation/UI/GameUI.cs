@@ -46,7 +46,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_gaveOverUI.Initialize(battle, roomCounter);
             m_roomCounterPresenter.Initialize(roomCounter);
             m_rewardUI.Initialize(inventory);
-            m_availableAbilitiesWindow.Initialize(inventory);
+            m_availableAbilitiesWindow.Initialize(inventory, playerTurnController);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
