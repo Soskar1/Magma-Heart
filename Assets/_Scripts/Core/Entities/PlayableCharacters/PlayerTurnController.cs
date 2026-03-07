@@ -79,12 +79,21 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public void ArmAbility(AbilityDefinition ability) => m_abilitySelectionState.Arm(ability);
         public void DisarmAbility() => m_abilitySelectionState.Disarm();
 
-        private async void HandleOnGameLeftMouseButtonClick()
+        private async void HandleOnGameLeftMouseButtonClick(object _, EventArgs __)
         {
             if (m_currentSelectedAbility == null)
                 return;
 
             await Execute(m_currentSelectedAbility);
+        }
+
+        private void HandleOnGameRightMouseButtonClick(object _, EventArgs __)
+        {
+            if (m_currentSelectedAbility == null)
+                return;
+    
+            if (m_abilitySelectionState.HasArmedAbility)
+                DisarmAbility();
         }
 
         public async Task StartTurn(EntityModel executor)
@@ -93,6 +102,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             CanExecuteActions = true;
 
             m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
+            m_mouseListener.OnGameRightMouseButtonClick += HandleOnGameRightMouseButtonClick;
 
             m_turnFinished = new TaskCompletionSource<bool>();
             await m_turnFinished.Task;
@@ -113,6 +123,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_currentExecutor = null;
             CanExecuteActions = false;
             m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
+            m_mouseListener.OnGameRightMouseButtonClick -= HandleOnGameRightMouseButtonClick;
         }
 
         private async Task Execute(AbilityPlan ability)
@@ -128,6 +139,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             if (m_currentExecutor != null)
                 CanExecuteActions = true;
+
+            if (m_abilitySelectionState.HasArmedAbility)
+                DisarmAbility();
 
             Vector2 hoverWorldPosition = m_currentHover.WorldPosition;
             m_currentHover = null;

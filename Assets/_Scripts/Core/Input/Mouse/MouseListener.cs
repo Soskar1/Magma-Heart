@@ -12,7 +12,8 @@ namespace MagmaHeart.Core.Input.Mouse
         private Vector2 m_currentWorldMousePosition;
 
         public event EventHandler<OnMouseWorldPositionChangedEventArgs> OnMouseWorldPositionChanged;
-        public event Action OnGameLeftMouseButtonClick;
+        public event EventHandler OnGameLeftMouseButtonClick;
+        public event EventHandler OnGameRightMouseButtonClick;
 
         public void Initialize(UserInput userInput)
         {
@@ -20,12 +21,14 @@ namespace MagmaHeart.Core.Input.Mouse
 
             m_userInput.OnMousePositionChanged += HandleOnMousePositionChanged;
             m_userInput.OnLeftMouseButtonClick += HandleOnLeftMouseButtonClick;
+            m_userInput.OnRightMouseButtonClick += HandleOnRightMouseButtonClick;
         }
 
         public void Disable()
         {
             m_userInput.OnMousePositionChanged -= HandleOnMousePositionChanged;
             m_userInput.OnLeftMouseButtonClick -= HandleOnLeftMouseButtonClick;
+            m_userInput.OnRightMouseButtonClick -= HandleOnRightMouseButtonClick;
         }
 
         public void OnDisable() => Disable();
@@ -48,6 +51,7 @@ namespace MagmaHeart.Core.Input.Mouse
         }
 
         private void HandleOnLeftMouseButtonClick(object obj, EventArgs args) => StartCoroutine(HandleOnLeftMouseButtonClick());
+        private void HandleOnRightMouseButtonClick(object obj, EventArgs args) => StartCoroutine(HandleOnRightMouseButtonClick());
 
         // Workaround to remove the warning IsPointerOverGameObject called inside the new input system
         // Reference: https://discussions.unity.com/t/ispointerovergameobject-inputaction-callback/946169/5
@@ -56,7 +60,17 @@ namespace MagmaHeart.Core.Input.Mouse
             yield return new WaitForEndOfFrame();
 
             if (!EventSystem.current.IsPointerOverGameObject())
-                OnGameLeftMouseButtonClick?.Invoke();
+                OnGameLeftMouseButtonClick?.Invoke(this, EventArgs.Empty);
+        }
+
+        // Workaround to remove the warning IsPointerOverGameObject called inside the new input system
+        // Reference: https://discussions.unity.com/t/ispointerovergameobject-inputaction-callback/946169/5
+        private IEnumerator HandleOnRightMouseButtonClick()
+        {
+            yield return new WaitForEndOfFrame();
+
+            if (!EventSystem.current.IsPointerOverGameObject())
+                OnGameRightMouseButtonClick?.Invoke(this, EventArgs.Empty);
         }
     }
 }

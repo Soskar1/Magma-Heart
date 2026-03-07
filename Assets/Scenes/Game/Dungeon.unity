@@ -6733,7 +6733,7 @@ MonoBehaviour:
   m_dungeonTilemap: {fileID: 540808438}
   m_dungeonGrid: {fileID: 1863885643486044408}
   m_worldPresenter: {fileID: 8388963511706051693}
-  m_seed: 2109946031
+  m_seed: -1
   m_floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
   m_wallTile: {fileID: 11400000, guid: 4ca55881ba0901544934d33a5252ef98, type: 2}
   m_entityPrefab: {fileID: 7422606736354459837, guid: 4207caed466d91c4c94cd751e08cbce4, type: 3}

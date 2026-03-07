@@ -86,11 +86,14 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private AbilityTarget BuildTargetForAbility(HoverResult hoverResult, EntityModel executor, AbilityDefinition ability)
         {
+            if (ability.TargetKind.HasFlag(TargetKind.Self))
+                return AbilityTarget.EntityTarget(executor.Id, null);
+
             bool hoversEntity = hoverResult.Type.HasFlag(HoverResultType.Entity);
             bool hoversTile = hoverResult.Type.HasFlag(HoverResultType.Tile);
 
             AbilityTarget currentTarget = null;
-
+            
             if (ability.TargetKind.HasFlag(TargetKind.Entity) && hoversEntity)
                 currentTarget = AbilityTarget.EntityTarget(hoverResult.Entity.Model.Id, null);
 
