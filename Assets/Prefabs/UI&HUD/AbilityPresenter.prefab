@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4033195691148141451}
   - component: {fileID: 3163170882567071584}
   - component: {fileID: 7069938100519033293}
+  - component: {fileID: -3660321761724682435}
   m_Layer: 5
   m_Name: AbilityPresenter
   m_TagString: Untagged
@@ -89,3 +90,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_image: {fileID: 3163170882567071584}
+--- !u!114 &-3660321761724682435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480998073118510413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b385f00ae043194683ac77ea63c9ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

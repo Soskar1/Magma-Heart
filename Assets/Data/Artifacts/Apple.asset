@@ -19,19 +19,15 @@ MonoBehaviour:
   m_levelDefinitions:
   - m_statModifiers:
     - rid: 279046284954042444
-    m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
     - rid: 279046284954042445
-    m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
     - rid: 279046284954042446
-    m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
     - rid: 279046284954042447
-    m_abilityDefinition: {fileID: 0}
   - m_statModifiers:
     - rid: 279046284954042448
-    m_abilityDefinition: {fileID: 0}
+  m_abilityDefinition: {fileID: 11400000, guid: 91687003a4b95b048a40f03b31141349, type: 2}
   references:
     version: 2
     RefIds:
