@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MagmaHeart.Abilities.Effects;
-using MagmaHeart.Abilities.Targeting;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Core.Abilities.Presentation;
@@ -12,7 +11,6 @@ using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.DungeonGeneration;
-using UnityEditor;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Selection
@@ -66,11 +64,10 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void Present(OnAbilitySelectedEventArgs selection)
         {
+            PresentDefaultSelection(selection.HoverResult);
+
             if (selection.Plan == null || !selection.Plan.IsLegal)
-            {
-                PresentDefaultSelection(selection.HoverResult);
                 return;
-            }
 
             foreach (AbilityEffect effect in selection.Plan.Effects)
             {
