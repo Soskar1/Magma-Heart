@@ -37,6 +37,8 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             foreach (var resource in m_minimalResourceCost.GetAllCosts())
                 m_gameWorld.GetParameter(m_executorId, resource.Id).OnParameterValueChanged += HandleOnParameterValueChanged;
 
+            m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
+
             Validate();
         }
 
@@ -44,11 +46,16 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             foreach (var resource in m_minimalResourceCost.GetAllCosts())
                 m_gameWorld.GetParameter(m_executorId, resource.Id).OnParameterValueChanged -= HandleOnParameterValueChanged;
+
+            m_turnController.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
         }
 
-        private void HandleOnParameterValueChanged(object _, OnParameterValueChangedEventArgs __)
+        private void HandleOnParameterValueChanged(object _, OnParameterValueChangedEventArgs __) => Validate();
+
+        private void HandleOnCanExecuteActionsChanged(object _, OnCanExecuteActionsChangedEventArgs args)
         {
-            Validate();
+            if (!args.CanExecute)
+                m_button.interactable = false;
         }
 
         private void Validate()
