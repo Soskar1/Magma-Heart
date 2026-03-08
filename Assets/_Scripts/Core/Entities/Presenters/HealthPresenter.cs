@@ -35,6 +35,9 @@ namespace MagmaHeart.Core.Entities.Presenters
 
         private void HandleOnHealthChangedEvent(object _, OnParameterValueChangedEventArgs __)
         {
+            if (m_healthModel is null)
+                return;
+
             UpdateHealthBar(m_healthModel.CurrentHealth, m_healthModel.MaxHealth);
         }
 
