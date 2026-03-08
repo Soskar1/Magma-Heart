@@ -1,3 +1,4 @@
+using MagmaHeart.Abilities;
 using MagmaHeart.Core.Entities.Models;
 using TMPro;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace MagmaHeart.Core.Entities.Presenters
                 Unregister();
 
             m_healthModel = model;
-            m_healthModel.OnHealthChanged += HandleOnHealthChangedEvent;
+            m_healthModel.OnParameterValueChanged += HandleOnHealthChangedEvent;
 
             UpdateHealthBar(m_healthModel.CurrentHealth, m_healthModel.MaxHealth);
         }
@@ -28,11 +29,14 @@ namespace MagmaHeart.Core.Entities.Presenters
             if (m_healthModel == null)
                 return;
 
-            m_healthModel.OnHealthChanged -= HandleOnHealthChangedEvent;
+            m_healthModel.OnParameterValueChanged -= HandleOnHealthChangedEvent;
             m_healthModel = null;
         }
 
-        private void HandleOnHealthChangedEvent(object obj, OnHealthChangedEventArgs e) => UpdateHealthBar(e.CurrentHealth, e.MaxHealth);
+        private void HandleOnHealthChangedEvent(object _, OnParameterValueChangedEventArgs __)
+        {
+            UpdateHealthBar(m_healthModel.CurrentHealth, m_healthModel.MaxHealth);
+        }
 
         public void UpdateHealthBar(float currentHealth, float maxHealth)
         {

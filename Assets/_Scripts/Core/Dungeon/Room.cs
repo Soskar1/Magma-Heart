@@ -1,4 +1,3 @@
-using MagmaHeart.Core.Dungeon;
 using MagmaHeart.AI.Boards;
 using MagmaHeart.Core.Dungeon.Data;
 using MagmaHeart.Core.Entities;
@@ -6,17 +5,18 @@ using MagmaHeart.DungeonGeneration;
 using MagmaHeart.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 namespace MagmaHeart.Core.Dungeon
 {
-    public class Room : Board
+    public class Room : Board, IDisposable
     {
         private readonly Dictionary<int, Entity> m_entities;
         private readonly WorldGrid m_grid;
         
         public RoomModel RoomModel { get; init; }
         public RoomData RoomData { get; init; }
-        public WorldGrid Grid => m_grid;
 
         public IEnumerable<Entity> Entities => m_entities.Values;
 
@@ -28,7 +28,7 @@ namespace MagmaHeart.Core.Dungeon
             m_entities = new Dictionary<int, Entity>();
         }
 
-        public void AddEntityToInspect(Entity entity)
+        public void AddEntity(Entity entity)
         {
             Vector2 position = entity.Model.TilePosition.ToVector2();
 
@@ -38,24 +38,15 @@ namespace MagmaHeart.Core.Dungeon
             ChangeNodeType(position, BoardNodeType.Obstacle);
         }
 
-        public void RemoveEntityFromRoom(Entity entity)
+        public void RemoveEntity(int entityId)
         {
-            Vector2 position = entity.Model.TilePosition.ToVector2();
+            Entity entity = m_entities[entityId];
+            m_entities.Remove(entityId);
 
+            Vector2 position = entity.Model.TilePosition.ToVector2();
             RemoveUnit(position);
-            m_entities.Remove(entity.Model.Id);
 
             ChangeNodeType(position, BoardNodeType.Walkable);
-        }
-
-        public bool TileIsAccessable(Vector3 worldPosition)
-        {
-            DungeonTile tile = GetTile(worldPosition);
-
-            if (tile == null || tile.Type == TileType.Wall || TryGetEntity(worldPosition, out _))
-                return false;
-
-            return true;
         }
 
         public bool TryGetEntity(int entityId, out Entity entity) => m_entities.TryGetValue(entityId, out entity);
@@ -76,6 +67,15 @@ namespace MagmaHeart.Core.Dungeon
         {
             Vector3Int position = m_grid.WorldToTilePosition(worldPosition);
             return RoomModel.GetTile(position.ToVector2Int());
+        }
+
+        public void Dispose()
+        {
+            IReadOnlyList<int> leftEntities = m_entities.Keys.ToList();
+            foreach (var entityId in leftEntities)
+                RemoveEntity(entityId);
+
+            m_entities.Clear();
         }
     }
 }

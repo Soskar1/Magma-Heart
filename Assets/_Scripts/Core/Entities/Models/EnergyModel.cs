@@ -10,7 +10,7 @@ namespace MagmaHeart.Core.Entities.Models
         private int m_maxEnergy;
         private int m_energyRegenerationPerTurn;
 
-        public event EventHandler<OnEnergyChangedEventArgs> OnEnergyChanged;
+        public event EventHandler<OnParameterValueChangedEventArgs> OnParameterValueChanged;
 
         public ParameterId Id { get; init; }
         public float CurrentValue => CurrentEnergy;
@@ -43,8 +43,8 @@ namespace MagmaHeart.Core.Entities.Models
                 if (m_currentEnergy > MaxEnergy)
                     m_currentEnergy = MaxEnergy;
 
-                OnEnergyChangedEventArgs args = new OnEnergyChangedEventArgs(CurrentEnergy, MaxEnergy);
-                OnEnergyChanged?.Invoke(this, args);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentEnergy);
+                OnParameterValueChanged?.Invoke(this, args);
             }
         }
 

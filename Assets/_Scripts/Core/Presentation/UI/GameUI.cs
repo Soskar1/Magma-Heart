@@ -1,5 +1,4 @@
 using MagmaHeart.Abilities;
-using MagmaHeart.Core.Abilities.Selection;
 using MagmaHeart.Core.Artifacts;
 using MagmaHeart.Core.Artifacts.Presentation;
 using MagmaHeart.Core.CombatSystem;
@@ -46,7 +45,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_gaveOverUI.Initialize(battle, roomCounter);
             m_roomCounterPresenter.Initialize(roomCounter);
             m_rewardUI.Initialize(inventory);
-            m_availableAbilitiesWindow.Initialize(inventory, playerTurnController);
+            m_availableAbilitiesWindow.Initialize(inventory, playerTurnController, player.Model.Id, gameWorld);
 
             m_battle = battle;
             m_battle.OnTurnSwitched += HandleOnTurnSwitched;
