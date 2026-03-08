@@ -5,18 +5,20 @@ namespace MagmaHeart.Core.Abilities.Effects.Presenters
 {
     public interface IEffectPresenter
     {
-        public void Present(GameWorld world, AbilityEffect effect);
+        public void Present(AbilityEffect effect);
+
+        public void Hide();
     }
 
     public interface IEffectPresenter<TEffect> : IEffectPresenter where TEffect : AbilityEffect
     {
-        public void Present(GameWorld world, TEffect effect);
+        public void Present(TEffect effect);
 
-        void IEffectPresenter.Present(GameWorld world, AbilityEffect effect)
+        void IEffectPresenter.Present(AbilityEffect effect)
         {
             if (effect is TEffect typedEffect)
             {
-                Present(world, typedEffect);
+                Present(typedEffect);
             }
             else
             {

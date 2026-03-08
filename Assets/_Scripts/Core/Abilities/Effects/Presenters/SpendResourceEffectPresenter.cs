@@ -9,10 +9,15 @@ namespace MagmaHeart.Core.Abilities.Effects.Presenters
 
         public SpendResourceEffectPresenter(EnergyPresenter energyPresenter) => m_energyPresenter = energyPresenter;
 
-        public void Present(GameWorld world, SpendResourceEffect effect)
+        public void Present(SpendResourceEffect effect)
         {
             if (effect.Parameter.Id == m_energyPresenter.Energy.Id)
                 m_energyPresenter.DisplayCost(effect.Amount);
+        }
+
+        public void Hide()
+        {
+            m_energyPresenter.DisplayCurrentEnergy();
         }
     }
 }
