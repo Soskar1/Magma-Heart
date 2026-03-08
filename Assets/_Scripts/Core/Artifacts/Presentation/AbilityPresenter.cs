@@ -36,6 +36,8 @@ namespace MagmaHeart.Core.Artifacts.Presentation
 
             foreach (var resource in m_minimalResourceCost.GetAllCosts())
                 m_gameWorld.GetParameter(m_executorId, resource.Id).OnParameterValueChanged += HandleOnParameterValueChanged;
+
+            Validate();
         }
 
         private void OnDisable()
@@ -44,11 +46,18 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executorId, resource.Id).OnParameterValueChanged -= HandleOnParameterValueChanged;
         }
 
-        private void HandleOnParameterValueChanged(object _, OnParameterValueChangedEventArgs args)
+        private void HandleOnParameterValueChanged(object _, OnParameterValueChangedEventArgs __)
+        {
+            Validate();
+        }
+
+        private void Validate()
         {
             foreach (var resource in m_minimalResourceCost.GetAllCosts())
             {
-                if (resource.Id == args.ParameterId && args.NewValue < resource.Amount)
+                IParameter parameter = m_gameWorld.GetParameter(m_executorId, resource.Id);
+                
+                if (parameter.CurrentValue < resource.Amount)
                 {
                     m_button.interactable = false;
                     return;
