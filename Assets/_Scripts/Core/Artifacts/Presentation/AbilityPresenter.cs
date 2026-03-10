@@ -4,6 +4,7 @@ using MagmaHeart.Abilities.Targeting;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ namespace MagmaHeart.Core.Artifacts.Presentation
 {
     public class AbilityPresenter : MonoBehaviour
     {
+        [SerializeField] private TextMeshProUGUI m_cooldownText;
+
         private Image m_image;
         private Button m_button;
         private AbilityDefinition m_ability;
@@ -37,10 +40,11 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             m_minimalResourceCost = m_ability.ComputeCost(gameWorld, executor.Id, AbilityTarget.None);
 
             foreach (var resource in m_minimalResourceCost.GetAllCosts())
-                m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged += TriggerValidation;
+                m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged += HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
-            m_turnController.OnTurnStarted += TriggerValidation;
+            m_turnController.OnTurnStarted += HandleOnTurnStarted;
+            m_turnController.OnAbilityExecuted += HandleOnTurnStarted;
 
             Validate();
         }
@@ -48,13 +52,23 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         private void OnDisable()
         {
             foreach (var resource in m_minimalResourceCost.GetAllCosts())
-                m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged -= TriggerValidation;
+                m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged -= HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
-            m_turnController.OnTurnStarted -= TriggerValidation;
+            m_turnController.OnTurnStarted -= HandleOnTurnStarted;
+            m_turnController.OnAbilityExecuted -= HandleOnTurnStarted;
         }
 
-        private void TriggerValidation(object _, EventArgs __) => Validate();
+        // TODO: I DO NOT LIKE THIS SHIT
+        // MVC pattern is a bit violated here
+        public void HandleOnTurnStarted(object _, EventArgs __)
+        {
+            int cooldown = m_executor.GetCooldown(m_ability.Id);
+            m_cooldownText.text = cooldown > 0 ? cooldown.ToString() : string.Empty;
+            Validate();
+        }
+
+        private void HandleOnParameterValueChanged(object _, EventArgs __) => Validate();
 
         private void HandleOnCanExecuteActionsChanged(object _, OnCanExecuteActionsChangedEventArgs args)
         {

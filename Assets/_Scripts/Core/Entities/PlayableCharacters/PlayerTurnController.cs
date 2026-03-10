@@ -23,6 +23,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         public event EventHandler<OnAbilitySelectedEventArgs> OnAbilitySelected;
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
         public event EventHandler OnTurnStarted;
+        public event EventHandler OnAbilityExecuted;
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
@@ -145,6 +146,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             if (m_abilitySelectionState.HasArmedAbility)
                 DisarmAbility();
+
+            OnAbilityExecuted?.Invoke(this, EventArgs.Empty);
 
             Vector2 hoverWorldPosition = m_currentHover.WorldPosition;
             m_currentHover = null;
