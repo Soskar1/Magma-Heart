@@ -198,5 +198,17 @@ namespace MagmaHeart.Core
             m_currentRoom.TryGetUnit(entityId, out AIUnitModel unit);
             unit.Parameters[parameter].SetValue(newValue);
         }
+
+        public void SetCooldown(int unitId, string abilityId, int turns)
+        {
+            AIUnitModel unit = GetUnit(unitId);
+            unit.SetCooldown(abilityId, turns);
+        }
+
+        public int GetCooldown(int entityId, string abilityId)
+        {
+            AIUnitModel unit = GetUnit(entityId);
+            return unit.GetCooldown(abilityId);
+        }
     }
 }

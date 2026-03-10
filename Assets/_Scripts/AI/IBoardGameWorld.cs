@@ -15,5 +15,6 @@ namespace MagmaHeart.AI
         public void MoveUnit(int unitId, Vector2 newPosition);
         public Vector2 WorldToTilePosition(Vector2 worldPosition);
         public IEnumerable<AIUnitModel> GetUnits();
+        public void SetCooldown(int unitId, string abilityId, int turns);
     } 
 }

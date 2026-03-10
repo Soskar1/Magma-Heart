@@ -13,6 +13,9 @@ namespace MagmaHeart.Abilities
             if (target == AbilityTarget.None)
                 return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>(), target);
 
+            if (world.GetCooldown(executorId, ability.Id) > 0)
+                return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>(), target);
+
             ResourceCost totalCost = ability.ComputeCost(world, executorId, target);
 
             foreach (var parameter in totalCost.GetAllCosts())

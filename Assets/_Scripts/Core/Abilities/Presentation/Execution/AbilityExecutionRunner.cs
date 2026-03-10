@@ -1,9 +1,9 @@
 ﻿using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Effects;
 using MagmaHeart.AI;
+using MagmaHeart.Core.Entities;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution
 {
@@ -20,13 +20,15 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution
             m_world = world;
         }
 
-        public async Task Run(AbilityPlan plan, int executorId, CancellationToken cancellationToken)
+        public async Task Run(AbilityPlan plan, EntityModel executor, CancellationToken cancellationToken)
         {
+            executor.SetCooldown(plan.AbilityDefinition.Id, plan.AbilityDefinition.CooldownTurns);
+
             bool scriptExists = m_database.TryGetValidScript(plan.AbilityDefinition, plan, out AbilityExecutionScript script);
 
             if (scriptExists)
             {
-                var context = new AbilityExecutionContext(m_world, executorId, m_effectDispatcher, plan);
+                var context = new AbilityExecutionContext(m_world, executor.Id, m_effectDispatcher, plan);
 
                 foreach (IAbilityExecutionStep step in script.Steps)
                 {

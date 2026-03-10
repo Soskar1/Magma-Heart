@@ -22,6 +22,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public event EventHandler<OnAbilitySelectedEventArgs> OnAbilitySelected;
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
+        public event EventHandler OnTurnStarted;
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
@@ -104,6 +105,8 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
             m_mouseListener.OnGameRightMouseButtonClick += HandleOnGameRightMouseButtonClick;
 
+            OnTurnStarted?.Invoke(this, EventArgs.Empty);
+
             m_turnFinished = new TaskCompletionSource<bool>();
             await m_turnFinished.Task;
         }
@@ -135,7 +138,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             
             CanExecuteActions = false;
 
-            await m_abilityExecutionRunner.Run(ability, m_currentExecutor.Id, m_cancellationTokenSource.Token);
+            await m_abilityExecutionRunner.Run(ability, m_currentExecutor, m_cancellationTokenSource.Token);
 
             if (m_currentExecutor != null)
                 CanExecuteActions = true;

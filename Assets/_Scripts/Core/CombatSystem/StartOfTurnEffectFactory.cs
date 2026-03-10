@@ -22,7 +22,8 @@ namespace MagmaHeart.Core.CombatSystem
         {
             return new List<AbilityEffect>()
             {
-                new RestoreParameterEffect(entityId, m_energy, m_energyRestorationAmount)
+                new RestoreParameterEffect(entityId, m_energy, m_energyRestorationAmount),
+                new DecreaseCooldownEffect(entityId)
             };
         }
     }

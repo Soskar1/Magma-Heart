@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_id: Heal
   m_targetKind: 4
+  m_cooldownTurns: 1
   m_cost:
   - rid: 279046319385083976
   m_effects:

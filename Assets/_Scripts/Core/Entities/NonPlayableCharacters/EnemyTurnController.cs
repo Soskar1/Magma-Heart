@@ -38,7 +38,7 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
                     if (m_cancellationTokenSource.IsCancellationRequested)
                         break;
 
-                    await m_abilityExecutionRunner.Run(ability, turnOrder.Current.Model.Id, m_cancellationTokenSource.Token);
+                    await m_abilityExecutionRunner.Run(ability, turnOrder.Current.Model, m_cancellationTokenSource.Token);
                 }
             }
 
