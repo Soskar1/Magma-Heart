@@ -6977,9 +6977,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd8e3804db7cdf54687e3cd47c9fcd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_allyOutlineColor: {r: 0, g: 1, b: 0, a: 1}
-  m_enemyOutlineColor: {r: 1, g: 0, b: 0, a: 1}
-  m_canAttackOutlineColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  m_allyOutline: {fileID: 2100000, guid: 51534dee00be5164290b43e5bb5c8a5d, type: 2}
+  m_enemyOutline: {fileID: 2100000, guid: 27c2d14a7289f484ba93a98ec90c0375, type: 2}
+  m_canAttackOutline: {fileID: 2100000, guid: 671e483c50d5201489c9400f1f1d981e, type: 2}
 --- !u!114 &8388963511706051696
 MonoBehaviour:
   m_ObjectHideFlags: 0

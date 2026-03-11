@@ -64,10 +64,16 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void Present(OnAbilitySelectedEventArgs selection)
         {
-            PresentDefaultSelection(selection.HoverResult);
+            HoverResult hoverResult = selection.HoverResult;
+            bool hoversEntity = selection.HoverResult.Type.HasFlag(HoverResultType.Entity);
+            if (hoversEntity)
+                PresentEntity(hoverResult.Entity);
 
             if (selection.Plan == null || !selection.Plan.IsLegal)
+            {
+                PresentDefaultSelection(selection.HoverResult);
                 return;
+            }
 
             foreach (AbilityEffect effect in selection.Plan.Effects)
             {
@@ -103,10 +109,6 @@ namespace MagmaHeart.Core.Abilities.Selection
                 DungeonTile tile = hoverResult.Tile;
                 m_combatTilemapPresenter.DisplayTile(tile.Position.ToVector3Int());
             }
-
-            bool hoversEntity = hoverResult.Type.HasFlag(HoverResultType.Entity);
-            if (hoversEntity)
-                PresentEntity(hoverResult.Entity);
         }
 
         private void PresentEntity(Entity entity)

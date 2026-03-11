@@ -13,9 +13,9 @@ namespace MagmaHeart.Core.Abilities.Presentation
 
     public class EntityOutlinePresenter : MonoBehaviour
     {
-        [SerializeField] private Color m_allyOutlineColor = Color.green;
-        [SerializeField] private Color m_enemyOutlineColor = Color.red;
-        [SerializeField] private Color m_canAttackOutlineColor = new Color(1, 0.35f, 0.35f);
+        [SerializeField] private Material m_allyOutline;
+        [SerializeField] private Material m_enemyOutline;
+        [SerializeField] private Material m_canAttackOutline;
 
         public void OutlineEntity(Entity entity, OutlineType outlineType)
         {
@@ -24,13 +24,13 @@ namespace MagmaHeart.Core.Abilities.Presentation
                 case OutlineType.None:
                     break;
                 case OutlineType.Enemy:
-                    entity.Outline.ApplyOutline(m_enemyOutlineColor);
+                    entity.Outline.ApplyOutline(m_enemyOutline);
                     break;
                 case OutlineType.Ally:
-                    entity.Outline.ApplyOutline(m_allyOutlineColor);
+                    entity.Outline.ApplyOutline(m_allyOutline);
                     break;
                 case OutlineType.CanBeAttacked:
-                    entity.Outline.ApplyOutline(m_canAttackOutlineColor);
+                    entity.Outline.ApplyOutline(m_canAttackOutline);
                     break;
                 default:
                     Debug.LogWarning($"Outline type '{outlineType}' is not implemented");
