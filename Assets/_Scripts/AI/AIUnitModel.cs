@@ -17,6 +17,8 @@ namespace MagmaHeart.AI
         public IReadOnlyList<PlanDefinition> Plans { get; init; }
         public IDictionary<string, int> Cooldowns { get; init; } = new Dictionary<string, int>();
 
+        public event EventHandler<OnCooldownChangedEventArgs> OnCooldownChanged;
+
         public AIUnitModel(bool isPlayer, int id, IReadOnlyList<PlanDefinition> plans)
         {
             IsPlayer = isPlayer;
@@ -57,6 +59,8 @@ namespace MagmaHeart.AI
 
             if (turns <= 0)
                 Cooldowns.Remove(abilityId);
+
+            OnCooldownChanged?.Invoke(this, new OnCooldownChangedEventArgs(abilityId, turns));
         }
     }
 }

@@ -1,6 +1,7 @@
 using MagmaHeart.Abilities;
 using MagmaHeart.Abilities.Resources;
 using MagmaHeart.Abilities.Targeting;
+using MagmaHeart.AI;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
@@ -43,8 +44,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged += HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
-            m_turnController.OnTurnStarted += HandleOnTurnStarted;
-            m_turnController.OnAbilityExecuted += HandleOnTurnStarted;
+            m_executor.OnCooldownChanged += HandleOnCooldownChanged;
 
             Validate();
         }
@@ -55,26 +55,25 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged -= HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
-            m_turnController.OnTurnStarted -= HandleOnTurnStarted;
-            m_turnController.OnAbilityExecuted -= HandleOnTurnStarted;
+            m_executor.OnCooldownChanged -= HandleOnCooldownChanged;
         }
 
-        // TODO: I DO NOT LIKE THIS SHIT
-        // MVC pattern is a bit violated here
-        public void HandleOnTurnStarted(object _, EventArgs __)
+        private void HandleOnCooldownChanged(object _, OnCooldownChangedEventArgs args)
         {
-            int cooldown = m_executor.GetCooldown(m_ability.Id);
-            m_cooldownText.text = cooldown > 0 ? cooldown.ToString() : string.Empty;
+            if (args.AbilityId != m_ability.Id)
+                return;
+
+            m_cooldownText.text = args.CurrentCooldown > 0 ? args.CurrentCooldown.ToString() : string.Empty;
             Validate();
         }
-
-        private void HandleOnParameterValueChanged(object _, EventArgs __) => Validate();
 
         private void HandleOnCanExecuteActionsChanged(object _, OnCanExecuteActionsChangedEventArgs args)
         {
             if (!args.CanExecute)
                 m_button.interactable = false;
         }
+        
+        private void HandleOnParameterValueChanged(object _, EventArgs __) => Validate();
 
         private void Validate()
         {
