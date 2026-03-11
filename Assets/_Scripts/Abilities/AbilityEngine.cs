@@ -13,19 +13,10 @@ namespace MagmaHeart.Abilities
             if (target == AbilityTarget.None)
                 return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>(), target);
 
-            ResourceCost totalCost = ResourceCost.Zero;
+            if (world.GetCooldown(executorId, ability.Id) > 0)
+                return new AbilityPlan(ability, false, ResourceCost.Zero, new List<AbilityEffect>(), target);
 
-            if (ability.Cost != null)
-            {
-                foreach (CostModule cost in ability.Cost)
-                {
-                    if (cost == null)
-                        continue;
-
-                    ResourceCost moduleCost = cost.ComputeCost(world, executorId, target);
-                    totalCost.Add(moduleCost);
-                }
-            }
+            ResourceCost totalCost = ability.ComputeCost(world, executorId, target);
 
             foreach (var parameter in totalCost.GetAllCosts())
             {

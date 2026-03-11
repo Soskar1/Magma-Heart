@@ -22,13 +22,13 @@ namespace MagmaHeart.Core.Artifacts
 
         public void Revert(EntityModel entity)
         {
-            foreach (IStatModifier modifier in Data.StatModifiers[m_currentLevel - 1])
+            foreach (IStatModifier modifier in Data.LevelDefinitions[m_currentLevel - 1].StatModifiers)
                 modifier.Revert(entity);
         }
 
         public void Apply(EntityModel entity)
         {
-            foreach (IStatModifier modifier in Data.StatModifiers[m_currentLevel - 1])
+            foreach (IStatModifier modifier in Data.LevelDefinitions[m_currentLevel - 1].StatModifiers)
                 modifier.Apply(entity);
         }
 

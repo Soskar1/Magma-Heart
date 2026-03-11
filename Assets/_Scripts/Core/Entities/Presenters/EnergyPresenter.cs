@@ -35,15 +35,15 @@ namespace MagmaHeart.Core.Entities.Presenters
                 m_crystalVisuals.Add(energyCrystalInstance.GetComponent<Image>());
             }
 
-            m_playerEnergy.OnEnergyChanged += HandleOnEnergyChanged;
+            m_playerEnergy.OnParameterValueChanged += HandleOnEnergyChanged;
         }
 
         public void OnDisable()
         {
-            m_playerEnergy.OnEnergyChanged -= HandleOnEnergyChanged;
+            m_playerEnergy.OnParameterValueChanged -= HandleOnEnergyChanged;
         }
 
-        private void HandleOnEnergyChanged(object obj, OnEnergyChangedEventArgs args) => DisplayCurrentEnergy();
+        private void HandleOnEnergyChanged(object _, OnParameterValueChangedEventArgs __) => DisplayCurrentEnergy();
 
         public void DisplayCurrentEnergy()
         {

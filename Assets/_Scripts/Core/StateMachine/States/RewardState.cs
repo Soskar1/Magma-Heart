@@ -48,7 +48,7 @@ namespace MagmaHeart.Core.StateMachine
             return Task.CompletedTask; 
         }
 
-        private async void HandleOnRewardPicked(object sender, OnRewardPickedArgs e) => await LeaveRoom();
+        private async void HandleOnRewardPicked(object sender, OnRewardPickedEventArgs e) => await LeaveRoom();
 
         private async Task LeaveRoom()
         {

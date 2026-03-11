@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95926d9ef5d41f44abd354fb41ede550, type: 3}
+  m_Name: Stone Fist
+  m_EditorClassIdentifier: 
+  m_name: Stone Fist
+  m_description: It makes you feel stronger!
+  m_rarity: 0
+  m_icon: {fileID: 21300000, guid: c7006076edb0e36449cc8d628c44b4c8, type: 3}
+  m_levelDefinitions:
+  - m_statModifiers:
+    - rid: 279046284954042454
+    m_abilityDefinition: {fileID: 0}
+  - m_statModifiers:
+    - rid: 279046284954042455
+    m_abilityDefinition: {fileID: 0}
+  - m_statModifiers:
+    - rid: 279046284954042456
+    m_abilityDefinition: {fileID: 0}
+  - m_statModifiers:
+    - rid: 279046284954042457
+    m_abilityDefinition: {fileID: 0}
+  - m_statModifiers:
+    - rid: 279046284954042458
+    m_abilityDefinition: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 279046284954042454
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 1
+    - rid: 279046284954042455
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 2
+    - rid: 279046284954042456
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 3
+    - rid: 279046284954042457
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 4
+    - rid: 279046284954042458
+      type: {class: StrengthStatModifier, ns: MagmaHeart.Core.Artifacts.StatModifiers, asm: MagmaHeart.Core}
+      data:
+        m_additionalStrength: 5

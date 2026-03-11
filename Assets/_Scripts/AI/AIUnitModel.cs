@@ -2,6 +2,7 @@
 using MagmaHeart.AI.Reasoning.Plans;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MagmaHeart.AI
@@ -14,6 +15,9 @@ namespace MagmaHeart.AI
         public Dictionary<string, AbilityDefinition> Abilities { get; init; }
         public IDictionary<ParameterId, IParameter> Parameters { get; init; }
         public IReadOnlyList<PlanDefinition> Plans { get; init; }
+        public IDictionary<string, int> Cooldowns { get; init; } = new Dictionary<string, int>();
+
+        public event EventHandler<OnCooldownChangedEventArgs> OnCooldownChanged;
 
         public AIUnitModel(bool isPlayer, int id, IReadOnlyList<PlanDefinition> plans)
         {
@@ -30,7 +34,8 @@ namespace MagmaHeart.AI
             return new AIUnitModel(IsPlayer, Id, Plans)
             {
                 Abilities = new Dictionary<string, AbilityDefinition>(Abilities),
-                Parameters = new Dictionary<ParameterId, IParameter>(Parameters)
+                Parameters = new Dictionary<ParameterId, IParameter>(Parameters),
+                Cooldowns = new Dictionary<string, int>(Cooldowns),
             };
         }
 
@@ -43,6 +48,19 @@ namespace MagmaHeart.AI
             }
 
             return parameter;
+        }
+
+        public IReadOnlyList<string> GetCooldownIds() => Cooldowns.Keys.ToList();
+        public int GetCooldown(string abilityId) => Cooldowns.TryGetValue(abilityId, out int turns) ? turns : 0;
+
+        public void SetCooldown(string abilityId, int turns)
+        {
+            Cooldowns[abilityId] = turns;
+
+            if (turns <= 0)
+                Cooldowns.Remove(abilityId);
+
+            OnCooldownChanged?.Invoke(this, new OnCooldownChangedEventArgs(abilityId, turns));
         }
     }
 }

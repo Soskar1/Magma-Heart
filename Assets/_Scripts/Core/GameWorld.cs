@@ -34,6 +34,8 @@ namespace MagmaHeart.Core
         public WorldGrid WorldGrid => m_worldGrid;
         public Room CurrentRoom => m_currentRoom;
 
+        private IDictionary<int, Entity> m_worldEntities = new Dictionary<int, Entity>();
+
         public GameWorld(WorldGrid worldGrid, List<LocationData> locations, Random random)
         {
             m_worldGrid = worldGrid;
@@ -47,6 +49,10 @@ namespace MagmaHeart.Core
         public RoomModel GenerateRoom()
         {
             RoomModel roomModel = m_currentGenerator.GenerateRoom();
+
+            if (m_currentRoom != null)
+                m_currentRoom.Dispose();
+
             m_currentRoom = new Room(roomModel, GetRoomData(), m_worldGrid);
 
             OnRoomGeneratedEventArgs args = new OnRoomGeneratedEventArgs(m_currentRoom);
@@ -119,12 +125,6 @@ namespace MagmaHeart.Core
             return entity.Model.TilePosition;
         }
 
-        public IParameter GetParameter(int entityId, ParameterId parameter)
-        {
-            TryGetEntity(entityId, out Entity entity);
-            return entity.Model.GetParameter(parameter);
-        }
-
         public bool AreEnemiesToEachOther(int executorId, int targetId)
         {
             if (executorId == targetId)
@@ -136,7 +136,26 @@ namespace MagmaHeart.Core
             return executor.Model.IsPlayer != target.Model.IsPlayer;
         }
 
-        public bool TryGetEntity(int entityId, out Entity entity) => m_currentRoom.TryGetEntity(entityId, out entity);
+        public void AddEntity(Entity entity)
+        {
+            m_worldEntities.TryAdd(entity.Model.Id, entity);
+            CurrentRoom.AddEntity(entity);
+        }
+
+        public void RemoveEntity(int entityId)
+        {
+            m_worldEntities.Remove(entityId);
+            CurrentRoom.RemoveEntity(entityId);
+        }
+
+        public bool TryGetEntity(int entityId, out Entity entity)
+        {
+            if (m_worldEntities.TryGetValue(entityId, out entity))
+                return true;
+
+            return m_currentRoom.TryGetEntity(entityId, out entity);
+        }
+
         public bool TryGetEntityAtPosition(Vector3 position, out Entity entity) => m_currentRoom.TryGetEntity(position, out entity);
 
         public DungeonTile GetTile(Vector3 worldPosition)
@@ -155,13 +174,6 @@ namespace MagmaHeart.Core
 
         public void AddUnit(Vector2 position, AIUnitModel unit) => m_currentRoom.AddUnit(position, unit);
         public bool RemoveUnit(Vector2 position) => m_currentRoom.RemoveUnit(position);
-
-        public void SetParameter(int entityId, ParameterId parameter, float newValue)
-        {
-            m_currentRoom.TryGetUnit(entityId, out AIUnitModel unit);
-            unit.Parameters[parameter].SetValue(newValue);
-        }
-
         public AIUnitModel GetUnit(int id) => CurrentRoom.TryGetUnit(id, out AIUnitModel unit) ? unit : null;
 
         public void MoveUnit(int unitId, Vector2 newPosition)
@@ -174,5 +186,29 @@ namespace MagmaHeart.Core
         }
 
         public IEnumerable<AIUnitModel> GetUnits() => m_currentRoom.GetUnits();
+
+        public IParameter GetParameter(int entityId, ParameterId parameter)
+        {
+            TryGetEntity(entityId, out Entity entity);
+            return entity.Model.GetParameter(parameter);
+        }
+
+        public void SetParameter(int entityId, ParameterId parameter, float newValue)
+        {
+            m_currentRoom.TryGetUnit(entityId, out AIUnitModel unit);
+            unit.Parameters[parameter].SetValue(newValue);
+        }
+
+        public void SetCooldown(int unitId, string abilityId, int turns)
+        {
+            AIUnitModel unit = GetUnit(unitId);
+            unit.SetCooldown(abilityId, turns);
+        }
+
+        public int GetCooldown(int entityId, string abilityId)
+        {
+            AIUnitModel unit = GetUnit(entityId);
+            return unit.GetCooldown(abilityId);
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace MagmaHeart.Core.Entities.Models
         private float m_currentHealth;
         private float m_maxHealth;
 
-        public event EventHandler<OnHealthChangedEventArgs> OnHealthChanged;
+        public event EventHandler<OnParameterValueChangedEventArgs> OnParameterValueChanged;
 
         public ParameterId Id { get; init; }
         public float CurrentValue => CurrentHealth;
@@ -26,8 +26,8 @@ namespace MagmaHeart.Core.Entities.Models
 
                 m_currentHealth = value;
 
-                OnHealthChangedEventArgs args = new OnHealthChangedEventArgs(CurrentHealth, MaxHealth);
-                OnHealthChanged?.Invoke(this, args);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentHealth);
+                OnParameterValueChanged?.Invoke(this, args);
             }
         }
 
@@ -41,8 +41,8 @@ namespace MagmaHeart.Core.Entities.Models
                 if (m_currentHealth > m_maxHealth)
                     m_currentHealth = m_maxHealth;
 
-                OnHealthChangedEventArgs args = new OnHealthChangedEventArgs(CurrentHealth, MaxHealth);
-                OnHealthChanged?.Invoke(this, args);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentHealth);
+                OnParameterValueChanged?.Invoke(this, args);
             }
         }
 

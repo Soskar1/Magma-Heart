@@ -13,7 +13,6 @@ namespace MagmaHeart.Core.AI
     public class AggressiveStrategy : Strategy
     {
         [SerializeField] private float m_playerHealthWeight = 0.8f;
-        [SerializeField] private float m_distanceWeight = 0.1f;
         [SerializeField] private float m_aiIsNotAlivePoints = -50;
         [SerializeField] private ParameterDatabase m_parameters;
         [SerializeField] private float m_playerIsNotAlivePoints = 100;

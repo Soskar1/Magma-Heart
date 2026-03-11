@@ -1,19 +1,28 @@
-﻿using MagmaHeart.Abilities;
+﻿using System;
+using MagmaHeart.Abilities;
 
 namespace MagmaHeart.Core.Entities.Models
 {
     public class StrengthModel : IParameter
     {
         private int m_currentStrength;
-        
+
         public ParameterId Id { get; init; }
         public float CurrentValue => CurrentStrength;
 
         public int CurrentStrength
         {
             get => m_currentStrength;
-            set => m_currentStrength = value;
+            set
+            {
+                m_currentStrength = value;
+
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentStrength);
+                OnParameterValueChanged?.Invoke(this, args);
+            }
         }
+
+        public event EventHandler<OnParameterValueChangedEventArgs> OnParameterValueChanged;
 
         public StrengthModel(int initialStrength, ParameterId id)
         {

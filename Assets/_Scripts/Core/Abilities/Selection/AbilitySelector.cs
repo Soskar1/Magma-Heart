@@ -20,17 +20,24 @@ namespace MagmaHeart.Core.Abilities.Selection
             m_world = world;
         }
 
-        public AbilityPlan SelectAbility(HoverResult hoverResult, EntityModel executor)
+        public AbilityPlan SelectAbility(HoverResult hoverResult, EntityModel executor, AbilityDefinition armedAbility)
         {
-            if (hoverResult == null)
+            if (hoverResult == null || executor == null)
                 return null;
 
-            bool hoversUI = hoverResult.Type.HasFlag(HoverResultType.UI);
+            if (hoverResult.Type.HasFlag(HoverResultType.UI))
+                return null;
+
+            if (armedAbility != null)
+                return SelectExplicitAbility(hoverResult, executor, armedAbility);
+
+            return SelectDefaultAbility(hoverResult, executor);
+        }
+
+        private AbilityPlan SelectDefaultAbility(HoverResult hoverResult, EntityModel executor)
+        {
             bool hoversEntity = hoverResult.Type.HasFlag(HoverResultType.Entity);
             bool hoversTile = hoverResult.Type.HasFlag(HoverResultType.Tile);
-
-            if (hoversUI)
-                return null;
 
             if (hoversEntity)
             {
@@ -64,6 +71,48 @@ namespace MagmaHeart.Core.Abilities.Selection
             }
 
             return null;
+        }
+
+        private AbilityPlan SelectExplicitAbility(HoverResult hoverResult, EntityModel executor, AbilityDefinition ability)
+        {
+            AbilityTarget target = BuildTargetForAbility(hoverResult, executor, ability);
+
+            if (target == null)
+                return null;
+
+            AbilityPlan plan = m_abilityEngine.Plan(m_world, executor.Id, ability, target);
+            return plan.IsLegal ? plan : null;
+        }
+
+        private AbilityTarget BuildTargetForAbility(HoverResult hoverResult, EntityModel executor, AbilityDefinition ability)
+        {
+            if (ability.TargetKind.HasFlag(TargetKind.Self))
+                return AbilityTarget.EntityTarget(executor.Id, null);
+
+            bool hoversEntity = hoverResult.Type.HasFlag(HoverResultType.Entity);
+            bool hoversTile = hoverResult.Type.HasFlag(HoverResultType.Tile);
+
+            AbilityTarget currentTarget = null;
+            
+            if (ability.TargetKind.HasFlag(TargetKind.Entity) && hoversEntity)
+                currentTarget = AbilityTarget.EntityTarget(hoverResult.Entity.Model.Id, null);
+
+            if (ability.TargetKind.HasFlag(TargetKind.Path) && hoversTile)
+            {
+                Vector3 from = m_world.GetEntityPosition(executor.Id);
+                Vector3 to = hoverResult.Tile.Position.ToVector3();
+
+                if (m_world.TryFindPath(from, to, out List<Vector3> path))
+                {
+                    currentTarget = currentTarget with
+                    {
+                        Kind = currentTarget.Kind | TargetKind.Path,
+                        Path = path
+                    };
+                }
+            }
+
+            return currentTarget;
         }
     }
 }

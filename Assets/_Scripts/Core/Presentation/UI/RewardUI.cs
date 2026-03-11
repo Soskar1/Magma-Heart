@@ -14,14 +14,20 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private RewardCard m_rewardCardPrefab;
         [SerializeField] private Transform m_rewardCardParent;
         private ArtifactData m_currentlyPickedArtifact;
+        private Inventory m_inventory;
 
-        public event EventHandler<OnRewardPickedArgs> OnRewardPicked;
+        public event EventHandler<OnRewardPickedEventArgs> OnRewardPicked;
         
         [SerializeField] private Sprite m_defaultRewardCard;
         [SerializeField] private Sprite m_mouseHoverRewardCard;
         [SerializeField] private Sprite m_selectedRewardCard;
 
         private Dictionary<UIMouseInteraction, RewardCard> m_currentRewardCards = new Dictionary<UIMouseInteraction, RewardCard>();
+
+        public void Initialize(Inventory inventory)
+        {
+            m_inventory = inventory;
+        }
 
         public void Show() => m_visual.SetActive(true);
         public void Hide()
@@ -49,7 +55,9 @@ namespace MagmaHeart.Core.Presentation.UI
         {
             Hide();
 
-            OnRewardPickedArgs args = new OnRewardPickedArgs(m_currentlyPickedArtifact);
+            m_inventory.TryPick(m_currentlyPickedArtifact);
+
+            OnRewardPickedEventArgs args = new OnRewardPickedEventArgs(m_currentlyPickedArtifact);
             OnRewardPicked?.Invoke(this, args);
         }
 

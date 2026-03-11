@@ -1,4 +1,6 @@
-﻿using MagmaHeart.Abilities.Effects;
+﻿using System;
+using System.Collections.Generic;
+using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Core.Abilities.Presentation;
@@ -9,8 +11,6 @@ using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Input.Mouse;
 using MagmaHeart.Core.Presentation.UI;
 using MagmaHeart.DungeonGeneration;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Selection
@@ -31,18 +31,21 @@ namespace MagmaHeart.Core.Abilities.Selection
         private Entity m_currentEntitySelection;
 
         private Dictionary<Type, IEffectPresenter> m_effectPresenters;
+        private List<IEffectPresenter> m_currentActivePresenters;
 
         public void Initialize(GameWorld world, EntityModel executor, PlayerTurnController playerTurnController)
         {
             m_world = world;
             m_executor = executor;
             m_playerTurnController = playerTurnController;
+            m_currentActivePresenters = new List<IEffectPresenter>();
 
             m_effectPresenters = new Dictionary<Type, IEffectPresenter>
             {
-                { typeof(DamageEffect), new DamageEffectPresenter(m_outlinePresenter) },
+                { typeof(DamageEffect), new DamageEffectPresenter(m_world, m_outlinePresenter) },
                 { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) },
-                { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) }
+                { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
+                { typeof(HealEffect), new HealEffectPresenter(m_world, m_outlinePresenter) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
@@ -61,31 +64,16 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void Present(OnAbilitySelectedEventArgs selection)
         {
-            bool hoversUI = selection.HoverResult.Type.HasFlag(HoverResultType.UI);
-            if (hoversUI)
-            {
-                GameObject ui = selection.HoverResult.UI;
-
-                if (ui != null && ui.TryGetComponent(out EntityPresenter entityPresenter))
-                    if (entityPresenter.Entity != null)
-                        PresentEntity(entityPresenter.Entity);
-
-                return;
-            }
-
-            bool hoversTile = selection.HoverResult.Type.HasFlag(HoverResultType.Tile);
-            if (hoversTile)
-            {
-                DungeonTile tile = selection.HoverResult.Tile;
-                m_combatTilemapPresenter.DisplayTile(tile.Position.ToVector3Int());
-            }
-
+            HoverResult hoverResult = selection.HoverResult;
             bool hoversEntity = selection.HoverResult.Type.HasFlag(HoverResultType.Entity);
             if (hoversEntity)
-                PresentEntity(selection.HoverResult.Entity);
+                PresentEntity(hoverResult.Entity);
 
             if (selection.Plan == null || !selection.Plan.IsLegal)
+            {
+                PresentDefaultSelection(selection.HoverResult);
                 return;
+            }
 
             foreach (AbilityEffect effect in selection.Plan.Effects)
             {
@@ -96,7 +84,30 @@ namespace MagmaHeart.Core.Abilities.Selection
                     continue;
                 }
 
-                effectPresenter.Present(m_world, effect);
+                effectPresenter.Present(effect);
+                m_currentActivePresenters.Add(effectPresenter);
+            }
+        }
+
+        private void PresentDefaultSelection(HoverResult hoverResult)
+        {
+            bool hoversUI = hoverResult.Type.HasFlag(HoverResultType.UI);
+            if (hoversUI)
+            {
+                GameObject ui = hoverResult.UI;
+
+                if (ui != null && ui.TryGetComponent(out EntityPresenter entityPresenter))
+                    if (entityPresenter.Entity != null)
+                        PresentEntity(entityPresenter.Entity);
+
+                return;
+            }
+
+            bool hoversTile = hoverResult.Type.HasFlag(HoverResultType.Tile);
+            if (hoversTile)
+            {
+                DungeonTile tile = hoverResult.Tile;
+                m_combatTilemapPresenter.DisplayTile(tile.Position.ToVector3Int());
             }
         }
 
@@ -124,6 +135,11 @@ namespace MagmaHeart.Core.Abilities.Selection
                 m_outlinePresenter.ClearOutline(m_currentEntitySelection);
                 m_currentEntitySelection = null;
             }
+
+            foreach (IEffectPresenter presenter in m_currentActivePresenters)
+                presenter.Hide();
+
+            m_currentActivePresenters.Clear();
         }
     }
 }

@@ -39,6 +39,9 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private Strategy m_strategy;
         [SerializeField] private int m_lookAhead;
 
+        [Header("Artifacts")]
+        [SerializeField] private ArtifactDatabase m_artifactDatabase;
+
         [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
 
@@ -113,6 +116,8 @@ namespace MagmaHeart.Core.SceneLoading
             effectDispatcher.Register(new DamageHandler());
             effectDispatcher.Register(new MoveHandler());
             effectDispatcher.Register(new RestoreParameterHandler());
+            effectDispatcher.Register(new HealHandler());
+            effectDispatcher.Register(new DecreaseCooldownHandler());
             AbilityExecutionRunner abilityExecutionRunner = new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
             IStartOfTurnEffectFactory startOfTurnEffectFactory = new StartOfTurnEffectFactory(m_parameterDatabase.Energy, m_energyRegenPerTurn);
 
@@ -139,12 +144,11 @@ namespace MagmaHeart.Core.SceneLoading
             CompletedRoomsCounter completedRoomsCounter = statisticsInstaller.Install(world);
             m_installers.Add(statisticsInstaller);
 
-            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter);
-            m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController);
+            Inventory inventory = new Inventory(playerContext.Player.Model);
+            RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
 
-            ArtifactInstaller artifactInstaller = new ArtifactInstaller();
-            RewardService rewardService = artifactInstaller.Install(playerContext.Player.Model, m_gameUI.RewardUI);
-            m_installers.Add(artifactInstaller);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, inventory);
+            m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);

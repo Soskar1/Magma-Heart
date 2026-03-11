@@ -1,11 +1,25 @@
-﻿using MagmaHeart.Core.Artifacts.StatModifiers;
+﻿using MagmaHeart.Abilities;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Artifacts
 {
-    public record ArtifactData(string Name, string Description, Rarity Rarity, Sprite Icon, List<List<IStatModifier>> StatModifiers)
+    [CreateAssetMenu(menuName = "Magma Heart Data/Artifacts/Artifact Data")]
+    public class ArtifactData : ScriptableObject
     {
-        public int MaxLevel => StatModifiers.Count;
+        [SerializeField] private string m_name;
+        [SerializeField] private string m_description;
+        [SerializeField] private Rarity m_rarity;
+        [SerializeField] private Sprite m_icon;
+        [SerializeField] private List<ArtifactLevelDefinition> m_levelDefinitions;
+        [SerializeField] private AbilityDefinition m_abilityDefinition;
+
+        public string Name => m_name;
+        public string Description => m_description;
+        public Rarity Rarity => m_rarity;
+        public Sprite Icon => m_icon;
+        public IReadOnlyList<ArtifactLevelDefinition> LevelDefinitions => m_levelDefinitions;
+        public int MaxLevel => m_levelDefinitions.Count;
+        public AbilityDefinition AbilityDefinition => m_abilityDefinition;
     }
 }

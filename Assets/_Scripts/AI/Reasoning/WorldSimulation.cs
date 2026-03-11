@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.UI.CanvasScaler;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -129,5 +130,21 @@ namespace MagmaHeart.AI.Reasoning
         public Vector2 WorldToTilePosition(Vector2 worldPosition) => worldPosition;
 
         public IEnumerable<AIUnitModel> GetUnits() => m_board.GetUnits();
+
+        public void SetCooldown(int unitId, string abilityId, int turns)
+        {
+            AIUnitModel unit = GetUnit(unitId);
+
+            int oldCooldown = unit.GetCooldown(abilityId);
+            unit.SetCooldown(abilityId, turns);
+
+            m_undoStack.Push(() => unit.SetCooldown(abilityId, oldCooldown));
+        }
+
+        public int GetCooldown(int entityId, string abilityId)
+        {
+            AIUnitModel unit = GetUnit(entityId);
+            return unit.GetCooldown(abilityId);
+        }
     }
 }

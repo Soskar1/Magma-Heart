@@ -10,10 +10,11 @@ namespace MagmaHeart.AI
         public void ChangeNodeType(Vector2 position, BoardNodeType newNodeType);
         public BoardNodeType GetNodeType(Vector2 position);
         public void AddUnit(Vector2 position, AIUnitModel unit);
-        public AIUnitModel GetUnit(int id);
         public bool RemoveUnit(Vector2 position);
+        public AIUnitModel GetUnit(int id);
         public void MoveUnit(int unitId, Vector2 newPosition);
         public Vector2 WorldToTilePosition(Vector2 worldPosition);
         public IEnumerable<AIUnitModel> GetUnits();
+        public void SetCooldown(int unitId, string abilityId, int turns);
     } 
 }

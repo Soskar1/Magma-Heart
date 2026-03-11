@@ -3,10 +3,10 @@ using System;
 
 namespace MagmaHeart.Core.Presentation.UI
 {
-    public class OnRewardPickedArgs : EventArgs
+    public class OnRewardPickedEventArgs : EventArgs
     {
         public ArtifactData ArtifactData { get; init; }
 
-        public OnRewardPickedArgs(ArtifactData artifactData) => ArtifactData = artifactData;
+        public OnRewardPickedEventArgs(ArtifactData artifactData) => ArtifactData = artifactData;
     }
 }

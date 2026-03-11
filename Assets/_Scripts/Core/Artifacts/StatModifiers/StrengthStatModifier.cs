@@ -1,14 +1,14 @@
 ﻿using MagmaHeart.Core.Entities;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Artifacts.StatModifiers
 {
+    [System.Serializable]
     public class StrengthStatModifier : IStatModifier
     {
-        public int AdditionalStrength { get; init; }
+        [SerializeField] private int m_additionalStrength;
 
-        public StrengthStatModifier(int additionalStrength) => AdditionalStrength = additionalStrength;
-
-        public void Apply(EntityModel entity) => entity.Strength.CurrentStrength += AdditionalStrength;
-        public void Revert(EntityModel entity) => entity.Strength.CurrentStrength -= AdditionalStrength;
+        public void Apply(EntityModel entity) => entity.Strength.CurrentStrength += m_additionalStrength;
+        public void Revert(EntityModel entity) => entity.Strength.CurrentStrength -= m_additionalStrength;
     }
 }

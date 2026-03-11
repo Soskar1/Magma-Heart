@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.Input
         public event EventHandler<OnMouseScrollEventArgs> OnMouseScroll;
         public event EventHandler<OnMousePositionChangedEventArgs> OnMousePositionChanged;
         public event EventHandler OnLeftMouseButtonClick;
+        public event EventHandler OnRightMouseButtonClick;
         public event EventHandler OnDebugButtonPress;
         public event EventHandler OnEscapeScreenButtonPress;
 
@@ -36,7 +37,8 @@ namespace MagmaHeart.Core.Input
             Mouse.MouseScroll.performed += HandleMouseScroll;
             Mouse.MouseScroll.canceled += HandleMouseScroll;
             Mouse.MousePosition.performed += HandleMousePosition;
-            Mouse.MouseClick.performed += HandleLeftMouseButtonClick;
+            Mouse.LeftMouseButtonClick.performed += HandleLeftMouseButtonClick;
+            Mouse.RightMouseButtonClick.performed += HandleRightMouseButtonClick;
 
             Controls.Enable();
             Mouse.Enable();
@@ -52,7 +54,8 @@ namespace MagmaHeart.Core.Input
             Mouse.MouseScroll.performed -= HandleMouseScroll;
             Mouse.MouseScroll.canceled -= HandleMouseScroll;
             Mouse.MousePosition.performed -= HandleMousePosition;
-            Mouse.MouseClick.performed -= HandleLeftMouseButtonClick;
+            Mouse.LeftMouseButtonClick.performed -= HandleLeftMouseButtonClick;
+            Mouse.RightMouseButtonClick.performed -= HandleRightMouseButtonClick;
 
             Controls.Disable();
             Mouse.Disable();
@@ -89,6 +92,7 @@ namespace MagmaHeart.Core.Input
         }
 
         private void HandleLeftMouseButtonClick(InputAction.CallbackContext context) => OnLeftMouseButtonClick?.Invoke(this, EventArgs.Empty);
+        private void HandleRightMouseButtonClick(InputAction.CallbackContext context) => OnRightMouseButtonClick?.Invoke(this, EventArgs.Empty);
         private void HandleOnDebugButtonPress(InputAction.CallbackContext context) => OnDebugButtonPress?.Invoke(this, EventArgs.Empty);
         private void HandleOnEscapeScreenButtonPress(InputAction.CallbackContext context) => OnEscapeScreenButtonPress?.Invoke(this, EventArgs.Empty);
     }

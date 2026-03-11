@@ -11,5 +11,6 @@ namespace MagmaHeart.Abilities
         public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path);
         public bool AreEnemiesToEachOther(int executorId, int targetId);
         public int GetDistance(int entityId1, int entityId2);
+        public int GetCooldown(int entityId, string abilityId);
     }
 }

@@ -128,9 +128,18 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseClick",
+                    "name": "LeftMouseButtonClick",
                     "type": "Button",
                     "id": "daba5328-3ec3-425f-a038-5cfb419c7958",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightMouseButtonClick",
+                    "type": "Button",
+                    "id": "13d6a1f5-416d-445a-811e-fde3522d5ea0",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
@@ -187,7 +196,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseClick",
+                    "action": "LeftMouseButtonClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -199,6 +208,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f24c989-edbe-4337-abc4-9aa902de48f2",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightMouseButtonClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

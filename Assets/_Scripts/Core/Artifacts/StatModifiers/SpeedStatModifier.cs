@@ -1,14 +1,14 @@
 ﻿using MagmaHeart.Core.Entities;
+using UnityEngine;
 
 namespace MagmaHeart.Core.Artifacts.StatModifiers
 {
+    [System.Serializable]
     public class SpeedStatModifier : IStatModifier
     {
-        public int AdditionalSpeed { get; init; }
+        [SerializeField] private int m_additionalSpeed;
 
-        public SpeedStatModifier(int additionalSpeed) => AdditionalSpeed = additionalSpeed;
-
-        public void Apply(EntityModel entity) => entity.Speed.CurrentSpeed += AdditionalSpeed;
-        public void Revert(EntityModel entity) => entity.Speed.CurrentSpeed -= AdditionalSpeed;
+        public void Apply(EntityModel entity) => entity.Speed.CurrentSpeed += m_additionalSpeed;
+        public void Revert(EntityModel entity) => entity.Speed.CurrentSpeed -= m_additionalSpeed;
     }
 }

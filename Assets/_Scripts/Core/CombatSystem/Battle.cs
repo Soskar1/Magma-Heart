@@ -1,24 +1,23 @@
-using MagmaHeart.Abilities.Effects;
-using MagmaHeart.AI;
-using MagmaHeart.AI.Reasoning;
-using MagmaHeart.Core.Abilities.Effects;
-using MagmaHeart.Core.Dungeon;
-using MagmaHeart.Core.Entities;
-using MagmaHeart.Core.Entities.Models;
-using MagmaHeart.Core.Entities.NonPlayableCharacters;
-using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagmaHeart.Abilities;
+using MagmaHeart.Abilities.Effects;
+using MagmaHeart.AI;
+using MagmaHeart.AI.Reasoning;
+using MagmaHeart.Core.Dungeon;
+using MagmaHeart.Core.Entities;
+using MagmaHeart.Core.Entities.NonPlayableCharacters;
+using MagmaHeart.Core.Entities.PlayableCharacters;
 using UnityEngine;
 
 namespace MagmaHeart.Core.CombatSystem
 {
     public class Battle
     {
-        private readonly Dictionary<int, EventHandler<OnHealthChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnHealthChangedEventArgs>>();
+        private readonly Dictionary<int, EventHandler<OnParameterValueChangedEventArgs>> m_healthHandlers = new Dictionary<int, EventHandler<OnParameterValueChangedEventArgs>>();
 
         private Room m_currentRoom;
         private TurnOrder m_currentTurnOrder;
@@ -36,9 +35,9 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly EnemyTurnController m_enemyTurnController;
         private readonly EffectDispatcher m_effectDispatcher;
         private readonly IStartOfTurnEffectFactory m_startOfTurnEffectFactory;
-        private readonly IBoardGameWorld m_world;
+        private readonly GameWorld m_world;
 
-        public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController, EffectDispatcher effectDispatcher, IStartOfTurnEffectFactory startOfTurnEffectFactory, IBoardGameWorld world)
+        public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController, EffectDispatcher effectDispatcher, IStartOfTurnEffectFactory startOfTurnEffectFactory, GameWorld world)
         {
             m_playerTurnController = playerTurnController;
             m_enemyTurnController = enemyTurnController;
@@ -56,15 +55,15 @@ namespace MagmaHeart.Core.CombatSystem
             IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entities);
             foreach (Entity entity in sortedEntities)
             {
-                m_currentRoom.AddEntityToInspect(entity);
+                m_world.AddEntity(entity);
 
-                EventHandler<OnHealthChangedEventArgs> handler = new EventHandler<OnHealthChangedEventArgs>((sender, args) =>
+                EventHandler<OnParameterValueChangedEventArgs> handler = new EventHandler<OnParameterValueChangedEventArgs>((sender, args) =>
                 {
                     HandleEntityOnHealthChanged(entity.Model, args);
                 });
 
                 m_healthHandlers[entity.Model.Id] = handler;
-                entity.Health.OnHealthChanged += handler;
+                entity.Health.OnParameterValueChanged += handler;
             }
 
             m_currentTurnOrder = new TurnOrder(sortedEntities);
@@ -100,19 +99,19 @@ namespace MagmaHeart.Core.CombatSystem
             }
         }
 
-        private void HandleEntityOnHealthChanged(EntityModel model, OnHealthChangedEventArgs args)
+        private void HandleEntityOnHealthChanged(EntityModel model, OnParameterValueChangedEventArgs args)
         {
-            if (args.CurrentHealth <= 0)
-                RemoveEntityFromConsideration(model);
+            if (args.NewValue <= 0)
+                HandleEntityDeath(model);
         }
 
-        private void RemoveEntityFromConsideration(EntityModel entityModel)
+        private void HandleEntityDeath(EntityModel entityModel)
         {
-            m_currentRoom.TryGetEntity(entityModel.Id, out Entity entity);
-            m_currentRoom.RemoveEntityFromRoom(entity);
+            m_world.TryGetEntity(entityModel.Id, out Entity entity);
+            m_world.RemoveEntity(entityModel.Id);
 
-            EventHandler<OnHealthChangedEventArgs> handler = m_healthHandlers[entityModel.Id];
-            entityModel.Health.OnHealthChanged -= handler;
+            EventHandler<OnParameterValueChangedEventArgs> handler = m_healthHandlers[entityModel.Id];
+            entityModel.Health.OnParameterValueChanged -= handler;
             m_healthHandlers.Remove(entityModel.Id);
 
             if (entityModel.IsPlayer)
@@ -147,9 +146,7 @@ namespace MagmaHeart.Core.CombatSystem
             foreach (Entity entity in leftEntities)
             {
                 if (m_healthHandlers.TryGetValue(entity.Model.Id, out var handler))
-                    entity.Model.Health.OnHealthChanged -= handler;
-
-                m_currentRoom.RemoveEntityFromRoom(entity);
+                    entity.Model.Health.OnParameterValueChanged -= handler;
 
                 // Maybe not the best place to put it, but it works...
                 entity.Energy.Reset();

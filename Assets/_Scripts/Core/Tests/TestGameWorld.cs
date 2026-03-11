@@ -98,5 +98,17 @@ namespace MagmaHeart.Core.Tests
         }
 
         public Vector2 WorldToTilePosition(Vector2 worldPosition) => worldPosition;
+
+        public void SetCooldown(int unitId, string abilityId, int turns)
+        {
+            AIUnitModel unit = GetUnit(unitId);
+            unit.SetCooldown(abilityId, turns);
+        }
+
+        public int GetCooldown(int entityId, string abilityId)
+        {
+            AIUnitModel unit = GetUnit(entityId);
+            return unit.GetCooldown(abilityId);
+        }
     }
 }
