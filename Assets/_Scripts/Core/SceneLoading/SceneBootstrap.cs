@@ -142,13 +142,13 @@ namespace MagmaHeart.Core.SceneLoading
             camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
 
             StatisticsInstaller statisticsInstaller = new StatisticsInstaller();
-            CompletedRoomsCounter completedRoomsCounter = statisticsInstaller.Install(world);
+            var counters = statisticsInstaller.Install(world);
             m_installers.Add(statisticsInstaller);
 
             Inventory inventory = new Inventory(playerContext.Player.Model);
             RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
 
-            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, inventory);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, counters.roomCounter, counters.bossCounter, inventory);
             m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
