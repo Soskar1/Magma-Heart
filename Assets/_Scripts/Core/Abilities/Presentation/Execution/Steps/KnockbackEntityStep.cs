@@ -42,7 +42,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 
             var start = context.World.WorldGrid.ToTileCenter(targetPosition.ToVector2Int());
             var end = context.World.WorldGrid.ToTileCenter(knockbackEffect.NewPosition.ToVector2Int());
-            entity.TileBasedMovement.StartMovementAsync(new List<Vector3>() { start, end });
+            await entity.TileBasedMovement.StartMovementAsync(new List<Vector3>() { start, end });
 
             AddUnitToBoard(context.World, knockbackEffect.NewPosition, entity.Model);
         }
