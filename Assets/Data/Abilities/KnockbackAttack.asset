@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c45eb04ea4caf64d89baccf00b15c46, type: 3}
+  m_Name: KnockbackAttack
+  m_EditorClassIdentifier: 
+  m_id: Knockback Attack
+  m_targetKind: 1
+  m_cooldownTurns: 2
+  m_cost:
+  - rid: 226000796857139352
+  - rid: 226000697812320390
+  m_effects:
+  - rid: 226000796857139348
+  - rid: 226000697812320391
+  - rid: 279046484867154009
+  m_requirements: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 226000697812320390
+      type: {class: FixedResourceCost, ns: MagmaHeart.Abilities.Resources, asm: MagmaHeart.Abilities}
+      data:
+        m_parameterId: {fileID: 11400000, guid: 1e8f9dddeb3a6e04f9efd118bacc938a, type: 2}
+        m_amount: 2
+    - rid: 226000697812320391
+      type: {class: BuildDamageEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data:
+        m_initialDamage: 1
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
+    - rid: 226000796857139348
+      type: {class: BuildMoveEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data: 
+    - rid: 226000796857139352
+      type: {class: ResourcePerNTilesCost, ns: MagmaHeart.Core.Abilities.Cost, asm: MagmaHeart.Core}
+      data:
+        m_database: {fileID: 11400000, guid: 0e25b97780fa8e34389530712d48d5ea, type: 2}
+        m_tilesPerResource: 2
+    - rid: 279046484867154009
+      type: {class: BuildKnockbackEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data:
+        m_knockbackDistance: 1

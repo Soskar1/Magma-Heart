@@ -118,6 +118,7 @@ namespace MagmaHeart.Core.SceneLoading
             effectDispatcher.Register(new RestoreParameterHandler());
             effectDispatcher.Register(new HealHandler());
             effectDispatcher.Register(new DecreaseCooldownHandler());
+            effectDispatcher.Register(new KnockbackHandler());
             AbilityExecutionRunner abilityExecutionRunner = new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
             IStartOfTurnEffectFactory startOfTurnEffectFactory = new StartOfTurnEffectFactory(m_parameterDatabase.Energy, m_energyRegenPerTurn);
 
