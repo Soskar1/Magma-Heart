@@ -47,7 +47,8 @@ namespace MagmaHeart.Core.Abilities.Selection
                 { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) },
                 { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
                 { typeof(HealEffect), new HealEffectPresenter(m_world, m_outlinePresenter) },
-                { typeof(KnockbackEffect), new KnockbackEffectPresenter(m_world, m_outlinePresenter, m_combatTilemapPresenter)  }
+                { typeof(KnockbackEffect), new KnockbackEffectPresenter(m_world, m_outlinePresenter, m_combatTilemapPresenter)  },
+                { typeof(TeleportEffect), new TeleportEffectPresenter(m_combatTilemapPresenter, m_world, m_outlinePresenter) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;

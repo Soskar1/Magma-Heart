@@ -102,13 +102,20 @@ namespace MagmaHeart.Core.Abilities.Selection
                 Vector3 from = m_world.GetEntityPosition(executor.Id);
                 Vector3 to = hoverResult.Tile.Position.ToVector3();
 
-                if (m_world.TryFindPath(from, to, out List<Vector3> path))
+                if (m_world.TryFindPath(from, to, out List<Vector3> path) && path != null)
                 {
-                    currentTarget = currentTarget with
+                    if (currentTarget != null)
                     {
-                        Kind = currentTarget.Kind | TargetKind.Path,
-                        Path = path
-                    };
+                        currentTarget = currentTarget with
+                        {
+                            Kind = currentTarget.Kind | TargetKind.Path,
+                            Path = path
+                        };
+                    }
+                    else
+                    {
+                        currentTarget = AbilityTarget.PathTarget(path);
+                    }
                 }
             }
 
