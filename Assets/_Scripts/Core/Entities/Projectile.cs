@@ -50,6 +50,10 @@ namespace MagmaHeart.Core.Entities
                 if (entity.Model == m_attacker)
                     return;
 
+                if (entity.Model.IsPlayer == m_attacker.IsPlayer ||
+                    !entity.Model.IsPlayer == !m_attacker.IsPlayer)
+                    return;
+
                 m_projectileHit.TrySetResult(entity.Model);
             }
             else

@@ -93,22 +93,38 @@ namespace MagmaHeart.Core.Abilities.Selection
             bool hoversTile = hoverResult.Type.HasFlag(HoverResultType.Tile);
 
             AbilityTarget currentTarget = null;
-            
-            if (ability.TargetKind.HasFlag(TargetKind.Entity) && hoversEntity)
-                currentTarget = AbilityTarget.EntityTarget(hoverResult.Entity.Model.Id, null);
+
+            var abilityNeedsPathToEntity = ability.TargetKind.HasFlag(TargetKind.Entity) && ability.TargetKind.HasFlag(TargetKind.Path);
+            if (hoversEntity && executor.Id != hoverResult.Entity.Model.Id && abilityNeedsPathToEntity)
+            {
+                Vector3 executorPosition = m_world.GetEntityPosition(executor.Id);
+                Vector3 targetTilePosition = hoverResult.Tile.Position.ToVector3();
+
+                if (PathFinder.TryFindPathToEntity(m_world, executorPosition, targetTilePosition, out List<Vector3> path))
+                    currentTarget = AbilityTarget.EntityTarget(hoverResult.Entity.Model.Id, path);
+
+                return currentTarget;
+            }
 
             if (ability.TargetKind.HasFlag(TargetKind.Path) && hoversTile)
             {
                 Vector3 from = m_world.GetEntityPosition(executor.Id);
                 Vector3 to = hoverResult.Tile.Position.ToVector3();
 
-                if (m_world.TryFindPath(from, to, out List<Vector3> path))
+                if (m_world.TryFindPath(from, to, out List<Vector3> path) && path != null)
                 {
-                    currentTarget = currentTarget with
+                    if (currentTarget != null)
                     {
-                        Kind = currentTarget.Kind | TargetKind.Path,
-                        Path = path
-                    };
+                        currentTarget = currentTarget with
+                        {
+                            Kind = currentTarget.Kind | TargetKind.Path,
+                            Path = path
+                        };
+                    }
+                    else
+                    {
+                        currentTarget = AbilityTarget.PathTarget(path);
+                    }
                 }
             }
 

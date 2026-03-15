@@ -28,6 +28,8 @@ namespace MagmaHeart.Core.Tests
             Dispatcher.Register(new SpendResourceHandler());
             Dispatcher.Register(new RestoreParameterHandler());
             Dispatcher.Register(new MoveHandler());
+            Dispatcher.Register(new DecreaseCooldownHandler());
+            Dispatcher.Register(new HealHandler());
         }
 
         [SetUp]

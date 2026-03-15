@@ -5,7 +5,7 @@ using MagmaHeart.Core.Abilities.Presentation;
 using MagmaHeart.Core.Entities;
 using UnityEngine;
 
-namespace Assets._Scripts.Core.Abilities.Effects.Presenters
+namespace MagmaHeart.Core.Abilities.Effects.Presenters
 {
     public class KnockbackEffectPresenter : IEffectPresenter<KnockbackEffect>
     {

@@ -225,6 +225,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -845,7 +858,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_28
+      name: Vampire_Hurt_1
       rect:
         serializedVersion: 2
         x: 0
@@ -867,7 +880,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_29
+      name: Vampire_Hurt_2
       rect:
         serializedVersion: 2
         x: 32
@@ -889,7 +902,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_30
+      name: Vampire_Hurt_3
       rect:
         serializedVersion: 2
         x: 64
@@ -911,7 +924,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_0
+      name: Vampire_Hurt_4
       rect:
         serializedVersion: 2
         x: 96
@@ -933,7 +946,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_1
+      name: Vampire_Hurt_5
       rect:
         serializedVersion: 2
         x: 128
@@ -955,7 +968,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_2
+      name: Vampire_Death_1
       rect:
         serializedVersion: 2
         x: 160
@@ -977,7 +990,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_3
+      name: Vampire_Death_2
       rect:
         serializedVersion: 2
         x: 192
@@ -999,7 +1012,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_4
+      name: Vampire_Death_3
       rect:
         serializedVersion: 2
         x: 0
@@ -1021,7 +1034,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_5
+      name: Vampire_Death_4
       rect:
         serializedVersion: 2
         x: 32
@@ -1043,7 +1056,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_6
+      name: Vampire_Death_5
       rect:
         serializedVersion: 2
         x: 64
@@ -1065,7 +1078,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_7
+      name: Vampire_Death_6
       rect:
         serializedVersion: 2
         x: 96
@@ -1087,7 +1100,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_8
+      name: Vampire_Death_7
       rect:
         serializedVersion: 2
         x: 128
@@ -1109,7 +1122,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_9
+      name: Vampire_Death_8
       rect:
         serializedVersion: 2
         x: 160
@@ -1131,7 +1144,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_10
+      name: Vampire_Death_9
       rect:
         serializedVersion: 2
         x: 192
@@ -1153,7 +1166,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_11
+      name: Vampire_Death_10
       rect:
         serializedVersion: 2
         x: 0
@@ -1175,7 +1188,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vampire_Death_12
+      name: Vampire_Death_11
       rect:
         serializedVersion: 2
         x: 32
@@ -1210,9 +1223,6 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Vampire_28: 460163989560110524
-      Vampire_29: -2651351958678853165
-      Vampire_30: 6686609883514961997
       Vampire_Attack_0: -6196994255888423683
       Vampire_Attack_1: 4734751552918382517
       Vampire_Attack_10: 1725526702697725244
@@ -1228,19 +1238,22 @@ TextureImporter:
       Vampire_Attack_7: -7124975757159585502
       Vampire_Attack_8: -6518438449169466169
       Vampire_Attack_9: -313513676086318408
-      Vampire_Death_0: -6269941885564823563
-      Vampire_Death_1: 6066848971275501604
-      Vampire_Death_10: -7235063225789138632
-      Vampire_Death_11: -1051306337102794646
-      Vampire_Death_12: 6095155801862291877
-      Vampire_Death_2: 8450916168771138360
-      Vampire_Death_3: -6334475586959251201
-      Vampire_Death_4: -8444676335813555006
-      Vampire_Death_5: -2303865080805524304
-      Vampire_Death_6: 2516599080997923375
-      Vampire_Death_7: 4081194981142937146
-      Vampire_Death_8: -6649157887468869779
-      Vampire_Death_9: 5240130283763147564
+      Vampire_Death_1: 8450916168771138360
+      Vampire_Death_10: -1051306337102794646
+      Vampire_Death_11: 6095155801862291877
+      Vampire_Death_2: -6334475586959251201
+      Vampire_Death_3: -8444676335813555006
+      Vampire_Death_4: -2303865080805524304
+      Vampire_Death_5: 2516599080997923375
+      Vampire_Death_6: 4081194981142937146
+      Vampire_Death_7: -6649157887468869779
+      Vampire_Death_8: 5240130283763147564
+      Vampire_Death_9: -7235063225789138632
+      Vampire_Hurt_1: 460163989560110524
+      Vampire_Hurt_2: -2651351958678853165
+      Vampire_Hurt_3: 6686609883514961997
+      Vampire_Hurt_4: -6269941885564823563
+      Vampire_Hurt_5: 6066848971275501604
       Vampire_Idle_0: -2904457877120967500
       Vampire_Idle_1: 2623676403181958527
       Vampire_Idle_2: 888115770964394395

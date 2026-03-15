@@ -119,6 +119,7 @@ namespace MagmaHeart.Core.SceneLoading
             effectDispatcher.Register(new HealHandler());
             effectDispatcher.Register(new DecreaseCooldownHandler());
             effectDispatcher.Register(new KnockbackHandler());
+            effectDispatcher.Register(new TeleportHandler());
             AbilityExecutionRunner abilityExecutionRunner = new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
             IStartOfTurnEffectFactory startOfTurnEffectFactory = new StartOfTurnEffectFactory(m_parameterDatabase.Energy, m_energyRegenPerTurn);
 
@@ -142,14 +143,14 @@ namespace MagmaHeart.Core.SceneLoading
             camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
 
             StatisticsInstaller statisticsInstaller = new StatisticsInstaller();
-            CompletedRoomsCounter completedRoomsCounter = statisticsInstaller.Install(world);
+            var counters = statisticsInstaller.Install(world);
             m_installers.Add(statisticsInstaller);
 
             Inventory inventory = new Inventory(playerContext.Player.Model);
             RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
 
-            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, inventory);
-            m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, counters.roomCounter, counters.bossCounter, inventory);
+            m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController, battleContext.Battle);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);

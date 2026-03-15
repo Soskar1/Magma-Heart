@@ -36,7 +36,7 @@ namespace MagmaHeart.Core.StateMachine
             Room room = m_context.World.CurrentRoom;
             m_camera.EnableManualMovement(room.RoomModel.OccupiedSpace);
 
-            IEnumerable<Entity> entities = m_context.BattleContext.Initializer.InitializeBattle(room, m_player);
+            List<Entity> entities = m_context.BattleContext.Initializer.InitializeBattle(room, m_player);
             await m_battle.Start(room, entities);
         }
 

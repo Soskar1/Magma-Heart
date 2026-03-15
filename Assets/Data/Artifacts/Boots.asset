@@ -27,7 +27,7 @@ MonoBehaviour:
     - rid: 279046284954042452
   - m_statModifiers:
     - rid: 279046284954042453
-  m_abilityDefinition: {fileID: 11400000, guid: af844ce7707774443a50caeb39ad43d5, type: 2}
+  m_abilityDefinition: {fileID: 11400000, guid: a90dda4ca1292d34b97628fb6d2510e7, type: 2}
   references:
     version: 2
     RefIds:

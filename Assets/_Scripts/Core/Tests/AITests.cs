@@ -241,5 +241,30 @@ namespace MagmaHeart.Core.Tests
             Assert.That(executedAbilities[0].Effects, Has.Some.InstanceOf<DamageEffect>());
             Assert.That(executedAbilities[1].Effects, Has.Some.InstanceOf<DamageEffect>());
         }
+
+        [Test]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public void HealPlan_EnemyWithLowHealth_Heals(int depth)
+        {
+            AIScenario scenario = AIScenarioBuilder.Create(World)
+                .AddEntity()
+                    .IsPlayer(false)
+                    .WithParameterValue(ParameterDatabase.Health, 1)
+                    .WithParameterValue(ParameterDatabase.Energy, 3)
+                    .WithData(EntityDatabase.SkeletonBoss)
+                    .At(3, 3)
+                .AddEntity()
+                    .IsPlayer(true)
+                    .WithData(EntityDatabase.Warrior)
+                    .At(2, 3)
+                .Build();
+
+            IList<AbilityPlan> best = scenario.RunAI(depth, ParameterDatabase, Dispatcher);
+
+            Assert.That(best.Count(), Is.EqualTo(1));
+            Assert.That(best.First().Effects, Has.Some.InstanceOf<HealEffect>());
+        }
     }
 }

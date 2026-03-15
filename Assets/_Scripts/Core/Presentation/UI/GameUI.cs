@@ -22,6 +22,7 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private GameOverUI m_gaveOverUI;
         [SerializeField] private WelcomeScreen m_welcomeScreen;
         [SerializeField] private CompletedRoomsCounterPresenter m_roomCounterPresenter;
+        [SerializeField] private CompletedBossCounterPresenter m_bossCounterPresenter;
         [SerializeField] private AvailableAbilitiesWindow m_availableAbilitiesWindow;
 
         public RewardUI RewardUI => m_rewardUI;
@@ -35,6 +36,7 @@ namespace MagmaHeart.Core.Presentation.UI
             PlayerTurnController playerTurnController,
             IGameWorld gameWorld,
             CompletedRoomsCounter roomCounter,
+            CompletedBossCounter bossCounter,
             Inventory inventory)
         {
             m_healthBar.Register(player.Health);
@@ -44,6 +46,7 @@ namespace MagmaHeart.Core.Presentation.UI
             m_battleTurnOrder.Initialize(battle);
             m_gaveOverUI.Initialize(battle, roomCounter);
             m_roomCounterPresenter.Initialize(roomCounter);
+            m_bossCounterPresenter.Initialize(bossCounter);
             m_rewardUI.Initialize(inventory);
             m_availableAbilitiesWindow.Initialize(inventory, playerTurnController, player.Model, gameWorld);
 

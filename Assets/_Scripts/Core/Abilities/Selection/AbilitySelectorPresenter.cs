@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets._Scripts.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Core.Abilities.Presentation;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
@@ -20,6 +20,7 @@ namespace MagmaHeart.Core.Abilities.Selection
     {
         [SerializeField] private CombatTilemapPresenter m_combatTilemapPresenter;
         [SerializeField] private EntityOutlinePresenter m_outlinePresenter;
+        [SerializeField] private CursorPresenter m_cursorPresenter;
 
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_turnOrderPresenter;
@@ -28,38 +29,62 @@ namespace MagmaHeart.Core.Abilities.Selection
         private GameWorld m_world;
         private EntityModel m_executor;
 
+        private Battle m_battle;
+
         private PlayerTurnController m_playerTurnController;
         private Entity m_currentEntitySelection;
 
         private Dictionary<Type, IEffectPresenter> m_effectPresenters;
         private List<IEffectPresenter> m_currentActivePresenters;
 
-        public void Initialize(GameWorld world, EntityModel executor, PlayerTurnController playerTurnController)
+        private bool m_presentSelection = false;
+
+        public void Initialize(GameWorld world, EntityModel executor, PlayerTurnController playerTurnController, Battle battle)
         {
             m_world = world;
             m_executor = executor;
             m_playerTurnController = playerTurnController;
             m_currentActivePresenters = new List<IEffectPresenter>();
+            m_battle = battle;
 
             m_effectPresenters = new Dictionary<Type, IEffectPresenter>
             {
-                { typeof(DamageEffect), new DamageEffectPresenter(m_world, m_outlinePresenter) },
+                { typeof(DamageEffect), new DamageEffectPresenter(m_world, m_outlinePresenter, m_cursorPresenter) },
                 { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) },
                 { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
                 { typeof(HealEffect), new HealEffectPresenter(m_world, m_outlinePresenter) },
-                { typeof(KnockbackEffect), new KnockbackEffectPresenter(m_world, m_outlinePresenter, m_combatTilemapPresenter)  }
+                { typeof(KnockbackEffect), new KnockbackEffectPresenter(m_world, m_outlinePresenter, m_combatTilemapPresenter)  },
+                { typeof(TeleportEffect), new TeleportEffectPresenter(m_combatTilemapPresenter, m_world, m_outlinePresenter) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
+            m_battle.OnBattleStarted += HandleOnBattleStarted;
+            m_battle.OnBattleEnded += HandleOnBattleEnded;
         }
 
         private void OnDisable()
         {
             m_playerTurnController.OnAbilitySelected -= HandleOnAbilitySelected;
+            m_battle.OnBattleStarted -= HandleOnBattleStarted;
+            m_battle.OnBattleEnded -= HandleOnBattleEnded;
+        }
+
+        private void HandleOnBattleStarted(object _, OnBattleStartedEventArgs __)
+        {
+            m_presentSelection = true;
+        }
+
+        private void HandleOnBattleEnded(object _, OnBattleEndedEventArgs __)
+        {
+            m_presentSelection = false;
+            Clear();
         }
 
         private void HandleOnAbilitySelected(object _, OnAbilitySelectedEventArgs args)
         {
+            if (!m_presentSelection)
+                return;
+
             Clear();
             Present(args);
         }
@@ -131,6 +156,7 @@ namespace MagmaHeart.Core.Abilities.Selection
             m_combatTilemapPresenter.Clear();
             m_entityInfoUI.Hide();
             m_energyPresenter.DisplayCurrentEnergy();
+            m_cursorPresenter.SetCursor(CursorType.Default);
 
             if (m_currentEntitySelection != null)
             {

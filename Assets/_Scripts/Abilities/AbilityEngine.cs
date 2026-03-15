@@ -3,6 +3,7 @@ using MagmaHeart.Abilities.Requirements;
 using MagmaHeart.Abilities.Resources;
 using MagmaHeart.Abilities.Targeting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MagmaHeart.Abilities
 {

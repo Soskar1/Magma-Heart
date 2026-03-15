@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: KnockbackAttack
   m_EditorClassIdentifier: 
   m_id: Knockback Attack
-  m_targetKind: 1
+  m_targetKind: 3
   m_cooldownTurns: 2
   m_cost:
   - rid: 226000796857139352
