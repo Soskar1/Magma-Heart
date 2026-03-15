@@ -11,6 +11,7 @@ namespace MagmaHeart.Core.Artifacts
         [SerializeField] private string m_description;
         [SerializeField] private Rarity m_rarity;
         [SerializeField] private Sprite m_icon;
+        [SerializeField] private Sprite m_abilityIcon;
         [SerializeField] private List<ArtifactLevelDefinition> m_levelDefinitions;
         [SerializeField] private AbilityDefinition m_abilityDefinition;
 
@@ -18,6 +19,7 @@ namespace MagmaHeart.Core.Artifacts
         public string Description => m_description;
         public Rarity Rarity => m_rarity;
         public Sprite Icon => m_icon;
+        public Sprite AbilityIcon => m_abilityIcon;
         public IReadOnlyList<ArtifactLevelDefinition> LevelDefinitions => m_levelDefinitions;
         public int MaxLevel => m_levelDefinitions.Count;
         public AbilityDefinition AbilityDefinition => m_abilityDefinition;

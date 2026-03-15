@@ -34,7 +34,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             m_ability = artifact.Data.AbilityDefinition;
             m_turnController = turnController;
-            m_image.sprite = artifact.Data.Icon;
+            m_image.sprite = artifact.Data.AbilityIcon;
             m_gameWorld = gameWorld;
             m_executor = executor;
 
