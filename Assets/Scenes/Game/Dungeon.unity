@@ -7216,6 +7216,7 @@ GameObject:
   - component: {fileID: 8388963511706051694}
   - component: {fileID: 8388963511706051695}
   - component: {fileID: 8388963511706051696}
+  - component: {fileID: 8388963511706051697}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -7254,6 +7255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_combatTilemapPresenter: {fileID: 8388963511706051696}
   m_outlinePresenter: {fileID: 8388963511706051695}
+  m_cursorPresenter: {fileID: 8388963511706051697}
   m_entityInfoUI: {fileID: 1946546853}
   m_turnOrderPresenter: {fileID: 755473048}
   m_energyPresenter: {fileID: 137812075}
@@ -7287,6 +7289,21 @@ MonoBehaviour:
   m_combatTilemap: {fileID: 1157183066}
   m_validCombatTile: {fileID: 11400000, guid: a6451cf909b9eec478cb7eba9f3809fe, type: 2}
   m_invalidCombatTile: {fileID: 11400000, guid: ebc9bbd401c80b742a68d5244ca5dc5d, type: 2}
+--- !u!114 &8388963511706051697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388963511706051691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b76210a5f48d06544a1e66e2fe3cd863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_defaultCursorTexture: {fileID: 2800000, guid: c5665b42ef7320442945389b93e31611, type: 3}
+  m_attackCursorTexture: {fileID: 2800000, guid: 8f06c1f767c653e4e9dc9b681439e816, type: 3}
+  m_invalidCursorTexture: {fileID: 2800000, guid: bd46f2cba0c51f2489c2735f4acc1531, type: 3}
 --- !u!114 &8458581491792506061
 MonoBehaviour:
   m_ObjectHideFlags: 0

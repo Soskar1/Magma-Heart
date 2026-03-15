@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assets._Scripts.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Presenters;
@@ -20,6 +19,7 @@ namespace MagmaHeart.Core.Abilities.Selection
     {
         [SerializeField] private CombatTilemapPresenter m_combatTilemapPresenter;
         [SerializeField] private EntityOutlinePresenter m_outlinePresenter;
+        [SerializeField] private CursorPresenter m_cursorPresenter;
 
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_turnOrderPresenter;
@@ -43,7 +43,7 @@ namespace MagmaHeart.Core.Abilities.Selection
 
             m_effectPresenters = new Dictionary<Type, IEffectPresenter>
             {
-                { typeof(DamageEffect), new DamageEffectPresenter(m_world, m_outlinePresenter) },
+                { typeof(DamageEffect), new DamageEffectPresenter(m_world, m_outlinePresenter, m_cursorPresenter) },
                 { typeof(MoveEffect), new MoveEffectPresenter(m_combatTilemapPresenter) },
                 { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
                 { typeof(HealEffect), new HealEffectPresenter(m_world, m_outlinePresenter) },
@@ -132,6 +132,7 @@ namespace MagmaHeart.Core.Abilities.Selection
             m_combatTilemapPresenter.Clear();
             m_entityInfoUI.Hide();
             m_energyPresenter.DisplayCurrentEnergy();
+            m_cursorPresenter.SetCursor(CursorType.Default);
 
             if (m_currentEntitySelection != null)
             {
