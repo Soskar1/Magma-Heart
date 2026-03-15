@@ -22,6 +22,7 @@ MonoBehaviour:
   - rid: 226000796857139293
   - rid: 226000796857139294
   - rid: 226000796857139319
+  - rid: 279046500252385399
   - rid: 226000796857139296
   - rid: 226000796857139297
   references:
@@ -31,6 +32,7 @@ MonoBehaviour:
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_animationType: 2
+        m_target: 0
     - rid: 226000796857139294
       type: {class: WaitForAnimationEventStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
@@ -44,6 +46,7 @@ MonoBehaviour:
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_animationType: 0
+        m_target: 0
     - rid: 226000796857139307
       type: {class: HasDamageEffectRequirement, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Requirements, asm: MagmaHeart.Core}
       data: 
@@ -57,6 +60,12 @@ MonoBehaviour:
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_animationType: 1
+        m_target: 0
     - rid: 226000796857139356
       type: {class: MoveEntityStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
+    - rid: 279046500252385399
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 4
+        m_target: 1

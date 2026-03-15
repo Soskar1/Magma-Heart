@@ -6,18 +6,30 @@ using UnityEngine;
 
 namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 {
+    public enum AnimationTarget
+    {
+        Executor,
+        Target
+    }
+
     [Serializable]
     public class PlayAnimationStep : IAbilityExecutionStep
     {
         [SerializeField] private AnimationType m_animationType;
+        [SerializeField] private AnimationTarget m_target = AnimationTarget.Executor;
 
         public Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
                 return Task.FromCanceled(cancellationToken);
 
-            context.World.TryGetEntity(context.ExecutorId, out Entity executor);
-            executor.Animation.PlayAnimation(m_animationType);
+            var targetEntityId = m_target == AnimationTarget.Executor ? context.ExecutorId : context.Plan.Target.EntityId;
+            context.World.TryGetEntity(targetEntityId, out Entity entity);
+            
+            if (entity == null)
+                return Task.CompletedTask;
+
+            entity.Animation.PlayAnimation(m_animationType);
 
             return Task.CompletedTask;
         }
