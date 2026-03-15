@@ -1,5 +1,6 @@
 ﻿using System;
 using MagmaHeart.Core.Entities.Models;
+using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace MagmaHeart.Core.Entities
     [RequireComponent(typeof(Facing))]
     [RequireComponent(typeof(EntityAnimation))]
     [RequireComponent(typeof(Outline))]
+    [RequireComponent(typeof(StunPresenter))]
     public class Entity : MonoBehaviour
     {
         public EntityModel Model { get; private set; }
@@ -32,6 +34,9 @@ namespace MagmaHeart.Core.Entities
 
             Animation = GetComponent<EntityAnimation>();
             Animation.Initialize(data.AnimatorController);
+
+            var stunPresenter = GetComponent<StunPresenter>();
+            stunPresenter.Initialize(Model);
         }
 
         private void Update()

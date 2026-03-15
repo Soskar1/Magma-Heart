@@ -54,7 +54,8 @@ namespace MagmaHeart.Core.Abilities.Selection
                 { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
                 { typeof(HealEffect), new HealEffectPresenter(m_world, m_outlinePresenter) },
                 { typeof(KnockbackEffect), new KnockbackEffectPresenter(m_world, m_outlinePresenter, m_combatTilemapPresenter)  },
-                { typeof(TeleportEffect), new TeleportEffectPresenter(m_combatTilemapPresenter, m_world, m_outlinePresenter) }
+                { typeof(TeleportEffect), new TeleportEffectPresenter(m_combatTilemapPresenter, m_world, m_outlinePresenter) },
+                { typeof(StunEffect), null }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
@@ -108,6 +109,11 @@ namespace MagmaHeart.Core.Abilities.Selection
                 if (!m_effectPresenters.TryGetValue(type, out IEffectPresenter effectPresenter))
                 {
                     Debug.LogWarning($"Presenter for {type} is not found!");
+                    continue;
+                }
+
+                if (effectPresenter == null)
+                {
                     continue;
                 }
 

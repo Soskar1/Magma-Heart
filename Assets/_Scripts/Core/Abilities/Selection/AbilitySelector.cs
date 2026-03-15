@@ -106,7 +106,7 @@ namespace MagmaHeart.Core.Abilities.Selection
                 return currentTarget;
             }
 
-            if (ability.TargetKind.HasFlag(TargetKind.Path) && hoversTile)
+            if (ability.TargetKind == TargetKind.Path && hoversTile)
             {
                 Vector3 from = m_world.GetEntityPosition(executor.Id);
                 Vector3 to = hoverResult.Tile.Position.ToVector3();

@@ -30,4 +30,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 
     [Serializable]
     public class ApplyHealStep : ApplyFilteredEffectsStep<HealEffect> { }
+
+    [Serializable]
+    public class ApplyStunStep : ApplyFilteredEffectsStep<StunEffect> { }
 }
