@@ -19,6 +19,7 @@ MonoBehaviour:
   - rid: 226000796857139320
   - rid: 226000796857139355
   - rid: 226000796857139356
+  - rid: 279046500252385692
   - rid: 226000796857139293
   - rid: 226000796857139294
   - rid: 279046192406986848
@@ -74,3 +75,6 @@ MonoBehaviour:
       data:
         m_animationType: 4
         m_target: 1
+    - rid: 279046500252385692
+      type: {class: AdjustFacingStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data: 
