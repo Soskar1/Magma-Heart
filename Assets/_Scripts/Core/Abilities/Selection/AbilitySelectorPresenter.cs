@@ -4,6 +4,7 @@ using MagmaHeart.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects;
 using MagmaHeart.Core.Abilities.Effects.Presenters;
 using MagmaHeart.Core.Abilities.Presentation;
+using MagmaHeart.Core.CombatSystem;
 using MagmaHeart.Core.CombatSystem.Presenters;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
@@ -28,18 +29,23 @@ namespace MagmaHeart.Core.Abilities.Selection
         private GameWorld m_world;
         private EntityModel m_executor;
 
+        private Battle m_battle;
+
         private PlayerTurnController m_playerTurnController;
         private Entity m_currentEntitySelection;
 
         private Dictionary<Type, IEffectPresenter> m_effectPresenters;
         private List<IEffectPresenter> m_currentActivePresenters;
 
-        public void Initialize(GameWorld world, EntityModel executor, PlayerTurnController playerTurnController)
+        private bool m_presentSelection = false;
+
+        public void Initialize(GameWorld world, EntityModel executor, PlayerTurnController playerTurnController, Battle battle)
         {
             m_world = world;
             m_executor = executor;
             m_playerTurnController = playerTurnController;
             m_currentActivePresenters = new List<IEffectPresenter>();
+            m_battle = battle;
 
             m_effectPresenters = new Dictionary<Type, IEffectPresenter>
             {
@@ -52,15 +58,33 @@ namespace MagmaHeart.Core.Abilities.Selection
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
+            m_battle.OnBattleStarted += HandleOnBattleStarted;
+            m_battle.OnBattleEnded += HandleOnBattleEnded;
         }
 
         private void OnDisable()
         {
             m_playerTurnController.OnAbilitySelected -= HandleOnAbilitySelected;
+            m_battle.OnBattleStarted -= HandleOnBattleStarted;
+            m_battle.OnBattleEnded -= HandleOnBattleEnded;
+        }
+
+        private void HandleOnBattleStarted(object _, OnBattleStartedEventArgs __)
+        {
+            m_presentSelection = true;
+        }
+
+        private void HandleOnBattleEnded(object _, OnBattleEndedEventArgs __)
+        {
+            m_presentSelection = false;
+            Clear();
         }
 
         private void HandleOnAbilitySelected(object _, OnAbilitySelectedEventArgs args)
         {
+            if (!m_presentSelection)
+                return;
+
             Clear();
             Present(args);
         }

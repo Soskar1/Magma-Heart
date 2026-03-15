@@ -150,7 +150,7 @@ namespace MagmaHeart.Core.SceneLoading
             RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
 
             m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, counters.roomCounter, counters.bossCounter, inventory);
-            m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController);
+            m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController, battleContext.Battle);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
