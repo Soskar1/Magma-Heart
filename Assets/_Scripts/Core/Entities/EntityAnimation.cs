@@ -9,7 +9,8 @@ namespace MagmaHeart.Core.Entities
     {
         Idle,
         Run,
-        Attack
+        Attack,
+        Ability
     }
 
     public sealed class EntityAnimation : AnimationPlayer
@@ -19,6 +20,7 @@ namespace MagmaHeart.Core.Entities
             { AnimationType.Idle, Animator.StringToHash("Idle") },
             { AnimationType.Run, Animator.StringToHash("Run") },
             { AnimationType.Attack, Animator.StringToHash("Attack") },
+            { AnimationType.Ability, Animator.StringToHash("Ability") },
         };
 
         private TaskCompletionSource<bool> m_animationTrigger;

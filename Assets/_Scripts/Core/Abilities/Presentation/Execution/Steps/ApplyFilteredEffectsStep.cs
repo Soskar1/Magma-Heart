@@ -27,4 +27,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
 
     [Serializable]
     public class SpendResourceStep : ApplyFilteredEffectsStep<SpendResourceEffect> { }
+
+    [Serializable]
+    public class ApplyHealStep : ApplyFilteredEffectsStep<HealEffect> { }
 }

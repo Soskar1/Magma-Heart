@@ -12,17 +12,17 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
     [Serializable]
     public class TeleportEntityStep : IAbilityExecutionStep
     {
-        public async Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
+        public Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
-                return;
+                return Task.CompletedTask;
 
             context.World.TryGetEntity(context.ExecutorId, out Entity entity);
 
             if (entity == null)
             {
                 Debug.LogWarning($"{nameof(TeleportEntityStep)}: entity with id '{context.ExecutorId}' was not found!");
-                return;
+                return Task.CompletedTask;
             }
 
             TeleportEffect teleportEffect = context.Plan.Effects
@@ -30,12 +30,14 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 .FirstOrDefault();
 
             if (teleportEffect == null)
-                return;
+                return Task.CompletedTask;
 
             var start = context.World.GetEntityPosition(context.ExecutorId);
             RemoveUnitFromBoard(context.World, start);
             entity.transform.position = context.World.WorldGrid.ToTileCenter(teleportEffect.TeleportPosition.ToVector2Int());
             AddUnitToBoard(context.World, teleportEffect.TeleportPosition, entity.Model);
+
+            return Task.CompletedTask;
         }
 
         private void RemoveUnitFromBoard(GameWorld world, Vector3 start)
