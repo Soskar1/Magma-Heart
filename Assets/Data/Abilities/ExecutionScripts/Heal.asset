@@ -12,17 +12,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693f520fb801ebd45847826e75ff0e51, type: 3}
   m_Name: Heal
   m_EditorClassIdentifier: 
-  m_ability: {fileID: 11400000, guid: a90dda4ca1292d34b97628fb6d2510e7, type: 2}
+  m_ability: {fileID: 11400000, guid: 91687003a4b95b048a40f03b31141349, type: 2}
   m_requirements: []
   m_steps:
   - rid: 226000796857139329
-  - rid: 279046484867154075
+  - rid: 279046500252385355
+  - rid: 279046500252385367
+  - rid: 279046500252385378
+  - rid: 279046500252385365
+  - rid: 279046500252385356
+  - rid: 279046500252385357
   references:
     version: 2
     RefIds:
     - rid: 226000796857139329
       type: {class: SpendResourceStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
-    - rid: 279046484867154075
-      type: {class: TeleportEntityStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+    - rid: 279046500252385355
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 3
+    - rid: 279046500252385356
+      type: {class: WaitForAnimationEndStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 3
+        m_timeoutSeconds: 5
+    - rid: 279046500252385357
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 0
+    - rid: 279046500252385365
+      type: {class: ApplyHealStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
+    - rid: 279046500252385367
+      type: {class: WaitForAnimationEventStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_timeoutSeconds: 5
+    - rid: 279046500252385378
+      type: {class: PlayEffectStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_effectPrefab: {fileID: 3386893861810581238, guid: 1c180fd33b2f24d4c8db1db98296e254, type: 3}
