@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5171675335557925640}
   - component: {fileID: 8284585917979913478}
   - component: {fileID: 6671686649494985529}
+  - component: {fileID: 3854763864595563335}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -47,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 824d7730bdfd7f44fa13d62b699a5652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_speed: 6
+  m_speed: 8
   m_lifeTimeInSeconds: 3
 --- !u!58 &8284585917979913478
 CircleCollider2D:
@@ -84,7 +85,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.29
 --- !u!50 &6671686649494985529
 Rigidbody2D:
   serializedVersion: 5
@@ -112,6 +113,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &3854763864595563335
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4946381930735749946}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 56f3156bd3429ac41baf10b5574dfefd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8036274996237092908
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,8 +161,8 @@ Transform:
   m_GameObject: {fileID: 8036274996237092908}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1.272, y: 0, z: 0}
+  m_LocalScale: {x: -1, y: -1, z: -1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3912553800370306648}
@@ -188,12 +211,12 @@ SpriteRenderer:
   m_SortingLayerID: -1454275145
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: e9cef660a52da1a44b47d632d6cfa1b4, type: 3}
-  m_Color: {r: 1, g: 0.49792612, b: 0.15566039, a: 1}
+  m_Sprite: {fileID: 3778996481536006196, guid: 5e9503e18c25ab94db4f6fa5e9e16fd7, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 4, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
