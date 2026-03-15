@@ -47,12 +47,13 @@ namespace MagmaHeart.Core.CombatSystem
             m_world = world;
         }
 
-        public async Task Start(Room room, IEnumerable<Entity> entities)
+        public async Task Start(Room room, List<Entity> entities)
         {
             m_battleEnded = false;
             m_currentRoom = room;
 
-            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entities);
+            IEnumerable<Entity> sortedEntities = IniciativeRollSort.SortByRollingIniciative(entities.Skip(1));
+            sortedEntities = sortedEntities.Prepend(entities.First()); // Player always goes first
             foreach (Entity entity in sortedEntities)
             {
                 m_world.AddEntity(entity);

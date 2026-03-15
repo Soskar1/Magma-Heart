@@ -37,7 +37,7 @@ namespace MagmaHeart.Core.CombatSystem
 
         public void Dispose() => m_gameWorld.OnLocationChanged -= HandleOnLocationChanged;
 
-        public IEnumerable<Entity> InitializeBattle(Room room, Entity player)
+        public List<Entity> InitializeBattle(Room room, Entity player)
         {
             List<EntityData> enemyPool = room.RoomData.EnemyPool;
             List<Entity> entities = new List<Entity>() { player };
