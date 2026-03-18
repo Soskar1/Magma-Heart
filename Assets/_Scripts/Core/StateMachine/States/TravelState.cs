@@ -1,3 +1,4 @@
+using MagmaHeart.AI.Pathfinding;
 using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
@@ -16,6 +17,7 @@ namespace MagmaHeart.Core.StateMachine
         private const int m_travelSpeed = TileBasedMovement.DEFAULT_SPEED * 2;
 
         private readonly GameWorld m_world;
+        private readonly AStar m_aStar = new AStar(AStar.ManhattanDistance);
 
         public TravelState(MagmaHeartStateMachine stateMachine, MagmaHeartContext context)
         {
@@ -42,7 +44,7 @@ namespace MagmaHeart.Core.StateMachine
 
             player.transform.position = startPosition;
 
-            await m_context.Services.MovementService.MoveEntityAsync(player, new List<Vector3> { startPosition, endPosition });
+            await m_context.Services.MovementService.MoveEntityAsync(player, new List<Vector3> { startPosition, endPosition }, m_travelSpeed);
             
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)
