@@ -8,6 +8,7 @@
 		<TilePropagation Length="2"/>
 		<UnreachableTileCapture/>
 		<TileFill/>
+		<WallGenerator AmountOfWalls="25" MaxWallLength="5"/>
 		<UnreachableTileDestructor/>
 	</RoomGenerators>
 </DungeonGenerator>

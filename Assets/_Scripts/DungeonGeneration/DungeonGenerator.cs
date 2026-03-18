@@ -1,3 +1,4 @@
+using MagmaHeart.Bresenham;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,18 @@ namespace MagmaHeart.DungeonGeneration
             HashSet<DungeonTile> outline = TileOutline.GetOutline(roomModel.GetTiles());
             AddWalls(outline);
             AddDoors(roomModel, outline);
+
+            BresenhamLine.DrawLine(roomModel.EntranceDoor.Position, roomModel.ExitDoor.Position)
+                .ToList()
+                .ForEach(position =>
+                {
+                    if (roomModel.ContainsTileAtPosition(position))
+                    {
+                        DungeonTile tile = roomModel.GetTile(position);
+                        if (tile.Type == TileType.Wall && tile != roomModel.EntranceDoor && tile != roomModel.ExitDoor && !outline.Contains(tile))
+                            tile.Type = TileType.Floor;
+                    }
+                });
 
             return roomModel;
         }
