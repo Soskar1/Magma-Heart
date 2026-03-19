@@ -146,6 +146,9 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void PresentEntity(Entity entity)
         {
+            if (!m_world.TryGetEntity(entity.Model.Id, out Entity _))
+                return;
+
             m_currentEntitySelection = entity;
 
             m_outlinePresenter.OutlineEntity(entity, OutlineType.Ally);

@@ -12,9 +12,9 @@ namespace MagmaHeart.Core.Abilities.Selection
     public class AbilitySelector
     {
         private readonly AbilityEngine m_abilityEngine;
-        private readonly IBoardGameWorld m_world;
+        private readonly GameWorld m_world;
 
-        public AbilitySelector(IBoardGameWorld world)
+        public AbilitySelector(GameWorld world)
         {
             m_abilityEngine = new AbilityEngine();
             m_world = world;
@@ -39,7 +39,7 @@ namespace MagmaHeart.Core.Abilities.Selection
             bool hoversEntity = hoverResult.Type.HasFlag(HoverResultType.Entity);
             bool hoversTile = hoverResult.Type.HasFlag(HoverResultType.Tile);
 
-            if (hoversEntity)
+            if (hoversEntity && m_world.TryGetEntity(hoverResult.Entity.Model.Id, out _))
             {
                 Vector3 executorPosition = m_world.GetEntityPosition(executor.Id);
                 Vector3 targetTilePosition = m_world.GetEntityPosition(hoverResult.Entity.Model.Id);

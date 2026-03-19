@@ -37,6 +37,8 @@ namespace MagmaHeart.Core.CombatSystem
         private readonly IStartOfTurnEffectFactory m_startOfTurnEffectFactory;
         private readonly GameWorld m_world;
 
+        private List<Entity> m_deadEntities = new List<Entity>();
+
         public Battle(PlayerTurnController playerTurnController, EnemyTurnController enemyTurnController, EffectDispatcher effectDispatcher, IStartOfTurnEffectFactory startOfTurnEffectFactory, GameWorld world)
         {
             m_playerTurnController = playerTurnController;
@@ -115,9 +117,10 @@ namespace MagmaHeart.Core.CombatSystem
             entityModel.Health.OnParameterValueChanged -= handler;
             m_healthHandlers.Remove(entityModel.Id);
 
+            entity.Animation.PlayAnimation(AnimationType.Death);
+
             if (entityModel.IsPlayer)
             {
-                GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
                 End(isPlayerVictory: false);
             }
             else
@@ -127,7 +130,7 @@ namespace MagmaHeart.Core.CombatSystem
                 OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
                 OnEntityDied?.Invoke(this, args);
 
-                GameObject.Destroy(entity.gameObject); // TODO: Use object pool instead of destroying
+                m_deadEntities.Add(entity);
 
                 bool anyEnemiesInRoom = m_currentRoom.Entities.Any(e => e.Model.IsPlayer == false);
                 if (!anyEnemiesInRoom)
@@ -153,6 +156,10 @@ namespace MagmaHeart.Core.CombatSystem
                 entity.Energy.Reset();
             }
 
+            foreach (Entity entity in m_deadEntities)
+                GameObject.Destroy(entity.gameObject);
+
+            m_deadEntities.Clear();
             m_currentTurnOrder.Clear();
             m_healthHandlers.Clear();
 
