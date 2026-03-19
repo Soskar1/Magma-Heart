@@ -82,7 +82,7 @@ namespace MagmaHeart.Core.Tests
             p?.SetValue(newValue);
         }
 
-        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path)
+        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path, bool ignoreEntities = false)
         {
             path = null;
             var tmpPath = m_aStar.FindPath(Board.Graph, from, to);

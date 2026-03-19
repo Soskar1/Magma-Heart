@@ -111,7 +111,7 @@ namespace MagmaHeart.Core.Abilities.Selection
                 Vector3 from = m_world.GetEntityPosition(executor.Id);
                 Vector3 to = hoverResult.Tile.Position.ToVector3();
 
-                if (m_world.TryFindPath(from, to, out List<Vector3> path) && path != null)
+                if (m_world.TryFindPath(from, to, out List<Vector3> path, true) && path != null && path.Count > 1)
                 {
                     if (currentTarget != null)
                     {
