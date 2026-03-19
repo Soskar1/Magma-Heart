@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using MagmaHeart.AI;
 using UnityEngine;
 
@@ -9,22 +8,33 @@ namespace MagmaHeart.Core.AI
     {
         public static bool TryFindPathToEntity(IBoardGameWorld world, Vector3 executorPosition, Vector3 targetTilePosition, out List<Vector3> path)
         {
-            IEnumerable<Vector3> sortedCandidates = new[]
+            var result = false;
+            path = null;
+
+            IEnumerable<Vector3> candidates = new[]
             {
                 targetTilePosition + Vector3.up,
                 targetTilePosition + Vector3.down,
                 targetTilePosition + Vector3.left,
                 targetTilePosition + Vector3.right,
-            }.OrderBy(candidate => Vector3.SqrMagnitude(executorPosition - (Vector3)candidate));
+            };
 
-            foreach (Vector3 candidate in sortedCandidates)
+            foreach (Vector3 candidate in candidates)
             {
-                if (world.TryFindPath(executorPosition, candidate, out path))
-                    return true;
+                var tmpPath = new List<Vector3>();
+                if (world.TryFindPath(executorPosition, candidate, out tmpPath))
+                {
+                    if (path == null)
+                        path = tmpPath;
+                    
+                    if (tmpPath.Count < path.Count)
+                        path = tmpPath;
+
+                    result = true;
+                }
             }
 
-            path = null;
-            return false;
+            return result;
         }
     }
 }
