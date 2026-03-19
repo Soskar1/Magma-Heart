@@ -3,8 +3,11 @@ using MagmaHeart.Core.Dungeon;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.SceneLoading;
 using MagmaHeart.Core.StateMachine.States;
+using MagmaHeart.DungeonGeneration;
 using MagmaHeart.StateMachine;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -36,15 +39,54 @@ namespace MagmaHeart.Core.StateMachine
 
             bool isEnteringRoom = travelPayload.Reason == TravelReason.EnterRoom;
 
-            Vector2 startPosition = m_world.ToTileCenter(isEnteringRoom ? room.RoomModel.EntranceDoor.Position : player.transform.position.ToVector2Int());
-            Vector2 endPosition = m_world.ToTileCenter(isEnteringRoom ? room.RoomModel.WorldPosition : room.RoomModel.ExitDoor.Position);
-
+            List<Vector3> aStarPath = new List<Vector3>();
             if (isEnteringRoom)
-                m_context.CameraController.MoveTo(endPosition);
+            {
+                m_context.CameraController.MoveTo(room.RoomModel.WorldPosition);
 
-            player.transform.position = startPosition;
+                var bestPath = new List<Vector2>();
+                foreach (var adjacentTile in room.RoomModel.GetAdjacentTiles(room.RoomModel.EntranceDoor.Position))
+                {
+                    var tmpPath = m_aStar.FindPath(room.Graph, adjacentTile.Position, room.RoomModel.WorldPosition);
 
-            await m_context.Services.MovementService.MoveEntityAsync(player, new List<Vector3> { startPosition, endPosition }, m_travelSpeed);
+                    if (tmpPath == null)
+                        continue;
+
+                    if (tmpPath.Count < bestPath.Count || bestPath.Count == 0)
+                        bestPath = tmpPath;
+                }
+
+                Vector2 startTile = m_world.ToTileCenter(room.RoomModel.EntranceDoor.Position);
+                aStarPath.Add(startTile);
+                aStarPath.AddRange(bestPath.Select(tile => (Vector3)tile));
+                aStarPath.Add(m_world.ToTileCenter(room.RoomModel.WorldPosition));
+            }
+            else
+            {
+                var startTile = m_world.WorldToTilePosition(player.transform.position.ToVector2Int());
+                var bestPath = new List<Vector2>();
+                foreach (var adjacentTile in room.RoomModel.GetAdjacentTiles(room.RoomModel.ExitDoor.Position))
+                {
+                    var tmpPath = m_aStar.FindPath(room.Graph, startTile, adjacentTile.Position);
+
+                    if (tmpPath == null)
+                        continue;
+
+                    if (tmpPath.Count < bestPath.Count || bestPath.Count == 0)
+                        bestPath = tmpPath;
+                }
+
+                aStarPath.AddRange(bestPath.Select(tile => (Vector3)tile));
+                var endTile = m_world.ToTileCenter(room.RoomModel.ExitDoor.Position);
+                aStarPath.Add(endTile);
+            }
+
+            for (int i = 0; i < aStarPath.Count - 1; i++)
+                aStarPath[i] = m_world.ToTileCenter(aStarPath[i].ToVector2Int());
+            
+            player.transform.position = aStarPath[0];
+
+            await m_context.Services.MovementService.MoveEntityAsync(player, aStarPath, m_travelSpeed);
             
             StateMachineTriggers trigger = StateMachineTriggers.TravelCompleted_Enter;
             if (!isEnteringRoom)
