@@ -12,6 +12,7 @@ namespace MagmaHeart.Core
     {
         [SerializeField] private Tilemap m_tilemap;
         [SerializeField] private Tilemap m_decorations;
+        [SerializeField] private Tilemap m_walls;
         [SerializeField] private int m_tilesPerFrame = 256;
         [SerializeField] private TileBase m_floor;
         [SerializeField] private TileBase m_wall;
@@ -51,7 +52,7 @@ namespace MagmaHeart.Core
 
                 if (tile == roomModel.EntranceDoor || tile == roomModel.ExitDoor)
                 {
-                    m_tilemap.SetTile(tilePosition, m_door);
+                    m_walls.SetTile(tilePosition, m_door);
                 }
                 else if (tile.Type == TileType.Floor)
                 {
@@ -65,7 +66,7 @@ namespace MagmaHeart.Core
                 }
                 else
                 {
-                    m_tilemap.SetTile(tilePosition, m_wall);
+                    m_walls.SetTile(tilePosition, m_wall);
                 }
 
                 ++renderedTiles;
@@ -81,6 +82,7 @@ namespace MagmaHeart.Core
         {
             m_decorations.ClearAllTiles();
             m_tilemap.ClearAllTiles();
+            m_walls.ClearAllTiles();
         }
     }
 }

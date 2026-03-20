@@ -12,6 +12,9 @@ namespace MagmaHeart.Core.Presentation
         public void ApplyOutline(Material outlineMaterial)
         {
             m_renderer.material = outlineMaterial;
+            
+            // Without this, sprites will disappear
+            m_renderer.material.SetTexture("_MainTex", m_renderer.sprite.texture);
         }
 
         public void RemoveOutline()
