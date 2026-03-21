@@ -7,6 +7,7 @@ namespace MagmaHeart.Core.Entities
     {
         [SerializeField] private float m_speed;
         [SerializeField] private float m_lifeTimeInSeconds;
+        [SerializeField] private ParticleSystem m_particles;
         private float m_lifeTimeTimer;
 
         private EntityModel m_attacker;
@@ -37,7 +38,7 @@ namespace MagmaHeart.Core.Entities
                     m_projectileHit.SetResult(null);
                 }
 
-                Destroy(gameObject);
+                DestroyProjectile();
             }
         }
 
@@ -61,6 +62,15 @@ namespace MagmaHeart.Core.Entities
                 m_projectileHit.TrySetResult(null);
             }
 
+            DestroyProjectile();
+        }
+
+        private void DestroyProjectile()
+        {
+            m_particles.transform.parent = null;
+            m_particles.Stop();
+
+            Destroy(m_particles.gameObject, 2f);
             Destroy(gameObject);
         }
     }
