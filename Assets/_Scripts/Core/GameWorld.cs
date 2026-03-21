@@ -220,5 +220,10 @@ namespace MagmaHeart.Core
             AIUnitModel unit = GetUnit(entityId);
             return unit.GetCooldown(abilityId);
         }
+
+        public IReadOnlyList<int> GetAllEntities()
+        {
+            return CurrentRoom.Entities.Select(entity => entity.Model.Id).ToList();
+        }
     }
 }

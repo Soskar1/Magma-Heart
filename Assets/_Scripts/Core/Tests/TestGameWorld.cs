@@ -110,5 +110,10 @@ namespace MagmaHeart.Core.Tests
             AIUnitModel unit = GetUnit(entityId);
             return unit.GetCooldown(abilityId);
         }
+
+        public IReadOnlyList<int> GetAllEntities()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

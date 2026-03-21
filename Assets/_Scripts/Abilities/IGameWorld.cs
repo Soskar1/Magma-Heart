@@ -12,5 +12,6 @@ namespace MagmaHeart.Abilities
         public bool AreEnemiesToEachOther(int executorId, int targetId);
         public int GetDistance(int entityId1, int entityId2);
         public int GetCooldown(int entityId, string abilityId);
+        public IReadOnlyList<int> GetAllEntities();
     }
 }

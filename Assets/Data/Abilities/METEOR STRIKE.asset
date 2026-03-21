@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c45eb04ea4caf64d89baccf00b15c46, type: 3}
+  m_Name: METEOR STRIKE
+  m_EditorClassIdentifier: 
+  m_id: Meteor Strike
+  m_targetKind: 2
+  m_cooldownTurns: 5
+  m_cost:
+  - rid: 279046484867154060
+  - rid: 279046636951044289
+  m_effects: []
+  m_requirements: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 279046484867154060
+      type: {class: FixedResourceCost, ns: MagmaHeart.Abilities.Resources, asm: MagmaHeart.Abilities}
+      data:
+        m_parameterId: {fileID: 11400000, guid: 1e8f9dddeb3a6e04f9efd118bacc938a, type: 2}
+        m_amount: 7
+    - rid: 279046636951044289
+      type: {class: FixedResourceCost, ns: MagmaHeart.Abilities.Resources, asm: MagmaHeart.Abilities}
+      data:
+        m_parameterId: {fileID: 11400000, guid: 988814c7e1370d0408c9775545666690, type: 2}
+        m_amount: 1

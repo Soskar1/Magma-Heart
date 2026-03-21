@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.UI.CanvasScaler;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -145,6 +144,11 @@ namespace MagmaHeart.AI.Reasoning
         {
             AIUnitModel unit = GetUnit(entityId);
             return unit.GetCooldown(abilityId);
+        }
+
+        public IReadOnlyList<int> GetAllEntities()
+        {
+            throw new NotImplementedException();
         }
     }
 }

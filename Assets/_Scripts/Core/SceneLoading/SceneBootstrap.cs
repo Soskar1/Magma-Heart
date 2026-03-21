@@ -83,6 +83,8 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private TutorialWindowPresenter m_tutorialWindowPrefab;
 
         private readonly List<IInstaller> m_installers = new List<IInstaller>();
+        private Entity m_player;
+        private GameWorld m_world;
 
         public async void Awake()
         {
@@ -104,6 +106,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             WorldGrid grid = new WorldGrid(m_dungeonGrid, m_dungeonTilemap);
             GameWorld world = new GameWorld(grid, m_locations, random);
+            m_world = world;
             m_worldPresenter.Initialize(world);
 
             SpawnServiceInstaller spawnServiceInstaller = new SpawnServiceInstaller();
@@ -121,12 +124,15 @@ namespace MagmaHeart.Core.SceneLoading
             effectDispatcher.Register(new KnockbackHandler());
             effectDispatcher.Register(new TeleportHandler());
             effectDispatcher.Register(new StunHandler());
+            effectDispatcher.Register(new KillEveryoneHandler());
             AbilityExecutionRunner abilityExecutionRunner = new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
             IStartOfTurnEffectFactory startOfTurnEffectFactory = new StartOfTurnEffectFactory(m_parameterDatabase.Energy, m_energyRegenPerTurn);
 
             PlayerInstaller playerInstaller = new PlayerInstaller();
             PlayerContext playerContext = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, abilityExecutionRunner, world, m_graphicRaycaster);
             m_installers.Add(playerInstaller);
+            m_player = playerContext.Player;
+            m_world.OnLocationChanged += HandleOnLocationChanged;
 
             AIInstaller aiInstaller = new AIInstaller();
             AIContext aiContext = aiInstaller.Install(m_strategy, startOfTurnEffectFactory, effectDispatcher, m_lookAhead);
@@ -144,13 +150,13 @@ namespace MagmaHeart.Core.SceneLoading
             camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
 
             StatisticsInstaller statisticsInstaller = new StatisticsInstaller();
-            var counters = statisticsInstaller.Install(world);
+            var completedRoomsCounter = statisticsInstaller.Install(world);
             m_installers.Add(statisticsInstaller);
 
             Inventory inventory = new Inventory(playerContext.Player.Model);
             RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
 
-            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, counters.roomCounter, counters.bossCounter, inventory);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, inventory);
             m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController, battleContext.Battle);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
@@ -163,11 +169,17 @@ namespace MagmaHeart.Core.SceneLoading
             await stateMachine.Start();
         }
 
+        private void HandleOnLocationChanged(object _, EventArgs __)
+        {
+            ++m_player.Model.MagmaHeart.CurrentMagmaHeartCount;
+        }
+
         public void OnDisable()
         {
             foreach (IInstaller installer in m_installers)
                 installer.Dispose();
-
+            
+            m_world.OnLocationChanged -= HandleOnLocationChanged;
             m_debugUI.Disable();
         }
 
