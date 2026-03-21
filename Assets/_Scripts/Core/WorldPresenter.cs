@@ -18,6 +18,10 @@ namespace MagmaHeart.Core
         [SerializeField] private TileBase m_wall;
         [SerializeField] private TileBase m_door;
 
+        [SerializeField] private GameObject m_candlePrefab;
+        [SerializeField] private float m_candleChance = 0.2f;
+        private List<GameObject> m_spawnedCandles = new List<GameObject>();
+
         [SerializeField] private float m_decorationChance = 0.1f;
 
         [SerializeField] private List<TileBase> m_decorationTiles;
@@ -58,10 +62,17 @@ namespace MagmaHeart.Core
                 {
                     m_tilemap.SetTile(tilePosition, m_floor);
 
-                    if (Random.value < m_decorationChance)
+                    var randomValue = Random.value;
+                    if (randomValue < m_decorationChance)
                     {
                         TileBase decorationTile = m_decorationTiles[Random.Range(0, m_decorationTiles.Count)];
                         m_decorations.SetTile(tilePosition, decorationTile);
+                    }
+                    else if (randomValue < m_candleChance)
+                    {
+                        var position = m_gameWorld.ToTileCenter(m_tilemap.CellToWorld(tilePosition).ToVector2Int());
+                        GameObject candle = Instantiate(m_candlePrefab, position, Quaternion.identity);
+                        m_spawnedCandles.Add(candle);
                     }
                 }
                 else
@@ -83,6 +94,11 @@ namespace MagmaHeart.Core
             m_decorations.ClearAllTiles();
             m_tilemap.ClearAllTiles();
             m_walls.ClearAllTiles();
+
+            foreach (var candle in m_spawnedCandles)
+                Destroy(candle);
+
+            m_spawnedCandles.Clear();
         }
     }
 }
