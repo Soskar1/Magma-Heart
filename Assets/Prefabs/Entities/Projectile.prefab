@@ -253,8 +253,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2
-      minScalar: 1
+      scalar: 4
+      minScalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1575,11 +1575,11 @@ ParticleSystem:
     flipU: 0
     flipV: 0
   VelocityModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: -2
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1685,7 +1685,7 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.29
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -2159,7 +2159,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    inWorldSpace: 0
+    inWorldSpace: 1
   InheritVelocityModule:
     enabled: 0
     m_Mode: 0
@@ -4970,6 +4970,9 @@ MonoBehaviour:
   m_speed: 8
   m_lifeTimeInSeconds: 3
   m_particles: {fileID: 5294597552139346707}
+  m_light2D: {fileID: 152369327491318379}
+  m_renderer: {fileID: 8545365299836537633}
+  m_collider2D: {fileID: 8284585917979913478}
 --- !u!58 &8284585917979913478
 CircleCollider2D:
   m_ObjectHideFlags: 0

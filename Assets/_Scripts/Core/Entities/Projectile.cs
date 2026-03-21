@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 namespace MagmaHeart.Core.Entities
 {
@@ -8,7 +10,11 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private float m_speed;
         [SerializeField] private float m_lifeTimeInSeconds;
         [SerializeField] private ParticleSystem m_particles;
+        [SerializeField] private Light2D m_light2D;
+        [SerializeField] private SpriteRenderer m_renderer;
+        [SerializeField] private Collider2D m_collider2D;
         private float m_lifeTimeTimer;
+        private bool m_isDestroyed;
 
         private EntityModel m_attacker;
 
@@ -33,10 +39,7 @@ namespace MagmaHeart.Core.Entities
             else
             {
                 if (m_projectileHit != null)
-                {
-                    Debug.LogWarning($"{nameof(m_projectileHit)} is null");
                     m_projectileHit.SetResult(null);
-                }
 
                 DestroyProjectile();
             }
@@ -67,11 +70,20 @@ namespace MagmaHeart.Core.Entities
 
         private void DestroyProjectile()
         {
-            m_particles.transform.parent = null;
+            if (m_isDestroyed)
+                return;
+
+            m_isDestroyed = true;
+
             m_particles.Stop();
+            m_renderer.enabled = false;
+            m_light2D.enabled = false;
+            m_collider2D.enabled = false;
+            m_projectileHit = null;
 
             Destroy(m_particles.gameObject, 2f);
-            Destroy(gameObject);
+            Destroy(gameObject, 5f);
+
         }
     }
 }
