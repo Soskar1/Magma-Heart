@@ -51,6 +51,7 @@ namespace MagmaHeart.Core.Entities
                 Parameters.Add(data.ParameterDatabase.Strength, Strength);
                 Parameters.Add(data.ParameterDatabase.Speed, Speed);
                 Parameters.Add(data.ParameterDatabase.Health, Health);
+                Parameters.Add(data.ParameterDatabase.MagmaHeart, MagmaHeart);
             }
         }
 

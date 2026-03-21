@@ -18,7 +18,8 @@ MonoBehaviour:
   m_cost:
   - rid: 279046484867154060
   - rid: 279046636951044289
-  m_effects: []
+  m_effects:
+  - rid: 279046636951044337
   m_requirements: []
   references:
     version: 2
@@ -33,3 +34,6 @@ MonoBehaviour:
       data:
         m_parameterId: {fileID: 11400000, guid: 988814c7e1370d0408c9775545666690, type: 2}
         m_amount: 1
+    - rid: 279046636951044337
+      type: {class: BuildKillEveryoneEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
+      data: 

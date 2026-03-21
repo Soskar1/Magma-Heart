@@ -1,4 +1,3 @@
-using MagmaHeart.Abilities.Effects;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Abilities;
@@ -41,6 +40,8 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("Artifacts")]
         [SerializeField] private ArtifactDatabase m_artifactDatabase;
+        [SerializeField] private ArtifactData m_meteorStrike;
+        private bool m_gotMeteorStrike;
 
         [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
@@ -85,6 +86,7 @@ namespace MagmaHeart.Core.SceneLoading
         private readonly List<IInstaller> m_installers = new List<IInstaller>();
         private Entity m_player;
         private GameWorld m_world;
+        private Inventory m_inventory;
 
         public async void Awake()
         {
@@ -153,10 +155,10 @@ namespace MagmaHeart.Core.SceneLoading
             var completedRoomsCounter = statisticsInstaller.Install(world);
             m_installers.Add(statisticsInstaller);
 
-            Inventory inventory = new Inventory(playerContext.Player.Model);
-            RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
+            m_inventory = new Inventory(playerContext.Player.Model);
+            RewardService rewardService = new RewardService(m_inventory, m_artifactDatabase);
 
-            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, inventory);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, m_inventory);
             m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController, battleContext.Battle);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
@@ -172,6 +174,12 @@ namespace MagmaHeart.Core.SceneLoading
         private void HandleOnLocationChanged(object _, EventArgs __)
         {
             ++m_player.Model.MagmaHeart.CurrentMagmaHeartCount;
+
+            if (!m_gotMeteorStrike)
+            {
+                m_inventory.TryPick(m_meteorStrike);
+                m_gotMeteorStrike = true;
+            }
         }
 
         public void OnDisable()
