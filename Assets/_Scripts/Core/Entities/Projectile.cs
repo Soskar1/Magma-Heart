@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
 
 namespace MagmaHeart.Core.Entities
 {

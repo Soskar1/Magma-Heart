@@ -1,0 +1,468 @@
+fileFormatVersion: 2
+guid: 801bc3c4f78d4514cb6030b531458320
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2137720633063675171
+    second: meteor_exp_2_blue_0
+  - first:
+      213: 3790483842731943698
+    second: meteor_exp_2_blue_1
+  - first:
+      213: -4068744050604654242
+    second: meteor_exp_2_blue_2
+  - first:
+      213: 1907173209003383334
+    second: meteor_exp_2_blue_3
+  - first:
+      213: 3692551785241559046
+    second: meteor_exp_2_blue_4
+  - first:
+      213: 599748579653110174
+    second: meteor_exp_2_blue_5
+  - first:
+      213: 631468745904962251
+    second: meteor_exp_2_blue_6
+  - first:
+      213: 2749867958200395082
+    second: meteor_exp_2_blue_7
+  - first:
+      213: -8760501170837552708
+    second: meteor_exp_2_blue_8
+  - first:
+      213: -3565256068714002582
+    second: meteor_exp_2_blue_9
+  - first:
+      213: 6335115495889162583
+    second: meteor_exp_2_blue_10
+  - first:
+      213: 5266503252355149616
+    second: meteor_exp_2_blue_11
+  - first:
+      213: -6225775520893207931
+    second: meteor_exp_2_blue_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_0
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 37
+        width: 29
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32598c2f695baad10800000000000000
+      internalID: 2137720633063675171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_1
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 37
+        width: 32
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21725ecd8f08a9430800000000000000
+      internalID: 3790483842731943698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_2
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 39
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e51c9b5d7dae887c0800000000000000
+      internalID: -4068744050604654242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_3
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 45
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62ad9cfcde3a77a10800000000000000
+      internalID: 1907173209003383334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_4
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 43
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 600ce02e8449e3330800000000000000
+      internalID: 3692551785241559046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_5
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 49
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e99c4c4d72cb25800800000000000000
+      internalID: 599748579653110174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_6
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 40
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bca3d6e8a7d63c800800000000000000
+      internalID: 631468745904962251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_7
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 47
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4563cba65e792620800000000000000
+      internalID: 2749867958200395082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_8
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 38
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb185d9a9927c6680800000000000000
+      internalID: -8760501170837552708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_9
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 45
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a670ffabe7aa58ec0800000000000000
+      internalID: -3565256068714002582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_10
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 51
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 751db878af9dae750800000000000000
+      internalID: 6335115495889162583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_11
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 40
+        width: 12
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03f611d0ec0661940800000000000000
+      internalID: 5266503252355149616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_blue_12
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 38
+        width: 113
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58a76d9362a9999a0800000000000000
+      internalID: -6225775520893207931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      meteor_exp_2_blue_0: 2137720633063675171
+      meteor_exp_2_blue_1: 3790483842731943698
+      meteor_exp_2_blue_10: 6335115495889162583
+      meteor_exp_2_blue_11: 5266503252355149616
+      meteor_exp_2_blue_12: -6225775520893207931
+      meteor_exp_2_blue_2: -4068744050604654242
+      meteor_exp_2_blue_3: 1907173209003383334
+      meteor_exp_2_blue_4: 3692551785241559046
+      meteor_exp_2_blue_5: 599748579653110174
+      meteor_exp_2_blue_6: 631468745904962251
+      meteor_exp_2_blue_7: 2749867958200395082
+      meteor_exp_2_blue_8: -8760501170837552708
+      meteor_exp_2_blue_9: -3565256068714002582
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

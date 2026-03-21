@@ -1,0 +1,468 @@
+fileFormatVersion: 2
+guid: d181c5ff26e7cd64495e4bda01af29f5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4020131114163702415
+    second: meteor_exp_2_springgreen_0
+  - first:
+      213: -945800885860799331
+    second: meteor_exp_2_springgreen_1
+  - first:
+      213: -6759950366200266731
+    second: meteor_exp_2_springgreen_2
+  - first:
+      213: 7852448118887126653
+    second: meteor_exp_2_springgreen_3
+  - first:
+      213: 7769577167520813188
+    second: meteor_exp_2_springgreen_4
+  - first:
+      213: -2409203415048215209
+    second: meteor_exp_2_springgreen_5
+  - first:
+      213: 8458732674705933444
+    second: meteor_exp_2_springgreen_6
+  - first:
+      213: -935921187809643868
+    second: meteor_exp_2_springgreen_7
+  - first:
+      213: 6388032437978403050
+    second: meteor_exp_2_springgreen_8
+  - first:
+      213: 6218833530852006021
+    second: meteor_exp_2_springgreen_9
+  - first:
+      213: -5678295053349880380
+    second: meteor_exp_2_springgreen_10
+  - first:
+      213: -4644577948695718441
+    second: meteor_exp_2_springgreen_11
+  - first:
+      213: 533752306824295962
+    second: meteor_exp_2_springgreen_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_0
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 37
+        width: 29
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 175f6cd1d00a538c0800000000000000
+      internalID: -4020131114163702415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_1
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 37
+        width: 32
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9c640afa17dfd2f0800000000000000
+      internalID: -945800885860799331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_2
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 39
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5108c5b25f4df22a0800000000000000
+      internalID: -6759950366200266731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_3
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 45
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d769377c5ff79fc60800000000000000
+      internalID: 7852448118887126653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_4
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 43
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4805015d44513db60800000000000000
+      internalID: 7769577167520813188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_5
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 49
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 755a46e224ac09ed0800000000000000
+      internalID: -2409203415048215209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_6
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 40
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48446d52d84736570800000000000000
+      internalID: 8458732674705933444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_7
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 47
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a238de63a0f203f0800000000000000
+      internalID: -935921187809643868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_8
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 38
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae0106738a9d6a850800000000000000
+      internalID: 6388032437978403050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_9
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 45
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 588d8b3c52cbd4650800000000000000
+      internalID: 6218833530852006021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_10
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 51
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cdf83fdbb4a231b0800000000000000
+      internalID: -5678295053349880380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_11
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 40
+        width: 12
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d51164b6f42b8fb0800000000000000
+      internalID: -4644577948695718441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_springgreen_12
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 38
+        width: 113
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a16be4625e4486700800000000000000
+      internalID: 533752306824295962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      meteor_exp_2_springgreen_0: -4020131114163702415
+      meteor_exp_2_springgreen_1: -945800885860799331
+      meteor_exp_2_springgreen_10: -5678295053349880380
+      meteor_exp_2_springgreen_11: -4644577948695718441
+      meteor_exp_2_springgreen_12: 533752306824295962
+      meteor_exp_2_springgreen_2: -6759950366200266731
+      meteor_exp_2_springgreen_3: 7852448118887126653
+      meteor_exp_2_springgreen_4: 7769577167520813188
+      meteor_exp_2_springgreen_5: -2409203415048215209
+      meteor_exp_2_springgreen_6: 8458732674705933444
+      meteor_exp_2_springgreen_7: -935921187809643868
+      meteor_exp_2_springgreen_8: 6388032437978403050
+      meteor_exp_2_springgreen_9: 6218833530852006021
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
