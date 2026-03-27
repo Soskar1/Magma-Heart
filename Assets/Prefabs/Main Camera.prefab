@@ -155,3 +155,5 @@ MonoBehaviour:
   m_minZoom: 4
   m_maxZoom: 12
   m_smoothTime: 0.15
+  m_meteorStrikeZoomSpeed: 5
+  m_meteorStrikeMaxZoom: 20

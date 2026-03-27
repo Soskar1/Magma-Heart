@@ -167,7 +167,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(world, m_worldPresenter, playerContext.Player, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
-            
+
             await stateMachine.Start();
         }
 
