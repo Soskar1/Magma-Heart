@@ -13,5 +13,10 @@ namespace MagmaHeart.Core.Entities.Presenters
             var audioClip = m_steps[Random.Range(0, m_steps.Count)];
             m_audio.PlayOneShot(audioClip);
         }
+
+        public void PlaySound(AudioClip clip)
+        {
+            m_audio.PlayOneShot(clip);
+        }
     }
 }
