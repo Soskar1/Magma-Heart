@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: METEOR STRIKE
   m_EditorClassIdentifier: 
   m_id: Meteor Strike
-  m_targetKind: 2
+  m_targetKind: 4
   m_cooldownTurns: 5
   m_cost:
   - rid: 279046484867154060

@@ -100,9 +100,10 @@ MonoBehaviour:
   m_light2D: {fileID: 8618097864602659087}
   m_minIntensity: 0.5
   m_maxIntensity: 1.5
-  m_pulseSpeed: 2
+  m_pulseSpeed: 0.25
   m_minRadius: 2
   m_maxRadius: 3
+  m_forcePulsing: 1
 --- !u!1 &6069698907873148734
 GameObject:
   m_ObjectHideFlags: 0

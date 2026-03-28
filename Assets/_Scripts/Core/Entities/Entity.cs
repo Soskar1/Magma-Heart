@@ -11,6 +11,7 @@ namespace MagmaHeart.Core.Entities
     [RequireComponent(typeof(EntityAnimation))]
     [RequireComponent(typeof(Outline))]
     [RequireComponent(typeof(StunPresenter))]
+    [RequireComponent(typeof(EntityEffectsPresenter))]
     public class Entity : MonoBehaviour
     {
         public EntityModel Model { get; private set; }
@@ -20,6 +21,7 @@ namespace MagmaHeart.Core.Entities
         public Facing Facing { get; private set; }
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
+        public EntityEffectsPresenter EffectsPresenter { get; private set; }
         
         private Func<Vector3Int> m_getCurrentTilePosition;
 
@@ -31,6 +33,7 @@ namespace MagmaHeart.Core.Entities
             TileBasedMovement = GetComponent<TileBasedMovement>();
             Facing = GetComponent<Facing>();
             Outline = GetComponent<Outline>();
+            EffectsPresenter = GetComponent<EntityEffectsPresenter>();
 
             Animation = GetComponent<EntityAnimation>();
             Animation.Initialize(data.AnimatorController);
