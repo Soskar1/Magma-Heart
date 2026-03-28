@@ -20,6 +20,7 @@ MonoBehaviour:
   m_levelDefinitions: []
   m_abilityDefinition: {fileID: 11400000, guid: 30e9f4fa3dcd9aa4c96febcd1eb55b2f, type: 2}
   m_abilityWindowVfx: {fileID: 3547912583680184557, guid: 10ed2b0461961dd43a520340cc721808, type: 3}
+  m_chargineSfx: {fileID: 8300000, guid: 394b422862807c14e9c3b163b57d0032, type: 3}
   references:
     version: 2
     RefIds: []

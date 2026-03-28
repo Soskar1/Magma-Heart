@@ -5,6 +5,7 @@ using MagmaHeart.AI;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,9 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         [SerializeField] private GameObject m_vfxSpawnpoint;
         [SerializeField] private Image m_selectedEffect;
 
+        [SerializeField] private float m_audioFadeDuration = 1f;
+        [SerializeField] private float m_audioMaxVolume = 0.5f;
+
         private Image m_image;
         private Button m_button;
         private AbilityDefinition m_ability;
@@ -24,6 +28,8 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         private IGameWorld m_gameWorld;
         private EntityModel m_executor;
         private ParticleSystem m_vfx;
+
+        private AudioSource m_audio;
         
         private ResourceCost m_minimalResourceCost;
 
@@ -40,6 +46,11 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             m_image.sprite = artifact.Data.AbilityIcon;
             m_gameWorld = gameWorld;
             m_executor = executor;
+
+            m_audio = GetComponent<AudioSource>();
+
+            if (artifact.Data.ChargingSfx != null)
+                m_audio.clip = artifact.Data.ChargingSfx;
 
             if (artifact.Data.AbilityWindowVfx != null)
             {
@@ -117,6 +128,8 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             m_turnController.ArmAbility(m_ability);
             m_selectedEffect.enabled = true;
+            m_audio.Play();
+            StartCoroutine(FadeAudio(m_audioMaxVolume));
         }
 
         private void Deactivate()
@@ -126,11 +139,32 @@ namespace MagmaHeart.Core.Artifacts.Presentation
 
             if (m_vfx != null)
                 m_vfx.Stop();
+
+            StartCoroutine(FadeAudio(0));
         }
 
         private void HandleOnAbilityDisarm(object _, EventArgs __)
         {
             m_selectedEffect.enabled = false;
+            StartCoroutine(FadeAudio(0));
+        }
+
+        private IEnumerator FadeAudio(float targetVolume)
+        {
+            float startVolume = m_audio.volume;
+            float time = 0f;
+
+            while (time < m_audioFadeDuration)
+            {
+                time += Time.deltaTime;
+                m_audio.volume = Mathf.Lerp(startVolume, targetVolume, time / m_audioFadeDuration);
+                yield return null;
+            }
+
+            m_audio.volume = targetVolume;
+
+            if (targetVolume == 0f)
+                m_audio.Stop();
         }
     }
 }

@@ -15,10 +15,12 @@ namespace MagmaHeart.Core.Artifacts
         [SerializeField] private List<ArtifactLevelDefinition> m_levelDefinitions;
         [SerializeField] private AbilityDefinition m_abilityDefinition;
         [SerializeField] private ParticleSystem m_abilityWindowVfx;
+        [SerializeField] private AudioClip m_chargineSfx;
 
         public string Name => m_name;
         public string Description => m_description;
         public ParticleSystem AbilityWindowVfx => m_abilityWindowVfx;
+        public AudioClip ChargingSfx => m_chargineSfx;
         public Rarity Rarity => m_rarity;
         public Sprite Icon => m_icon;
         public Sprite AbilityIcon => m_abilityIcon;
