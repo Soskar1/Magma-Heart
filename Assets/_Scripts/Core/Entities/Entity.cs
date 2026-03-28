@@ -13,6 +13,7 @@ namespace MagmaHeart.Core.Entities
     [RequireComponent(typeof(StunPresenter))]
     [RequireComponent(typeof(EntityEffectsPresenter))]
     [RequireComponent(typeof(VFXPresenter))]
+    [RequireComponent(typeof(EntitySfxPresenter))]
     public class Entity : MonoBehaviour
     {
         public EntityModel Model { get; private set; }
@@ -24,6 +25,7 @@ namespace MagmaHeart.Core.Entities
         public Outline Outline { get; private set; }
         public EntityEffectsPresenter EffectsPresenter { get; private set; }
         public VFXPresenter VFXPresenter { get; private set; }
+        public EntitySfxPresenter SfxPresenter { get; private set; }
 
         private Func<Vector3Int> m_getCurrentTilePosition;
 
@@ -37,12 +39,31 @@ namespace MagmaHeart.Core.Entities
             Outline = GetComponent<Outline>();
             EffectsPresenter = GetComponent<EntityEffectsPresenter>();
             VFXPresenter = GetComponent<VFXPresenter>();
+            SfxPresenter = GetComponent<EntitySfxPresenter>();
 
             Animation = GetComponent<EntityAnimation>();
             Animation.Initialize(data.AnimatorController);
 
             var stunPresenter = GetComponent<StunPresenter>();
             stunPresenter.Initialize(Model);
+        }
+
+        private void OnEnable()
+        {
+            if (TileBasedMovement == null)
+                TileBasedMovement = GetComponent<TileBasedMovement>();
+
+            TileBasedMovement.OnChangedTarget += HandleOnChangedTarget;
+        }
+
+        private void OnDisable()
+        {
+            TileBasedMovement.OnChangedTarget -= HandleOnChangedTarget;
+        }
+
+        private void HandleOnChangedTarget(object _, EventArgs __)
+        {
+            SfxPresenter.PlayStepSound();
         }
 
         private void Update()
