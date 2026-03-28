@@ -58,13 +58,8 @@ namespace MagmaHeart.Core.Entities
                     return;
 
                 m_projectileHit.TrySetResult(entity.Model);
+                DestroyProjectile();
             }
-            else
-            {
-                m_projectileHit.TrySetResult(null);
-            }
-
-            DestroyProjectile();
         }
 
         private void DestroyProjectile()
