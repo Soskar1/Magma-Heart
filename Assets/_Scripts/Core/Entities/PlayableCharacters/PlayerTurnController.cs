@@ -22,6 +22,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         public event EventHandler<OnAbilitySelectedEventArgs> OnAbilitySelected;
         public event EventHandler<OnCanExecuteActionsChangedEventArgs> OnCanExecuteActionsChanged;
+        public event EventHandler OnAbilityDisarmed;
 
         private TaskCompletionSource<bool> m_turnFinished;
         private CancellationTokenSource m_cancellationTokenSource;
@@ -77,7 +78,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         }
 
         public void ArmAbility(AbilityDefinition ability) => m_abilitySelectionState.Arm(ability);
-        public void DisarmAbility() => m_abilitySelectionState.Disarm();
+        public void DisarmAbility()
+        {
+            m_abilitySelectionState.Disarm();
+            OnAbilityDisarmed?.Invoke(this, EventArgs.Empty);
+        }
 
         private async void HandleOnGameLeftMouseButtonClick(object _, EventArgs __)
         {

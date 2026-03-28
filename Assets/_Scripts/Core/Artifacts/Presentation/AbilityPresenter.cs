@@ -15,6 +15,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
     {
         [SerializeField] private TextMeshProUGUI m_cooldownText;
         [SerializeField] private GameObject m_vfxSpawnpoint;
+        [SerializeField] private Image m_selectedEffect;
 
         private Image m_image;
         private Button m_button;
@@ -54,6 +55,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged += HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
+            m_turnController.OnAbilityDisarmed += HandleOnAbilityDisarm;
             m_executor.OnCooldownChanged += HandleOnCooldownChanged;
 
             Validate();
@@ -65,6 +67,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged -= HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
+            m_turnController.OnAbilityDisarmed -= HandleOnAbilityDisarm;
             m_executor.OnCooldownChanged -= HandleOnCooldownChanged;
         }
 
@@ -113,14 +116,21 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         public void OnAbilityButtonPressed()
         {
             m_turnController.ArmAbility(m_ability);
+            m_selectedEffect.enabled = true;
         }
 
         private void Deactivate()
         {
             m_button.interactable = false;
+            m_selectedEffect.enabled = false;
 
             if (m_vfx != null)
                 m_vfx.Stop();
+        }
+
+        private void HandleOnAbilityDisarm(object _, EventArgs __)
+        {
+            m_selectedEffect.enabled = false;
         }
     }
 }
