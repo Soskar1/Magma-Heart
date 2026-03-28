@@ -8745,7 +8745,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Icons_346
+      name: GreenArrow
       rect:
         serializedVersion: 2
         x: 0
@@ -10345,6 +10345,7 @@ TextureImporter:
       Attack_Icon: -2800365521031642671
       Cursor_Click_Icon: 8282148999678064930
       Cursor_Icon: 2277848868528032742
+      GreenArrow: 646308362
       UI_Icons_0: 1982114082
       UI_Icons_1: -2906203513720773286
       UI_Icons_10: 5792423179205867691
@@ -10619,7 +10620,6 @@ TextureImporter:
       UI_Icons_343: 1383204014
       UI_Icons_344: -95411975
       UI_Icons_345: -32931899
-      UI_Icons_346: 646308362
       UI_Icons_347: 1861497434
       UI_Icons_348: 206772572
       UI_Icons_349: -1869733601
