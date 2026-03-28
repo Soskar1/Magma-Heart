@@ -32,7 +32,7 @@ namespace MagmaHeart.Core.SceneLoading
     {
         [Header("Player")]
         [SerializeField] private EntityData m_playerData;
-        [SerializeField] private CameraController m_cameraPrefab;
+        [SerializeField] private CameraController m_camera;
 
         [Header("AI")]
         [SerializeField] private Strategy m_strategy;
@@ -148,8 +148,8 @@ namespace MagmaHeart.Core.SceneLoading
             BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, world, playerContext.TurnController, abilityExecutionRunner, effectDispatcher, startOfTurnEffectFactory);
             m_installers.Add(battleInstaller);
 
-            CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
-            camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
+            //CameraController camera = Instantiate(m_camera, new Vector3(0, 0, -10), Quaternion.identity);
+            m_camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
 
             StatisticsInstaller statisticsInstaller = new StatisticsInstaller();
             var completedRoomsCounter = statisticsInstaller.Install(world);
@@ -165,10 +165,19 @@ namespace MagmaHeart.Core.SceneLoading
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
             m_installers.Add(tutorialInstaller);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(world, m_worldPresenter, playerContext.Player, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
+            m_player.Model.MagmaHeart.CurrentMagmaHeartCount += 10;
+
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(world, m_worldPresenter, playerContext.Player, services, m_camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
 
             await stateMachine.Start();
+        }
+
+        [ContextMenu("Add meteor strike")]
+        public void AddMeteorStrike()
+        {
+            m_inventory.TryPick(m_meteorStrike);
+            m_gotMeteorStrike = true;
         }
 
         private void HandleOnLocationChanged(object _, EventArgs __)

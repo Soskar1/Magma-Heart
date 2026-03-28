@@ -14,6 +14,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
     public class AbilityPresenter : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI m_cooldownText;
+        [SerializeField] private GameObject m_vfxSpawnpoint;
 
         private Image m_image;
         private Button m_button;
@@ -21,6 +22,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         private PlayerTurnController m_turnController;
         private IGameWorld m_gameWorld;
         private EntityModel m_executor;
+        private ParticleSystem m_vfx;
         
         private ResourceCost m_minimalResourceCost;
 
@@ -37,6 +39,14 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             m_image.sprite = artifact.Data.AbilityIcon;
             m_gameWorld = gameWorld;
             m_executor = executor;
+
+            if (artifact.Data.AbilityWindowVfx != null)
+            {
+                m_vfx = Instantiate(artifact.Data.AbilityWindowVfx, transform);
+
+                m_vfx.transform.position = m_vfxSpawnpoint.transform.position;
+                m_vfx.transform.localScale = Vector3.one;
+            }
 
             m_minimalResourceCost = m_ability.ComputeCost(gameWorld, executor.Id, AbilityTarget.None);
 
@@ -70,7 +80,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         private void HandleOnCanExecuteActionsChanged(object _, OnCanExecuteActionsChangedEventArgs args)
         {
             if (!args.CanExecute)
-                m_button.interactable = false;
+                Deactivate();
         }
         
         private void HandleOnParameterValueChanged(object _, EventArgs __) => Validate();
@@ -79,7 +89,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             if (m_executor.GetCooldown(m_ability.Id) > 0)
             {
-                m_button.interactable = false;
+                Deactivate();
                 return;
             }
 
@@ -89,17 +99,28 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 
                 if (parameter.CurrentValue < resource.Amount)
                 {
-                    m_button.interactable = false;
+                    Deactivate();
                     return;
                 }
             }
 
             m_button.interactable = true;
+
+            if (m_vfx != null)
+                m_vfx.Play();
         }
 
         public void OnAbilityButtonPressed()
         {
             m_turnController.ArmAbility(m_ability);
+        }
+
+        private void Deactivate()
+        {
+            m_button.interactable = false;
+
+            if (m_vfx != null)
+                m_vfx.Stop();
         }
     }
 }
