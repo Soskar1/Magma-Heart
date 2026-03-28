@@ -111,7 +111,6 @@ namespace MagmaHeart.Core.CombatSystem
         private void HandleEntityDeath(EntityModel entityModel)
         {
             m_world.TryGetEntity(entityModel.Id, out Entity entity);
-            m_world.RemoveEntity(entityModel.Id);
 
             EventHandler<OnParameterValueChangedEventArgs> handler = m_healthHandlers[entityModel.Id];
             entityModel.Health.OnParameterValueChanged -= handler;
@@ -125,6 +124,7 @@ namespace MagmaHeart.Core.CombatSystem
             }
             else
             {
+                m_world.RemoveEntity(entityModel.Id);
                 m_currentTurnOrder.Remove(entity);
 
                 OnEntityDiedEventArgs args = new OnEntityDiedEventArgs(entity);
