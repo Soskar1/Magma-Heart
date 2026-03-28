@@ -114,6 +114,9 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         {
             Disable();
 
+            if (m_abilitySelectionState.HasArmedAbility)
+                DisarmAbility();
+
             m_turnFinished.SetResult(true);
         }
 
