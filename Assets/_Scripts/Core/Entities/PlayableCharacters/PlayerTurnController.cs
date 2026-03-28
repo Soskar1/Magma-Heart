@@ -94,9 +94,6 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
         private void HandleOnGameRightMouseButtonClick(object _, EventArgs __)
         {
-            if (m_currentSelectedAbility == null)
-                return;
-    
             if (m_abilitySelectionState.HasArmedAbility)
                 DisarmAbility();
         }
