@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c72418a4f810fa545ac19e818738ed3d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 242608
+  packageName: 2D Cartoon Effects - Mobile Friendly
+  packageVersion: 1.0
+  assetPath: Assets/VFX/Materials/Common/glow1.mat
+  uploadId: 561026

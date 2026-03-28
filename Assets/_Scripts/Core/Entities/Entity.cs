@@ -12,6 +12,7 @@ namespace MagmaHeart.Core.Entities
     [RequireComponent(typeof(Outline))]
     [RequireComponent(typeof(StunPresenter))]
     [RequireComponent(typeof(EntityEffectsPresenter))]
+    [RequireComponent(typeof(VFXPresenter))]
     public class Entity : MonoBehaviour
     {
         public EntityModel Model { get; private set; }
@@ -22,7 +23,8 @@ namespace MagmaHeart.Core.Entities
         public EntityAnimation Animation { get; private set; }
         public Outline Outline { get; private set; }
         public EntityEffectsPresenter EffectsPresenter { get; private set; }
-        
+        public VFXPresenter VFXPresenter { get; private set; }
+
         private Func<Vector3Int> m_getCurrentTilePosition;
 
         public virtual void Initialize(EntityData data, WorldGrid grid, bool isPlayer, int id)
@@ -34,6 +36,7 @@ namespace MagmaHeart.Core.Entities
             Facing = GetComponent<Facing>();
             Outline = GetComponent<Outline>();
             EffectsPresenter = GetComponent<EntityEffectsPresenter>();
+            VFXPresenter = GetComponent<VFXPresenter>();
 
             Animation = GetComponent<EntityAnimation>();
             Animation.Initialize(data.AnimatorController);
