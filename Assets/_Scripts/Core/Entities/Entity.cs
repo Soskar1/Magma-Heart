@@ -3,6 +3,7 @@ using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace MagmaHeart.Core.Entities
 {
@@ -16,6 +17,7 @@ namespace MagmaHeart.Core.Entities
     [RequireComponent(typeof(EntitySfxPresenter))]
     public class Entity : MonoBehaviour
     {
+        [SerializeField] private Light2D m_light;
         public EntityModel Model { get; private set; }
         public HealthModel Health => Model.Health;
         public EnergyModel Energy => Model.Energy;
@@ -69,6 +71,12 @@ namespace MagmaHeart.Core.Entities
         private void Update()
         {
             Model.TilePosition = m_getCurrentTilePosition();
+        }
+
+        public void Die()
+        {
+            Animation.PlayAnimation(AnimationType.Death);
+            m_light.gameObject.SetActive(false);
         }
     }
 }

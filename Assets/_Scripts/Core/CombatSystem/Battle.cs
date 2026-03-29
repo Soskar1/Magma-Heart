@@ -116,7 +116,7 @@ namespace MagmaHeart.Core.CombatSystem
             entityModel.Health.OnParameterValueChanged -= handler;
             m_healthHandlers.Remove(entityModel.Id);
 
-            entity.Animation.PlayAnimation(AnimationType.Death);
+            entity.Die();
 
             if (entityModel.IsPlayer)
             {
