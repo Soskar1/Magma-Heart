@@ -1008,7 +1008,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_Sheet-Effect_0
+      name: Warrior_Charge_2
       rect:
         serializedVersion: 2
         x: 345
@@ -1030,7 +1030,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_Sheet-Effect_1
+      name: Warrior_Charge_3
       rect:
         serializedVersion: 2
         x: 0
@@ -1052,7 +1052,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_Sheet-Effect_2
+      name: Warrior_Charge_4
       rect:
         serializedVersion: 2
         x: 69
@@ -2657,6 +2657,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Warrior_Charge_5
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 0
+        width: 69
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00b1abee1ced9404f8f307a5e84acca4
+      internalID: 1345463124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -2681,6 +2703,10 @@ TextureImporter:
       Warrior_Attack_7: -6253208296904073923
       Warrior_Attack_8: -2164224423321271568
       Warrior_Buffed: 1089205919
+      Warrior_Charge_2: -1342143772
+      Warrior_Charge_3: -338834305
+      Warrior_Charge_4: -1933753840
+      Warrior_Charge_5: 1345463124
       Warrior_Death_0: -838616859
       Warrior_Death_1: -1641739044
       Warrior_Death_10: -1427754638
@@ -2710,13 +2736,10 @@ TextureImporter:
       Warrior_Run_5: -6179113146597259875
       Warrior_Run_6: -7195227389596926799
       Warrior_Run_7: -7083850147136336687
-      Warrior_Sheet-Effect_0: -1342143772
-      Warrior_Sheet-Effect_1: -338834305
       Warrior_Sheet-Effect_103: 1209288620382777180
       Warrior_Sheet-Effect_116: -9866729
       Warrior_Sheet-Effect_18: 111539710
       Warrior_Sheet-Effect_19: -1564578714
-      Warrior_Sheet-Effect_2: -1933753840
       Warrior_Sheet-Effect_20: -1894692383
       Warrior_Sheet-Effect_21: -1387324745
       Warrior_Sheet-Effect_22: -1385224725

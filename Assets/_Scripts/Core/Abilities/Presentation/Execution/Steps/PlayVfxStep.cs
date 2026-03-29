@@ -22,7 +22,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 return Task.CompletedTask;
             }
 
-            entity.VFXPresenter.Play();
+            entity.VFXPresenter.PlayStunAttackVfx();
             return Task.CompletedTask;
         }
     }

@@ -7,16 +7,20 @@ namespace MagmaHeart.Core.Entities.Presenters
     {
         [SerializeField] private AudioSource m_audio;
         [SerializeField] private List<AudioClip> m_steps;
+        [SerializeField] private List<AudioClip> m_charge;
 
-        public void PlayStepSound()
-        {
-            var audioClip = m_steps[Random.Range(0, m_steps.Count)];
-            m_audio.PlayOneShot(audioClip);
-        }
+        public void PlayStepSound() => PlaySound(m_steps);
+        public void PlayChargeSound() => PlaySound(m_charge);
 
         public void PlaySound(AudioClip clip)
         {
             m_audio.PlayOneShot(clip);
+        }
+
+        public void PlaySound(IList<AudioClip> clips)
+        {
+            var clipToPlay = clips[Random.Range(0, clips.Count)];
+            m_audio.PlayOneShot(clipToPlay);
         }
     }
 }

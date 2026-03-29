@@ -16,6 +16,8 @@ MonoBehaviour:
   m_requirements: []
   m_steps:
   - rid: 226000796857139329
+  - rid: 279046816270123094
+  - rid: 279046816270123095
   - rid: 279046636951044361
   references:
     version: 2
@@ -33,3 +35,12 @@ MonoBehaviour:
         m_cameraShakeDuration: 0.55
         m_cameraShakeMagnitude: 5
         m_explosionParticles: {fileID: 8126458844798035184, guid: c0218e074aea4b64fb4765d986d7c689, type: 3}
+    - rid: 279046816270123094
+      type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_animationType: 6
+        m_target: 0
+    - rid: 279046816270123095
+      type: {class: WaitForAnimationEventStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_timeoutSeconds: 5
