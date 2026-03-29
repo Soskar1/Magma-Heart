@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -12,6 +13,8 @@ namespace MagmaHeart.Core.Entities
         [SerializeField] private Light2D m_light2D;
         [SerializeField] private SpriteRenderer m_renderer;
         [SerializeField] private Collider2D m_collider2D;
+        [SerializeField] private AudioSource m_audio;
+        [SerializeField] private List<AudioClip> m_fireBall;
         private float m_lifeTimeTimer;
         private bool m_isDestroyed;
 
@@ -22,6 +25,9 @@ namespace MagmaHeart.Core.Entities
         public void Initialize(EntityModel attacker)
         {
             m_attacker = attacker;
+
+            var clip = m_fireBall[Random.Range(0, m_fireBall.Count)];
+            m_audio.PlayOneShot(clip);
 
             m_projectileHit = new TaskCompletionSource<EntityModel>();
             m_lifeTimeTimer = m_lifeTimeInSeconds;
