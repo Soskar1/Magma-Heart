@@ -1,4 +1,5 @@
 ﻿using System;
+using MagmaHeart.Abilities;
 using MagmaHeart.Core.Entities.Models;
 using MagmaHeart.Core.Entities.Presenters;
 using MagmaHeart.Core.Presentation;
@@ -48,24 +49,26 @@ namespace MagmaHeart.Core.Entities
 
             var stunPresenter = GetComponent<StunPresenter>();
             stunPresenter.Initialize(Model);
-        }
-
-        private void OnEnable()
-        {
-            if (TileBasedMovement == null)
-                TileBasedMovement = GetComponent<TileBasedMovement>();
 
             TileBasedMovement.OnChangedTarget += HandleOnChangedTarget;
+            Model.Health.OnParameterValueChanged += HandleOnParameterValueChanged;
         }
 
         private void OnDisable()
         {
             TileBasedMovement.OnChangedTarget -= HandleOnChangedTarget;
+            Model.Health.OnParameterValueChanged -= HandleOnParameterValueChanged;
         }
 
         private void HandleOnChangedTarget(object _, EventArgs __)
         {
             SfxPresenter.PlayStepSound();
+        }
+
+        private void HandleOnParameterValueChanged(object _, OnParameterValueChangedEventArgs args)
+        {
+            if (args.NewValue < args.PreviousValue)
+                SfxPresenter.PlayHitSound();
         }
 
         private void Update()

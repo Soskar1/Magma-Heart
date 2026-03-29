@@ -24,9 +24,10 @@ namespace MagmaHeart.Core.Entities.Models
                 if (value < 0)
                     value = 0;
 
+                var previous = m_currentHealth;
                 m_currentHealth = value;
 
-                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentHealth);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentHealth, previous);
                 OnParameterValueChanged?.Invoke(this, args);
             }
         }
@@ -37,11 +38,12 @@ namespace MagmaHeart.Core.Entities.Models
             set
             {
                 m_maxHealth = value;
+                var previous = m_currentHealth;
 
                 if (m_currentHealth > m_maxHealth)
                     m_currentHealth = m_maxHealth;
 
-                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentHealth);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentHealth, previous);
                 OnParameterValueChanged?.Invoke(this, args);
             }
         }

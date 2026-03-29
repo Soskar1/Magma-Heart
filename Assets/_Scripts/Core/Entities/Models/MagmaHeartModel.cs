@@ -15,8 +15,9 @@ namespace MagmaHeart.Core.Entities.Models
             get => m_currentMagmaHeartCount;
             set
             {
+                var previous = m_currentMagmaHeartCount;
                 m_currentMagmaHeartCount = value;
-                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentValue);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentValue, previous);
                 OnParameterValueChanged?.Invoke(this, args);
             }
         }

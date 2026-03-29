@@ -8,9 +8,13 @@ namespace MagmaHeart.Core.Entities.Presenters
         [SerializeField] private AudioSource m_audio;
         [SerializeField] private List<AudioClip> m_steps;
         [SerializeField] private List<AudioClip> m_charge;
+        [SerializeField] private List<AudioClip> m_attack;
+        [SerializeField] private List<AudioClip> m_hit;
 
         public void PlayStepSound() => PlaySound(m_steps);
         public void PlayChargeSound() => PlaySound(m_charge);
+        public void PlayAttackSound() => PlaySound(m_attack);
+        public void PlayHitSound() => PlaySound(m_hit);
 
         public void PlaySound(AudioClip clip)
         {

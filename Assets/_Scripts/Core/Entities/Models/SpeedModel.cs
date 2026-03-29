@@ -15,9 +15,10 @@ namespace MagmaHeart.Core.Entities.Models
             get => m_currentSpeed;
             set
             {
+                var previous = m_currentSpeed;
                 m_currentSpeed = value;
 
-                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentValue);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentValue, previous);
                 OnParameterValueChanged?.Invoke(this, args);
             }
         }
