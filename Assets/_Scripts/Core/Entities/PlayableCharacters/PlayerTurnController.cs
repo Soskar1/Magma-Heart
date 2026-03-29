@@ -1,6 +1,7 @@
 ﻿using MagmaHeart.Abilities;
 using MagmaHeart.Core.Abilities.Presentation.Execution;
 using MagmaHeart.Core.Abilities.Selection;
+using MagmaHeart.Core.Input;
 using MagmaHeart.Core.Input.Mouse;
 using System;
 using System.Threading;
@@ -15,6 +16,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
         private readonly AbilityExecutionRunner m_abilityExecutionRunner;
         private readonly MouseListener m_mouseListener;
         private readonly MouseHover m_mouseHover;
+        private readonly UserInput m_userInput;
         private readonly AbilitySelectionState m_abilitySelectionState;
 
         private AbilityPlan m_currentSelectedAbility;
@@ -42,13 +44,14 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             }
         }
 
-        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, AbilityExecutionRunner abilityExecutionRunner, AbilitySelector abilitySelector)
+        public PlayerTurnController(MouseListener mouseListener, MouseHover mouseHover, AbilityExecutionRunner abilityExecutionRunner, AbilitySelector abilitySelector, UserInput userInput)
         {
             m_mouseListener = mouseListener;
             m_mouseHover = mouseHover;
             m_abilitySelector = abilitySelector;
             m_abilityExecutionRunner = abilityExecutionRunner;
             m_abilitySelectionState = new AbilitySelectionState();
+            m_userInput = userInput;
 
             m_mouseHover.OnHoverResultChanged += HandleOnHoverResultChanged;
         }
@@ -105,10 +108,13 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
 
             m_mouseListener.OnGameLeftMouseButtonClick += HandleOnGameLeftMouseButtonClick;
             m_mouseListener.OnGameRightMouseButtonClick += HandleOnGameRightMouseButtonClick;
+            m_userInput.OnEndTurnButtonPress += HandleOnEndTurnButtonPress;
 
             m_turnFinished = new TaskCompletionSource<bool>();
             await m_turnFinished.Task;
         }
+
+        private void HandleOnEndTurnButtonPress(object _, EventArgs __) => EndTurn();
 
         public void EndTurn()
         {
@@ -129,6 +135,7 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             CanExecuteActions = false;
             m_mouseListener.OnGameLeftMouseButtonClick -= HandleOnGameLeftMouseButtonClick;
             m_mouseListener.OnGameRightMouseButtonClick -= HandleOnGameRightMouseButtonClick;
+            m_userInput.OnEndTurnButtonPress -= HandleOnEndTurnButtonPress;
         }
 
         private async Task Execute(AbilityPlan ability)
