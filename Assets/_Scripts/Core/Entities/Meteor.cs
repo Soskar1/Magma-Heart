@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MagmaHeart.Core.Entities
@@ -9,9 +10,12 @@ namespace MagmaHeart.Core.Entities
         private Vector2 _targetPosition;
 
         [SerializeField] private float _duration = 1.5f;
-        [SerializeField] private float _maxHeight = 5f; // controls arc height
-        [SerializeField] private float _maxScale = 50f; // for depth illusion
+        [SerializeField] private float _maxHeight = 5f;
+        [SerializeField] private float _maxScale = 50f;
         [SerializeField] private float _minScale = 30f;
+
+        [SerializeField] private AudioSource m_audio;
+        [SerializeField] private List<AudioClip> m_fireBeam;
         
         private float _timer;
 
@@ -23,6 +27,10 @@ namespace MagmaHeart.Core.Entities
             _startPosition = transform.position;
             _timer = 0f;
             
+            var fireBeam = m_fireBeam[Random.Range(0, m_fireBeam.Count)];
+            m_audio.clip = fireBeam;
+            m_audio.Play();
+
             m_meteorHit = new TaskCompletionSource<bool>();
             return m_meteorHit.Task;
         }
@@ -58,6 +66,7 @@ namespace MagmaHeart.Core.Entities
 
         private void Impact()
         {
+            m_audio.Stop();
             transform.position = _targetPosition;
 
             m_meteorHit.SetResult(true);
