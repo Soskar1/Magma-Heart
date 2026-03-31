@@ -17,6 +17,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         [SerializeField] private TextMeshProUGUI m_cooldownText;
         [SerializeField] private GameObject m_vfxSpawnpoint;
         [SerializeField] private Image m_selectedEffect;
+        [SerializeField] private GameObject m_panel;
 
         [SerializeField] private float m_audioFadeDuration = 1f;
         [SerializeField] private float m_audioMaxVolume = 0.5f;
@@ -87,7 +88,17 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             if (args.AbilityId != m_ability.Id)
                 return;
 
-            m_cooldownText.text = args.CurrentCooldown > 0 ? args.CurrentCooldown.ToString() : string.Empty;
+            string cooldownText = string.Empty;
+            bool showPanel = false;
+            if (args.CurrentCooldown > 0)
+            {
+                cooldownText = args.CurrentCooldown.ToString();
+                showPanel = true;
+            }
+
+            m_cooldownText.text = cooldownText;
+            m_panel.SetActive(showPanel);
+
             Validate();
         }
 

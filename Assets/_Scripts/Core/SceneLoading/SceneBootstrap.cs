@@ -165,7 +165,7 @@ namespace MagmaHeart.Core.SceneLoading
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
             m_installers.Add(tutorialInstaller);
 
-            m_player.Model.MagmaHeart.CurrentMagmaHeartCount += 10;
+            //m_player.Model.MagmaHeart.CurrentMagmaHeartCount += 10;
 
             MagmaHeartContext magmaHeartContext = new MagmaHeartContext(world, m_worldPresenter, playerContext.Player, services, m_camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
@@ -173,12 +173,12 @@ namespace MagmaHeart.Core.SceneLoading
             await stateMachine.Start();
         }
 
-        [ContextMenu("Add meteor strike")]
-        public void AddMeteorStrike()
-        {
-            m_inventory.TryPick(m_meteorStrike);
-            m_gotMeteorStrike = true;
-        }
+        //[ContextMenu("Add meteor strike")]
+        //public void AddMeteorStrike()
+        //{
+        //    m_inventory.TryPick(m_meteorStrike);
+        //    m_gotMeteorStrike = true;
+        //}
 
         private void HandleOnLocationChanged(object _, EventArgs __)
         {
