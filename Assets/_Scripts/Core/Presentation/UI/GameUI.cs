@@ -20,13 +20,11 @@ namespace MagmaHeart.Core.Presentation.UI
         [SerializeField] private EntityInfoUI m_entityInfoUI;
         [SerializeField] private TurnOrderPresenter m_battleTurnOrder;
         [SerializeField] private GameOverUI m_gaveOverUI;
-        [SerializeField] private WelcomeScreen m_welcomeScreen;
         [SerializeField] private CompletedRoomsCounterPresenter m_roomCounterPresenter;
         [SerializeField] private MagmaHeartPresenter m_magmaHeartPresenter;
         [SerializeField] private AvailableAbilitiesWindow m_availableAbilitiesWindow;
 
         public RewardUI RewardUI => m_rewardUI;
-        public WelcomeScreen WelcomeScreen => m_welcomeScreen;
 
         private Battle m_battle;
 
