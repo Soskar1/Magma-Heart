@@ -9,6 +9,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
     {
         [SerializeField] private AbilityPresenter m_abilityPresenterPrefab;
         [SerializeField] private Transform m_abilityContainer;
+        [SerializeField] private AbilityTooltip m_abilityTooltip;
         private Inventory m_inventory;
         private PlayerTurnController m_turnController;
         private EntityModel m_executor;
@@ -39,7 +40,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             AbilityPresenter instance = Instantiate(m_abilityPresenterPrefab, m_abilityContainer);
             
-            instance.Initialize(artifact, m_turnController, m_executor, m_gameWorld);
+            instance.Initialize(artifact, m_turnController, m_executor, m_gameWorld, m_abilityTooltip);
         }
     }
 }

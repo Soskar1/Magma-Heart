@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: METEOR STRIKE
   m_EditorClassIdentifier: 
   m_id: Meteor Strike
+  m_description: Destroy your enemies
   m_targetKind: 4
   m_cooldownTurns: 5
   m_cost:

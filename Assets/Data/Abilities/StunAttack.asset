@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: StunAttack
   m_EditorClassIdentifier: 
   m_id: Stun Attack
+  m_description: The enemy will skip their next turn
   m_targetKind: 3
   m_cooldownTurns: 3
   m_cost:

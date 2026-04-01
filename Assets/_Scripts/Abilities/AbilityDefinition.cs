@@ -11,6 +11,7 @@ namespace MagmaHeart.Abilities
     public class AbilityDefinition : ScriptableObject
     {
         [SerializeField] private string m_id;
+        [SerializeField] private string m_description;
         [SerializeField] private TargetKind m_targetKind;
         [SerializeField] private int m_cooldownTurns;
         
@@ -24,6 +25,7 @@ namespace MagmaHeart.Abilities
         private List<IAbilityRequirement> m_requirements;
 
         public string Id => m_id;
+        public string Description => m_description;
         public List<CostModule> Cost => m_cost;
         public List<EffectModule> Effects => m_effects;
         public List<IAbilityRequirement> Requirements => m_requirements;

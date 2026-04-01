@@ -8,11 +8,12 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Artifacts.Presentation
 {
-    public class AbilityPresenter : MonoBehaviour
+    public class AbilityPresenter : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private TextMeshProUGUI m_cooldownText;
         [SerializeField] private GameObject m_vfxSpawnpoint;
@@ -30,6 +31,8 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         private EntityModel m_executor;
         private ParticleSystem m_vfx;
 
+        private AbilityTooltip m_abilityTooltip;
+
         private AudioSource m_audio;
         
         private ResourceCost m_minimalResourceCost;
@@ -40,13 +43,14 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             m_button = GetComponent<Button>();
         }
 
-        public void Initialize(Artifact artifact, PlayerTurnController turnController, EntityModel executor, IGameWorld gameWorld)
+        public void Initialize(Artifact artifact, PlayerTurnController turnController, EntityModel executor, IGameWorld gameWorld, AbilityTooltip tooltip)
         {
             m_ability = artifact.Data.AbilityDefinition;
             m_turnController = turnController;
             m_image.sprite = artifact.Data.AbilityIcon;
             m_gameWorld = gameWorld;
             m_executor = executor;
+            m_abilityTooltip = tooltip;
 
             m_audio = GetComponent<AudioSource>();
 
@@ -176,6 +180,16 @@ namespace MagmaHeart.Core.Artifacts.Presentation
 
             if (targetVolume == 0f)
                 m_audio.Stop();
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            m_abilityTooltip.Present(m_ability, m_minimalResourceCost);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            m_abilityTooltip.Hide();
         }
     }
 }

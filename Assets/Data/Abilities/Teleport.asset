@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Teleport
   m_EditorClassIdentifier: 
   m_id: Teleport
+  m_description: Teleport to any free tile on the map
   m_targetKind: 2
-  m_cooldownTurns: 5
+  m_cooldownTurns: 4
   m_cost:
   - rid: 279046484867154060
   m_effects:
@@ -27,7 +28,7 @@ MonoBehaviour:
       type: {class: FixedResourceCost, ns: MagmaHeart.Abilities.Resources, asm: MagmaHeart.Abilities}
       data:
         m_parameterId: {fileID: 11400000, guid: 1e8f9dddeb3a6e04f9efd118bacc938a, type: 2}
-        m_amount: 4
+        m_amount: 2
     - rid: 279046484867154074
       type: {class: BuildTeleportEffect, ns: MagmaHeart.Core.Abilities.Effects, asm: MagmaHeart.Core}
       data: 
