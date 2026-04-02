@@ -31,7 +31,7 @@ Material:
     m_Floats:
     - _alpha: 0.194
     - _amount: 0.945
-    - _spread: 1.0008765
+    - _spread: 1.0002229
     - _width: 0.065
     m_Colors: []
   m_BuildTextureStacks: []
