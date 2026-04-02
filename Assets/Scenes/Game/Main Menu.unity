@@ -171,7 +171,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3860478200218055625, guid: cf3c5890808107c4f9a277d57c8493a1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -186,6 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 490616114}
   - component: {fileID: 490616115}
+  - component: {fileID: 490616116}
   m_Layer: 5
   m_Name: Menu Controls
   m_TagString: Untagged
@@ -242,6 +244,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &490616116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490616113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 046eb88022c4ab64cabe381322b899c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &736533136
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,7 +945,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1380651614}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 490616116}
+        m_TargetAssemblyTypeName: MagmaHeart.Core.MainMenuControls.MainMenu, MagmaHeart.Core
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1380651614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1052,7 +1078,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1717471143}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 490616116}
+        m_TargetAssemblyTypeName: MagmaHeart.Core.MainMenuControls.MainMenu, MagmaHeart.Core
+        m_MethodName: Exit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1717471143
 MonoBehaviour:
   m_ObjectHideFlags: 0
