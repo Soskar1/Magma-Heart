@@ -48,8 +48,9 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
                 }
             }
 
+#if !UNITY_WEBGL
             await Task.Delay(1000);
-
+#endif
             KillEveryoneEffect kilEveryoneEffect = context.Plan.Effects
                 .OfType<KillEveryoneEffect>()
                 .FirstOrDefault();

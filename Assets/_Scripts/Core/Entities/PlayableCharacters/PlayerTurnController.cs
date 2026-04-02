@@ -114,7 +114,11 @@ namespace MagmaHeart.Core.Entities.PlayableCharacters
             await m_turnFinished.Task;
         }
 
-        private void HandleOnEndTurnButtonPress(object _, EventArgs __) => EndTurn();
+        private void HandleOnEndTurnButtonPress(object _, EventArgs __)
+        {
+            if (CanExecuteActions)
+                EndTurn();
+        }
 
         public void EndTurn()
         {
