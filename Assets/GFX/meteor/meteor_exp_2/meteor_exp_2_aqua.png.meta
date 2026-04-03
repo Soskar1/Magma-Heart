@@ -1,0 +1,468 @@
+fileFormatVersion: 2
+guid: 47896083b00e6804dbdc17b4b8132b10
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3862435378803659340
+    second: meteor_exp_2_aqua_0
+  - first:
+      213: 1301749265278281119
+    second: meteor_exp_2_aqua_1
+  - first:
+      213: 7979006386448315865
+    second: meteor_exp_2_aqua_2
+  - first:
+      213: 303555902370461177
+    second: meteor_exp_2_aqua_3
+  - first:
+      213: -6562327531731704407
+    second: meteor_exp_2_aqua_4
+  - first:
+      213: 1764664116807723020
+    second: meteor_exp_2_aqua_5
+  - first:
+      213: 736016046169853509
+    second: meteor_exp_2_aqua_6
+  - first:
+      213: 1944941647962431110
+    second: meteor_exp_2_aqua_7
+  - first:
+      213: -5107051964486541899
+    second: meteor_exp_2_aqua_8
+  - first:
+      213: 300265529526340501
+    second: meteor_exp_2_aqua_9
+  - first:
+      213: -7123979210672015742
+    second: meteor_exp_2_aqua_10
+  - first:
+      213: -1183715294317668263
+    second: meteor_exp_2_aqua_11
+  - first:
+      213: -9166695676787538729
+    second: meteor_exp_2_aqua_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_0
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 37
+        width: 29
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c425e7153802a9530800000000000000
+      internalID: 3862435378803659340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_1
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 37
+        width: 32
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f95a98f4f0eb01210800000000000000
+      internalID: 1301749265278281119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_2
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 39
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d533dca8002bbe60800000000000000
+      internalID: 7979006386448315865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_3
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 45
+        width: 9
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f5b3422c72763400800000000000000
+      internalID: 303555902370461177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_4
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 43
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a5ad5be0edede4a0800000000000000
+      internalID: -6562327531731704407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_5
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 49
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c08e3362aa85d7810800000000000000
+      internalID: 1764664116807723020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_6
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 40
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54e01f4c1bad63a00800000000000000
+      internalID: 736016046169853509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_7
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 47
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68ed9a3cf12ddfa10800000000000000
+      internalID: 1944941647962431110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_8
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 38
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bd915feb4b1029b0800000000000000
+      internalID: -5107051964486541899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_9
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 45
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59b46b188e1ca2400800000000000000
+      internalID: 300265529526340501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_10
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 51
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28670a007aa822d90800000000000000
+      internalID: -7123979210672015742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_11
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 40
+        width: 12
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9589ffe1639929fe0800000000000000
+      internalID: -1183715294317668263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: meteor_exp_2_aqua_12
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 38
+        width: 113
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d448f469da59c080800000000000000
+      internalID: -9166695676787538729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      meteor_exp_2_aqua_0: 3862435378803659340
+      meteor_exp_2_aqua_1: 1301749265278281119
+      meteor_exp_2_aqua_10: -7123979210672015742
+      meteor_exp_2_aqua_11: -1183715294317668263
+      meteor_exp_2_aqua_12: -9166695676787538729
+      meteor_exp_2_aqua_2: 7979006386448315865
+      meteor_exp_2_aqua_3: 303555902370461177
+      meteor_exp_2_aqua_4: -6562327531731704407
+      meteor_exp_2_aqua_5: 1764664116807723020
+      meteor_exp_2_aqua_6: 736016046169853509
+      meteor_exp_2_aqua_7: 1944941647962431110
+      meteor_exp_2_aqua_8: -5107051964486541899
+      meteor_exp_2_aqua_9: 300265529526340501
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

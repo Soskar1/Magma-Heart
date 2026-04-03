@@ -125,7 +125,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Logo
     originalName: 
-    pivot: {x: 0.49685532, y: -0.033898305}
+    pivot: {x: 0.5031056, y: -0.033898305}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -133,7 +133,7 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 159
+      width: 161
       height: 59
     spriteID: 428a2a247d97b7f4c87cfc04cc1635f2
     spriteBone: []
@@ -162,9 +162,9 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 9
+        x: 7
         y: 2
-        width: 159
+        width: 161
         height: 59
       spriteId: 428a2a247d97b7f4c87cfc04cc1635f2
     linkedCells: []

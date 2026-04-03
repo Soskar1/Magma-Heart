@@ -37,13 +37,14 @@ namespace MagmaHeart.Core.Entities.Models
                     Debug.LogWarning($"Energy must be positive. Tried to set: {value}");
                     value = 0;
                 }
-
+                
+                var previous = m_currentEnergy;
                 m_currentEnergy = value;
 
                 if (m_currentEnergy > MaxEnergy)
                     m_currentEnergy = MaxEnergy;
 
-                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentEnergy);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentEnergy, previous);
                 OnParameterValueChanged?.Invoke(this, args);
             }
         }

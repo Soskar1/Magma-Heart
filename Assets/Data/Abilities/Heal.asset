@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Heal
   m_EditorClassIdentifier: 
   m_id: Heal
+  m_description: Restores 5 health points
   m_targetKind: 4
-  m_cooldownTurns: 2
+  m_cooldownTurns: 3
   m_cost:
   - rid: 279046319385083976
   m_effects:

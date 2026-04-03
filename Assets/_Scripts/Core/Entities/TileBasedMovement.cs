@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -15,11 +16,14 @@ namespace MagmaHeart.Core.Entities
 
         private TaskCompletionSource<bool> m_movementFinished;
 
-        public Task StartMovementAsync(List<Vector3> path)
+        public event EventHandler OnChangedTarget;
+
+        public Task StartMovementAsync(List<Vector3> path, int speed)
         {
             m_currentPath = path;
             m_targetIndex = 0;
             m_canMove = true;
+            m_speed = speed;
 
             m_movementFinished = new TaskCompletionSource<bool>();
             return m_movementFinished.Task;
@@ -38,6 +42,8 @@ namespace MagmaHeart.Core.Entities
             {
                 transform.position = target;
                 ++m_targetIndex;
+
+                OnChangedTarget?.Invoke(this, EventArgs.Empty);
             }
 
             if (m_targetIndex == m_currentPath.Count)

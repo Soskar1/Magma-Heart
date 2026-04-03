@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95926d9ef5d41f44abd354fb41ede550, type: 3}
+  m_Name: METEOR
+  m_EditorClassIdentifier: 
+  m_name: Meteor
+  m_description: 
+  m_rarity: 4
+  m_icon: {fileID: 21300000, guid: b81cf919493f0a24a8fea5ecf4c1eb8e, type: 3}
+  m_abilityIcon: {fileID: 21300000, guid: b81cf919493f0a24a8fea5ecf4c1eb8e, type: 3}
+  m_levelDefinitions: []
+  m_abilityDefinition: {fileID: 11400000, guid: 30e9f4fa3dcd9aa4c96febcd1eb55b2f, type: 2}
+  m_abilityWindowVfx: {fileID: 3547912583680184557, guid: 10ed2b0461961dd43a520340cc721808, type: 3}
+  m_chargineSfx: {fileID: 8300000, guid: 394b422862807c14e9c3b163b57d0032, type: 3}
+  references:
+    version: 2
+    RefIds: []

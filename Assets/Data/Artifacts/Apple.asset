@@ -16,6 +16,7 @@ MonoBehaviour:
   m_description: A shiny red apple that restores a small amount of health.
   m_rarity: 0
   m_icon: {fileID: 21300000, guid: d008f09f7524f204fa607b2632e67552, type: 3}
+  m_abilityIcon: {fileID: 21300000, guid: 8e24e204c142cdf4eb0f54726af2f08c, type: 3}
   m_levelDefinitions:
   - m_statModifiers:
     - rid: 279046284954042444

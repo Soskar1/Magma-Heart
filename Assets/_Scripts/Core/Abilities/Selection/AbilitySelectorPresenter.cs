@@ -54,7 +54,9 @@ namespace MagmaHeart.Core.Abilities.Selection
                 { typeof(SpendResourceEffect), new SpendResourceEffectPresenter(m_energyPresenter) },
                 { typeof(HealEffect), new HealEffectPresenter(m_world, m_outlinePresenter) },
                 { typeof(KnockbackEffect), new KnockbackEffectPresenter(m_world, m_outlinePresenter, m_combatTilemapPresenter)  },
-                { typeof(TeleportEffect), new TeleportEffectPresenter(m_combatTilemapPresenter, m_world, m_outlinePresenter) }
+                { typeof(TeleportEffect), new TeleportEffectPresenter(m_combatTilemapPresenter, m_world, m_outlinePresenter) },
+                { typeof(StunEffect), null },
+                { typeof(KillEveryoneEffect), new KillEveryoneEffectPresenter(m_world, executor.Id) }
             };
 
             m_playerTurnController.OnAbilitySelected += HandleOnAbilitySelected;
@@ -111,6 +113,11 @@ namespace MagmaHeart.Core.Abilities.Selection
                     continue;
                 }
 
+                if (effectPresenter == null)
+                {
+                    continue;
+                }
+
                 effectPresenter.Present(effect);
                 m_currentActivePresenters.Add(effectPresenter);
             }
@@ -140,6 +147,9 @@ namespace MagmaHeart.Core.Abilities.Selection
 
         private void PresentEntity(Entity entity)
         {
+            if (!m_world.TryGetEntity(entity.Model.Id, out Entity _))
+                return;
+
             m_currentEntitySelection = entity;
 
             m_outlinePresenter.OutlineEntity(entity, OutlineType.Ally);

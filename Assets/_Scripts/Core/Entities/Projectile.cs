@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace MagmaHeart.Core.Entities
 {
@@ -7,7 +9,14 @@ namespace MagmaHeart.Core.Entities
     {
         [SerializeField] private float m_speed;
         [SerializeField] private float m_lifeTimeInSeconds;
+        [SerializeField] private ParticleSystem m_particles;
+        [SerializeField] private Light2D m_light2D;
+        [SerializeField] private SpriteRenderer m_renderer;
+        [SerializeField] private Collider2D m_collider2D;
+        [SerializeField] private AudioSource m_audio;
+        [SerializeField] private List<AudioClip> m_fireBall;
         private float m_lifeTimeTimer;
+        private bool m_isDestroyed;
 
         private EntityModel m_attacker;
 
@@ -16,6 +25,9 @@ namespace MagmaHeart.Core.Entities
         public void Initialize(EntityModel attacker)
         {
             m_attacker = attacker;
+
+            var clip = m_fireBall[Random.Range(0, m_fireBall.Count)];
+            m_audio.PlayOneShot(clip);
 
             m_projectileHit = new TaskCompletionSource<EntityModel>();
             m_lifeTimeTimer = m_lifeTimeInSeconds;
@@ -32,12 +44,9 @@ namespace MagmaHeart.Core.Entities
             else
             {
                 if (m_projectileHit != null)
-                {
-                    Debug.LogWarning($"{nameof(m_projectileHit)} is null");
                     m_projectileHit.SetResult(null);
-                }
 
-                Destroy(gameObject);
+                DestroyProjectile();
             }
         }
 
@@ -55,13 +64,26 @@ namespace MagmaHeart.Core.Entities
                     return;
 
                 m_projectileHit.TrySetResult(entity.Model);
+                DestroyProjectile();
             }
-            else
-            {
-                m_projectileHit.TrySetResult(null);
-            }
+        }
 
-            Destroy(gameObject);
+        private void DestroyProjectile()
+        {
+            if (m_isDestroyed)
+                return;
+
+            m_isDestroyed = true;
+
+            m_particles.Stop();
+            m_renderer.enabled = false;
+            m_light2D.enabled = false;
+            m_collider2D.enabled = false;
+            m_projectileHit = null;
+
+            Destroy(m_particles.gameObject, 2f);
+            Destroy(gameObject, 5f);
+
         }
     }
 }

@@ -1,4 +1,3 @@
-using MagmaHeart.Abilities.Effects;
 using MagmaHeart.AI;
 using MagmaHeart.AI.Reasoning;
 using MagmaHeart.Core.Abilities;
@@ -33,7 +32,7 @@ namespace MagmaHeart.Core.SceneLoading
     {
         [Header("Player")]
         [SerializeField] private EntityData m_playerData;
-        [SerializeField] private CameraController m_cameraPrefab;
+        [SerializeField] private CameraController m_camera;
 
         [Header("AI")]
         [SerializeField] private Strategy m_strategy;
@@ -41,6 +40,8 @@ namespace MagmaHeart.Core.SceneLoading
 
         [Header("Artifacts")]
         [SerializeField] private ArtifactDatabase m_artifactDatabase;
+        [SerializeField] private ArtifactData m_meteorStrike;
+        private bool m_gotMeteorStrike;
 
         [Header("Input")]
         [SerializeField] private MouseListener m_mouseListenerPrefab;
@@ -83,6 +84,9 @@ namespace MagmaHeart.Core.SceneLoading
         [SerializeField] private TutorialWindowPresenter m_tutorialWindowPrefab;
 
         private readonly List<IInstaller> m_installers = new List<IInstaller>();
+        private Entity m_player;
+        private GameWorld m_world;
+        private Inventory m_inventory;
 
         public async void Awake()
         {
@@ -104,6 +108,7 @@ namespace MagmaHeart.Core.SceneLoading
 
             WorldGrid grid = new WorldGrid(m_dungeonGrid, m_dungeonTilemap);
             GameWorld world = new GameWorld(grid, m_locations, random);
+            m_world = world;
             m_worldPresenter.Initialize(world);
 
             SpawnServiceInstaller spawnServiceInstaller = new SpawnServiceInstaller();
@@ -120,12 +125,16 @@ namespace MagmaHeart.Core.SceneLoading
             effectDispatcher.Register(new DecreaseCooldownHandler());
             effectDispatcher.Register(new KnockbackHandler());
             effectDispatcher.Register(new TeleportHandler());
+            effectDispatcher.Register(new StunHandler());
+            effectDispatcher.Register(new KillEveryoneHandler());
             AbilityExecutionRunner abilityExecutionRunner = new AbilityExecutionRunner(m_scriptDatabase, effectDispatcher, world);
             IStartOfTurnEffectFactory startOfTurnEffectFactory = new StartOfTurnEffectFactory(m_parameterDatabase.Energy, m_energyRegenPerTurn);
 
             PlayerInstaller playerInstaller = new PlayerInstaller();
             PlayerContext playerContext = playerInstaller.Install(spawner.EntitySpawner, m_playerData, inputContext, abilityExecutionRunner, world, m_graphicRaycaster);
             m_installers.Add(playerInstaller);
+            m_player = playerContext.Player;
+            m_world.OnLocationChanged += HandleOnLocationChanged;
 
             AIInstaller aiInstaller = new AIInstaller();
             AIContext aiContext = aiInstaller.Install(m_strategy, startOfTurnEffectFactory, effectDispatcher, m_lookAhead);
@@ -139,34 +148,55 @@ namespace MagmaHeart.Core.SceneLoading
             BattleContext battleContext = battleInstaller.Install(services.SpawnService.EntitySpawner, aiContext, random, m_minDistanceFromPlayer, world, playerContext.TurnController, abilityExecutionRunner, effectDispatcher, startOfTurnEffectFactory);
             m_installers.Add(battleInstaller);
 
-            CameraController camera = Instantiate(m_cameraPrefab, new Vector3(0, 0, -10), Quaternion.identity);
-            camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
+            //CameraController camera = Instantiate(m_camera, new Vector3(0, 0, -10), Quaternion.identity);
+            m_camera.Initialize(playerContext.Player.transform, inputContext.UserInput, battleContext.Battle);
 
             StatisticsInstaller statisticsInstaller = new StatisticsInstaller();
-            var counters = statisticsInstaller.Install(world);
+            var completedRoomsCounter = statisticsInstaller.Install(world);
             m_installers.Add(statisticsInstaller);
 
-            Inventory inventory = new Inventory(playerContext.Player.Model);
-            RewardService rewardService = new RewardService(inventory, m_artifactDatabase);
+            m_inventory = new Inventory(playerContext.Player.Model);
+            RewardService rewardService = new RewardService(m_inventory, m_artifactDatabase);
 
-            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, counters.roomCounter, counters.bossCounter, inventory);
+            m_gameUI.Initialize(playerContext.Player, battleContext.Battle, playerContext.TurnController, world, completedRoomsCounter, m_inventory);
             m_abilitySelectorPresenter.Initialize(world, playerContext.Player.Model, playerContext.TurnController, battleContext.Battle);
 
             TutorialInstaller tutorialInstaller = new TutorialInstaller();
             TutorialContext tutorialContext = tutorialInstaller.Install(m_windowDatabase, m_tutorialWindowPrefab, m_gameUI.transform);
             m_installers.Add(tutorialInstaller);
 
-            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(world, m_worldPresenter, playerContext.Player, services, camera, battleContext, m_gameUI, rewardService, tutorialContext);
+            //m_player.Model.MagmaHeart.CurrentMagmaHeartCount += 10;
+
+            MagmaHeartContext magmaHeartContext = new MagmaHeartContext(world, m_worldPresenter, playerContext.Player, services, m_camera, battleContext, m_gameUI, rewardService, tutorialContext);
             MagmaHeartStateMachine stateMachine = new MagmaHeartStateMachine(magmaHeartContext);
-            
+
             await stateMachine.Start();
+        }
+
+        //[ContextMenu("Add meteor strike")]
+        //public void AddMeteorStrike()
+        //{
+        //    m_inventory.TryPick(m_meteorStrike);
+        //    m_gotMeteorStrike = true;
+        //}
+
+        private void HandleOnLocationChanged(object _, EventArgs __)
+        {
+            ++m_player.Model.MagmaHeart.CurrentMagmaHeartCount;
+
+            if (!m_gotMeteorStrike)
+            {
+                m_inventory.TryPick(m_meteorStrike);
+                m_gotMeteorStrike = true;
+            }
         }
 
         public void OnDisable()
         {
             foreach (IInstaller installer in m_installers)
                 installer.Dispose();
-
+            
+            m_world.OnLocationChanged -= HandleOnLocationChanged;
             m_debugUI.Disable();
         }
 

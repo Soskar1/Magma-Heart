@@ -17,6 +17,7 @@ namespace MagmaHeart.Core.Input
         public event EventHandler OnRightMouseButtonClick;
         public event EventHandler OnDebugButtonPress;
         public event EventHandler OnEscapeScreenButtonPress;
+        public event EventHandler OnEndTurnButtonPress;
 
         public UserInput()
         {
@@ -33,6 +34,7 @@ namespace MagmaHeart.Core.Input
             Player.Move.canceled += HandleMovement;
             Player.DebugWindow.performed += HandleOnDebugButtonPress;
             Player.EscapeScreen.performed += HandleOnEscapeScreenButtonPress;
+            Player.EndTurn.performed += HandleOnEndTurnButtonPressed;
 
             Mouse.MouseScroll.performed += HandleMouseScroll;
             Mouse.MouseScroll.canceled += HandleMouseScroll;
@@ -50,6 +52,7 @@ namespace MagmaHeart.Core.Input
             Player.Move.canceled -= HandleMovement;
             Player.DebugWindow.performed -= HandleOnDebugButtonPress;
             Player.EscapeScreen.performed -= HandleOnEscapeScreenButtonPress;
+            Player.EndTurn.performed -= HandleOnEndTurnButtonPressed;
 
             Mouse.MouseScroll.performed -= HandleMouseScroll;
             Mouse.MouseScroll.canceled -= HandleMouseScroll;
@@ -95,5 +98,6 @@ namespace MagmaHeart.Core.Input
         private void HandleRightMouseButtonClick(InputAction.CallbackContext context) => OnRightMouseButtonClick?.Invoke(this, EventArgs.Empty);
         private void HandleOnDebugButtonPress(InputAction.CallbackContext context) => OnDebugButtonPress?.Invoke(this, EventArgs.Empty);
         private void HandleOnEscapeScreenButtonPress(InputAction.CallbackContext context) => OnEscapeScreenButtonPress?.Invoke(this, EventArgs.Empty);
+        private void HandleOnEndTurnButtonPressed(InputAction.CallbackContext context) => OnEndTurnButtonPress?.Invoke(this, EventArgs.Empty);
     }
 }

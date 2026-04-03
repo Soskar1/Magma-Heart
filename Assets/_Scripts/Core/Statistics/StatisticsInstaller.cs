@@ -5,19 +5,16 @@ namespace MagmaHeart.Core.Statistics
     public class StatisticsInstaller : IInstaller
     {
         private CompletedRoomsCounter m_completedRoomsCounter;
-        private CompletedBossCounter m_completedBossCounter;
 
-        public (CompletedRoomsCounter roomCounter, CompletedBossCounter bossCounter) Install(GameWorld gameWorld)
+        public CompletedRoomsCounter Install(GameWorld gameWorld)
         {
             m_completedRoomsCounter = new CompletedRoomsCounter(gameWorld);
-            m_completedBossCounter = new CompletedBossCounter(gameWorld);
-            return (m_completedRoomsCounter, m_completedBossCounter);
+            return m_completedRoomsCounter;
         }
 
         public void Dispose()
         {
             m_completedRoomsCounter.Dispose();
-            m_completedBossCounter.Dispose();
         }
     }
 }

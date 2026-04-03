@@ -15,9 +15,10 @@ namespace MagmaHeart.Core.Entities.Models
             get => m_currentStrength;
             set
             {
+                var previous = m_currentStrength;
                 m_currentStrength = value;
 
-                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentStrength);
+                OnParameterValueChangedEventArgs args = new OnParameterValueChangedEventArgs(Id, CurrentStrength, previous);
                 OnParameterValueChanged?.Invoke(this, args);
             }
         }

@@ -30,14 +30,8 @@ namespace MagmaHeart.Core.Dungeon.RoomGeneration
         {
             for (int wall = 0; wall < m_amountOfWalls; ++wall)
             {
-                Vector2Int currentPosition = roomModel.GetTilePositionAtIndex(m_random.Next(roomModel.TileCount));
-                Vector2Int wallDirection = m_randomWalk.TakeRandomDirection();
-
-                for (int i = 0; i < m_maxWallLength; ++i)
-                {
-                    Vector2Int wallPosition = currentPosition + wallDirection * i;
-                    roomModel.AddTile(wallPosition, TileType.Wall);
-                }
+                Vector2Int wallPosition = roomModel.GetTilePositionAtIndex(m_random.Next(roomModel.TileCount));
+                roomModel.AddTile(wallPosition, TileType.Wall);
             }
         }
     }

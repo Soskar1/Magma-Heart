@@ -13,6 +13,8 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
     [Serializable]
     public class MoveEntityStep : IAbilityExecutionStep
     {
+        [SerializeField] private int m_speed = 5;
+
         public async Task Run(AbilityExecutionContext context, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -43,7 +45,7 @@ namespace MagmaHeart.Core.Abilities.Presentation.Execution.Steps
             RemoveUnitFromBoard(context.World, moveEffect.Path.First());
 
             entity.Facing.TryUpdateFacing(tiledPath.Last().x - entity.Model.TilePosition.x);
-            await entity.TileBasedMovement.StartMovementAsync(tiledPath);
+            await entity.TileBasedMovement.StartMovementAsync(tiledPath, m_speed);
 
             AddUnitToBoard(context.World, moveEffect.Path.Last(), entity.Model);
         }

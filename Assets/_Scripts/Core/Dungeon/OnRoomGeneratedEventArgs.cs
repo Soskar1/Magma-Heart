@@ -1,5 +1,4 @@
-﻿using MagmaHeart.DungeonGeneration;
-using System;
+﻿using System;
 
 namespace MagmaHeart.Core.Dungeon
 {

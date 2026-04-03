@@ -18,6 +18,10 @@ namespace MagmaHeart.AI
         public IDictionary<string, int> Cooldowns { get; init; } = new Dictionary<string, int>();
 
         public event EventHandler<OnCooldownChangedEventArgs> OnCooldownChanged;
+        public event EventHandler<bool> OnShouldSkipTurnChanged;
+
+        private bool m_shouldSkipTurn;
+        public bool ShouldSkipTurn => m_shouldSkipTurn;
 
         public AIUnitModel(bool isPlayer, int id, IReadOnlyList<PlanDefinition> plans)
         {
@@ -61,6 +65,18 @@ namespace MagmaHeart.AI
                 Cooldowns.Remove(abilityId);
 
             OnCooldownChanged?.Invoke(this, new OnCooldownChangedEventArgs(abilityId, turns));
+        }
+
+        public void SkipNextTurn()
+        {
+            m_shouldSkipTurn = true;
+            OnShouldSkipTurnChanged.Invoke(this, m_shouldSkipTurn);
+        }
+
+        public void AllowNextTurn()
+        {
+            m_shouldSkipTurn = false;
+            OnShouldSkipTurnChanged.Invoke(this, m_shouldSkipTurn);
         }
     }
 }

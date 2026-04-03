@@ -29,20 +29,12 @@ namespace MagmaHeart.Core.StateMachine.States
 
             RoomModel roomModel = world.GenerateRoom();
             await m_context.RoomRenderer.OnRoomRendered;
-            
-            if (!m_tutorial.Model.IsSet(TutorialFlags.OpenedWelcomeScreen))
-            {
-                m_context.UI.WelcomeScreen.Open();
-                m_tutorial.Model.TrySetFlag(TutorialFlags.OpenedWelcomeScreen);
-            }
 
             Vector2 center = world.ToTileCenter(roomModel.WorldPosition);
             m_context.CameraController.MoveTo(center);
             player.transform.position = center;
            
             player.gameObject.SetActive(true);
-
-            await m_context.UI.WelcomeScreen.GetTask();
 
             m_tutorial.Model.TrySetFlag(TutorialFlags.HealthBarExplained);
 

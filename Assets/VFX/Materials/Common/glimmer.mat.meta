@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 32765597500029844adffaa4bb78267d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 242608
+  packageName: 2D Cartoon Effects - Mobile Friendly
+  packageVersion: 1.0
+  assetPath: Assets/VFX/Materials/Common/glimmer.mat
+  uploadId: 561026

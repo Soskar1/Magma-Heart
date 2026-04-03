@@ -18,6 +18,7 @@ MonoBehaviour:
   - rid: 226000796857139329
   - rid: 279046500252385355
   - rid: 279046500252385367
+  - rid: 279046799221064182
   - rid: 279046500252385378
   - rid: 279046500252385365
   - rid: 279046500252385356
@@ -32,6 +33,7 @@ MonoBehaviour:
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_animationType: 3
+        m_target: 0
     - rid: 279046500252385356
       type: {class: WaitForAnimationEndStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
@@ -41,6 +43,7 @@ MonoBehaviour:
       type: {class: PlayAnimationStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_animationType: 0
+        m_target: 0
     - rid: 279046500252385365
       type: {class: ApplyHealStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data: 
@@ -52,3 +55,17 @@ MonoBehaviour:
       type: {class: PlayEffectStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
       data:
         m_effectPrefab: {fileID: 3386893861810581238, guid: 1c180fd33b2f24d4c8db1db98296e254, type: 3}
+    - rid: 279046799221064182
+      type: {class: PlaySfxStep, ns: MagmaHeart.Core.Abilities.Presentation.Execution.Steps, asm: MagmaHeart.Core}
+      data:
+        m_sfx:
+        - {fileID: 8300000, guid: 1402ec32faa5a8740ae816d0e61d0c88, type: 3}
+        - {fileID: 8300000, guid: a7f08f652cb8ba94899e48f6f8dae90a, type: 3}
+        - {fileID: 8300000, guid: 3edaf1def6404214da3405f0cf9187c1, type: 3}
+        - {fileID: 8300000, guid: 98ed1c595503a3f47b0df13629843ecd, type: 3}
+        - {fileID: 8300000, guid: 7260f5d0de222d943b3d7204a1cfc748, type: 3}
+        - {fileID: 8300000, guid: eec7e7ddae2032a41b2dc34c01d92902, type: 3}
+        - {fileID: 8300000, guid: 4d2c796f5c06b034eba46b28b53bb774, type: 3}
+        - {fileID: 8300000, guid: f950201051dddec478f3ce859e705d35, type: 3}
+        - {fileID: 8300000, guid: 01faada532ba3f84d9f6985bdaee6815, type: 3}
+        - {fileID: 8300000, guid: d85360695854d5e4996e9db985edb21d, type: 3}

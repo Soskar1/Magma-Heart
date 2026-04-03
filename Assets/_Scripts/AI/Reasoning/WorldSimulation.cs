@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.UI.CanvasScaler;
 
 namespace MagmaHeart.AI.Reasoning
 {
@@ -112,7 +111,7 @@ namespace MagmaHeart.AI.Reasoning
             return unit.GetParameter(parameter);
         }
 
-        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path)
+        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path, bool ignoreEntities = false)
         {
             path = null;
             var tmpPath = m_aStar.FindPath(m_board.Graph, from, to);
@@ -145,6 +144,11 @@ namespace MagmaHeart.AI.Reasoning
         {
             AIUnitModel unit = GetUnit(entityId);
             return unit.GetCooldown(abilityId);
+        }
+
+        public IReadOnlyList<int> GetAllEntities()
+        {
+            throw new NotImplementedException();
         }
     }
 }

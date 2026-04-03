@@ -24,6 +24,16 @@ namespace MagmaHeart.Core.Entities.NonPlayableCharacters
 
         public async Task StartTurn(Room room, TurnOrder turnOrder)
         {
+            Entity current = turnOrder.Current;
+            if (current.Model.ShouldSkipTurn)
+            {
+                current.Animation.PlayIdleAnimation();
+
+                current.Model.AllowNextTurn();
+                EndTurn();
+                return;
+            }
+            
             CircularList<int> modelTurns = new CircularList<int>();
             foreach (Entity entity in turnOrder)
                 modelTurns.Add(entity.Model.Id);

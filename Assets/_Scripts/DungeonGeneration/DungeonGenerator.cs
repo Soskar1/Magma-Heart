@@ -1,3 +1,4 @@
+using MagmaHeart.Bresenham;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,20 @@ namespace MagmaHeart.DungeonGeneration
 
             HashSet<DungeonTile> outline = TileOutline.GetOutline(roomModel.GetTiles());
             AddWalls(outline);
+            RemoveIslands(roomModel);
             AddDoors(roomModel, outline);
+
+            BresenhamLine.DrawLine(roomModel.EntranceDoor.Position, roomModel.ExitDoor.Position)
+                .ToList()
+                .ForEach(position =>
+                {
+                    if (roomModel.ContainsTileAtPosition(position))
+                    {
+                        DungeonTile tile = roomModel.GetTile(position);
+                        if (tile.Type == TileType.Wall && tile != roomModel.EntranceDoor && tile != roomModel.ExitDoor && !outline.Contains(tile))
+                            tile.Type = TileType.Floor;
+                    }
+                });
 
             return roomModel;
         }
@@ -32,6 +46,47 @@ namespace MagmaHeart.DungeonGeneration
         {
             foreach (DungeonTile tile in outline)
                 tile.Type = TileType.Wall;
+        }
+
+        private void RemoveIslands(RoomModel roomModel)
+        {
+            var start = roomModel.GetTile(roomModel.WorldPosition);
+            start.Type = TileType.Floor;
+
+            var directionsToVisit = new List<Vector2Int>()
+            {
+                Vector2Int.right,
+                Vector2Int.left,
+                Vector2Int.up,
+                Vector2Int.down
+            };
+
+            Dictionary<Vector2Int, DungeonTile> visitedTiles = new Dictionary<Vector2Int, DungeonTile>();
+            Queue<Vector2Int> tilesToVisit = new Queue<Vector2Int>();
+            tilesToVisit.Enqueue(roomModel.WorldPosition);
+
+            while (tilesToVisit.Count > 0)
+            {
+                Vector2Int tilePosition = tilesToVisit.Dequeue();
+                DungeonTile tile = roomModel.GetTile(tilePosition);
+                visitedTiles.Add(tilePosition, tile);
+
+                if (tile.Type == TileType.Wall)
+                    continue;
+
+                foreach (Vector2Int direction in directionsToVisit)
+                {
+                    Vector2Int neighbourTilePosition = tilePosition + direction;
+
+                    if (roomModel.ContainsTileAtPosition(neighbourTilePosition) && !visitedTiles.ContainsKey(neighbourTilePosition) && !tilesToVisit.Contains(neighbourTilePosition))
+                    {
+                        var neighbourTile = roomModel.GetTile(neighbourTilePosition);
+                        tilesToVisit.Enqueue(neighbourTilePosition);
+                    }
+                }
+            }
+
+            roomModel.SetTiles(visitedTiles);
         }
 
         private void AddDoors(RoomModel roomModel, HashSet<DungeonTile> outline)

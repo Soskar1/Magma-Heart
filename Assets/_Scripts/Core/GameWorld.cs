@@ -93,9 +93,19 @@ namespace MagmaHeart.Core
             return m_currentLocation.BossRoom;
         }
 
-        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path)
+        public bool TryFindPath(Vector3 from, Vector3 to, out List<Vector3> path, bool ignoreEntities = false)
         {
-            List<Vector2> tmpPath = m_aStar.FindPath(m_currentRoom.Graph, from.ToVector2Int(), to.ToVector2Int());
+            var searchGraph = m_currentRoom.Graph;
+
+            if (ignoreEntities)
+            {
+                searchGraph = m_currentRoom.Graph.DeepCopy();
+
+                foreach (var entity in m_currentRoom.Entities)
+                    searchGraph.ChangeNodeType(entity.Model.TilePosition.ToVector2(), BoardNodeType.Walkable);
+            }
+
+            List<Vector2> tmpPath = m_aStar.FindPath(searchGraph, from.ToVector2Int(), to.ToVector2Int());
 
             if (tmpPath == null || tmpPath.Count == 0 || (Vector3)tmpPath.Last() != to)
             {
@@ -209,6 +219,11 @@ namespace MagmaHeart.Core
         {
             AIUnitModel unit = GetUnit(entityId);
             return unit.GetCooldown(abilityId);
+        }
+
+        public IReadOnlyList<int> GetAllEntities()
+        {
+            return CurrentRoom.Entities.Select(entity => entity.Model.Id).ToList();
         }
     }
 }

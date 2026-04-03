@@ -5,15 +5,23 @@ using MagmaHeart.AI;
 using MagmaHeart.Core.Entities;
 using MagmaHeart.Core.Entities.PlayableCharacters;
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MagmaHeart.Core.Artifacts.Presentation
 {
-    public class AbilityPresenter : MonoBehaviour
+    public class AbilityPresenter : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private TextMeshProUGUI m_cooldownText;
+        [SerializeField] private GameObject m_vfxSpawnpoint;
+        [SerializeField] private Image m_selectedEffect;
+        [SerializeField] private GameObject m_panel;
+
+        [SerializeField] private float m_audioFadeDuration = 1f;
+        [SerializeField] private float m_audioMaxVolume = 0.5f;
 
         private Image m_image;
         private Button m_button;
@@ -21,6 +29,11 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         private PlayerTurnController m_turnController;
         private IGameWorld m_gameWorld;
         private EntityModel m_executor;
+        private ParticleSystem m_vfx;
+
+        private AbilityTooltip m_abilityTooltip;
+
+        private AudioSource m_audio;
         
         private ResourceCost m_minimalResourceCost;
 
@@ -30,13 +43,27 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             m_button = GetComponent<Button>();
         }
 
-        public void Initialize(Artifact artifact, PlayerTurnController turnController, EntityModel executor, IGameWorld gameWorld)
+        public void Initialize(Artifact artifact, PlayerTurnController turnController, EntityModel executor, IGameWorld gameWorld, AbilityTooltip tooltip)
         {
             m_ability = artifact.Data.AbilityDefinition;
             m_turnController = turnController;
-            m_image.sprite = artifact.Data.Icon;
+            m_image.sprite = artifact.Data.AbilityIcon;
             m_gameWorld = gameWorld;
             m_executor = executor;
+            m_abilityTooltip = tooltip;
+
+            m_audio = GetComponent<AudioSource>();
+
+            if (artifact.Data.ChargingSfx != null)
+                m_audio.clip = artifact.Data.ChargingSfx;
+
+            if (artifact.Data.AbilityWindowVfx != null)
+            {
+                m_vfx = Instantiate(artifact.Data.AbilityWindowVfx, transform);
+
+                m_vfx.transform.position = m_vfxSpawnpoint.transform.position;
+                m_vfx.transform.localScale = Vector3.one;
+            }
 
             m_minimalResourceCost = m_ability.ComputeCost(gameWorld, executor.Id, AbilityTarget.None);
 
@@ -44,6 +71,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged += HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged += HandleOnCanExecuteActionsChanged;
+            m_turnController.OnAbilityDisarmed += HandleOnAbilityDisarm;
             m_executor.OnCooldownChanged += HandleOnCooldownChanged;
 
             Validate();
@@ -55,6 +83,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 m_gameWorld.GetParameter(m_executor.Id, resource.Id).OnParameterValueChanged -= HandleOnParameterValueChanged;
 
             m_turnController.OnCanExecuteActionsChanged -= HandleOnCanExecuteActionsChanged;
+            m_turnController.OnAbilityDisarmed -= HandleOnAbilityDisarm;
             m_executor.OnCooldownChanged -= HandleOnCooldownChanged;
         }
 
@@ -63,14 +92,24 @@ namespace MagmaHeart.Core.Artifacts.Presentation
             if (args.AbilityId != m_ability.Id)
                 return;
 
-            m_cooldownText.text = args.CurrentCooldown > 0 ? args.CurrentCooldown.ToString() : string.Empty;
+            string cooldownText = string.Empty;
+            bool showPanel = false;
+            if (args.CurrentCooldown > 0)
+            {
+                cooldownText = args.CurrentCooldown.ToString();
+                showPanel = true;
+            }
+
+            m_cooldownText.text = cooldownText;
+            m_panel.SetActive(showPanel);
+
             Validate();
         }
 
         private void HandleOnCanExecuteActionsChanged(object _, OnCanExecuteActionsChangedEventArgs args)
         {
             if (!args.CanExecute)
-                m_button.interactable = false;
+                Deactivate();
         }
         
         private void HandleOnParameterValueChanged(object _, EventArgs __) => Validate();
@@ -79,7 +118,7 @@ namespace MagmaHeart.Core.Artifacts.Presentation
         {
             if (m_executor.GetCooldown(m_ability.Id) > 0)
             {
-                m_button.interactable = false;
+                Deactivate();
                 return;
             }
 
@@ -89,17 +128,68 @@ namespace MagmaHeart.Core.Artifacts.Presentation
                 
                 if (parameter.CurrentValue < resource.Amount)
                 {
-                    m_button.interactable = false;
+                    Deactivate();
                     return;
                 }
             }
 
             m_button.interactable = true;
+
+            if (m_vfx != null)
+                m_vfx.Play();
         }
 
         public void OnAbilityButtonPressed()
         {
             m_turnController.ArmAbility(m_ability);
+            m_selectedEffect.enabled = true;
+            m_audio.Play();
+            StartCoroutine(FadeAudio(m_audioMaxVolume));
+        }
+
+        private void Deactivate()
+        {
+            m_button.interactable = false;
+            m_selectedEffect.enabled = false;
+
+            if (m_vfx != null)
+                m_vfx.Stop();
+
+            StartCoroutine(FadeAudio(0));
+        }
+
+        private void HandleOnAbilityDisarm(object _, EventArgs __)
+        {
+            m_selectedEffect.enabled = false;
+            StartCoroutine(FadeAudio(0));
+        }
+
+        private IEnumerator FadeAudio(float targetVolume)
+        {
+            float startVolume = m_audio.volume;
+            float time = 0f;
+
+            while (time < m_audioFadeDuration)
+            {
+                time += Time.deltaTime;
+                m_audio.volume = Mathf.Lerp(startVolume, targetVolume, time / m_audioFadeDuration);
+                yield return null;
+            }
+
+            m_audio.volume = targetVolume;
+
+            if (targetVolume == 0f)
+                m_audio.Stop();
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            m_abilityTooltip.Present(m_ability, m_minimalResourceCost);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            m_abilityTooltip.Hide();
         }
     }
 }

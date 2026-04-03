@@ -10,10 +10,12 @@ namespace MagmaHeart.Core.Abilities
         [SerializeField] private ParameterId m_speed;
         [SerializeField] private ParameterId m_energy;
         [SerializeField] private ParameterId m_health;
+        [SerializeField] private ParameterId m_magmaHeart;
 
         public ParameterId Strength => m_strength;
         public ParameterId Speed => m_speed;
         public ParameterId Energy => m_energy;
         public ParameterId Health => m_health;
+        public ParameterId MagmaHeart => m_magmaHeart;
     }
 }

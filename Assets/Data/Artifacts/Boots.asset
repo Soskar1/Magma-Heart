@@ -16,6 +16,7 @@ MonoBehaviour:
   m_description: Become faster!
   m_rarity: 0
   m_icon: {fileID: 21300000, guid: 38a024fbad6276e49b220bbe76e23187, type: 3}
+  m_abilityIcon: {fileID: 21300000, guid: fe467757e91e3d94ba73ae7be39ff9b7, type: 3}
   m_levelDefinitions:
   - m_statModifiers:
     - rid: 279046284954042449
