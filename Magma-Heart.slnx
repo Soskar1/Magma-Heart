@@ -11,6 +11,7 @@
   <Project Path="MagmaHeart.Collections.Tests.csproj" />
   <Project Path="MagmaHeart.BreadthFirstSearch.Tests.csproj" />
   <Project Path="MagmaHeart.Bresenham.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="MagmaHeart.StateMachine.csproj" />
   <Project Path="MagmaHeart.BreadthFirstSearch.csproj" />
   <Project Path="MagmaHeart.Bresenham.Tests.csproj" />
